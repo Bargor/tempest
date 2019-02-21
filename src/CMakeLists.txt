@@ -1,3 +1,7 @@
+# This file is part of Tempest project
+# Author: Karol Kontny
+
+
 if(TEMPEST_BUILD_ALL)
 	add_subdirectory(core)
 	add_subdirectory(application)
