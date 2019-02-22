@@ -1,4 +1,4 @@
-// This file is part of Tempest-application project
+// This file is part of Tempest-device project
 // Author: Karol Kontny
 
 #include "monitor.h"
