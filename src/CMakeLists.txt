@@ -1,14 +1,29 @@
 # This file is part of Tempest project
 # Author: Karol Kontny
 
-
 if(TEMPEST_BUILD_ALL)
 	add_subdirectory(core)
-	add_subdirectory(application)
+	
+	set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "Build the GLFW example programs")
+	set(GLFW_BUILD_TESTS OFF CACHE BOOL "Build the GLFW test programs")
+	set(GLFW_BUILD_DOCS OFF CACHE BOOL "Build the GLFW documentation")
+	
+	set(GLM_TEST_ENABLE OFF CACHE BOOL "Build unit tests")
+
+	add_definitions (-DGLEW_NO_GLU)
+
+	list(APPEND CMAKE_PREFIX_PATH "${PROJECT_SOURCE_DIR}/libs/glew/")
+	find_package(GLEW REQUIRED)
+	
+	add_subdirectory(${PROJECT_SOURCE_DIR}/libs/glfw)
+	add_subdirectory(${PROJECT_SOURCE_DIR}/libs/glm)
+	
 	add_subdirectory(device)
+	add_subdirectory(application)
 	if (ENGINE_VK)
 		add_subdirectory(engine-Vk)
 	elseif(ENGINE_GL)
 		add_subdirectory(engine-GL)
 	endif(ENGINE_VK)
+	add_subdirectory(tempest)
 endif(TEMPEST_BUILD_ALL)
