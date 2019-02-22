@@ -70,19 +70,40 @@ set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/exe)
 add_subdirectory(libs/fmt)
 add_subdirectory(src)
 
-#Build tests
-if(CORE_BUILD_TESTS)
+if(TEMPEST_BUILD_ALL)
+	set(TEMPEST_BUILD_UNIT_TESTS ON)
+	set(TEMPEST_BUILD_PERF_TESTS ON)
+endif(TEMPEST_BUILD_ALL)
+
+#Build unit tests
+if(TEMPEST_BUILD_UNIT_TESTS)
+	include(CTest)
+	enable_testing()
+	
 	if(WIN32)
 		set(gtest_force_shared_crt ON CACHE BOOL "Use shared (DLL) run-time lib even when Google Test is built as static lib.")
 	endif(WIN32)
 	
-	set(BENCHMARK_ENABLE_TESTING OFF CACHE BOOL "Google benchmark tests")
+	add_subdirectory(libs/googletest)	
+
+	mark_as_advanced(
+		BUILD_GMOCK BUILD_GTEST BUILD_SHARED_LIBS
+		gmock_build_tests gtest_build_samples gtest_build_tests
+		gtest_disable_pthreads gtest_force_shared_crt gtest_hide_internal_symbols
+	)
+
+	set_target_properties(gtest PROPERTIES FOLDER extern)
+	set_target_properties(gtest_main PROPERTIES FOLDER extern)
+	set_target_properties(gmock PROPERTIES FOLDER extern)
+	set_target_properties(gmock_main PROPERTIES FOLDER extern)
 	
-	include(CTest)
-	
-	add_subdirectory(libs/googletest)
-	add_subdirectory(libs/benchmark)
-		
 	add_subdirectory(test/unit)
+endif(TEMPEST_BUILD_UNIT_TESTS)
+
+#Build perf tests
+if(TEMPEST_BUILD_PERF_TESTS)
+	set(BENCHMARK_ENABLE_TESTING OFF CACHE BOOL "Google benchmark tests")
+
+	add_subdirectory(libs/benchmark)
 	add_subdirectory(test/perf)
-endif(CORE_BUILD_TESTS)
+endif(TEMPEST_BUILD_PERF_TESTS)
