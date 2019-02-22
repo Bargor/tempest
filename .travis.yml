@@ -18,6 +18,10 @@ matrix:
           packages:
             - gcc-8
             - g++-8
+            - libgl1-mesa-dev
+            - libxinerama-dev
+            - libxcursor-dev
+            - xorg-dev
       env:
         - MATRIX_EVAL="CC=gcc-8 && CXX=g++-8" BUILD_TYPE=Debug
     # Relase    
@@ -29,6 +33,10 @@ matrix:
           packages:
             - gcc-8
             - g++-8
+            - libgl1-mesa-dev
+            - libxinerama-dev
+            - libxcursor-dev
+            - xorg-dev
       env:
         - MATRIX_EVAL="CC=gcc-8 && CXX=g++-8" BUILD_TYPE=Release
     # Clang Debug
@@ -46,6 +54,10 @@ matrix:
             - llvm-7
             - llvm-7-dev
             - llvm-7-runtime
+            - libgl1-mesa-dev
+            - libxinerama-dev
+            - libxcursor-dev
+            - xorg-dev
       env:
         - MATRIX_EVAL="CC=clang-7 && CXX=clang++-7" BUILD_TYPE=Debug
         - EXTRA_FLAGS="-stdlib=libc++"
@@ -64,6 +76,10 @@ matrix:
             - llvm-7
             - llvm-7-dev
             - llvm-7-runtime
+            - libgl1-mesa-dev
+            - libxinerama-dev
+            - libxcursor-dev
+            - xorg-dev
       env:
         - MATRIX_EVAL="CC=clang-7 && CXX=clang++-7" BUILD_TYPE=Release
         - EXTRA_FLAGS="-stdlib=libc++"
@@ -116,9 +132,10 @@ script:
 - clang --version
 - mkdir build
 - cd build
-- cmake .. -DCMAKE_BUILD_TYPE=${BUILD_TYPE} -DCMAKE_CXX_FLAGS="${EXTRA_FLAGS}" -DCORE_BUILD_TESTS=ON
+- cmake .. -DCMAKE_BUILD_TYPE=${BUILD_TYPE} -DCMAKE_CXX_FLAGS="${EXTRA_FLAGS}" -DTEMPEST_BUILD_ALL=ON
 - make -j2
 - ./exe/core_test
+- ./exe/engine_test
 - if [ "${BUILD_TYPE}" == "Release" ]; then
     ./exe/queue_test;
   fi
