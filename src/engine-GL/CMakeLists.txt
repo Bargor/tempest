@@ -22,8 +22,7 @@ tst_add_library(engine "${ENGINE_HDRS}" "${ENGINE_SRCS}")
 
 target_include_directories(engine PUBLIC ${GLEW_INCLUDE_DIRS})
 
-target_link_libraries(engine PUBLIC tst::application glm)
-target_link_libraries(engine PRIVATE ${GLEW_LIBRARIES})
+target_link_libraries(engine PUBLIC tst::application glm ${GLEW_LIBRARIES})
 
 if(UNIX)
 	target_link_libraries(engine PRIVATE -lGL -lX11 -lXxf86vm -lXrandr -lXi -ldl)

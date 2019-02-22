@@ -11,12 +11,12 @@ if(TEMPEST_BUILD_ALL)
 	set(GLM_TEST_ENABLE OFF CACHE BOOL "Build unit tests")
 
 	add_definitions (-DGLEW_NO_GLU)
-
+	
 	list(APPEND CMAKE_PREFIX_PATH "${PROJECT_SOURCE_DIR}/libs/glew/")
 	find_package(GLEW REQUIRED)
 	
-	add_subdirectory(${PROJECT_SOURCE_DIR}/libs/glfw)
-	add_subdirectory(${PROJECT_SOURCE_DIR}/libs/glm)
+	add_subdirectory(${PROJECT_SOURCE_DIR}/libs/glfw ${LIBRARY_OUTPUT_PATH}/glfw)
+	add_subdirectory(${PROJECT_SOURCE_DIR}/libs/glm ${LIBRARY_OUTPUT_PATH}/glm)
 	
 	add_subdirectory(device)
 	add_subdirectory(application)
