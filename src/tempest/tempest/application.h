@@ -26,7 +26,7 @@ namespace application {
         using ptr = std::unique_ptr<T>;
 
     public:
-        application(const program_params& params, ptr<device::monitor> monitor);
+        application(const program_params& params, ptr<device::monitor> monitor, std::string&& name);
         ~application();
         void run();
 

@@ -56,9 +56,9 @@ namespace application {
         return hints;
     }
 
-    application::application(const program_params& params, ptr<device::monitor> monitor)
+    application::application(const program_params& params, ptr<device::monitor> monitor, std::string&& name)
         : m_mainWindow(std::make_unique<main_window>(
-              std::string("Tempest"),
+              std::move(name),
               main_window::window_size{monitor->get_width() / 2, monitor->get_height() / 2},
               params.window_mode,
               monitor.get(),
