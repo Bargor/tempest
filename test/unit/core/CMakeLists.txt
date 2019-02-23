@@ -7,6 +7,7 @@ set(TEST_SRCS
 	memory/frame_allocator_test.cpp
 	numeric/random_test.cpp
 	time/timer_test.cpp
+	util/bitpack_test.cpp
 )
 
 source_group("core tests" FILES ${TEST_SRCS})
