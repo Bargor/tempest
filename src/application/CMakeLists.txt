@@ -30,3 +30,6 @@ include(${PROJECT_SOURCE_DIR}/cmake/TstAddLibrary.cmake)
 tst_add_library(application "${APPLICATION_HDRS}" "${APPLICATION_SRCS}")
 
 target_link_libraries(application PUBLIC tst::core PRIVATE glfw tst::device)
+if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+	target_link_libraries(application PRIVATE -lstdc++fs)
+endif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
