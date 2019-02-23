@@ -147,7 +147,6 @@ script:
 - cmake .. -DCMAKE_BUILD_TYPE=${BUILD_TYPE} -DCMAKE_CXX_FLAGS="${EXTRA_FLAGS}" -DTEMPEST_BUILD_ALL=ON -DENGINE="${ENGINE}"
 - make -j2
 - ./exe/core_test
-- ./exe/engine_test
 - if [ "${BUILD_TYPE}" == "Release" ]; then
     ./exe/queue_test;
   fi
