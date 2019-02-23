@@ -18,7 +18,7 @@ install:
 
 before_build:
     - cmd: echo %GENERATOR%
-    - cmd: cmake -G"%GENERATOR%" . -DTEMPEST_BUILD_ALL=ON
+    - cmd: cmake -G"%GENERATOR%" . -DTEMPEST_BUILD_ALL=ON -DENGINE=Engine-GL
     - sh: cmake . 
 
 build:
