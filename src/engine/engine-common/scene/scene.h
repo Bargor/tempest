@@ -11,6 +11,8 @@ namespace scene {
 
     class scene {
     public:
+        int get_placeholder() const;
+
     private:
         int m_placeholder;
     };
