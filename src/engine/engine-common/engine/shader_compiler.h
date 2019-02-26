@@ -1,4 +1,4 @@
-// This file is part of Tempest-engine-GL project
+// This file is part of Tempest-engine project
 // Author: Karol Kontny
 
 #pragma once
@@ -16,14 +16,14 @@ namespace engine {
 
     class shader_compiler {
     public:
-        std::optional<opengl::shader_program> compile_program(std::string_view&& name,
-                                                              const opengl::shaderTypesSet& types) const;
+        std::optional<backend::shader_program> compile_program(std::string_view&& name,
+                                                               const backend::shaderTypesSet& types) const;
 
     public:
         shader_compiler(application::data_loader& data_loader);
 
     private:
-        std::optional<opengl::shader> compile_shader(const std::string_view name, const opengl::shader_type type) const;
+        std::optional<backend::shader> compile_shader(const std::string_view name, const backend::shader_type type) const;
 
     private:
         application::data_loader& m_dataLoader;

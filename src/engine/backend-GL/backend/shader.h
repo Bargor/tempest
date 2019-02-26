@@ -11,7 +11,7 @@
 
 namespace tst {
 namespace engine {
-    namespace opengl {
+    namespace backend {
 
         enum class shader_type : std::uint8_t {
             vertex,
@@ -57,7 +57,7 @@ namespace engine {
             std::string_view m_name;
             mutable bool m_compiled;
 
-            static constexpr std::array<std::uint32_t, static_cast<std::size_t>(opengl::shader_type::enum_size)>
+            static constexpr std::array<std::uint32_t, static_cast<std::size_t>(shader_type::enum_size)>
                 m_shaderTypesLookup = {{GL_VERTEX_SHADER,
                                         GL_FRAGMENT_SHADER,
                                         GL_GEOMETRY_SHADER,
@@ -87,6 +87,6 @@ namespace engine {
             mutable bool m_linked;
         };
 
-    } // namespace opengl
+    } // namespace backend
 } // namespace engine
 } // namespace tst

@@ -2,7 +2,7 @@
 # Author: Karol Kontny
 
 set(BACKEND_HDRS
-	backend/opengl_exception.h
+	backend/api_exception.h
 	backend/shader.h
 )
 
