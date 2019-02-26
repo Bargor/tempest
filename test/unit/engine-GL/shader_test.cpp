@@ -131,6 +131,6 @@ namespace engine {
             }
         }
 
-    } // namespace opengl
+    } // namespace backend
 } // namespace engine
 } // namespace tst

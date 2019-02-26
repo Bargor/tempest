@@ -4,10 +4,12 @@
 set(BACKEND_HDRS
 	backend/api_exception.h
 	backend/shader.h
+	backend/init.h
 )
 
 set(BACKEND_SRCS 
 	backend/shader.cpp
+	backend/init.cpp
 )
 
 add_definitions (-DGLEW_NO_GLU)
