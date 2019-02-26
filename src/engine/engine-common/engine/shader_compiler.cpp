@@ -3,7 +3,7 @@
 
 #include "shader_compiler.h"
 
-#include "OpenGL/opengl_exception.h"
+#include <backend/opengl_exception.h>
 
 #include <algorithm>
 #include <application/data_exception.h>

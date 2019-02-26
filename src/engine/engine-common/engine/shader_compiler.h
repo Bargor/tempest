@@ -3,9 +3,8 @@
 
 #pragma once
 
-#include "OpenGL/shader.h"
+#include <backend/shader.h>
 
-#include <GL/glew.h>
 #include <optional>
 
 namespace tst {

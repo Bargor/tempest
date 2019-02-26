@@ -9,11 +9,11 @@ namespace application {
     class data_loader;
 }
 
-namespace engine {
+namespace scene {
+    class scene;
+}
 
-    namespace scene {
-        class scene;
-    }
+namespace engine {
 
     class rendering_engine {
         template<typename T>

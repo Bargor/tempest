@@ -1,4 +1,4 @@
-// This file is part of Tempest-engine-GL project
+// This file is part of Tempest project
 // Author: Karol Kontny
 
 #include <GLFW/glfw3.h>
