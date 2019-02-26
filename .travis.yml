@@ -23,7 +23,7 @@ matrix:
             - libxcursor-dev
             - xorg-dev
       env:
-        - MATRIX_EVAL="CC=gcc-8 && CXX=g++-8" BUILD_TYPE=Debug
+        - MATRIX_EVAL="CC=gcc-8 && CXX=g++-8" BUILD_TYPE=Debug ENGINE=Engine-GL
     # Relase    
     - os: linux
       addons:
@@ -38,7 +38,7 @@ matrix:
             - libxcursor-dev
             - xorg-dev
       env:
-        - MATRIX_EVAL="CC=gcc-8 && CXX=g++-8" BUILD_TYPE=Release
+        - MATRIX_EVAL="CC=gcc-8 && CXX=g++-8" BUILD_TYPE=Release ENGINE=Engine-GL
     # Clang Debug
     - os: linux
       addons:
@@ -59,7 +59,7 @@ matrix:
             - libxcursor-dev
             - xorg-dev
       env:
-        - MATRIX_EVAL="CC=clang-7 && CXX=clang++-7" BUILD_TYPE=Debug
+        - MATRIX_EVAL="CC=clang-7 && CXX=clang++-7" BUILD_TYPE=Debug ENGINE=Engine-GL
         - EXTRA_FLAGS="-stdlib=libc++"
     # Clang Release
     - os: linux
@@ -81,7 +81,7 @@ matrix:
             - libxcursor-dev
             - xorg-dev
       env:
-        - MATRIX_EVAL="CC=clang-7 && CXX=clang++-7" BUILD_TYPE=Release
+        - MATRIX_EVAL="CC=clang-7 && CXX=clang++-7" BUILD_TYPE=Release ENGINE=Engine-GL
         - EXTRA_FLAGS="-stdlib=libc++"
     # Clang Thread sanitizer
     - os: linux
@@ -98,8 +98,12 @@ matrix:
             - llvm-7
             - llvm-7-dev
             - llvm-7-runtime
+            - libgl1-mesa-dev
+            - libxinerama-dev
+            - libxcursor-dev
+            - xorg-dev
       env:
-        - MATRIX_EVAL="CC=clang-7 && CXX=clang++-7" BUILD_TYPE=Debug
+        - MATRIX_EVAL="CC=clang-7 && CXX=clang++-7" BUILD_TYPE=Debug ENGINE=Engine-GL
         - EXTRA_FLAGS="-stdlib=libc++ -fsanitize=thread -O1"
     # Clang Release 
     - os: linux
@@ -116,8 +120,12 @@ matrix:
             - llvm-7
             - llvm-7-dev
             - llvm-7-runtime
+            - libgl1-mesa-dev
+            - libxinerama-dev
+            - libxcursor-dev
+            - xorg-dev
       env:
-        - MATRIX_EVAL="CC=clang-7 && CXX=clang++-7" BUILD_TYPE=Debug
+        - MATRIX_EVAL="CC=clang-7 && CXX=clang++-7" BUILD_TYPE=Debug ENGINE=Engine-GL
         - EXTRA_FLAGS="-stdlib=libc++ -fsanitize=address"
         
 before_install:
@@ -136,10 +144,9 @@ script:
 - cd ../../../
 - mkdir build
 - cd build
-- cmake .. -DCMAKE_BUILD_TYPE=${BUILD_TYPE} -DCMAKE_CXX_FLAGS="${EXTRA_FLAGS}" -DTEMPEST_BUILD_ALL=ON
+- cmake .. -DCMAKE_BUILD_TYPE=${BUILD_TYPE} -DCMAKE_CXX_FLAGS="${EXTRA_FLAGS}" -DTEMPEST_BUILD_ALL=ON -DENGINE="${ENGINE}"
 - make -j2
 - ./exe/core_test
-- ./exe/engine_test
 - if [ "${BUILD_TYPE}" == "Release" ]; then
     ./exe/queue_test;
   fi
