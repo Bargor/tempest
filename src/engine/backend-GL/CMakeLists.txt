@@ -14,6 +14,9 @@ add_definitions (-DGLEW_NO_GLU)
 
 include(${PROJECT_SOURCE_DIR}/cmake/TstAddLibrary.cmake)
 
+list(APPEND CMAKE_PREFIX_PATH "${PROJECT_SOURCE_DIR}/libs/glew/")
+find_package(GLEW REQUIRED)
+
 tst_add_library(backend "${BACKEND_HDRS}" "${BACKEND_SRCS}")
 
 target_include_directories(backend PUBLIC ${GLEW_INCLUDE_DIRS})

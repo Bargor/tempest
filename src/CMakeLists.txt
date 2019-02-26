@@ -15,9 +15,6 @@ if(TEMPEST_BUILD_ALL)
 		add_definitions (-DGLFW_INCLUDE_VULKAN)
 	endif(ENGINE STREQUAL "Engine-Vk")
 	
-	list(APPEND CMAKE_PREFIX_PATH "${PROJECT_SOURCE_DIR}/libs/glew/")
-	find_package(GLEW REQUIRED)
-	
 	add_subdirectory(${PROJECT_SOURCE_DIR}/libs/glfw ${LIBRARY_OUTPUT_PATH}/glfw)
 	add_subdirectory(${PROJECT_SOURCE_DIR}/libs/glm ${LIBRARY_OUTPUT_PATH}/glm)
 	

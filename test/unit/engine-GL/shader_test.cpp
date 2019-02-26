@@ -1,14 +1,14 @@
 // This file is part of Tempest-engine-Gl project
 // Author: Karol Kontny
 
-#include <backend/opengl_exception.h>
+#include <backend/api_exception.h>
 #include <backend/shader.h>
 
 #include <gtest/gtest.h>
 
 namespace tst {
 namespace engine {
-    namespace opengl {
+    namespace backend {
 
         auto testVertexShaderCorrect = "#version 330\n \
                                        void main() \
@@ -33,7 +33,7 @@ namespace engine {
         TEST(Shader, ShaderConstruction) {
             try {
                 shader shader(shader_type::vertex, "", "test_shader");
-            } catch (opengl_exception&) {
+            } catch (api_exception&) {
                 FAIL();
             }
         }
@@ -44,7 +44,7 @@ namespace engine {
                 EXPECT_TRUE(s.compile());
                 shader s2(std::move(s));
                 EXPECT_TRUE(s2.is_compiled());
-            } catch (opengl_exception&) {
+            } catch (api_exception&) {
                 FAIL();
             }
         }
@@ -57,7 +57,7 @@ namespace engine {
                 s = std::move(s2);
                 EXPECT_TRUE(s2.is_compiled());
                 EXPECT_FALSE(s.is_compiled());
-            } catch (opengl_exception&) {
+            } catch (api_exception&) {
                 FAIL();
             }
         }
@@ -66,7 +66,7 @@ namespace engine {
             try {
                 shader shader(shader_type::vertex, testVertexShaderCorrect, "test_shader");
                 EXPECT_TRUE(shader.compile());
-            } catch (opengl_exception&) {
+            } catch (api_exception&) {
                 FAIL();
             }
         }
@@ -75,7 +75,7 @@ namespace engine {
             try {
                 shader shader(shader_type::vertex, testVertexShaderNotCorrect, "test_shader");
                 EXPECT_FALSE(shader.compile());
-            } catch (opengl_exception&) {
+            } catch (api_exception&) {
                 FAIL();
             }
         }
@@ -84,7 +84,7 @@ namespace engine {
             try {
                 shader shader(shader_type::fragment, testFragmentShaderCorrect, "test_shader");
                 EXPECT_TRUE(shader.compile());
-            } catch (opengl_exception&) {
+            } catch (api_exception&) {
                 FAIL();
             }
         }
@@ -93,7 +93,7 @@ namespace engine {
             try {
                 shader shader(shader_type::fragment, testFragmentShaderNotCorrect, "test_shader");
                 EXPECT_FALSE(shader.compile());
-            } catch (opengl_exception&) {
+            } catch (api_exception&) {
                 FAIL();
             }
         }
@@ -101,7 +101,7 @@ namespace engine {
         TEST(Program, ProgramConstruction) {
             try {
                 shader_program program("test_program");
-            } catch (opengl_exception&) {
+            } catch (api_exception&) {
                 FAIL();
             }
         }
@@ -116,7 +116,7 @@ namespace engine {
                 program.attach_shader(vertexShader);
                 program.attach_shader(fragmentShader);
                 EXPECT_TRUE(program.link());
-            } catch (opengl_exception&) {
+            } catch (api_exception&) {
                 FAIL();
             }
         }
@@ -126,7 +126,7 @@ namespace engine {
                 shader_program program("test_program");
                 shader vertexShader(shader_type::vertex, testVertexShaderCorrect, "test_shader");
                 EXPECT_FALSE(program.link());
-            } catch (opengl_exception&) {
+            } catch (api_exception&) {
                 FAIL();
             }
         }
