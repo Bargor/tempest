@@ -1,6 +1,8 @@
-// This file is part of Tempest-engine-GL project
+// This file is part of Tempest-engine project
 // Author: Karol Kontny
 #pragma once
+
+#include <vulkan/vulkan.h>
 
 #include <memory>
 
@@ -28,8 +30,11 @@ namespace engine {
         void stop();
 
     private:
+        void init_Vulkan();
+
         application::data_loader& m_dataLoader;
         ptr<scene::scene> m_scene;
+        VkInstance m_vulkanInstance;
     };
 
 } // namespace engine

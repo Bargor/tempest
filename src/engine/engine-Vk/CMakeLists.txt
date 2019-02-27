@@ -2,16 +2,17 @@
 # Author: Karol Kontny
 
 set(ENGINE_HDRS
-	engine/init.h
+	engine/vulkan_exception.h
+	engine/engine.h
 )
 
 set(ENGINE_SRCS 
-	engine/init.cpp
+	engine/engine.cpp
 )
 
 include(${PROJECT_SOURCE_DIR}/cmake/TstAddLibrary.cmake)
 
-tst_add_library(engine "${BACKEND_HDRS}" "${BACKEND_SRCS}")
+tst_add_library(engine "${ENGINE_HDRS}" "${ENGINE_SRCS}")
 
 target_include_directories(engine PUBLIC ${Vulkan_INCLUDE_DIRS})
 
