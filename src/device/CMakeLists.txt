@@ -15,6 +15,11 @@ tst_add_library(device "${DEVICE_HDRS}" "${DEVICE_SRCS}")
 
 target_link_libraries(device PUBLIC tst::core PRIVATE glfw)
 
+if (ENGINE STREQUAL "Engine-Vk")
+	target_include_directories(device PRIVATE ${Vulkan_INCLUDE_DIRS})
+	target_link_libraries(device PRIVATE ${Vulkan_LIBRARIES})
+endif (ENGINE STREQUAL "Engine-Vk")
+
 if(UNIX)
 	target_link_libraries(device PRIVATE -lX11 -lXxf86vm -lXrandr -lXi -ldl)
 endif(UNIX)

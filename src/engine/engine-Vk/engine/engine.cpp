@@ -4,6 +4,7 @@
 #include "engine.h"
 
 #include "scene/scene.h"
+#include <backend/init.h>
 
 #include <fmt/printf.h>
 
@@ -15,7 +16,9 @@ namespace engine {
         backend::init_backend();
     }
 
-    rendering_engine::~rendering_engine() {}
+    rendering_engine::~rendering_engine() {
+        backend::destroy_backend();
+    }
 
     void rendering_engine::frame() {}
 

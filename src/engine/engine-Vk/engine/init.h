@@ -8,6 +8,7 @@ namespace engine {
     namespace backend {
 
         void init_backend();
+        void destroy_backend();
     }
 } // namespace engine
 } // namespace tst

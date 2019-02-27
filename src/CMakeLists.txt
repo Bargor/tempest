@@ -9,14 +9,16 @@ if(TEMPEST_BUILD_ALL)
 	set(GLFW_BUILD_DOCS OFF CACHE BOOL "Build the GLFW documentation")
 	
 	set(GLM_TEST_ENABLE OFF CACHE BOOL "Build unit tests")
-
-	add_definitions (-DGLEW_NO_GLU)
-	if (ENGINE STREQUAL "Engine-Vk")
-		add_definitions (-DGLFW_INCLUDE_VULKAN)
-	endif(ENGINE STREQUAL "Engine-Vk")
 	
 	add_subdirectory(${PROJECT_SOURCE_DIR}/libs/glfw ${LIBRARY_OUTPUT_PATH}/glfw)
 	add_subdirectory(${PROJECT_SOURCE_DIR}/libs/glm ${LIBRARY_OUTPUT_PATH}/glm)
+	
+	add_definitions (-DGLEW_NO_GLU)
+	if (ENGINE STREQUAL "Engine-Vk")
+		find_package(Vulkan REQUIRED)
+		add_definitions (-DGLFW_INCLUDE_VULKAN)
+	endif(ENGINE STREQUAL "Engine-Vk")
+	
 	
 	add_subdirectory(device)
 	add_subdirectory(application)
