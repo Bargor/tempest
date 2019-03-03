@@ -3,11 +3,13 @@
 
 set(ENGINE_HDRS
 	engine/vulkan_exception.h
+	engine/engine_init.h
 	engine/engine.h
 )
 
 set(ENGINE_SRCS 
 	engine/engine.cpp
+	engine/engine_init.cpp
 )
 
 include(${PROJECT_SOURCE_DIR}/cmake/TstAddLibrary.cmake)

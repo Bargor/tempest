@@ -30,11 +30,12 @@ namespace engine {
         void stop();
 
     private:
-        void init_Vulkan();
 
         application::data_loader& m_dataLoader;
         ptr<scene::scene> m_scene;
         VkInstance m_vulkanInstance;
+        VkDebugUtilsMessengerEXT m_debugMessenger;
+        VkPhysicalDevice m_physicalDevice;
     };
 
 } // namespace engine
