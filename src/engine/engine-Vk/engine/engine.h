@@ -2,9 +2,12 @@
 // Author: Karol Kontny
 #pragma once
 
+#include "engine_init.h"
+
 #include <vulkan/vulkan.h>
 
 #include <memory>
+#include <vector>
 
 namespace tst {
 namespace application {
@@ -33,9 +36,14 @@ namespace engine {
 
         application::data_loader& m_dataLoader;
         ptr<scene::scene> m_scene;
+        std::vector<const char*> m_requiredValidationLayers = {"VK_LAYER_LUNARG_standard_validation"};
+
         VkInstance m_vulkanInstance;
         VkDebugUtilsMessengerEXT m_debugMessenger;
         VkPhysicalDevice m_physicalDevice;
+        vulkan::device_queue_families m_families;
+        VkDevice m_logicalDevice;
+        VkQueue m_graphicsQueue;
     };
 
 } // namespace engine

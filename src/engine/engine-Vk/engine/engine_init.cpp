@@ -85,56 +85,47 @@ namespace engine {
                 }
             }
 
-            queue_family_indices find_queue_families(VkPhysicalDevice device) {
-                queue_family_indices indices;
-
-                uint32_t queueFamilyCount = 0;
-                vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, nullptr);
-
-                std::vector<VkQueueFamilyProperties> queueFamilies(queueFamilyCount);
-                vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, queueFamilies.data());
-
-                int i = 0;
-                for (const auto& queueFamily : queueFamilies) {
-                    if (queueFamily.queueCount > 0 && queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT & VK_QUEUE_COMPUTE_BIT) {
-                        indices.graphicsFamily = i;
-                    }
-
-                    if (indices.is_complete()) {
-                        break;
-                    }
-
-                    i++;
-                }
-
-                return indices;
-            }
-
             bool is_device_suitable(VkPhysicalDevice device) {
-                queue_family_indices indices = find_queue_families(device);
+                device_queue_families indices = find_queue_families(device);
 
                 return indices.is_complete();
             }
 
         } // namespace
 
-        void DestroyDebugUtilsMessengerEXT(VkInstance instance,
-                                           VkDebugUtilsMessengerEXT debugMessenger,
-                                           const VkAllocationCallbacks* pAllocator) {
-            auto func =
-                (PFN_vkDestroyDebugUtilsMessengerEXT)vkGetInstanceProcAddr(instance, "vkDestroyDebugUtilsMessengerEXT");
-            if (func != nullptr) {
-                func(instance, debugMessenger, pAllocator);
+        device_queue_families find_queue_families(VkPhysicalDevice& device) {
+            device_queue_families families;
+
+            uint32_t queueFamilyCount = 0;
+            vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, nullptr);
+
+            std::vector<VkQueueFamilyProperties> queueFamilies(queueFamilyCount);
+            vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, queueFamilies.data());
+
+            int i = 0;
+            for (const auto& queueFamily : queueFamilies) {
+                if (queueFamily.queueCount > 0 && queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT) {
+                    families.graphicsFamily = i;
+                }
+                if (queueFamily.queueCount > 0 && queueFamily.queueFlags & VK_QUEUE_COMPUTE_BIT) {
+                    families.computeFamily = i;
+                }
+                if (families.is_complete()) {
+                    break;
+                }
+                i++;
+            }
+
+            return families;
+        }
+
+        void setup_validation_layers(const std::vector<const char*>& requiredValidationLayers) {
+            if (enableValidationLayers && !validation_layers_supported(requiredValidationLayers)) {
+                throw vulkan::vulkan_exception("Validation layers requested, but not available!");
             }
         }
 
-        VkInstance init_Vulkan_instance() {
-            std::vector<const char*> requiredValidationLayers = {"VK_LAYER_LUNARG_standard_validation"};
-
-            if (enableValidationLayers && !validation_layers_supported(requiredValidationLayers)) {
-                throw vulkan::vulkan_exception("validation layers requested, but not available!");
-            }
-
+        VkInstance init_Vulkan_instance(const std::vector<const char*>& requiredValidationLayers) {
             VkApplicationInfo appInfo = {};
             appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
             appInfo.pApplicationName = "Tempest";
@@ -146,13 +137,6 @@ namespace engine {
             VkInstanceCreateInfo createInfo = {};
             createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
             createInfo.pApplicationInfo = &appInfo;
-
-            if (enableValidationLayers) {
-                createInfo.enabledLayerCount = static_cast<uint32_t>(requiredValidationLayers.size());
-                createInfo.ppEnabledLayerNames = requiredValidationLayers.data();
-            } else {
-                createInfo.enabledLayerCount = 0;
-            }
 
             auto extensions = get_required_extensions();
             createInfo.enabledExtensionCount = static_cast<uint32_t>(extensions.size());
@@ -175,10 +159,18 @@ namespace engine {
             return vulkanInstance;
         }
 
-        VkDebugUtilsMessengerEXT setup_debug_messenger(VkInstance& instance) {
-            VkDebugUtilsMessengerEXT debugMessenger = VK_NULL_HANDLE;
+        void DestroyDebugUtilsMessengerEXT(VkInstance instance,
+                                           VkDebugUtilsMessengerEXT debugMessenger,
+                                           const VkAllocationCallbacks* pAllocator) {
+            auto func =
+                (PFN_vkDestroyDebugUtilsMessengerEXT)vkGetInstanceProcAddr(instance, "vkDestroyDebugUtilsMessengerEXT");
+            if (func != nullptr) {
+                func(instance, debugMessenger, pAllocator);
+            }
+        }
 
-            if (!enableValidationLayers) return debugMessenger;
+        VkDebugUtilsMessengerEXT setup_debug_messenger(VkInstance& instance) {
+            if (!enableValidationLayers) return VK_NULL_HANDLE;
 
             VkDebugUtilsMessengerCreateInfoEXT createInfo = {};
             createInfo.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
@@ -187,6 +179,8 @@ namespace engine {
             createInfo.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT |
                 VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
             createInfo.pfnUserCallback = debug_callback;
+
+            VkDebugUtilsMessengerEXT debugMessenger;
 
             if (CreateDebugUtilsMessengerEXT(instance, &createInfo, nullptr, &debugMessenger) != VK_SUCCESS) {
                 throw vulkan_exception("Failed to set up debug messenger!");
@@ -220,6 +214,50 @@ namespace engine {
             }
 
             return physicalDevice;
+        }
+
+        VkDevice create_logical_device(VkPhysicalDevice& physicalDevice,
+                                       const std::vector<const char*>& validationLayers) {
+            device_queue_families indices = find_queue_families(physicalDevice);
+
+            VkDeviceQueueCreateInfo queueCreateInfo = {};
+            queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+            queueCreateInfo.queueFamilyIndex = indices.graphicsFamily.value();
+            queueCreateInfo.queueCount = 1;
+
+            float queuePriority = 1.0f;
+            queueCreateInfo.pQueuePriorities = &queuePriority;
+
+            VkPhysicalDeviceFeatures deviceFeatures = {};
+
+            VkDeviceCreateInfo createInfo = {};
+            createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
+
+            createInfo.pQueueCreateInfos = &queueCreateInfo;
+            createInfo.queueCreateInfoCount = 1;
+            createInfo.pEnabledFeatures = &deviceFeatures;
+            createInfo.enabledExtensionCount = 0;
+
+            if (enableValidationLayers) {
+                createInfo.enabledLayerCount = static_cast<uint32_t>(validationLayers.size());
+                createInfo.ppEnabledLayerNames = validationLayers.data();
+            } else {
+                createInfo.enabledLayerCount = 0;
+            }
+
+            VkDevice logicalDevice;
+
+            if (vkCreateDevice(physicalDevice, &createInfo, nullptr, &logicalDevice) != VK_SUCCESS) {
+                throw vulkan_exception("Failed to create logical device!");
+            }
+            return logicalDevice;
+        }
+
+        VkQueue create_graphics_queue(VkDevice& device, device_queue_families& families) {
+            VkQueue graphicsQueue;
+            vkGetDeviceQueue(device, families.graphicsFamily.value(), 0, &graphicsQueue);
+
+            return graphicsQueue;
         }
 
     } // namespace vulkan
