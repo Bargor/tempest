@@ -2,9 +2,11 @@
 // Author: Karol Kontny
 #pragma once
 
-#include <vulkan/vulkan.h>
+#include "physical_device.h"
+
 #include <optional>
 #include <vector>
+#include <vulkan/vulkan.h>
 
 #ifdef NDEBUG
 constexpr bool enableValidationLayers = false;
@@ -12,35 +14,31 @@ constexpr bool enableValidationLayers = false;
 constexpr bool enableValidationLayers = true;
 #endif
 
+struct GLFWwindow;
+
 namespace tst {
 namespace engine {
     namespace vulkan {
 
-        struct device_queue_families {
-            std::optional<uint32_t> graphicsFamily;
-            std::optional<uint32_t> computeFamily;
-
-            bool is_complete() {
-                return graphicsFamily.has_value() && computeFamily.has_value();
-            }
-        };
-        void setup_validation_layers(const std::vector<const char*>& requiredValidationLayers);
-        
-        VkInstance init_Vulkan_instance(const std::vector<const char*>& requiredValidationLayers);
+        VkInstance init_Vulkan_instance(std::vector<const char*>& requiredValidationLayers);
 
         VkDebugUtilsMessengerEXT setup_debug_messenger(VkInstance& instance);
 
-        VkPhysicalDevice select_physical_device(VkInstance& instance);
+        VkSurfaceKHR create_window_surface(VkInstance& instance, GLFWwindow* window);
 
-        device_queue_families find_queue_families(VkPhysicalDevice& device);
+        physical_device select_physical_device(VkInstance& instance,
+                                               VkSurfaceKHR& surface,
+                                               const std::vector<const char*>& requiredExtensions);
 
-        VkDevice create_logical_device(VkPhysicalDevice& physicalDevice,
-                                       const std::vector<const char*>& validationLayers);
-        VkQueue create_graphics_queue(VkDevice& device, device_queue_families& families);
+        VkDevice create_logical_device(physical_device& physicalDevice,
+                                       const std::vector<const char*>& validationLayers,
+                                       const std::vector<const char*>& extensions);
+
+        VkQueue create_queue(VkDevice& device, std::uint32_t queueFamilyIndex);
         void DestroyDebugUtilsMessengerEXT(VkInstance instance,
                                            VkDebugUtilsMessengerEXT debugMessenger,
                                            const VkAllocationCallbacks* pAllocator);
 
-    }
-}
-}
+    } // namespace vulkan
+} // namespace engine
+} // namespace tst

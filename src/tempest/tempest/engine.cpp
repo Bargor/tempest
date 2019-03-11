@@ -22,7 +22,7 @@ namespace application {
         , m_inputProcessor(inputProcessor)
         , m_mainWindow(mainWindow)
         , m_dataLoader(dataLoader)
-        , m_renderingEngine(std::make_unique<engine::rendering_engine>(m_dataLoader))
+        , m_renderingEngine(std::make_unique<engine::rendering_engine>(m_dataLoader, mainWindow))
         , m_timer()
         , m_frameCount(0)
         , m_shouldClose(false) {

@@ -12,6 +12,7 @@
 namespace tst {
 namespace application {
     class data_loader;
+    class main_window;
 }
 
 namespace scene {
@@ -25,7 +26,7 @@ namespace engine {
         using ptr = std::unique_ptr<T>;
 
     public:
-        rendering_engine(application::data_loader& dataLoader);
+        rendering_engine(application::data_loader& dataLoader, application::main_window& mainWindow);
         ~rendering_engine();
 
         void frame();
@@ -37,13 +38,15 @@ namespace engine {
         application::data_loader& m_dataLoader;
         ptr<scene::scene> m_scene;
         std::vector<const char*> m_requiredValidationLayers = {"VK_LAYER_LUNARG_standard_validation"};
+        std::vector<const char*> m_reqiuredDeviceExtensions = {VK_KHR_SWAPCHAIN_EXTENSION_NAME};
 
         VkInstance m_vulkanInstance;
         VkDebugUtilsMessengerEXT m_debugMessenger;
-        VkPhysicalDevice m_physicalDevice;
-        vulkan::device_queue_families m_families;
+        VkSurfaceKHR m_windowSurface;
+        vulkan::physical_device m_physicalDevice;
         VkDevice m_logicalDevice;
         VkQueue m_graphicsQueue;
+        VkQueue m_presentationQueue;
     };
 
 } // namespace engine
