@@ -20,7 +20,7 @@ namespace engine {
         using ptr = std::unique_ptr<T>;
 
     public:
-        rendering_engine(application::data_loader& dataLoader);
+        rendering_engine(application::data_loader& dataLoader, application::main_window&);
         ~rendering_engine();
 
         void frame();
