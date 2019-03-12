@@ -7,6 +7,7 @@
 namespace tst {
 namespace application {
     class data_loader;
+    class main_window;
 }
 
 namespace scene {
