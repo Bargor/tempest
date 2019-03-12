@@ -19,7 +19,6 @@ InputIt for_each_n(InputIt first, Size n, UnaryFunction f) {
     return first;
 }
 } // namespace std
-}
 
 #endif
 
