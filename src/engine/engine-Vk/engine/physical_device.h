@@ -12,11 +12,14 @@ namespace engine {
     namespace vulkan {
 
         class physical_device {
+            friend class logical_processor;
+
         public:
             struct queue_family_indices {
                 std::optional<std::uint32_t> graphicsIndex;
                 std::optional<std::uint32_t> computeIndex;
                 std::optional<std::uint32_t> presentationIndex;
+                std::optional<std::uint32_t> transferIndex;
             };
 
             physical_device(const VkPhysicalDevice& handle,

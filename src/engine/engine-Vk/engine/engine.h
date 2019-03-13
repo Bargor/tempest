@@ -21,6 +21,12 @@ namespace scene {
 
 namespace engine {
 
+    namespace vulkan {
+        class physical_device;
+        class logical_device;
+        class device_queue;
+    }
+
     class rendering_engine {
         template<typename T>
         using ptr = std::unique_ptr<T>;
@@ -43,10 +49,12 @@ namespace engine {
         VkInstance m_vulkanInstance;
         VkDebugUtilsMessengerEXT m_debugMessenger;
         VkSurfaceKHR m_windowSurface;
-        vulkan::physical_device m_physicalDevice;
-        VkDevice m_logicalDevice;
-        VkQueue m_graphicsQueue;
-        VkQueue m_presentationQueue;
+        ptr<vulkan::physical_device> m_physicalDevice;
+        ptr<vulkan::logical_device> m_logicalDevice;
+        ptr<vulkan::device_queue> m_graphicsQueue;
+        ptr<vulkan::device_queue> m_presentationQueue;
+        ptr<vulkan::device_queue> m_computeQueue;
+        ptr<vulkan::device_queue> m_transferQueue;
     };
 
 } // namespace engine

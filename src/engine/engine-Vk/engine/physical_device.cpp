@@ -55,6 +55,10 @@ namespace engine {
                     m_indices.computeIndex = i;
                 }
 
+                if (queueFamily.queueCount > 0 && queueFamily.queueFlags & VK_QUEUE_TRANSFER_BIT) {
+                    m_indices.transferIndex = i;
+                }
+
                 VkBool32 presentSupport = false;
                 vkGetPhysicalDeviceSurfaceSupportKHR(handle, i, windowSurface, &presentSupport);
 

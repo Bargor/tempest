@@ -6,10 +6,8 @@
 #include <application/event_processor.h>
 #include <application/input_processor.h>
 #include <application/main_window.h>
-
-#include <util/variant.h>
-
 #include <engine/engine.h>
+#include <util/variant.h>
 
 namespace tst {
 namespace application {
@@ -30,7 +28,8 @@ namespace application {
         m_eventProcessor.subscribe(core::variant_index<event::arguments, event::closed>(), std::move(close_callback));
     }
 
-    simulation_engine::~simulation_engine() {}
+    simulation_engine::~simulation_engine() {
+    }
 
     void simulation_engine::run() {
         auto lastFrameTime = std::chrono::microseconds::zero();
