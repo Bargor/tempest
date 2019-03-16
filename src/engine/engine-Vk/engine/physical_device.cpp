@@ -12,7 +12,7 @@ namespace tst {
 namespace engine {
 
     namespace {
-        bool checkExtensionsSupport(const VkPhysicalDevice& handle, const std::vector<const char*>& requiredExtenstions) {
+        bool check_extensions_support(const VkPhysicalDevice& handle, const std::vector<const char*>& requiredExtenstions) {
             uint32_t extensionCount;
             vkEnumerateDeviceExtensionProperties(handle, nullptr, &extensionCount, nullptr);
 
@@ -35,7 +35,7 @@ namespace engine {
                                          const std::vector<const char*>& requiredExtenstions)
             : m_deviceHandle(handle) {
 
-            if (!checkExtensionsSupport(handle, requiredExtenstions)) {
+            if (!check_extensions_support(handle, requiredExtenstions)) {
                 throw vulkan_exception("Device is not supporting required extenstions");
             }
 
@@ -71,6 +71,10 @@ namespace engine {
                 }
                 i++;
             }
+
+            if (!has_required_queues()) {
+                throw vulkan_exception("Device is not supporting required queues");
+            }
         }
 
         bool physical_device::has_required_queues() const {
@@ -79,10 +83,6 @@ namespace engine {
 
         const physical_device::queue_family_indices& physical_device::get_queue_family_indices() const {
             return m_indices;
-        }
-
-        VkPhysicalDevice physical_device::get_handle() const {
-            return m_deviceHandle;
         }
     } // namespace vulkan
 

@@ -170,8 +170,8 @@ namespace engine {
         }
 
         ptr<physical_device> select_physical_device(VkInstance& instance,
-                                               VkSurfaceKHR& surface,
-                                               const std::vector<const char*>& requiredExtensions) {
+                                                    VkSurfaceKHR& surface,
+                                                    const std::vector<const char*>& requiredExtensions) {
             uint32_t deviceCount = 0;
             vkEnumeratePhysicalDevices(instance, &deviceCount, nullptr);
 
@@ -184,11 +184,9 @@ namespace engine {
 
             for (const auto& device : devices) {
                 try {
-                    physical_device vulkanDevice(device, surface, requiredExtensions);
-                    if (vulkanDevice.has_required_queues()) {
-                        return std::make_unique<physical_device>(vulkanDevice);
-                    }
-                } catch (vulkan_exception&) {
+                    return std::make_unique<physical_device>(device, surface, requiredExtensions);
+                } catch (vulkan_exception& ex) {
+                    fmt::printf("%s\n", ex.what());
                 }
             }
 

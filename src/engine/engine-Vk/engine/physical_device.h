@@ -12,7 +12,12 @@ namespace engine {
     namespace vulkan {
 
         class physical_device {
-            friend class logical_processor;
+            friend class logical_device;
+            friend class swap_chain;
+            friend VkDevice create_logical_device(const physical_device& physicalDevice,
+                                                  const std::vector<const char*>& validationLayers,
+                                                  const std::vector<const char*>& extensions,
+                                                  bool enableValidationLayers);
 
         public:
             struct queue_family_indices {
@@ -26,12 +31,14 @@ namespace engine {
                             const VkSurfaceKHR& windowSurface,
                             const std::vector<const char*>& requiredExtenstions);
 
-            bool has_required_queues() const;
             const queue_family_indices& get_queue_family_indices() const;
 
-            VkPhysicalDevice get_handle() const;
+        private:
+
+            bool has_required_queues() const;
 
         private:
+
             VkPhysicalDevice m_deviceHandle;
             queue_family_indices m_indices;
         };

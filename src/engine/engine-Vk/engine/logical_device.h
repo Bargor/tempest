@@ -10,20 +10,13 @@ namespace tst {
 namespace engine {
     namespace vulkan {
 
-        class physical_device;
+            class physical_device;
 
-        class logical_device {
-            friend class device_queue;
-        public:
-            logical_device(physical_device& physicalDevice,
+            VkDevice create_logical_device(const physical_device& physicalDevice,
                            const std::vector<const char*>& validationLayers,
                            const std::vector<const char*>& extensions,
                            bool enableValidationLayers);
 
-            ~logical_device();
-        private:
-            VkDevice m_deviceHandle;
-        };
     } // namespace vulkan
 } // namespace engine
 } // namespace tst

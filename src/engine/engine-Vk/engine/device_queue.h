@@ -2,26 +2,29 @@
 // Author: Karol Kontny
 #pragma once
 
-#include <vulkan/vulkan.h>
+#include "physical_device.h"
 
 #include <cstdint>
+#include <vulkan/vulkan.h>
 
 namespace tst {
 namespace engine {
 
     namespace vulkan {
 
-        class logical_device;
-    
-        class device_queue {
+        class device_queues {
         public:
-            device_queue(logical_device& device, std::uint32_t queueFamilyIndex);
+            device_queues(const VkDevice& logicalDevice, const physical_device::queue_family_indices& queueFamilyIndices);
 
-            ~device_queue();
-        private:
-            VkQueue m_queueHandle;
+            ~device_queues();
+
+        public:
+            VkQueue m_graphicsQueueHandle;
+            VkQueue m_computeQueueHandle;
+            VkQueue m_presentationQueueHandle;
+            VkQueue m_transferQueueHandle;
         };
 
-    }
+    } // namespace vulkan
 } // namespace engine
 } // namespace tst

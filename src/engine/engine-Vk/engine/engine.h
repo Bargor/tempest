@@ -24,7 +24,8 @@ namespace engine {
     namespace vulkan {
         class physical_device;
         class logical_device;
-        class device_queue;
+        class device_queues;
+        class swap_chain;
     }
 
     class rendering_engine {
@@ -50,11 +51,9 @@ namespace engine {
         VkDebugUtilsMessengerEXT m_debugMessenger;
         VkSurfaceKHR m_windowSurface;
         ptr<vulkan::physical_device> m_physicalDevice;
-        ptr<vulkan::logical_device> m_logicalDevice;
-        ptr<vulkan::device_queue> m_graphicsQueue;
-        ptr<vulkan::device_queue> m_presentationQueue;
-        ptr<vulkan::device_queue> m_computeQueue;
-        ptr<vulkan::device_queue> m_transferQueue;
+        VkDevice m_logicalDevice;
+        ptr<vulkan::device_queues> m_deviceQueues;
+        ptr<vulkan::swap_chain> m_swapChain;
     };
 
 } // namespace engine

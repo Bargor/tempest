@@ -3,18 +3,21 @@
 #pragma once
 
 #include "device_queue.h"
-#include "logical_device.h"
 
 namespace tst {
 namespace engine {
 
     namespace vulkan {
 
-        device_queue::device_queue(logical_device& device, std::uint32_t queueFamilyIndex) {
-            vkGetDeviceQueue(device.m_deviceHandle, queueFamilyIndex, 0, &m_queueHandle);
+        device_queues::device_queues(const VkDevice& logicalDevice,
+                                   const physical_device::queue_family_indices& queueFamilyIndices) {
+            vkGetDeviceQueue(logicalDevice, queueFamilyIndices.graphicsIndex.value(), 0, &m_graphicsQueueHandle);
+            vkGetDeviceQueue(logicalDevice, queueFamilyIndices.computeIndex.value(), 0, &m_computeQueueHandle);
+            vkGetDeviceQueue(logicalDevice, queueFamilyIndices.presentationIndex.value(), 0, &m_presentationQueueHandle);
+            vkGetDeviceQueue(logicalDevice, queueFamilyIndices.transferIndex.value(), 0, &m_transferQueueHandle);
         }
 
-        device_queue::~device_queue() {
+        device_queues::~device_queues() {
         }
 
     } // namespace vulkan
