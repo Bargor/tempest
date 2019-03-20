@@ -67,8 +67,9 @@ namespace engine {
                                              const swap_chain::support_details& supportDetails,
                                              const VkSurfaceFormatKHR surfaceFormat,
                                              const VkPresentModeKHR& presentationMode,
-                                             const VkExtent2D& extent) {
-                uint32_t imageCount = supportDetails.capabilities.minImageCount + 1;
+                                             const VkExtent2D& extent,
+                                             std::uint32_t& imageCount) {
+                imageCount = supportDetails.capabilities.minImageCount + 1;
                 if (supportDetails.capabilities.maxImageCount > 0 &&
                     imageCount > supportDetails.capabilities.maxImageCount) {
                     imageCount = supportDetails.capabilities.maxImageCount;
@@ -84,7 +85,8 @@ namespace engine {
                 createInfo.imageArrayLayers = 1;
                 createInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
 
-                uint32_t queueFamilyIndices[] = {queueIndices.graphicsIndex.value(), queueIndices.presentationIndex.value()};
+                uint32_t queueFamilyIndices[] = {queueIndices.graphicsIndex.value(),
+                                                 queueIndices.presentationIndex.value()};
 
                 if (queueIndices.graphicsIndex != queueIndices.presentationIndex) {
                     createInfo.imageSharingMode = VK_SHARING_MODE_CONCURRENT;
@@ -108,6 +110,7 @@ namespace engine {
 
                 return swapChain;
             }
+
         } // namespace
 
         swap_chain::swap_chain(const physical_device& physicalDevice,
@@ -126,18 +129,49 @@ namespace engine {
                                             m_supportDetails,
                                             m_surfaceFormat,
                                             m_presentationMode,
-                                            m_extent)) {
+                                            m_extent,
+                                            m_imagesCount)) {
+            vkGetSwapchainImagesKHR(logicalDevice, m_swapChain, &m_imagesCount, nullptr);
+            m_images.resize(m_imagesCount);
+            vkGetSwapchainImagesKHR(logicalDevice, m_swapChain, &m_imagesCount, m_images.data());
+
+            m_imageViews.resize(m_imagesCount);
+
+            for (std::uint32_t idx = 0; idx < m_imageViews.size(); idx++) {
+                VkImageViewCreateInfo createInfo = {};
+                createInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+                createInfo.image = m_images[idx];
+                createInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
+                createInfo.format = m_surfaceFormat.format;
+                createInfo.components.r = VK_COMPONENT_SWIZZLE_IDENTITY;
+                createInfo.components.g = VK_COMPONENT_SWIZZLE_IDENTITY;
+                createInfo.components.b = VK_COMPONENT_SWIZZLE_IDENTITY;
+                createInfo.components.a = VK_COMPONENT_SWIZZLE_IDENTITY;
+                createInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+                createInfo.subresourceRange.baseMipLevel = 0;
+                createInfo.subresourceRange.levelCount = 1;
+                createInfo.subresourceRange.baseArrayLayer = 0;
+                createInfo.subresourceRange.layerCount = 1;
+
+                if (vkCreateImageView(logicalDevice, &createInfo, nullptr, &m_imageViews[idx]) != VK_SUCCESS) {
+                    throw vulkan_exception("Failed to create image views!");
+                }
+            }
         }
 
         swap_chain::~swap_chain() {
+            std::for_each(m_imageViews.begin(), m_imageViews.end(), [this](VkImageView& view) {
+                vkDestroyImageView(m_logicalDevice, view, nullptr);
+            });
             vkDestroySwapchainKHR(m_logicalDevice, m_swapChain, nullptr);
         }
 
         swap_chain::support_details swap_chain::check_support(const physical_device& physicalDevice,
-                                                  const VkSurfaceKHR& m_windowSurface) {
+                                                              const VkSurfaceKHR& m_windowSurface) {
             swap_chain::support_details details;
 
-            vkGetPhysicalDeviceSurfaceCapabilitiesKHR(physicalDevice.m_deviceHandle, m_windowSurface, &details.capabilities);
+            vkGetPhysicalDeviceSurfaceCapabilitiesKHR(
+                physicalDevice.m_deviceHandle, m_windowSurface, &details.capabilities);
 
             uint32_t formatCount;
             vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice.m_deviceHandle, m_windowSurface, &formatCount, nullptr);

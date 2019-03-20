@@ -38,8 +38,11 @@ namespace engine {
             VkPresentModeKHR m_presentationMode;
             VkExtent2D m_extent;
             const VkDevice& m_logicalDevice;
+            std::uint32_t m_imagesCount;
 
             VkSwapchainKHR m_swapChain;
+            std::vector<VkImage> m_images;
+            std::vector<VkImageView> m_imageViews;
         };
 
     }
