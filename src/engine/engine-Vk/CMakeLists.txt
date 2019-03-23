@@ -6,7 +6,6 @@ set(ENGINE_HDRS
 	engine/engine_init.h
 	engine/engine.h
 	engine/physical_device.h
-	engine/logical_device.h
 	engine/swap_chain.h
 	engine/device_queue.h
 )
@@ -15,7 +14,6 @@ set(ENGINE_SRCS
 	engine/engine.cpp
 	engine/engine_init.cpp
 	engine/physical_device.cpp
-	engine/logical_device.cpp
 	engine/swap_chain.cpp
 	engine/device_queue.cpp
 )

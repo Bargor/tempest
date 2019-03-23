@@ -11,78 +11,39 @@
 namespace tst {
 namespace engine {
 
-    namespace {
-        bool check_extensions_support(const VkPhysicalDevice& handle, const std::vector<const char*>& requiredExtenstions) {
-            uint32_t extensionCount;
-            vkEnumerateDeviceExtensionProperties(handle, nullptr, &extensionCount, nullptr);
-
-            std::vector<VkExtensionProperties> availableExtensions(extensionCount);
-            vkEnumerateDeviceExtensionProperties(handle, nullptr, &extensionCount, availableExtensions.data());
-
-            return tst::includes(availableExtensions.cbegin(),
-                                 availableExtensions.cend(),
-                                 requiredExtenstions.cbegin(),
-                                 requiredExtenstions.cend(),
-                                 [](const VkExtensionProperties availExtension, const char* reqExtension) {
-                                     return std::string_view(availExtension.extensionName) == std::string_view(reqExtension);
-                                 });
-        }
-    } // namespace
-
     namespace vulkan {
-        physical_device::physical_device(const VkPhysicalDevice& handle,
-                                         const VkSurfaceKHR& windowSurface,
-                                         const std::vector<const char*>& requiredExtenstions)
-            : m_deviceHandle(handle) {
 
-            if (!check_extensions_support(handle, requiredExtenstions)) {
-                throw vulkan_exception("Device is not supporting required extenstions");
-            }
+        queue_family_indices compute_queue_indices(const vk::PhysicalDevice& physicalDevice,
+                                                   const vk::SurfaceKHR& windowSurface) {
+            auto queueFamilies = physicalDevice.getQueueFamilyProperties();
 
-            uint32_t queueFamilyCount = 0;
-            vkGetPhysicalDeviceQueueFamilyProperties(m_deviceHandle, &queueFamilyCount, nullptr);
-
-            std::vector<VkQueueFamilyProperties> queueFamilies(queueFamilyCount);
-            vkGetPhysicalDeviceQueueFamilyProperties(m_deviceHandle, &queueFamilyCount, queueFamilies.data());
+            queue_family_indices indices;
 
             int i = 0;
             for (const auto& queueFamily : queueFamilies) {
-                if (queueFamily.queueCount > 0 && queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT) {
-                    m_indices.graphicsIndex = i;
+                if (queueFamily.queueCount > 0 && queueFamily.queueFlags & vk::QueueFlagBits::eGraphics) {
+                    indices.graphicsIndex = i;
                 }
 
-                if (queueFamily.queueCount > 0 && queueFamily.queueFlags & VK_QUEUE_COMPUTE_BIT) {
-                    m_indices.computeIndex = i;
+                if (queueFamily.queueCount > 0 && queueFamily.queueFlags & vk::QueueFlagBits::eCompute) {
+                    indices.computeIndex = i;
                 }
 
-                if (queueFamily.queueCount > 0 && queueFamily.queueFlags & VK_QUEUE_TRANSFER_BIT) {
-                    m_indices.transferIndex = i;
+                if (queueFamily.queueCount > 0 && queueFamily.queueFlags & vk::QueueFlagBits::eTransfer) {
+                    indices.transferIndex = i;
                 }
 
-                VkBool32 presentSupport = false;
-                vkGetPhysicalDeviceSurfaceSupportKHR(handle, i, windowSurface, &presentSupport);
+                auto presentSupport = physicalDevice.getSurfaceSupportKHR(i, windowSurface);
 
                 if (queueFamily.queueCount > 0 && presentSupport) {
-                    m_indices.presentationIndex = i;
+                    indices.presentationIndex = i;
                 }
+                ++i;
 
-                if (has_required_queues()) {
-                    break;
-                }
-                i++;
+                if (indices.isValid()) return indices;
             }
 
-            if (!has_required_queues()) {
-                throw vulkan_exception("Device is not supporting required queues");
-            }
-        }
-
-        bool physical_device::has_required_queues() const {
-            return m_indices.graphicsIndex && m_indices.computeIndex && m_indices.presentationIndex;
-        }
-
-        const physical_device::queue_family_indices& physical_device::get_queue_family_indices() const {
-            return m_indices;
+            throw vulkan_exception("Device is not supporting required queues");            
         }
     } // namespace vulkan
 

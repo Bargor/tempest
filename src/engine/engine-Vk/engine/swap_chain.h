@@ -2,7 +2,7 @@
 // Author: Karol Kontny
 #pragma once
 
-#include <vulkan/vulkan.h>
+#include <vulkan/vulkan.hpp>
 #include <vector>
 
 namespace tst {
@@ -11,38 +11,37 @@ namespace engine {
     namespace vulkan {
 
         class physical_device;
+        struct queue_family_indices;
 
         class swap_chain {
         public:
 
             struct support_details {
-                VkSurfaceCapabilitiesKHR capabilities;
-                std::vector<VkSurfaceFormatKHR> formats;
-                std::vector<VkPresentModeKHR> presentModes;
+                vk::SurfaceCapabilitiesKHR capabilities;
+                std::vector<vk::SurfaceFormatKHR> formats;
+                std::vector<vk::PresentModeKHR> presentModes;
             };
 
-            swap_chain(const physical_device& physicalDevice,
-                       const VkDevice& logicalDevice,
-                       const VkSurfaceKHR& m_windowSurface,
+            swap_chain(const vk::PhysicalDevice& physicalDevice,
+                       const vk::Device& logicalDevice,
+                       const vk::SurfaceKHR& m_windowSurface,
+                       const queue_family_indices& indices,
                        std::uint32_t width,
                        std::uint32_t height);
 
             ~swap_chain();
 
         private:
-            support_details check_support(const physical_device& physicalDevice, const VkSurfaceKHR& m_windowSurface);
-
-        private:
             support_details m_supportDetails;
-            VkSurfaceFormatKHR m_surfaceFormat;
-            VkPresentModeKHR m_presentationMode;
-            VkExtent2D m_extent;
-            const VkDevice& m_logicalDevice;
+            vk::SurfaceFormatKHR m_surfaceFormat;
+            vk::PresentModeKHR m_presentationMode;
+            vk::Extent2D m_extent;
+            const vk::Device& m_logicalDevice;
             std::uint32_t m_imagesCount;
 
-            VkSwapchainKHR m_swapChain;
-            std::vector<VkImage> m_images;
-            std::vector<VkImageView> m_imageViews;
+            vk::SwapchainKHR m_swapChain;
+            std::vector<vk::Image> m_images;
+            std::vector<vk::ImageView> m_imageViews;
         };
 
     }

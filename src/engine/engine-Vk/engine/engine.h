@@ -4,16 +4,15 @@
 
 #include "engine_init.h"
 
-#include <vulkan/vulkan.h>
-
 #include <memory>
 #include <vector>
+#include <vulkan/vulkan.hpp>
 
 namespace tst {
 namespace application {
     class data_loader;
     class main_window;
-}
+} // namespace application
 
 namespace scene {
     class scene;
@@ -23,10 +22,9 @@ namespace engine {
 
     namespace vulkan {
         class physical_device;
-        class logical_device;
         class device_queues;
         class swap_chain;
-    }
+    } // namespace vulkan
 
     class rendering_engine {
         template<typename T>
@@ -41,17 +39,17 @@ namespace engine {
         void stop();
 
     private:
-
         application::data_loader& m_dataLoader;
         ptr<scene::scene> m_scene;
-        std::vector<const char*> m_requiredValidationLayers = {"VK_LAYER_LUNARG_standard_validation"};
+        std::vector<const char*> m_requiredValidationLayers;
         std::vector<const char*> m_reqiuredDeviceExtensions = {VK_KHR_SWAPCHAIN_EXTENSION_NAME};
 
-        VkInstance m_vulkanInstance;
-        VkDebugUtilsMessengerEXT m_debugMessenger;
-        VkSurfaceKHR m_windowSurface;
-        ptr<vulkan::physical_device> m_physicalDevice;
-        VkDevice m_logicalDevice;
+        vk::Instance m_vulkanInstance;
+        vk::DebugUtilsMessengerEXT m_debugMessenger;
+        vk::SurfaceKHR m_windowSurface;
+        vk::PhysicalDevice m_physicalDevice;
+        vulkan::queue_family_indices m_queueIndices;
+        vk::Device m_logicalDevice;
         ptr<vulkan::device_queues> m_deviceQueues;
         ptr<vulkan::swap_chain> m_swapChain;
     };

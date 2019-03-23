@@ -7,7 +7,7 @@
 #include <memory>
 #include <optional>
 #include <vector>
-#include <vulkan/vulkan.h>
+#include <vulkan/vulkan.hpp>
 
 struct GLFWwindow;
 
@@ -18,18 +18,24 @@ namespace engine {
         template<typename T>
         using ptr = std::unique_ptr<T>;
 
-        VkInstance init_Vulkan_instance(std::vector<const char*>& requiredValidationLayers, bool enableValidationLayers);
+        vk::Instance init_Vulkan_instance(std::vector<const char*>& requiredValidationLayers,
+                                          bool enableValidationLayers);
 
-        VkDebugUtilsMessengerEXT setup_debug_messenger(VkInstance& instance, bool enableValidationLayers);
+        vk::DebugUtilsMessengerEXT setup_debug_messenger(vk::Instance& instance, bool enableValidationLayers);
 
-        VkSurfaceKHR create_window_surface(VkInstance& instance, GLFWwindow* window);
+        vk::SurfaceKHR create_window_surface(vk::Instance& instance, GLFWwindow* window);
 
-        ptr<physical_device> select_physical_device(VkInstance& instance,
-                                               VkSurfaceKHR& surface,
-                                               const std::vector<const char*>& requiredExtensions);
+        vk::PhysicalDevice select_physical_device(vk::Instance& instance,
+                                                    vk::SurfaceKHR& surface,
+                                                    const std::vector<const char*>& requiredExtensions);
 
-        void DestroyDebugUtilsMessengerEXT(VkInstance instance,
-                                           VkDebugUtilsMessengerEXT debugMessenger,
+        vk::Device create_logical_device(const vk::PhysicalDevice& physicalDevice,
+                                         const queue_family_indices& indices,
+                                         const std::vector<const char*>& validationLayers,
+                                         const std::vector<const char*>& extensions);
+
+        void DestroyDebugUtilsMessengerEXT(vk::Instance& instance,
+                                           vk::DebugUtilsMessengerEXT& debugMessenger,
                                            const VkAllocationCallbacks* pAllocator);
 
     } // namespace vulkan

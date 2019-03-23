@@ -5,7 +5,7 @@
 #include "physical_device.h"
 
 #include <cstdint>
-#include <vulkan/vulkan.h>
+#include <vulkan/vulkan.hpp>
 
 namespace tst {
 namespace engine {
@@ -14,15 +14,15 @@ namespace engine {
 
         class device_queues {
         public:
-            device_queues(const VkDevice& logicalDevice, const physical_device::queue_family_indices& queueFamilyIndices);
+            device_queues(const vk::Device& logicalDevice, const queue_family_indices& queueFamilyIndices);
 
             ~device_queues();
 
         public:
-            VkQueue m_graphicsQueueHandle;
-            VkQueue m_computeQueueHandle;
-            VkQueue m_presentationQueueHandle;
-            VkQueue m_transferQueueHandle;
+            vk::Queue m_graphicsQueueHandle;
+            vk::Queue m_computeQueueHandle;
+            vk::Queue m_presentationQueueHandle;
+            vk::Queue m_transferQueueHandle;
         };
 
     } // namespace vulkan
