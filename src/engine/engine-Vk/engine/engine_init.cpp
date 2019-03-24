@@ -75,13 +75,6 @@ namespace engine {
                 return VK_FALSE;
             }
 
-            vk::Result CreateDebugUtilsMessengerEXT(vk::Instance instance,
-                                                  const vk::DebugUtilsMessengerCreateInfoEXT* pCreateInfo,
-                                                  const vk::AllocationCallbacks* pAllocator,
-                                                  vk::DebugUtilsMessengerEXT* pDebugMessenger) {
-                return instance.createDebugUtilsMessengerEXT(pCreateInfo, pAllocator, pDebugMessenger);
-            }
-
             bool check_extensions_support(const vk::PhysicalDevice& handle,
                                           const std::vector<const char*>& requiredExtenstions) {
                 auto availableExtensions = handle.enumerateDeviceExtensionProperties();
@@ -121,6 +114,17 @@ namespace engine {
             }
         }
 
+        vk::Result CreateDebugUtilsMessengerEXT(vk::Instance instance,
+                                                const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo,
+                                                const VkAllocationCallbacks* pAllocator,
+                                                VkDebugUtilsMessengerEXT* pDebugMessenger) {
+            auto func = (PFN_vkCreateDebugUtilsMessengerEXT)instance.getProcAddr("vkCreateDebugUtilsMessengerEXT");
+            if (func != nullptr) {
+                return static_cast<vk::Result>(func(instance, pCreateInfo, pAllocator, pDebugMessenger));
+            }
+            return vk::Result::eErrorExtensionNotPresent;
+        }
+
         void DestroyDebugUtilsMessengerEXT(vk::Instance& instance,
                                            vk::DebugUtilsMessengerEXT& debugMessenger,
                                            const VkAllocationCallbacks* pAllocator) {
@@ -142,9 +146,18 @@ namespace engine {
 
             vk::DebugUtilsMessengerCreateInfoEXT createInfo(flags, messageSeverity, messageType, debug_callback);
 
+            VkDebugUtilsMessengerEXT debugMessenger;
+
             try {
-                return instance.createDebugUtilsMessengerEXT(createInfo);
-            } catch (std::runtime_error) {
+                if (CreateDebugUtilsMessengerEXT(instance,
+                                                 &(createInfo.operator const VkDebugUtilsMessengerCreateInfoEXT&()),
+                                                 nullptr,
+                                                 &debugMessenger) == vk::Result::eSuccess) {
+                    return debugMessenger;
+                }
+                throw vulkan_exception("Failed to set up debug messenger!");
+
+            } catch (std::runtime_error&) {
                 throw vulkan_exception("Failed to set up debug messenger!");
             }
         }
@@ -158,8 +171,8 @@ namespace engine {
         }
 
         vk::PhysicalDevice select_physical_device(vk::Instance& instance,
-                                                    vk::SurfaceKHR& surface,
-                                                    const std::vector<const char*>& requiredExtensions) {
+                                                  vk::SurfaceKHR& surface,
+                                                  const std::vector<const char*>& requiredExtensions) {
             std::vector<vk::PhysicalDevice> devices = instance.enumeratePhysicalDevices();
 
             if (devices.size() == 0) {
@@ -173,6 +186,8 @@ namespace engine {
                     }
 
                     auto indices = compute_queue_indices(device, surface);
+
+                    return device;
 
                 } catch (vulkan_exception& ex) {
                     fmt::printf("%s\n", ex.what());
@@ -198,7 +213,6 @@ namespace engine {
                 vk::DeviceQueueCreateInfo queueCreateInfo(vk::DeviceQueueCreateFlags(), queueFamily, 1, &queuePriority);
                 queueCreateInfos.push_back(queueCreateInfo);
             }
-            vk::PhysicalDeviceFeatures deviceFeatures;
 
             vk::DeviceCreateInfo createInfo(vk::DeviceCreateFlags(),
                                             static_cast<uint32_t>(queueCreateInfos.size()),
@@ -207,7 +221,7 @@ namespace engine {
                                             validationLayers.data(),
                                             static_cast<uint32_t>(extensions.size()),
                                             extensions.data(),
-                                            &deviceFeatures);
+                                            nullptr);
 
             try {
                 return physicalDevice.createDevice(createInfo);

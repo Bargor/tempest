@@ -147,7 +147,7 @@ namespace engine {
                                             m_extent,
                                             m_imagesCount)) {
 
-            m_logicalDevice.getSwapchainImagesKHR(m_swapChain);
+            m_images = m_logicalDevice.getSwapchainImagesKHR(m_swapChain);
             m_imageViews.resize(m_imagesCount);
 
             for (std::uint32_t idx = 0; idx < m_imageViews.size(); idx++) {

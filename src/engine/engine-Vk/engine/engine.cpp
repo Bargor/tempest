@@ -52,8 +52,8 @@ namespace engine {
             vulkan::DestroyDebugUtilsMessengerEXT(m_vulkanInstance, m_debugMessenger, nullptr);
         }
         m_swapChain.reset();
-        vkDestroySurfaceKHR(m_vulkanInstance, m_windowSurface, nullptr);
-        vkDestroyDevice(m_logicalDevice, nullptr);
+        m_vulkanInstance.destroySurfaceKHR(m_windowSurface);
+        m_logicalDevice.destroy();
         m_vulkanInstance.destroy();
     }
 
