@@ -3,6 +3,7 @@
 
 #include "engine_init.h"
 
+#include "queue_indices.h"
 #include "vulkan_exception.h"
 
 #include <GLFW/glfw3.h>

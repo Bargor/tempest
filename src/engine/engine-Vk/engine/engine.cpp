@@ -4,7 +4,6 @@
 #include "engine.h"
 
 #include "device_queue.h"
-#include "physical_device.h"
 #include "scene/scene.h"
 #include "swap_chain.h"
 #include "vulkan_exception.h"

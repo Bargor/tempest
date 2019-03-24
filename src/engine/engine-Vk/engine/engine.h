@@ -4,6 +4,8 @@
 
 #include "engine_init.h"
 
+#include "queue_indices.h"
+
 #include <memory>
 #include <vector>
 #include <vulkan/vulkan.hpp>

@@ -1,7 +1,7 @@
 // This file is part of Tempest-engine project
 // Author: Karol Kontny
 
-#include "physical_device.h"
+#include "queue_indices.h"
 
 #include "vulkan_exception.h"
 

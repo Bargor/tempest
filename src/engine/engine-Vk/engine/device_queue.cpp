@@ -4,6 +4,8 @@
 
 #include "device_queue.h"
 
+#include "queue_indices.h"
+
 namespace tst {
 namespace engine {
 

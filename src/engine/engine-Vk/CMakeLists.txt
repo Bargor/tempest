@@ -5,7 +5,7 @@ set(ENGINE_HDRS
 	engine/vulkan_exception.h
 	engine/engine_init.h
 	engine/engine.h
-	engine/physical_device.h
+	engine/queue_indices.h
 	engine/swap_chain.h
 	engine/device_queue.h
 )
@@ -13,7 +13,7 @@ set(ENGINE_HDRS
 set(ENGINE_SRCS 
 	engine/engine.cpp
 	engine/engine_init.cpp
-	engine/physical_device.cpp
+	engine/queue_indices.cpp
 	engine/swap_chain.cpp
 	engine/device_queue.cpp
 )

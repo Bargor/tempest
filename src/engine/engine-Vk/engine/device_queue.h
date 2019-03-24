@@ -2,8 +2,6 @@
 // Author: Karol Kontny
 #pragma once
 
-#include "physical_device.h"
-
 #include <cstdint>
 #include <vulkan/vulkan.hpp>
 
@@ -11,6 +9,8 @@ namespace tst {
 namespace engine {
 
     namespace vulkan {
+
+        struct queue_family_indices;
 
         class device_queues {
         public:

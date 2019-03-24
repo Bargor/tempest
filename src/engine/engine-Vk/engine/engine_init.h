@@ -2,8 +2,6 @@
 // Author: Karol Kontny
 #pragma once
 
-#include "physical_device.h"
-
 #include <memory>
 #include <optional>
 #include <vector>
@@ -14,6 +12,8 @@ struct GLFWwindow;
 namespace tst {
 namespace engine {
     namespace vulkan {
+
+        struct queue_family_indices;
 
         template<typename T>
         using ptr = std::unique_ptr<T>;

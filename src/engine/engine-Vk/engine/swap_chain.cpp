@@ -3,7 +3,7 @@
 
 #include "swap_chain.h"
 
-#include "physical_device.h"
+#include "queue_indices.h"
 #include "vulkan_exception.h"
 
 #include <algorithm>
