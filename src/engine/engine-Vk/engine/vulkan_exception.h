@@ -13,7 +13,7 @@ namespace engine {
     public:
         using super = std::runtime_error;
 
-        explicit vulkan_exception(const std::string& message) : super(message.c_str()) {
+        explicit vulkan_exception(const std::string& message) : super(("Vulkan exception: " + message).c_str()) {
         }
 
         explicit vulkan_exception(const char* message) : super(message) {
