@@ -23,7 +23,7 @@ namespace engine {
             shader_compiler(application::data_loader& data_loader);
 
         private:
-            std::optional<opengl::shader> compile_shader(const std::string_view name,
+            std::optional<opengl::shader> compile_shader(const std::string& name,
                                                          const opengl::shader_type type) const;
 
         private:
