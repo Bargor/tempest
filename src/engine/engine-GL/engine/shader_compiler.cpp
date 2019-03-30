@@ -40,7 +40,7 @@ namespace engine {
     } 
 
     std::string get_shader_format(const shader_type type) {
-        std::array<std::string, static_cast<std::size_t>(shader_type::enum_size)> formats = {
+        static std::array<std::string, static_cast<std::size_t>(shader_type::enum_size)> formats = {
             "vs", "fs", "gs", "cs", "", ""};
         return formats[static_cast<std::size_t>(type)];
     }
