@@ -53,7 +53,11 @@ int main(int argc, const char** argv) {
         glfwGetError(&description);
         fmt::printf("%s, error: %s\n", ex.what(), description);
         std::exit(EXIT_FAILURE);
-    } catch (...) { fmt::printf("Unknown error\n"); }
+    } catch (std::exception& ex) {
+        fmt::printf("error: %s\n", ex.what());
+    } catch (...) {
+        fmt::printf("Unknown error\n");
+    }
     tst::deinit_Glfw();
     return 0;
 }
