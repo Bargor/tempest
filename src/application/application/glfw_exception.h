@@ -12,9 +12,11 @@ namespace application {
     public:
         using super = std::runtime_error;
 
-        explicit glfw_exception(const std::string& message) : super(message.c_str()) {}
+        explicit glfw_exception(const std::string& message) : super(("Glfw exception: " + message).c_str()) {
+        }
 
-        explicit glfw_exception(const char* message) : super(message) {}
+        explicit glfw_exception(const char* message) : super(message) {
+        }
     };
 } // namespace application
 } // namespace tst
