@@ -8,6 +8,8 @@ set(ENGINE_HDRS
 	engine/queue_indices.h
 	engine/swap_chain.h
 	engine/device_queue.h
+	engine/resources/shader.h
+	engine/resources/shader_compiler.h
 )
 
 set(ENGINE_SRCS 
@@ -16,6 +18,8 @@ set(ENGINE_SRCS
 	engine/queue_indices.cpp
 	engine/swap_chain.cpp
 	engine/device_queue.cpp
+	engine/resources/shader.cpp
+	engine/resources/shader_compiler.cpp
 )
 
 include(${PROJECT_SOURCE_DIR}/cmake/TstAddLibrary.cmake)
