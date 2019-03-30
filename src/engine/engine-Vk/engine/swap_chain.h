@@ -30,7 +30,6 @@ namespace engine {
                        std::uint32_t height);
 
             ~swap_chain();
-
         private:
             support_details m_supportDetails;
             vk::SurfaceFormatKHR m_surfaceFormat;
