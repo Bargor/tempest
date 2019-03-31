@@ -29,3 +29,14 @@ tst_add_library(engine "${ENGINE_HDRS}" "${ENGINE_SRCS}")
 target_include_directories(engine PUBLIC ${Vulkan_INCLUDE_DIRS})
 
 target_link_libraries(engine PUBLIC tst::application tst::scene glm glfw ${Vulkan_LIBRARIES})
+
+add_custom_target(
+        copy_shader_files
+        ${CMAKE_COMMAND}
+        -D SOURCE_DIR=${CMAKE_CURRENT_SOURCE_DIR}
+        -D DESTINATION_DIR=${CMAKE_CURRENT_BINARY_DIR}
+        -P CopyFile.cmake
+        COMMENT "Copying Files for target: test_SphereShader" VERBATIM
+        )
+
+add_dependencies(engine copy_shader_files )
