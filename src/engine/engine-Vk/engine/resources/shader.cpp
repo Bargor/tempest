@@ -38,8 +38,8 @@ namespace engine {
                 throw vulkan_exception(fmt::sprintf("Can't create shader %s\n", ex.what()));
             }
 
-            m_pipelineInfo =
-                vk::PipelineShaderStageCreateInfo(vk::PipelineShaderStageCreateFlags(), get_native_shader_type(type), m_shader, "main");
+            m_pipelineInfo = vk::PipelineShaderStageCreateInfo(
+                vk::PipelineShaderStageCreateFlags(), get_native_shader_type(type), m_shader, "main");
         }
 
         shader::~shader() {

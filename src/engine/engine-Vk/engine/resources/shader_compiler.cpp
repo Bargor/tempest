@@ -8,6 +8,8 @@
 #include <application/data_exception.h>
 #include <application/data_loader.h>
 
+#include <fmt/printf.h>
+
 namespace tst {
 namespace engine {
     namespace vulkan {
@@ -35,12 +37,7 @@ namespace engine {
                     name + "." + get_shader_format(static_cast<shader::shader_type>(idx)) + m_shaderExtension);
 
                 if (shaderSourceFile && shaderBytecodeFile) {
-                    auto sourceWriteTime = std::filesystem::last_write_time(shaderSourceFile.value());
-                    auto bytecodeWriteTime = std::filesystem::last_write_time(shaderBytecodeFile.value());
-
-                    if (sourceWriteTime > bytecodeWriteTime) { // we have to compile shader
-                    }
-                    auto bytecode = m_dataLoader.load_shader_bytecode(name);
+                    auto bytecode = load_bytecode(shaderSourceFile.value(), shaderBytecodeFile.value());
 
                     auto shaderModule =
                         shader(m_device, static_cast<shader::shader_type>(idx), std::move(bytecode), name);
@@ -49,6 +46,21 @@ namespace engine {
                 }
             }
             return shaders;
+        }
+
+        std::vector<char> shader_compiler::load_bytecode(const std::filesystem::path& shaderSourceFile,
+                                            const std::filesystem::path& shaderBytecodeFile) const {
+            auto sourceWriteTime = std::filesystem::last_write_time(shaderSourceFile);
+            auto bytecodeWriteTime = std::filesystem::last_write_time(shaderBytecodeFile);
+
+            if (sourceWriteTime > bytecodeWriteTime) { // we have to compile shader
+                std::string command = fmt::sprintf("glslangValidator -V -o %s %s",
+                                                   shaderBytecodeFile.string(),
+                                                   shaderSourceFile.string());
+
+                std::system(command.c_str());
+            }
+            return m_dataLoader.load_shader_bytecode(shaderBytecodeFile);
         }
 
     } // namespace vulkan
