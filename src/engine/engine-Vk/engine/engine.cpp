@@ -43,7 +43,8 @@ namespace engine {
                                                            m_windowSurface,
                                                            m_queueIndices,
                                                            mainWindow.get_size().width,
-                                                           mainWindow.get_size().height)) {
+                                                           mainWindow.get_size().height))
+        , m_shaderCompiler(std::make_unique<vulkan::shader_compiler>(m_dataLoader, m_logicalDevice)) {
     }
 
     rendering_engine::~rendering_engine() {

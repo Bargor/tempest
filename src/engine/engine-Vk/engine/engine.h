@@ -26,6 +26,7 @@ namespace engine {
         class physical_device;
         class device_queues;
         class swap_chain;
+        class shader_compiler;
     } // namespace vulkan
 
     class rendering_engine {
@@ -54,6 +55,7 @@ namespace engine {
         vk::Device m_logicalDevice;
         ptr<vulkan::device_queues> m_deviceQueues;
         ptr<vulkan::swap_chain> m_swapChain;
+        ptr<vulkan::shader_compiler> m_shaderCompiler;
     };
 
 } // namespace engine
