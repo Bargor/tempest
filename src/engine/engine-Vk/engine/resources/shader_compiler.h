@@ -24,8 +24,9 @@ namespace engine {
 
         class shader_compiler {
         public:
-        public:
             shader_compiler(application::data_loader& data_loader, const vk::Device& device);
+            ~shader_compiler();
+
             shader_set compile_shaders(const std::string& name) const;
 
         private:

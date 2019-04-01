@@ -25,6 +25,9 @@ namespace engine {
             : m_dataLoader(data_loader), m_device(device) {
         }
 
+        shader_compiler::~shader_compiler() {
+        }
+
         shader_set shader_compiler::compile_shaders(const std::string& name) const {
 
             shader_set shaders;
