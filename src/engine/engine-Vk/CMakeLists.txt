@@ -35,7 +35,7 @@ add_custom_target(
         ${CMAKE_COMMAND}
         -D SOURCE_DIR=${CMAKE_CURRENT_SOURCE_DIR}
         -D DESTINATION_DIR=${CMAKE_CURRENT_BINARY_DIR}
-        -P CopyFile.cmake
+        -P ${PROJECT_SOURCE_DIR}/cmake/CopyShaders.cmake
         COMMENT "Copying Files for target: test_SphereShader" VERBATIM
         )
 
