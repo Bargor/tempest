@@ -3,8 +3,6 @@
 
 #include "shader_compiler.h"
 
-#include "shader.h"
-
 #include <application/data_exception.h>
 #include <application/data_loader.h>
 
@@ -45,7 +43,7 @@ namespace engine {
                     auto shaderModule =
                         shader(m_device, static_cast<shader::shader_type>(idx), std::move(bytecode), name);
 
-                    shaders.emplace_back(shaderModule.get_create_info());
+                    shaders.emplace_back(std::move(shaderModule));
                 }
             }
             return shaders;

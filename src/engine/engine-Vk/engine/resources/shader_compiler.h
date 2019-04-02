@@ -2,6 +2,8 @@
 // Author: Karol Kontny
 #pragma once
 
+#include "shader.h"
+
 #include <string>
 #include <vulkan/vulkan.hpp>
 
@@ -20,7 +22,7 @@ namespace application {
 namespace engine {
     namespace vulkan {
 
-        using shader_set = std::vector<vk::PipelineShaderStageCreateInfo>;
+        using shader_set = std::vector<shader>;
 
         class shader_compiler {
         public:
