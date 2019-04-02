@@ -231,6 +231,13 @@ namespace engine {
             }
         }
 
+        vk::PipelineLayout create_pipeline(const vk::Device& device) {
+            vk::PipelineVertexInputStateCreateInfo vertexInfo(
+                vk::PipelineVertexInputStateCreateFlags(), 0, nullptr, 0, nullptr);
+            vk::PipelineInputAssemblyStateCreateInfo assemblyInfo(
+                vk::PipelineInputAssemblyStateCreateFlags(), vk::PrimitiveTopology::eTriangleList, false);
+        }
+
     } // namespace vulkan
 } // namespace engine
 } // namespace tst

@@ -34,6 +34,8 @@ namespace engine {
                                          const std::vector<const char*>& validationLayers,
                                          const std::vector<const char*>& extensions);
 
+        vk::PipelineLayout create_pipeline(const vk::Device& device);
+
         void DestroyDebugUtilsMessengerEXT(vk::Instance& instance,
                                            vk::DebugUtilsMessengerEXT& debugMessenger,
                                            const VkAllocationCallbacks* pAllocator);

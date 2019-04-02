@@ -38,6 +38,7 @@ namespace engine {
         , m_queueIndices(vulkan::compute_queue_indices(m_physicalDevice, m_windowSurface))
         , m_logicalDevice(vulkan::create_logical_device(
               m_physicalDevice, m_queueIndices, m_requiredValidationLayers, m_reqiuredDeviceExtensions))
+        , m_pipeline(vulkan::create_pipeline(m_logicalDevice))
         , m_deviceQueues(std::make_unique<vulkan::device_queues>(m_logicalDevice, m_queueIndices))
         , m_swapChain(std::make_unique<vulkan::swap_chain>(m_physicalDevice,
                                                            m_logicalDevice,

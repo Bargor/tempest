@@ -53,6 +53,7 @@ namespace engine {
         vk::PhysicalDevice m_physicalDevice;
         vulkan::queue_family_indices m_queueIndices;
         vk::Device m_logicalDevice;
+        vk::PipelineLayout m_pipeline;
         ptr<vulkan::device_queues> m_deviceQueues;
         ptr<vulkan::swap_chain> m_swapChain;
         ptr<vulkan::shader_compiler> m_shaderCompiler;
