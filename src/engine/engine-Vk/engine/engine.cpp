@@ -46,16 +46,17 @@ namespace engine {
                                                            mainWindow.get_size().width,
                                                            mainWindow.get_size().height))
         , m_shaderCompiler(std::make_unique<vulkan::shader_compiler>(m_dataLoader, m_logicalDevice))
-        , m_pipeline(vulkan::create_pipeline(m_logicalDevice)) {
+        , m_pipeline(vulkan::create_pipeline(m_logicalDevice, m_swapChain->get_extent())) {
     }
 
     rendering_engine::~rendering_engine() {
-        if (enableValidationLayers) {
-            vulkan::DestroyDebugUtilsMessengerEXT(m_vulkanInstance, m_debugMessenger, nullptr);
-        }
+        m_logicalDevice.destroyPipelineLayout(m_pipeline);
         m_swapChain.reset();
         m_vulkanInstance.destroySurfaceKHR(m_windowSurface);
         m_logicalDevice.destroy();
+        if (enableValidationLayers) {
+            vulkan::DestroyDebugUtilsMessengerEXT(m_vulkanInstance, m_debugMessenger, nullptr);
+        }
         m_vulkanInstance.destroy();
     }
 

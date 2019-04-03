@@ -237,7 +237,8 @@ namespace engine {
             vk::PipelineInputAssemblyStateCreateInfo assemblyInfo(
                 vk::PipelineInputAssemblyStateCreateFlags(), vk::PrimitiveTopology::eTriangleList, false);
 
-            vk::Viewport viewport(0.0f, 0.0f, extent.width, extent.height, 0.0f, 0.0f);
+            vk::Viewport viewport(
+                0.0f, 0.0f, static_cast<float>(extent.width), static_cast<float>(extent.height), 0.0f, 0.0f);
             vk::Rect2D scissor({0, 0}, extent);
 
             vk::PipelineViewportStateCreateInfo viewportState(
@@ -258,7 +259,27 @@ namespace engine {
             vk::PipelineMultisampleStateCreateInfo multisampling(
                 vk::PipelineMultisampleStateCreateFlags(), vk::SampleCountFlagBits::e1, false, 1.0f, nullptr, false, false);
 
+            vk::PipelineColorBlendAttachmentState colorBlendAttachment(
+                false,
+                vk::BlendFactor::eOne,
+                vk::BlendFactor::eZero,
+                vk::BlendOp::eAdd,
+                vk::BlendFactor::eOne,
+                vk::BlendFactor::eZero,
+                vk::BlendOp::eAdd,
+                vk::ColorComponentFlagBits::eR | vk::ColorComponentFlagBits::eG | vk::ColorComponentFlagBits::eB |
+                    ::vk::ColorComponentFlagBits::eA);
 
+            vk::PipelineColorBlendStateCreateInfo colorBlending(vk::PipelineColorBlendStateCreateFlags(),
+                                                                false,
+                                                                vk::LogicOp::eCopy,
+                                                                1,
+                                                                &colorBlendAttachment,
+                                                                {0.0f, 0.0f, 0.0f, 0.0f});
+
+            vk::PipelineLayoutCreateInfo pipelineLayoutInfo(vk::PipelineLayoutCreateFlags(), 0, nullptr, 0, nullptr);
+
+            return device.createPipelineLayout(pipelineLayoutInfo);
         }
 
     } // namespace vulkan
