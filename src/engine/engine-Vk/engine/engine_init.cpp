@@ -231,11 +231,34 @@ namespace engine {
             }
         }
 
-        vk::PipelineLayout create_pipeline(const vk::Device& device) {
+        vk::PipelineLayout create_pipeline(const vk::Device& device, const vk::Extent2D& extent) {
             vk::PipelineVertexInputStateCreateInfo vertexInfo(
                 vk::PipelineVertexInputStateCreateFlags(), 0, nullptr, 0, nullptr);
             vk::PipelineInputAssemblyStateCreateInfo assemblyInfo(
                 vk::PipelineInputAssemblyStateCreateFlags(), vk::PrimitiveTopology::eTriangleList, false);
+
+            vk::Viewport viewport(0.0f, 0.0f, extent.width, extent.height, 0.0f, 0.0f);
+            vk::Rect2D scissor({0, 0}, extent);
+
+            vk::PipelineViewportStateCreateInfo viewportState(
+                vk::PipelineViewportStateCreateFlags(), 1, &viewport, 1, &scissor);
+
+            vk::PipelineRasterizationStateCreateInfo rasterizer(vk::PipelineRasterizationStateCreateFlags(),
+                                                                false,
+                                                                false,
+                                                                vk::PolygonMode::eFill,
+                                                                vk::CullModeFlagBits::eBack,
+                                                                vk::FrontFace::eCounterClockwise,
+                                                                false,
+                                                                0.0f,
+                                                                0.0f,
+                                                                0.0f,
+                                                                0.0f);
+
+            vk::PipelineMultisampleStateCreateInfo multisampling(
+                vk::PipelineMultisampleStateCreateFlags(), vk::SampleCountFlagBits::e1, false, 1.0f, nullptr, false, false);
+
+
         }
 
     } // namespace vulkan

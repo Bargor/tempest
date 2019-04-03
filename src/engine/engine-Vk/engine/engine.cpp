@@ -38,7 +38,6 @@ namespace engine {
         , m_queueIndices(vulkan::compute_queue_indices(m_physicalDevice, m_windowSurface))
         , m_logicalDevice(vulkan::create_logical_device(
               m_physicalDevice, m_queueIndices, m_requiredValidationLayers, m_reqiuredDeviceExtensions))
-        , m_pipeline(vulkan::create_pipeline(m_logicalDevice))
         , m_deviceQueues(std::make_unique<vulkan::device_queues>(m_logicalDevice, m_queueIndices))
         , m_swapChain(std::make_unique<vulkan::swap_chain>(m_physicalDevice,
                                                            m_logicalDevice,
@@ -46,7 +45,8 @@ namespace engine {
                                                            m_queueIndices,
                                                            mainWindow.get_size().width,
                                                            mainWindow.get_size().height))
-        , m_shaderCompiler(std::make_unique<vulkan::shader_compiler>(m_dataLoader, m_logicalDevice)) {
+        , m_shaderCompiler(std::make_unique<vulkan::shader_compiler>(m_dataLoader, m_logicalDevice))
+        , m_pipeline(vulkan::create_pipeline(m_logicalDevice)) {
     }
 
     rendering_engine::~rendering_engine() {

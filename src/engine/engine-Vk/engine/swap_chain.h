@@ -30,6 +30,8 @@ namespace engine {
                        std::uint32_t height);
 
             ~swap_chain();
+
+            const vk::Extent2D& get_extent() const;
         private:
             support_details m_supportDetails;
             vk::SurfaceFormatKHR m_surfaceFormat;
