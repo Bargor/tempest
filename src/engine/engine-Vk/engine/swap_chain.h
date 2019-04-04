@@ -32,6 +32,7 @@ namespace engine {
             ~swap_chain();
 
             const vk::Extent2D& get_extent() const;
+            const vk::Format& get_format() const;
         private:
             support_details m_supportDetails;
             vk::SurfaceFormatKHR m_surfaceFormat;
@@ -44,6 +45,14 @@ namespace engine {
             std::vector<vk::Image> m_images;
             std::vector<vk::ImageView> m_imageViews;
         };
+
+		inline const vk::Extent2D& swap_chain::get_extent() const {
+            return m_extent;
+        }
+
+		inline const vk::Format& swap_chain::get_format() const {
+            return m_surfaceFormat.format;
+		}
 
     }
 }

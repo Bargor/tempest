@@ -176,10 +176,6 @@ namespace engine {
             m_logicalDevice.destroySwapchainKHR(m_swapChain);
         }
 
-        const vk::Extent2D& swap_chain::get_extent() const {
-            return m_extent;
-        }
-
     } // namespace vulkan
 } // namespace engine
 } // namespace tst

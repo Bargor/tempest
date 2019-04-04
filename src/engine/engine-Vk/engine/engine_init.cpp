@@ -4,6 +4,7 @@
 #include "engine_init.h"
 
 #include "queue_indices.h"
+#include "resources/shader_compiler.h"
 #include "vulkan_exception.h"
 
 #include <GLFW/glfw3.h>
@@ -231,7 +232,39 @@ namespace engine {
             }
         }
 
-        vk::PipelineLayout create_pipeline(const vk::Device& device, const vk::Extent2D& extent) {
+        vk::RenderPass create_render_pass(const vk::Device& device, const vk::Format& format) {
+            vk::AttachmentDescription colorAttachment(vk::AttachmentDescriptionFlags(),
+                                                      format,
+                                                      vk::SampleCountFlagBits::e1,
+                                                      vk::AttachmentLoadOp::eClear,
+                                                      vk::AttachmentStoreOp::eStore,
+                                                      vk::AttachmentLoadOp::eDontCare,
+                                                      vk::AttachmentStoreOp::eDontCare,
+                                                      vk::ImageLayout::eUndefined,
+                                                      vk::ImageLayout::ePresentSrcKHR);
+
+            vk::AttachmentReference colorAttachmentRef(0, vk::ImageLayout::eColorAttachmentOptimal);
+
+            vk::SubpassDescription subpass(
+                vk::SubpassDescriptionFlags(), vk::PipelineBindPoint::eGraphics, 0, nullptr, 1, &colorAttachmentRef);
+
+            vk::RenderPassCreateInfo renderPassInfo(
+                vk::RenderPassCreateFlags(), 1, &colorAttachment, 1, &subpass, 0, nullptr);
+
+            return device.createRenderPass(renderPassInfo);
+        }
+
+        vk::PipelineLayout create_pipeline_layout(const vk::Device& device) {
+            vk::PipelineLayoutCreateInfo pipelineLayoutInfo(vk::PipelineLayoutCreateFlags(), 0, nullptr, 0, nullptr);
+
+            return device.createPipelineLayout(pipelineLayoutInfo);
+        }
+
+        vk::Pipeline create_graphics_pipeline(const vk::Device& device,
+                                              const vk::PipelineLayout& pipelineLayout,
+                                              const vk::RenderPass& renderPass,
+                                              const vk::Extent2D& extent,
+                                              const vulkan::shader_compiler& shaderCompiler) {
             vk::PipelineVertexInputStateCreateInfo vertexInfo(
                 vk::PipelineVertexInputStateCreateFlags(), 0, nullptr, 0, nullptr);
             vk::PipelineInputAssemblyStateCreateInfo assemblyInfo(
@@ -277,9 +310,30 @@ namespace engine {
                                                                 &colorBlendAttachment,
                                                                 {0.0f, 0.0f, 0.0f, 0.0f});
 
-            vk::PipelineLayoutCreateInfo pipelineLayoutInfo(vk::PipelineLayoutCreateFlags(), 0, nullptr, 0, nullptr);
+            auto shaders = shaderCompiler.compile_shaders("test");
+            std::vector<vk::PipelineShaderStageCreateInfo> shaderInfos;
+            std::transform(shaders.cbegin(), shaders.cend(), std::back_inserter(shaderInfos), [](const shader& shader) {
+                return shader.get_create_info();
+            });
 
-            return device.createPipelineLayout(pipelineLayoutInfo);
+            vk::GraphicsPipelineCreateInfo pipelineInfo(vk::PipelineCreateFlags(),
+                                                        2,
+                                                        shaderInfos.data(),
+                                                        &vertexInfo,
+                                                        &assemblyInfo,
+                                                        nullptr,
+                                                        &viewportState,
+                                                        &rasterizer,
+                                                        &multisampling,
+                                                        nullptr,
+                                                        &colorBlending,
+                                                        nullptr,
+                                                        pipelineLayout,
+                                                        renderPass,
+                                                        0,
+                                                        vk::Pipeline(),
+                                                        0);
+            return device.createGraphicsPipeline(vk::PipelineCache(), pipelineInfo);
         }
 
     } // namespace vulkan

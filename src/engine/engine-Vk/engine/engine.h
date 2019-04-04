@@ -56,7 +56,9 @@ namespace engine {
         ptr<vulkan::device_queues> m_deviceQueues;
         ptr<vulkan::swap_chain> m_swapChain;
         ptr<vulkan::shader_compiler> m_shaderCompiler;
-        vk::PipelineLayout m_pipeline;
+        vk::RenderPass m_renderPass;
+        vk::PipelineLayout m_pipelineLayout;
+        vk::Pipeline m_pipeline;
     };
 
 } // namespace engine
