@@ -49,10 +49,19 @@ namespace engine {
         , m_renderPass(vulkan::create_render_pass(m_logicalDevice, m_swapChain->get_format()))
         , m_pipelineLayout(vulkan::create_pipeline_layout(m_logicalDevice))
         , m_pipeline(vulkan::create_graphics_pipeline(
-              m_logicalDevice, m_pipelineLayout, m_renderPass, m_swapChain->get_extent(), *m_shaderCompiler.get())) {
+              m_logicalDevice, m_pipelineLayout, m_renderPass, m_swapChain->get_extent(), *m_shaderCompiler.get()))
+        , m_framebuffers(vulkan::create_framebuffers(
+              m_logicalDevice, m_renderPass, m_swapChain->get_image_views(), m_swapChain->get_extent()))
+        , m_commandPool(vulkan::create_command_pool(m_logicalDevice, m_queueIndices))
+        , m_commandBuffers(vulkan::create_command_buffers(
+              m_logicalDevice, m_commandPool, m_framebuffers, m_renderPass, m_pipeline, m_swapChain->get_extent())) {
     }
 
     rendering_engine::~rendering_engine() {
+        m_logicalDevice.destroyCommandPool(m_commandPool);
+        for (auto framebuffer : m_framebuffers) {
+            m_logicalDevice.destroyFramebuffer(framebuffer);
+        }
         m_logicalDevice.destroyPipeline(m_pipeline);
         m_logicalDevice.destroyPipelineLayout(m_pipelineLayout);
         m_logicalDevice.destroyRenderPass(m_renderPass);

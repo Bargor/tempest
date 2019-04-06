@@ -44,6 +44,20 @@ namespace engine {
                                               const vk::Extent2D& extent,
                                               const vulkan::shader_compiler& m_shaderCompiler);
 
+        std::vector<vk::Framebuffer> create_framebuffers(const vk::Device& device,
+                                                         const vk::RenderPass& renderPass,
+                                                         const std::vector<vk::ImageView>& imageViews,
+                                                         const vk::Extent2D& extent);
+
+        vk::CommandPool create_command_pool(const vk::Device& device, const queue_family_indices& indices);
+
+        std::vector<vk::CommandBuffer> create_command_buffers(const vk::Device& device,
+                                                              const vk::CommandPool& commandPool,
+                                                              const std::vector<vk::Framebuffer>& framebuffers,
+                                                              const vk::RenderPass& renderPass,
+                                                              const vk::Pipeline& pipeline,
+                                                              const vk::Extent2D& extent);
+
         void DestroyDebugUtilsMessengerEXT(vk::Instance& instance,
                                            vk::DebugUtilsMessengerEXT& debugMessenger,
                                            const VkAllocationCallbacks* pAllocator);

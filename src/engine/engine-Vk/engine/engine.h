@@ -59,6 +59,9 @@ namespace engine {
         vk::RenderPass m_renderPass;
         vk::PipelineLayout m_pipelineLayout;
         vk::Pipeline m_pipeline;
+        std::vector<vk::Framebuffer> m_framebuffers;
+        vk::CommandPool m_commandPool;
+        std::vector<vk::CommandBuffer> m_commandBuffers;
     };
 
 } // namespace engine

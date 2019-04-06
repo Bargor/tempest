@@ -336,6 +336,60 @@ namespace engine {
             return device.createGraphicsPipeline(vk::PipelineCache(), pipelineInfo);
         }
 
+        std::vector<vk::Framebuffer> create_framebuffers(const vk::Device& device,
+                                                         const vk::RenderPass& renderPass,
+                                                         const std::vector<vk::ImageView>& imageViews,
+                                                         const vk::Extent2D& extent) {
+            std::vector<vk::Framebuffer> framebuffers(imageViews.size());
+
+            for (int i = 0; i < imageViews.size(); i++) {
+                vk::ImageView attachments[] = {imageViews[i]};
+
+                vk::FramebufferCreateInfo createInfo(
+                    vk::FramebufferCreateFlags(), renderPass, 1, attachments, extent.width, extent.height, 1);
+
+                framebuffers[i] = device.createFramebuffer(createInfo);
+            }
+
+            return framebuffers;
+        }
+
+        vk::CommandPool create_command_pool(const vk::Device& device, const queue_family_indices& indices) {
+            vk::CommandPoolCreateInfo creatInfo(vk::CommandPoolCreateFlags(), indices.graphicsIndex.value());
+
+            return device.createCommandPool(creatInfo);
+        }
+
+        std::vector<vk::CommandBuffer> create_command_buffers(const vk::Device& device,
+                                                              const vk::CommandPool& commandPool,
+                                                              const std::vector<vk::Framebuffer>& framebuffers,
+                                                              const vk::RenderPass& renderPass,
+                                                              const vk::Pipeline& pipeline,
+                                                              const vk::Extent2D& extent) {
+            vk::CommandBufferAllocateInfo bufferAllocateInfo(
+                commandPool, vk::CommandBufferLevel::ePrimary, static_cast<std::uint32_t>(framebuffers.size()));
+
+            auto commandBuffers = device.allocateCommandBuffers(bufferAllocateInfo);
+
+            for (size_t i = 0; i < commandBuffers.size(); i++) {
+                vk::CommandBufferBeginInfo commandBufferInfo(vk::CommandBufferUsageFlagBits::eSimultaneousUse, nullptr);
+                commandBuffers[i].begin(commandBufferInfo);
+
+                vk::ClearValue clearColor = vk::ClearValue(std::array<float, 4>{0.0f, 0.0f, 0.0f, 1.0f});
+
+                vk::RenderPassBeginInfo renderPassInfo(
+                    renderPass, framebuffers[i], vk::Rect2D({0, 0}, extent), 1, &clearColor);
+
+                commandBuffers[i].beginRenderPass(renderPassInfo, vk::SubpassContents::eInline);
+                commandBuffers[i].bindPipeline(vk::PipelineBindPoint::eGraphics, pipeline);
+                commandBuffers[i].draw(3, 1, 0, 0);
+                commandBuffers[i].endRenderPass();
+                commandBuffers[i].end();
+            }
+
+            return commandBuffers;
+        }
+
     } // namespace vulkan
 } // namespace engine
 } // namespace tst
