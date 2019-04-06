@@ -11,16 +11,19 @@ namespace application {
 
     program_params parse_arguments(const int argc, const char** argv) {
         program_params programParams;
-        for (int i = 0; i < argc; i++) {
+
+		programParams.executionDirectory = std::filesystem::path(argv[0]).parent_path().append("");
+
+        for (int i = 1; i < argc; i++) {
             std::string param(argv[i]);
 
             if (param == "-w") {
-                programParams.window_mode = main_window::fullscreen_option::windowed;
+                programParams.windowMode = main_window::fullscreen_option::windowed;
                 continue;
             }
 
             if (param == "-f") {
-                programParams.window_mode = main_window::fullscreen_option::fullscreen;
+                programParams.windowMode = main_window::fullscreen_option::fullscreen;
                 continue;
             }
         }
