@@ -3,9 +3,7 @@
 
 #include "shader_compiler.h"
 
-#include <application/data_exception.h>
 #include <application/data_loader.h>
-
 #include <fmt/printf.h>
 
 namespace tst {
@@ -18,6 +16,10 @@ namespace engine {
             return formats[static_cast<std::size_t>(type)];
         }
 
+        bool compile_shader(const std::string& shaderBytecodeFile, const std::string shaderSourceFile) {
+            std::string command = fmt::sprintf("glslangValidator -V -o %s %s", shaderBytecodeFile, shaderSourceFile);
+            return std::system(command.c_str());
+        }
 
         shader_compiler::shader_compiler(application::data_loader& data_loader, const vk::Device& device)
             : m_dataLoader(data_loader), m_device(device) {
@@ -27,43 +29,59 @@ namespace engine {
         }
 
         shader_set shader_compiler::compile_shaders(const std::string& name) const {
-
             shader_set shaders;
 
             for (std::int32_t idx = 0; idx < static_cast<std::int32_t>(shader::shader_type::enum_size); ++idx) {
-                auto shaderSourceFile =
-                    m_dataLoader.find_file((name + "." + get_shader_format(static_cast<shader::shader_type>(idx))));
+                std::string shaderFileName("shaders/" + name + "." +
+                                           get_shader_format(static_cast<shader::shader_type>(idx)));
+                std::string bytecodeFileName(name + "." + get_shader_format(static_cast<shader::shader_type>(idx)) +
+                                             m_shaderExtension);
 
-                auto shaderBytecodeFile = m_dataLoader.find_file(
-                    name + "." + get_shader_format(static_cast<shader::shader_type>(idx)) + m_shaderExtension);
+                auto shaderSourceFile = m_dataLoader.find_file(shaderFileName);
+                auto shaderBytecodeFile = m_dataLoader.find_file(bytecodeFileName);
 
-                if (shaderSourceFile && shaderBytecodeFile) {
-                    auto bytecode = load_bytecode(shaderSourceFile.value(), shaderBytecodeFile.value());
+                auto bytecode = load_bytecode(shaderSourceFile, shaderBytecodeFile, bytecodeFileName);
 
-                    auto shaderModule =
-                        shader(m_device, static_cast<shader::shader_type>(idx), std::move(bytecode), name);
-
-                    shaders.emplace_back(std::move(shaderModule));
+                if (!bytecode) {
+                    continue;
                 }
+
+                shader shaderModule(m_device, static_cast<shader::shader_type>(idx), std::move(bytecode.value()), name);
+
+                shaders.emplace_back(std::move(shaderModule));
             }
             return shaders;
         }
 
-        std::vector<char> shader_compiler::load_bytecode(const std::filesystem::path& shaderSourceFile,
-                                            const std::filesystem::path& shaderBytecodeFile) const {
-            auto sourceWriteTime = std::filesystem::last_write_time(shaderSourceFile);
-            auto bytecodeWriteTime = std::filesystem::last_write_time(shaderBytecodeFile);
+        std::optional<std::vector<char>>
+        shader_compiler::load_bytecode(const std::optional<std::filesystem::path>& shaderSourceFile,
+                                       const std::optional<std::filesystem::path>& shaderBytecodeFile,
+                                       const std::string& bytecodeFileName) const {
+            if (shaderSourceFile) {
+                if (shaderBytecodeFile) {
+                    auto sourceWriteTime = std::filesystem::last_write_time(shaderSourceFile.value());
+                    auto bytecodeWriteTime = std::filesystem::last_write_time(shaderBytecodeFile.value());
 
-            if (sourceWriteTime > bytecodeWriteTime) { // we have to compile shader
-                std::string command = fmt::sprintf("glslangValidator -V -o %s %s",
-                                                   shaderBytecodeFile.string(),
-                                                   shaderSourceFile.string());
-
-                std::system(command.c_str());
+                    if (sourceWriteTime > bytecodeWriteTime) { // we have to compile shader
+                        if (!compile_shader(shaderSourceFile.value().string(), bytecodeFileName)) {
+                            return std::nullopt;
+                        }
+                    }
+                } else { // only source file is available
+                    if (!compile_shader(shaderSourceFile.value().string(), bytecodeFileName)) {
+                        return std::nullopt;
+                    }
+                }
+            } else {
+                if (!shaderBytecodeFile) { // none of the files exist
+                    return std::nullopt;
+                }
             }
-            return m_dataLoader.load_shader_bytecode(shaderBytecodeFile);
+
+            return m_dataLoader.load_shader_bytecode(shaderBytecodeFile.value());
         }
 
     } // namespace vulkan
+
 } // namespace engine
 } // namespace tst
