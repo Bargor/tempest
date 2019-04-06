@@ -22,6 +22,7 @@ namespace application {
         virtual std::vector<char> load_shader_bytecode(const std::filesystem::path& path) const;
         virtual void load_obj_model(const std::string_view& name) const;
         virtual std::optional<std::filesystem::path> find_file(const std::string& name) const;
+        virtual std::optional<std::filesystem::path> find_file(const std::filesystem::path& name) const;
 
     public:
         void add_search_path(std::string&& path) noexcept;
