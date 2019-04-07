@@ -28,7 +28,8 @@ namespace engine {
     }
 
     rendering_engine::rendering_engine(application::data_loader& dataLoader, application::main_window& mainWindow)
-        : m_dataLoader(dataLoader)
+        : m_frameCount(0)
+        , m_dataLoader(dataLoader)
         , m_scene(std::make_unique<scene::scene>())
         , m_requiredValidationLayers(generateLayers())
         , m_vulkanInstance(vulkan::init_Vulkan_instance(m_requiredValidationLayers, enableValidationLayers))
@@ -96,6 +97,10 @@ namespace engine {
         vk::PresentInfoKHR presentInfo(1, signalSemaphores, 1, &m_swapChain->get_native_swapchain(), &imageIndex);
         m_deviceQueues->m_presentationQueueHandle.presentKHR(presentInfo);
     }
+
+	void rendering_engine::stop() {
+        m_logicalDevice.waitIdle();
+	}
 
 } // namespace engine
 } // namespace tst

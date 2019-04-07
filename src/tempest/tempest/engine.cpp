@@ -43,6 +43,7 @@ namespace application {
             m_eventProcessor.create_event(event{event::time{lastFrameTime}});
             m_frameCount++;
         }
+        m_renderingEngine->stop();
     }
 
     void simulation_engine::main_loop() {
