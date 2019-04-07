@@ -54,10 +54,14 @@ namespace engine {
               m_logicalDevice, m_renderPass, m_swapChain->get_image_views(), m_swapChain->get_extent()))
         , m_commandPool(vulkan::create_command_pool(m_logicalDevice, m_queueIndices))
         , m_commandBuffers(vulkan::create_command_buffers(
-              m_logicalDevice, m_commandPool, m_framebuffers, m_renderPass, m_pipeline, m_swapChain->get_extent())) {
+              m_logicalDevice, m_commandPool, m_framebuffers, m_renderPass, m_pipeline, m_swapChain->get_extent()))
+        , m_imageAvailable(m_logicalDevice.createSemaphore(vk::SemaphoreCreateInfo()))
+        , m_renderFinished(m_logicalDevice.createSemaphore(vk::SemaphoreCreateInfo())) {
     }
 
     rendering_engine::~rendering_engine() {
+        m_logicalDevice.destroySemaphore(m_renderFinished);
+        m_logicalDevice.destroySemaphore(m_imageAvailable);
         m_logicalDevice.destroyCommandPool(m_commandPool);
         for (auto framebuffer : m_framebuffers) {
             m_logicalDevice.destroyFramebuffer(framebuffer);
@@ -75,6 +79,22 @@ namespace engine {
     }
 
     void rendering_engine::frame() {
+        uint32_t imageIndex = m_logicalDevice
+                                  .acquireNextImageKHR(m_swapChain->get_native_swapchain(),
+                                                       std::numeric_limits<uint64_t>::max(),
+                                                       m_imageAvailable,
+                                                       vk::Fence())
+                                  .value;
+
+        vk::Semaphore waitSemaphores[] = {m_imageAvailable};
+        vk::Semaphore signalSemaphores[] = {m_renderFinished};
+        vk::PipelineStageFlags waitStages[] = {vk::PipelineStageFlagBits::eColorAttachmentOutput};
+
+        vk::SubmitInfo submitInfo(1, waitSemaphores, waitStages, 1, &m_commandBuffers[imageIndex], 1, signalSemaphores);
+        m_deviceQueues->m_graphicsQueueHandle.submit(1, &submitInfo, vk::Fence());
+
+        vk::PresentInfoKHR presentInfo(1, signalSemaphores, 1, &m_swapChain->get_native_swapchain(), &imageIndex);
+        m_deviceQueues->m_presentationQueueHandle.presentKHR(presentInfo);
     }
 
 } // namespace engine

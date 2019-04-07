@@ -248,8 +248,16 @@ namespace engine {
             vk::SubpassDescription subpass(
                 vk::SubpassDescriptionFlags(), vk::PipelineBindPoint::eGraphics, 0, nullptr, 1, &colorAttachmentRef);
 
+            vk::SubpassDependency dependency(VK_SUBPASS_EXTERNAL,
+                                             0,
+                                             vk::PipelineStageFlagBits::eColorAttachmentOutput,
+                                             vk::PipelineStageFlagBits::eColorAttachmentOutput,
+                                             vk::AccessFlags(),
+                                             vk::AccessFlagBits::eColorAttachmentRead |
+                                                 vk::AccessFlagBits::eColorAttachmentWrite);
+
             vk::RenderPassCreateInfo renderPassInfo(
-                vk::RenderPassCreateFlags(), 1, &colorAttachment, 1, &subpass, 0, nullptr);
+                vk::RenderPassCreateFlags(), 1, &colorAttachment, 1, &subpass, 1, &dependency);
 
             return device.createRenderPass(renderPassInfo);
         }

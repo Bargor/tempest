@@ -42,6 +42,7 @@ namespace engine {
         void stop();
 
     private:
+        std::uint64_t m_frameCount;
         application::data_loader& m_dataLoader;
         ptr<scene::scene> m_scene;
         std::vector<const char*> m_requiredValidationLayers;
@@ -62,6 +63,8 @@ namespace engine {
         std::vector<vk::Framebuffer> m_framebuffers;
         vk::CommandPool m_commandPool;
         std::vector<vk::CommandBuffer> m_commandBuffers;
+        vk::Semaphore m_imageAvailable;
+        vk::Semaphore m_renderFinished;
     };
 
 } // namespace engine
