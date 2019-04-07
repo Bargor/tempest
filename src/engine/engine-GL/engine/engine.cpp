@@ -27,6 +27,8 @@ namespace engine {
 
     rendering_engine::~rendering_engine() {
     }
+	
+	void rendering_engine::stop() {}
 
     void rendering_engine::frame() {}
 
