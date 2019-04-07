@@ -27,7 +27,7 @@ namespace engine {
             return vk::ShaderStageFlagBits::eAll;
         }
 
-        shader::shader(vk::Device device, shader_type type, std::vector<char>&& source, const std::string_view name)
+        shader::shader(const vk::Device& device, shader_type type, std::vector<char>&& source, const std::string_view name)
             : m_device(device), m_source(source), m_name(name) {
             vk::ShaderModuleCreateInfo createInfo(
                 vk::ShaderModuleCreateFlags(), source.size(), reinterpret_cast<const uint32_t*>(source.data()));
@@ -49,16 +49,6 @@ namespace engine {
             , m_shader(std::move(shader.m_shader))
             , m_pipelineInfo(std::move(shader.m_pipelineInfo)) {
             shader.m_shader = vk::ShaderModule();
-        }
-
-        shader& shader::operator=(shader&& rhs) {
-            assert(this != &rhs);
-            std::swap(m_device, rhs.m_device);
-            std::swap(m_source, rhs.m_source);
-            std::swap(m_name, rhs.m_name);
-            std::swap(m_shader, rhs.m_shader);
-            std::swap(m_pipelineInfo, rhs.m_pipelineInfo);
-            return *this;
         }
 
         shader::~shader() {
