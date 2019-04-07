@@ -97,7 +97,7 @@ namespace engine {
                     surfaceFormat.colorSpace,
                     extent,
                     1,
-                    vk::ImageUsageFlagBits::eInputAttachment,
+                    vk::ImageUsageFlagBits::eColorAttachment,
                     sharingMode,
                     queueFamilyIndexCount,
                     queueIndices.graphicsIndex != queueIndices.presentationIndex ? queueFamilyIndices : nullptr,

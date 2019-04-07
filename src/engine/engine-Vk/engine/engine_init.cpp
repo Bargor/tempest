@@ -287,7 +287,7 @@ namespace engine {
                                                                 0.0f,
                                                                 0.0f,
                                                                 0.0f,
-                                                                0.0f);
+                                                                1.0f);
 
             vk::PipelineMultisampleStateCreateInfo multisampling(
                 vk::PipelineMultisampleStateCreateFlags(), vk::SampleCountFlagBits::e1, false, 1.0f, nullptr, false, false);
