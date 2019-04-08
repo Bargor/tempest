@@ -279,7 +279,7 @@ namespace engine {
                 vk::PipelineInputAssemblyStateCreateFlags(), vk::PrimitiveTopology::eTriangleList, false);
 
             vk::Viewport viewport(
-                0.0f, 0.0f, static_cast<float>(extent.width), static_cast<float>(extent.height), 0.0f, 0.0f);
+                0.0f, 0.0f, static_cast<float>(extent.width), static_cast<float>(extent.height), 0.0f, 1.0f);
             vk::Rect2D scissor({0, 0}, extent);
 
             vk::PipelineViewportStateCreateInfo viewportState(
@@ -290,7 +290,7 @@ namespace engine {
                                                                 false,
                                                                 vk::PolygonMode::eFill,
                                                                 vk::CullModeFlagBits::eBack,
-                                                                vk::FrontFace::eCounterClockwise,
+                                                                vk::FrontFace::eClockwise,
                                                                 false,
                                                                 0.0f,
                                                                 0.0f,
