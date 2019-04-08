@@ -49,7 +49,7 @@ namespace application {
     void simulation_engine::main_loop() {
         m_inputProcessor.process_events();
         m_eventProcessor.process_events();
-        m_renderingEngine->frame();
+        m_renderingEngine->frame(m_frameCount);
         m_mainWindow.end_frame();
     }
 

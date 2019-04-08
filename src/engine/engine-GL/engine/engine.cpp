@@ -30,7 +30,8 @@ namespace engine {
 	
 	void rendering_engine::stop() {}
 
-    void rendering_engine::frame() {}
+    void rendering_engine::frame(size_t) {
+    }
 
 } // namespace engine
 } // namespace tst

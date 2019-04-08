@@ -37,16 +37,16 @@ namespace engine {
         rendering_engine(application::data_loader& dataLoader, application::main_window& mainWindow);
         ~rendering_engine();
 
-        void frame();
+        void frame(size_t frameCount);
         void start();
         void stop();
 
     private:
-        std::uint64_t m_frameCount;
         application::data_loader& m_dataLoader;
         ptr<scene::scene> m_scene;
         std::vector<const char*> m_requiredValidationLayers;
         std::vector<const char*> m_reqiuredDeviceExtensions = {VK_KHR_SWAPCHAIN_EXTENSION_NAME};
+        static constexpr std::uint32_t m_maxConcurrentFrames = 2;
 
         vk::Instance m_vulkanInstance;
         vk::DebugUtilsMessengerEXT m_debugMessenger;
@@ -63,8 +63,9 @@ namespace engine {
         std::vector<vk::Framebuffer> m_framebuffers;
         vk::CommandPool m_commandPool;
         std::vector<vk::CommandBuffer> m_commandBuffers;
-        vk::Semaphore m_imageAvailable;
-        vk::Semaphore m_renderFinished;
+        std::vector<vk::Semaphore> m_imageAvailable;
+        std::vector<vk::Semaphore> m_renderFinished;
+        std::vector<vk::Fence> m_inFlightFences;
     };
 
 } // namespace engine

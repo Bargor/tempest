@@ -28,8 +28,7 @@ namespace engine {
     }
 
     rendering_engine::rendering_engine(application::data_loader& dataLoader, application::main_window& mainWindow)
-        : m_frameCount(0)
-        , m_dataLoader(dataLoader)
+        : m_dataLoader(dataLoader)
         , m_scene(std::make_unique<scene::scene>())
         , m_requiredValidationLayers(generateLayers())
         , m_vulkanInstance(vulkan::init_Vulkan_instance(m_requiredValidationLayers, enableValidationLayers))
@@ -56,13 +55,24 @@ namespace engine {
         , m_commandPool(vulkan::create_command_pool(m_logicalDevice, m_queueIndices))
         , m_commandBuffers(vulkan::create_command_buffers(
               m_logicalDevice, m_commandPool, m_framebuffers, m_renderPass, m_pipeline, m_swapChain->get_extent()))
-        , m_imageAvailable(m_logicalDevice.createSemaphore(vk::SemaphoreCreateInfo()))
-        , m_renderFinished(m_logicalDevice.createSemaphore(vk::SemaphoreCreateInfo())) {
+        , m_imageAvailable({m_logicalDevice.createSemaphore(vk::SemaphoreCreateInfo()),
+                            m_logicalDevice.createSemaphore(vk::SemaphoreCreateInfo())})
+        , m_renderFinished({m_logicalDevice.createSemaphore(vk::SemaphoreCreateInfo()),
+                            m_logicalDevice.createSemaphore(vk::SemaphoreCreateInfo())})
+        , m_inFlightFences({m_logicalDevice.createFence(vk::FenceCreateInfo(vk::FenceCreateFlagBits::eSignaled)),
+                            m_logicalDevice.createFence(vk::FenceCreateInfo(vk::FenceCreateFlagBits::eSignaled))}) {
     }
 
     rendering_engine::~rendering_engine() {
-        m_logicalDevice.destroySemaphore(m_renderFinished);
-        m_logicalDevice.destroySemaphore(m_imageAvailable);
+        for (auto& semaphore : m_imageAvailable) {
+            m_logicalDevice.destroySemaphore(semaphore);
+        }
+        for (auto& semaphore : m_renderFinished) {
+            m_logicalDevice.destroySemaphore(semaphore);
+        }
+        for (auto& fence : m_inFlightFences) {
+            m_logicalDevice.destroyFence(fence);
+        }
         m_logicalDevice.destroyCommandPool(m_commandPool);
         for (auto framebuffer : m_framebuffers) {
             m_logicalDevice.destroyFramebuffer(framebuffer);
@@ -79,28 +89,33 @@ namespace engine {
         m_vulkanInstance.destroy();
     }
 
-    void rendering_engine::frame() {
+    void rendering_engine::frame(size_t frameCount) {
+        std::uint32_t currentFrame = frameCount % m_maxConcurrentFrames;
+
+		m_logicalDevice.waitForFences(1, &m_inFlightFences[currentFrame], true, std::numeric_limits<uint64_t>::max());
+        m_logicalDevice.resetFences(1, &m_inFlightFences[currentFrame]);
+
         uint32_t imageIndex = m_logicalDevice
                                   .acquireNextImageKHR(m_swapChain->get_native_swapchain(),
                                                        std::numeric_limits<uint64_t>::max(),
-                                                       m_imageAvailable,
+                                                       m_imageAvailable[currentFrame],
                                                        vk::Fence())
                                   .value;
 
-        vk::Semaphore waitSemaphores[] = {m_imageAvailable};
-        vk::Semaphore signalSemaphores[] = {m_renderFinished};
+        vk::Semaphore waitSemaphores[] = {m_imageAvailable[currentFrame]};
+        vk::Semaphore signalSemaphores[] = {m_renderFinished[currentFrame]};
         vk::PipelineStageFlags waitStages[] = {vk::PipelineStageFlagBits::eColorAttachmentOutput};
 
         vk::SubmitInfo submitInfo(1, waitSemaphores, waitStages, 1, &m_commandBuffers[imageIndex], 1, signalSemaphores);
-        m_deviceQueues->m_graphicsQueueHandle.submit(1, &submitInfo, vk::Fence());
+        m_deviceQueues->m_graphicsQueueHandle.submit(1, &submitInfo, m_inFlightFences[currentFrame]);
 
         vk::PresentInfoKHR presentInfo(1, signalSemaphores, 1, &m_swapChain->get_native_swapchain(), &imageIndex);
         m_deviceQueues->m_presentationQueueHandle.presentKHR(presentInfo);
     }
 
-	void rendering_engine::stop() {
+    void rendering_engine::stop() {
         m_logicalDevice.waitIdle();
-	}
+    }
 
 } // namespace engine
 } // namespace tst

@@ -24,7 +24,7 @@ namespace engine {
         rendering_engine(application::data_loader& dataLoader, application::main_window&);
         ~rendering_engine();
 
-        void frame();
+        void frame(size_t frameCount);
         void start();
         void stop();
 
