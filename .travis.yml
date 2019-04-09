@@ -207,7 +207,7 @@ before_install:
     - wget http://www.cmake.org/files/v3.13/cmake-3.13.0-Linux-x86_64.sh
     - sudo sh cmake-3.13.0-Linux-x86_64.sh --skip-license --prefix=/usr
     - export PATH=/usr/bin:$PATH
-    if [ "${ENGINE}" == "Vk" ]; then
+    - if [ "${ENGINE}" == "Vk" ]; then
         wget -O vulkansdk-linux-x86_64-1.1.101.0.run https://vulkan.lunarg.com/sdk/download/1.1.101.0/linux/vulkansdk-linux-x86_64-1.1.101.0.run
         chmod ugo+x vulkansdk-linux-x86_64-1.1.101.0.run
         ./vulkansdk-linux-x86_64-1.1.101.0.run
