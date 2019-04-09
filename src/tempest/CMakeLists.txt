@@ -13,11 +13,11 @@ set(TEMPEST_SRCS
 	tempest/main.cpp
 )
 
-if (ENGINE STREQUAL "Engine-GL")
+if (ENGINE STREQUAL "GL")
 	list(APPEND TEMPEST_SRCS tempest/context_gl.cpp)
-elseif (ENGINE STREQUAL "Engine-Vk")
+elseif (ENGINE STREQUAL "Vk")
 	list(APPEND TEMPEST_SRCS tempest/context_vk.cpp)
-endif (ENGINE STREQUAL "Engine-GL")
+endif (ENGINE STREQUAL "GL")
 
 include(${PROJECT_SOURCE_DIR}/cmake/TstAddLibrary.cmake)
 
