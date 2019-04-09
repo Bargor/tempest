@@ -8,6 +8,7 @@ environment:
   matrix:
   - ENGINE: "GL"
   - ENGINE: "Vk"
+    VULKAN_SDK: "c:\VulkanSDK\1.0.51.0"
 
 platform:
   - x64
@@ -18,6 +19,7 @@ configuration:
 
 install:
     - git submodule update --init --recursive
+    - curl --silent --show-error --output VulkanSDK.exe https://vulkan.lunarg.com/sdk/download/1.0.101.0/windows/VulkanSDK-1.0.101.0-Installer.exe .\VulkanSDK.exe /S
 
 before_build:
     - cmd: echo %GENERATOR%
