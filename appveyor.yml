@@ -8,7 +8,7 @@ environment:
   matrix:
   - ENGINE: "GL"
   - ENGINE: "Vk"
-    VULKAN_SDK: "c:\VulkanSDK\1.0.101.0"
+    VULKAN_SDK: "c:/VulkanSDK/1.0.101.0"
 
 platform:
   - x64
