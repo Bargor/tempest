@@ -2,13 +2,12 @@
 version: 0.0.1.{build}
  
 environment:
+  APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+  GENERATOR: "Visual Studio 15 2017 Win64"
+
   matrix:
-  - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
-    GENERATOR: "Visual Studio 15 2017 Win64"
-    ENGINE: "GL"
-  - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
-    GENERATOR: "Visual Studio 15 2017 Win64"
-    ENGINE: "Vk"
+  - ENGINE: "GL"
+  - ENGINE: "Vk"
 
 platform:
   - x64
