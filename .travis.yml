@@ -45,21 +45,21 @@ matrix:
         apt:
           sources:
             - ubuntu-toolchain-r-test
-            - llvm-toolchain-xenial-7
+            - llvm-toolchain-xenial-8
           packages:
-            - clang-7
-            - libc++-7-dev
-            - libc++abi-7-dev
-            - lld-7
-            - llvm-7
-            - llvm-7-dev
-            - llvm-7-runtime
+            - clang-8
+            - libc++-8-dev
+            - libc++abi-8-dev
+            - lld-8
+            - llvm-8
+            - llvm-8-dev
+            - llvm-8-runtime
             - libgl1-mesa-dev
             - libxinerama-dev
             - libxcursor-dev
             - xorg-dev
       env:
-        - MATRIX_EVAL="CC=clang-7 && CXX=clang++-7" BUILD_TYPE=Debug ENGINE=GL
+        - MATRIX_EVAL="CC=clang-8 && CXX=clang++-8" BUILD_TYPE=Debug ENGINE=GL
         - EXTRA_FLAGS="-stdlib=libc++"
     # Clang Release GL
     - os: linux
@@ -67,21 +67,21 @@ matrix:
         apt:
           sources:
             - ubuntu-toolchain-r-test
-            - llvm-toolchain-xenial-7
+            - llvm-toolchain-xenial-8
           packages:
-            - clang-7
-            - libc++-7-dev
-            - libc++abi-7-dev
-            - lld-7
-            - llvm-7
-            - llvm-7-dev
-            - llvm-7-runtime
+            - clang-8
+            - libc++-8-dev
+            - libc++abi-8-dev
+            - lld-8
+            - llvm-8
+            - llvm-8-dev
+            - llvm-8-runtime
             - libgl1-mesa-dev
             - libxinerama-dev
             - libxcursor-dev
             - xorg-dev
       env:
-        - MATRIX_EVAL="CC=clang-7 && CXX=clang++-7" BUILD_TYPE=Release ENGINE=GL
+        - MATRIX_EVAL="CC=clang-8 && CXX=clang++-8" BUILD_TYPE=Release ENGINE=GL
         - EXTRA_FLAGS="-stdlib=libc++"
     # Clang Thread sanitizer
     - os: linux
@@ -89,21 +89,21 @@ matrix:
         apt:
           sources:
             - ubuntu-toolchain-r-test
-            - llvm-toolchain-xenial-7
+            - llvm-toolchain-xenial-8
           packages:
-            - clang-7
-            - libc++-7-dev
-            - libc++abi-7-dev
-            - lld-7
-            - llvm-7
-            - llvm-7-dev
-            - llvm-7-runtime
+            - clang-8
+            - libc++-8-dev
+            - libc++abi-8-dev
+            - lld-8
+            - llvm-8
+            - llvm-8-dev
+            - llvm-8-runtime
             - libgl1-mesa-dev
             - libxinerama-dev
             - libxcursor-dev
             - xorg-dev
       env:
-        - MATRIX_EVAL="CC=clang-7 && CXX=clang++-7" BUILD_TYPE=Debug ENGINE=GL
+        - MATRIX_EVAL="CC=clang-8 && CXX=clang++-8" BUILD_TYPE=Debug ENGINE=GL
         - EXTRA_FLAGS="-stdlib=libc++ -fsanitize=thread"
     # Clang Adress sanitizer
     - os: linux
@@ -111,21 +111,21 @@ matrix:
         apt:
           sources:
             - ubuntu-toolchain-r-test
-            - llvm-toolchain-xenial-7
+            - llvm-toolchain-xenial-8
           packages:
-            - clang-7
-            - libc++-7-dev
-            - libc++abi-7-dev
-            - lld-7
-            - llvm-7
-            - llvm-7-dev
-            - llvm-7-runtime
+            - clang-8
+            - libc++-8-dev
+            - libc++abi-8-dev
+            - lld-8
+            - llvm-8
+            - llvm-8-dev
+            - llvm-8-runtime
             - libgl1-mesa-dev
             - libxinerama-dev
             - libxcursor-dev
             - xorg-dev
       env:
-        - MATRIX_EVAL="CC=clang-7 && CXX=clang++-7" BUILD_TYPE=Debug ENGINE=GL
+        - MATRIX_EVAL="CC=clang-8 && CXX=clang++-8" BUILD_TYPE=Debug ENGINE=GL
         - EXTRA_FLAGS="-stdlib=libc++ -fsanitize=address"
     # Debug Vk
     - os: linux
