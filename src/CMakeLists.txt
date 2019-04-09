@@ -14,10 +14,10 @@ if(TEMPEST_BUILD_ALL)
 	add_subdirectory(${PROJECT_SOURCE_DIR}/libs/glm ${LIBRARY_OUTPUT_PATH}/glm)
 	
 	add_definitions (-DGLEW_NO_GLU)
-	if (ENGINE STREQUAL "Engine-Vk")
+	if (ENGINE STREQUAL "Vk")
 		find_package(Vulkan REQUIRED)
 		add_definitions (-DGLFW_INCLUDE_VULKAN)
-	endif(ENGINE STREQUAL "Engine-Vk")
+	endif(ENGINE STREQUAL "Vk")
 	
 	
 	add_subdirectory(device)

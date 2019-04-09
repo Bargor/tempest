@@ -2,8 +2,8 @@
 # Author: Karol Kontny
 
 add_subdirectory(scene)
-if (ENGINE STREQUAL "Engine-GL")
+if (ENGINE STREQUAL "GL")
 	add_subdirectory(engine-GL)
-elseif(ENGINE STREQUAL "Engine-Vk")
+elseif(ENGINE STREQUAL "Vk")
 	add_subdirectory(engine-Vk)
-endif(ENGINE STREQUAL "Engine-GL")
+endif(ENGINE STREQUAL "GL")

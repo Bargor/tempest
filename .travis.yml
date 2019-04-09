@@ -9,7 +9,7 @@ notifications:
 
 matrix:
   include:
-    # Debug
+    # Debug GL
     - os: linux
       addons:
         apt:
@@ -23,8 +23,8 @@ matrix:
             - libxcursor-dev
             - xorg-dev
       env:
-        - MATRIX_EVAL="CC=gcc-8 && CXX=g++-8" BUILD_TYPE=Debug ENGINE=Engine-GL
-    # Relase    
+        - MATRIX_EVAL="CC=gcc-8 && CXX=g++-8" BUILD_TYPE=Debug ENGINE=GL
+    # Release GL
     - os: linux
       addons:
         apt:
@@ -38,8 +38,8 @@ matrix:
             - libxcursor-dev
             - xorg-dev
       env:
-        - MATRIX_EVAL="CC=gcc-8 && CXX=g++-8" BUILD_TYPE=Release ENGINE=Engine-GL
-    # Clang Debug
+        - MATRIX_EVAL="CC=gcc-8 && CXX=g++-8" BUILD_TYPE=Release ENGINE=GL
+    # Clang Debug GL
     - os: linux
       addons:
         apt:
@@ -59,9 +59,9 @@ matrix:
             - libxcursor-dev
             - xorg-dev
       env:
-        - MATRIX_EVAL="CC=clang-7 && CXX=clang++-7" BUILD_TYPE=Debug ENGINE=Engine-GL
+        - MATRIX_EVAL="CC=clang-7 && CXX=clang++-7" BUILD_TYPE=Debug ENGINE=GL
         - EXTRA_FLAGS="-stdlib=libc++"
-    # Clang Release
+    # Clang Release GL
     - os: linux
       addons:
         apt:
@@ -81,7 +81,7 @@ matrix:
             - libxcursor-dev
             - xorg-dev
       env:
-        - MATRIX_EVAL="CC=clang-7 && CXX=clang++-7" BUILD_TYPE=Release ENGINE=Engine-GL
+        - MATRIX_EVAL="CC=clang-7 && CXX=clang++-7" BUILD_TYPE=Release ENGINE=GL
         - EXTRA_FLAGS="-stdlib=libc++"
     # Clang Thread sanitizer
     - os: linux
@@ -103,9 +103,9 @@ matrix:
             - libxcursor-dev
             - xorg-dev
       env:
-        - MATRIX_EVAL="CC=clang-7 && CXX=clang++-7" BUILD_TYPE=Debug ENGINE=Engine-GL
+        - MATRIX_EVAL="CC=clang-7 && CXX=clang++-7" BUILD_TYPE=Debug ENGINE=GL
         - EXTRA_FLAGS="-stdlib=libc++ -fsanitize=thread"
-    # Clang Release 
+    # Clang Adress sanitizer
     - os: linux
       addons:
         apt:
@@ -125,8 +125,82 @@ matrix:
             - libxcursor-dev
             - xorg-dev
       env:
-        - MATRIX_EVAL="CC=clang-7 && CXX=clang++-7" BUILD_TYPE=Debug ENGINE=Engine-GL
+        - MATRIX_EVAL="CC=clang-7 && CXX=clang++-7" BUILD_TYPE=Debug ENGINE=GL
         - EXTRA_FLAGS="-stdlib=libc++ -fsanitize=address"
+    # Debug Vk
+    - os: linux
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - gcc-8
+            - g++-8
+            - libgl1-mesa-dev
+            - libxinerama-dev
+            - libxcursor-dev
+            - xorg-dev
+      env:
+        - MATRIX_EVAL="CC=gcc-8 && CXX=g++-8" BUILD_TYPE=Debug ENGINE=Vk
+    # Release Vk
+    - os: linux
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - gcc-8
+            - g++-8
+            - libgl1-mesa-dev
+            - libxinerama-dev
+            - libxcursor-dev
+            - xorg-dev
+      env:
+        - MATRIX_EVAL="CC=gcc-8 && CXX=g++-8" BUILD_TYPE=Release ENGINE=Vk
+    # Clang Debug Vk
+    - os: linux
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-xenial-7
+          packages:
+            - clang-7
+            - libc++-7-dev
+            - libc++abi-7-dev
+            - lld-7
+            - llvm-7
+            - llvm-7-dev
+            - llvm-7-runtime
+            - libgl1-mesa-dev
+            - libxinerama-dev
+            - libxcursor-dev
+            - xorg-dev
+      env:
+        - MATRIX_EVAL="CC=clang-7 && CXX=clang++-7" BUILD_TYPE=Debug ENGINE=Vk
+        - EXTRA_FLAGS="-stdlib=libc++"
+    # Clang Release Vk
+    - os: linux
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-xenial-7
+          packages:
+            - clang-7
+            - libc++-7-dev
+            - libc++abi-7-dev
+            - lld-7
+            - llvm-7
+            - llvm-7-dev
+            - llvm-7-runtime
+            - libgl1-mesa-dev
+            - libxinerama-dev
+            - libxcursor-dev
+            - xorg-dev
+      env:
+        - MATRIX_EVAL="CC=clang-7 && CXX=clang++-7" BUILD_TYPE=Release ENGINE=Vk
+        - EXTRA_FLAGS="-stdlib=libc++"
         
 before_install:
     - eval "${MATRIX_EVAL}"
