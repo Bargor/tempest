@@ -1,7 +1,5 @@
 // This file is part of Tempest-engine project
 // Author: Karol Kontny
-#pragma once
-
 #include "device_queue.h"
 
 #include "queue_indices.h"
