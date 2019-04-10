@@ -32,7 +32,7 @@ namespace engine {
             shader_set shaders;
 
             for (std::int32_t idx = 0; idx < static_cast<std::int32_t>(shader::shader_type::enum_size); ++idx) {
-                std::string shaderFileName("shaders/" + name + "." +
+                std::string shaderFileName(std::string("shaders") + application::data_loader::separator + name + "." +
                                            get_shader_format(static_cast<shader::shader_type>(idx)));
                 std::string bytecodeFileName(name + "." + get_shader_format(static_cast<shader::shader_type>(idx)) +
                                              m_shaderExtension);
@@ -63,12 +63,12 @@ namespace engine {
                     auto bytecodeWriteTime = std::filesystem::last_write_time(shaderBytecodeFile.value());
 
                     if (sourceWriteTime > bytecodeWriteTime) { // we have to compile shader
-                        if (!compile_shader(shaderSourceFile.value().string(), bytecodeFileName)) {
+                        if (!compile_shader(bytecodeFileName, shaderSourceFile.value().string())) {
                             return std::nullopt;
                         }
                     }
                 } else { // only source file is available
-                    if (!compile_shader(shaderSourceFile.value().string(), bytecodeFileName)) {
+                    if (!compile_shader(bytecodeFileName, shaderSourceFile.value().string())) {
                         return std::nullopt;
                     }
                 }

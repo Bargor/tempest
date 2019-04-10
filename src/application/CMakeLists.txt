@@ -31,10 +31,10 @@ tst_add_library(application "${APPLICATION_HDRS}" "${APPLICATION_SRCS}")
 
 target_link_libraries(application PUBLIC tst::core PRIVATE glfw tst::device)
 
-if (ENGINE STREQUAL "Engine-Vk")
+if (ENGINE STREQUAL "Vk")
 	target_include_directories(application PRIVATE ${Vulkan_INCLUDE_DIRS})
 	target_link_libraries(application PRIVATE ${Vulkan_LIBRARIES})
-endif (ENGINE STREQUAL "Engine-Vk")
+endif (ENGINE STREQUAL "Vk")
 
 if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
 	target_link_libraries(application PRIVATE -lstdc++fs)

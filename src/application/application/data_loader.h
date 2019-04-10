@@ -27,6 +27,13 @@ namespace application {
     public:
         void add_search_path(std::string&& path) noexcept;
 
+	public:
+#ifdef _WIN32
+        static constexpr char separator = '\\';
+#else
+        static constexpr char separator = '/';
+#endif
+
     private:
         std::vector<std::filesystem::path> m_searchPaths;
     };
