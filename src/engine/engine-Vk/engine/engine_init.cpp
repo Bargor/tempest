@@ -187,7 +187,7 @@ namespace engine {
                         throw vulkan_exception("Device is not supporting required extenstions");
                     }
 
-                    auto indices = compute_queue_indices(device, surface);
+                    compute_queue_indices(device, surface);
 
                     return device;
 
@@ -350,7 +350,7 @@ namespace engine {
                                                          const vk::Extent2D& extent) {
             std::vector<vk::Framebuffer> framebuffers(imageViews.size());
 
-            for (int i = 0; i < imageViews.size(); i++) {
+            for (std::uint32_t i = 0; i < imageViews.size(); i++) {
                 vk::ImageView attachments[] = {imageViews[i]};
 
                 vk::FramebufferCreateInfo createInfo(
