@@ -20,7 +20,6 @@ configuration:
 install:
     - git submodule update --init --recursive
     - curl --silent --show-error --output VulkanSDK.exe https://vulkan.lunarg.com/sdk/download/1.1.82.1/windows/VulkanSDK-1.1.82.1-Installer.exe
-    - .\VulkanSDK.exe
 
 before_build:
     - cmd: echo %GENERATOR%
