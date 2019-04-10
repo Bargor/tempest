@@ -18,4 +18,7 @@ foreach(SOURCE_FILE ${TEST_CODE})
 	target_compile_options(${TEST_NAME} PRIVATE "$<$<CONFIG:RELWITHDEBINFO>:${RELWITHDEBINFO_COMPILE_OPTIONS}>")
 
 	target_link_libraries(${TEST_NAME} PRIVATE tst::core benchmark)
+	if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+		target_link_libraries(tst::core PRIVATE -pthread)
+	endif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
 endforeach(SOURCE_FILE)
