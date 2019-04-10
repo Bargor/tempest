@@ -7,7 +7,7 @@ foreach(SOURCE_FILE ${TEST_CODE})
 	get_filename_component(TEST_NAME ${SOURCE_FILE} NAME_WE)
 
 	#Compile files and link with objects
-	tst_add_executable(${TEST_NAME} "" "${TEST_CODE}"))
+	tst_add_executable(${TEST_NAME} "" "${TEST_CODE}")
 
 	target_link_libraries(${TEST_NAME} PRIVATE tst::core benchmark)
 	if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
