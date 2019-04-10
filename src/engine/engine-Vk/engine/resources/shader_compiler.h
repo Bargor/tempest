@@ -4,15 +4,10 @@
 
 #include "shader.h"
 
+#include <filesystem>
 #include <optional>
 #include <string>
 #include <vulkan/vulkan.hpp>
-
-namespace std {
-namespace filesystem {
-    class path;
-} // namespace filesystem
-} // namespace std
 
 namespace tst {
 
