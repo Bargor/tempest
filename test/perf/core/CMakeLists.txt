@@ -19,6 +19,6 @@ foreach(SOURCE_FILE ${TEST_CODE})
 
 	target_link_libraries(${TEST_NAME} PRIVATE tst::core benchmark)
 	if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-		target_link_libraries(${TEST_NAME} PRIVATE -pthread)
+		target_link_libraries(${TEST_NAME} PRIVATE -lpthread)
 	endif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
 endforeach(SOURCE_FILE)
