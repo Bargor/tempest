@@ -9,7 +9,9 @@
 #include "swap_chain.h"
 #include "vulkan_exception.h"
 
+#include <application/event_processor.h>
 #include <application/main_window.h>
+#include <util/variant.h>
 
 #ifdef NDEBUG
 constexpr bool enableValidationLayers = false;
@@ -27,8 +29,11 @@ namespace engine {
             return {};
     }
 
-    rendering_engine::rendering_engine(application::data_loader& dataLoader, application::main_window& mainWindow)
+    rendering_engine::rendering_engine(application::data_loader& dataLoader,
+                                       application::main_window& mainWindow,
+                                       application::event_processor& eventProcessor)
         : m_dataLoader(dataLoader)
+        , m_eventProcessor(eventProcessor)
         , m_scene(std::make_unique<scene::scene>())
         , m_requiredValidationLayers(generateLayers())
         , m_vulkanInstance(vulkan::init_Vulkan_instance(m_requiredValidationLayers, enableValidationLayers))
@@ -61,6 +66,10 @@ namespace engine {
                             m_logicalDevice.createSemaphore(vk::SemaphoreCreateInfo())})
         , m_inFlightFences({m_logicalDevice.createFence(vk::FenceCreateInfo(vk::FenceCreateFlagBits::eSignaled)),
                             m_logicalDevice.createFence(vk::FenceCreateInfo(vk::FenceCreateFlagBits::eSignaled))}) {
+
+        auto framebufferResizeCallback = [&](const application::event::arguments&) {};
+        m_eventProcessor.subscribe(core::variant_index<application::event::arguments, application::event::framebuffer>(),
+                                   std::move(framebufferResizeCallback));
     }
 
     rendering_engine::~rendering_engine() {
@@ -92,7 +101,7 @@ namespace engine {
     void rendering_engine::frame(size_t frameCount) {
         std::uint32_t currentFrame = frameCount % m_maxConcurrentFrames;
 
-		m_logicalDevice.waitForFences(1, &m_inFlightFences[currentFrame], true, std::numeric_limits<uint64_t>::max());
+        m_logicalDevice.waitForFences(1, &m_inFlightFences[currentFrame], true, std::numeric_limits<uint64_t>::max());
         m_logicalDevice.resetFences(1, &m_inFlightFences[currentFrame]);
 
         uint32_t imageIndex = m_logicalDevice

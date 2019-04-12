@@ -6,11 +6,9 @@
 #include "glfw_exception.h"
 #include "glfw_window.h"
 
+#include <GLFW/glfw3.h>
 #include <assert.h>
 #include <thread/main_thread.h>
-
-#include <GLFW/glfw3.h>
-
 
 namespace tst {
 namespace application {
@@ -30,14 +28,19 @@ namespace application {
         auto cursor_callback = [](GLFWwindow* window, const double xpos, const double ypos) {
             static_cast<input_processor*>(glfwGetWindowUserPointer(window))->cursor_pos_callback(window, xpos, ypos);
         };
-        auto mouse_button_callback = [](GLFWwindow* window, const std::int32_t button, const std::int32_t action, const std::int32_t mods) {
-            static_cast<input_processor*>(glfwGetWindowUserPointer(window))->mouse_button_callback(window, button, action, mods);
-        };
+        auto mouse_button_callback =
+            [](GLFWwindow* window, const std::int32_t button, const std::int32_t action, const std::int32_t mods) {
+                static_cast<input_processor*>(glfwGetWindowUserPointer(window))
+                    ->mouse_button_callback(window, button, action, mods);
+            };
         auto scroll_callback = [](GLFWwindow* window, const double xoffset, const double yoffset) {
             static_cast<input_processor*>(glfwGetWindowUserPointer(window))->mouse_scroll_callback(window, xoffset, yoffset);
         };
-        auto key_callback =
-            [](GLFWwindow* window, const std::int32_t key, const std::int32_t scancode, const std::int32_t action, const std::int32_t mods) {
+        auto key_callback = [](GLFWwindow* window,
+                               const std::int32_t key,
+                               const std::int32_t scancode,
+                               const std::int32_t action,
+                               const std::int32_t mods) {
             static_cast<input_processor*>(glfwGetWindowUserPointer(window))->key_callback(window, key, scancode, action, mods);
         };
         auto iconify_callback = [](GLFWwindow* window, const std::int32_t iconified) {
@@ -45,6 +48,9 @@ namespace application {
         };
         auto close_callback = [](GLFWwindow* window) {
             static_cast<input_processor*>(glfwGetWindowUserPointer(window))->window_close_callback(window);
+        };
+        auto framebuffer_size_callback = [](GLFWwindow* window, const std::int32_t width, const std::int32_t height) {
+            static_cast<input_processor*>(glfwGetWindowUserPointer(window))->framebuffer_size_callback(window, width, height);
         };
 
         if (glfwSetWindowFocusCallback(m_window, focus_callback) != nullptr) {
@@ -68,6 +74,9 @@ namespace application {
         if (glfwSetWindowCloseCallback(m_window, close_callback) != nullptr) {
             throw glfw_exception("Can't set window close callback");
         }
+        if (glfwSetFramebufferSizeCallback(m_window, framebuffer_size_callback) != nullptr) {
+            throw glfw_exception("Can't set framebuffer size callback");
+        }
     }
 
     void input_processor::process_events() {
@@ -87,10 +96,7 @@ namespace application {
         m_writeIndex &= m_mask;
     }
 
-    void input_processor::mouse_button_callback(GLFWwindow*,
-                                                std::int32_t button,
-                                                std::int32_t action,
-                                                std::int32_t mods) {
+    void input_processor::mouse_button_callback(GLFWwindow*, std::int32_t button, std::int32_t action, std::int32_t mods) {
         assert(std::this_thread::get_id() == core::main_thread::get_id());
         m_events[m_writeIndex++] = event{event::mouse_button{button, action, mods}};
         m_writeIndex &= m_mask;
@@ -102,8 +108,11 @@ namespace application {
         m_writeIndex &= m_mask;
     }
 
-    void input_processor::key_callback(
-        GLFWwindow*, const std::int32_t key, const std::int32_t scancode, const std::int32_t action, const std::int32_t mods) {
+    void input_processor::key_callback(GLFWwindow*,
+                                       const std::int32_t key,
+                                       const std::int32_t scancode,
+                                       const std::int32_t action,
+                                       const std::int32_t mods) {
         assert(std::this_thread::get_id() == core::main_thread::get_id());
         m_events[m_writeIndex++] = event{event::keyboard{key, scancode, action, mods}};
         m_writeIndex &= m_mask;
@@ -111,13 +120,21 @@ namespace application {
 
     void input_processor::window_iconify_callback(GLFWwindow*, const std::int32_t iconified) {
         assert(std::this_thread::get_id() == core::main_thread::get_id());
-        m_events[m_writeIndex++] = event{ event::iconify{iconified}};
+        m_events[m_writeIndex++] = event{event::iconify{iconified}};
         m_writeIndex &= m_mask;
     }
 
     void input_processor::window_close_callback(GLFWwindow*) {
         assert(std::this_thread::get_id() == core::main_thread::get_id());
         m_events[m_writeIndex++] = event{event::closed{}};
+        m_writeIndex &= m_mask;
+    }
+
+    void input_processor::framebuffer_size_callback(GLFWwindow*,
+                                                           const std::int32_t width,
+                                                           const std::int32_t height) {
+        assert(std::this_thread::get_id() == core::main_thread::get_id());
+        m_events[m_writeIndex++] = event{event::framebuffer{width, height}};
         m_writeIndex &= m_mask;
     }
 } // namespace application

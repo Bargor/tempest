@@ -41,13 +41,19 @@ namespace application {
             std::int32_t focused;
         };
 
+        struct framebuffer {
+            std::int32_t width;
+            std::int32_t height;
+        };
+
         struct closed {};
 
         struct time {
             std::chrono::microseconds time;
         };
 
-        using arguments = std::variant<mouse_pos, mouse_button, scroll, keyboard, focus, iconify, closed, time>;
+        using arguments =
+            std::variant<mouse_pos, mouse_button, scroll, keyboard, focus, iconify, closed, time, framebuffer>;
 
         arguments args;
     };

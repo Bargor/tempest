@@ -14,6 +14,7 @@ namespace tst {
 namespace application {
     class data_loader;
     class main_window;
+    class event_processor;
 } // namespace application
 
 namespace scene {
@@ -34,7 +35,9 @@ namespace engine {
         using ptr = std::unique_ptr<T>;
 
     public:
-        rendering_engine(application::data_loader& dataLoader, application::main_window& mainWindow);
+        rendering_engine(application::data_loader& dataLoader,
+                         application::main_window& mainWindow,
+                         application::event_processor& eventProcessor);
         ~rendering_engine();
 
         void frame(size_t frameCount);
@@ -43,6 +46,7 @@ namespace engine {
 
     private:
         application::data_loader& m_dataLoader;
+        application::event_processor& m_eventProcessor;
         ptr<scene::scene> m_scene;
         std::vector<const char*> m_requiredValidationLayers;
         std::vector<const char*> m_reqiuredDeviceExtensions = {VK_KHR_SWAPCHAIN_EXTENSION_NAME};
