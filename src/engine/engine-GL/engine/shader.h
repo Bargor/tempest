@@ -1,4 +1,4 @@
-// This file is part of Tempest-engine-GL project
+// This file is part of Tempest-engine project
 // Author: Karol Kontny
 #pragma once
 
@@ -11,7 +11,7 @@
 
 namespace tst {
 namespace engine {
-    namespace backend {
+    namespace opengl {
 
         enum class shader_type : std::uint8_t {
             vertex,
@@ -87,6 +87,6 @@ namespace engine {
             mutable bool m_linked;
         };
 
-    } // namespace backend
+    } // namespace opengl
 } // namespace engine
 } // namespace tst

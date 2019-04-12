@@ -13,7 +13,7 @@ namespace tst {
 namespace application {
 
     data_loader::data_loader() noexcept {
-        m_searchPaths.emplace_back("/");
+        m_searchPaths.emplace_back("./");
     }
 
     data_loader::data_loader(std::initializer_list<std::filesystem::path> pathList) noexcept : m_searchPaths(pathList) {
@@ -54,6 +54,10 @@ namespace application {
     }
 
     std::optional<std::filesystem::path> data_loader::find_file(const std::string& name) const {
+        return find_file(std::filesystem::path(name));
+    }
+
+	std::optional<std::filesystem::path> data_loader::find_file(const std::filesystem::path& name) const {
         for (auto path : m_searchPaths) {
             path += name;
             if (std::filesystem::exists(path)) {

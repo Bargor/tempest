@@ -14,6 +14,7 @@
 #include <cstdlib>
 #include <device/monitor.h>
 #include <fmt/printf.h>
+#include <filesystem>
 
 namespace tst {
 
@@ -43,6 +44,7 @@ void deinit_Glfw() {
 
 int main(int argc, const char** argv) {
     const tst::application::program_params params = tst::application::parse_arguments(argc, argv);
+    std::filesystem::current_path(params.executionDirectory);
     tst::init_Glfw();
     try {
         auto monitor = tst::init_monitor();

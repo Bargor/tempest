@@ -1,9 +1,9 @@
 # This file is part of Tempest project
 # Author: Karol Kontny
 
-if (ENGINE STREQUAL "Engine-GL")
-	add_subdirectory(backend-GL)
-elseif(ENGINE STREQUAL "Engine-Vk")
-	add_subdirectory(backend-Vk)
-endif(ENGINE STREQUAL "Engine-GL")
-add_subdirectory(engine-common)
+add_subdirectory(scene)
+if (ENGINE STREQUAL "GL")
+	add_subdirectory(engine-GL)
+elseif(ENGINE STREQUAL "Vk")
+	add_subdirectory(engine-Vk)
+endif(ENGINE STREQUAL "GL")

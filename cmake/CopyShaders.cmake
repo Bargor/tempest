@@ -1,0 +1,1 @@
+file(COPY ${SOURCE_DIR}/engine/shaders/ DESTINATION "${DESTINATION_DIR}")

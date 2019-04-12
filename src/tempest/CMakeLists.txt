@@ -4,6 +4,7 @@
 set(TEMPEST_HDRS
 	tempest/application.h
 	tempest/engine.h
+	tempest/context.h
 )
 
 set(TEMPEST_SRCS 
@@ -11,6 +12,12 @@ set(TEMPEST_SRCS
 	tempest/engine.cpp
 	tempest/main.cpp
 )
+
+if (ENGINE STREQUAL "GL")
+	list(APPEND TEMPEST_SRCS tempest/context_gl.cpp)
+elseif (ENGINE STREQUAL "Vk")
+	list(APPEND TEMPEST_SRCS tempest/context_vk.cpp)
+endif (ENGINE STREQUAL "GL")
 
 include(${PROJECT_SOURCE_DIR}/cmake/TstAddLibrary.cmake)
 

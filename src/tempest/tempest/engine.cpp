@@ -6,10 +6,8 @@
 #include <application/event_processor.h>
 #include <application/input_processor.h>
 #include <application/main_window.h>
-
-#include <util/variant.h>
-
 #include <engine/engine.h>
+#include <util/variant.h>
 
 namespace tst {
 namespace application {
@@ -22,7 +20,7 @@ namespace application {
         , m_inputProcessor(inputProcessor)
         , m_mainWindow(mainWindow)
         , m_dataLoader(dataLoader)
-        , m_renderingEngine(std::make_unique<engine::rendering_engine>(m_dataLoader))
+        , m_renderingEngine(std::make_unique<engine::rendering_engine>(m_dataLoader, mainWindow))
         , m_timer()
         , m_frameCount(0)
         , m_shouldClose(false) {
@@ -30,7 +28,8 @@ namespace application {
         m_eventProcessor.subscribe(core::variant_index<event::arguments, event::closed>(), std::move(close_callback));
     }
 
-    simulation_engine::~simulation_engine() {}
+    simulation_engine::~simulation_engine() {
+    }
 
     void simulation_engine::run() {
         auto lastFrameTime = std::chrono::microseconds::zero();
@@ -44,12 +43,13 @@ namespace application {
             m_eventProcessor.create_event(event{event::time{lastFrameTime}});
             m_frameCount++;
         }
+        m_renderingEngine->stop();
     }
 
     void simulation_engine::main_loop() {
         m_inputProcessor.process_events();
         m_eventProcessor.process_events();
-        m_renderingEngine->frame();
+        m_renderingEngine->frame(m_frameCount);
         m_mainWindow.end_frame();
     }
 

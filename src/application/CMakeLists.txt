@@ -30,6 +30,15 @@ include(${PROJECT_SOURCE_DIR}/cmake/TstAddLibrary.cmake)
 tst_add_library(application "${APPLICATION_HDRS}" "${APPLICATION_SRCS}")
 
 target_link_libraries(application PUBLIC tst::core PRIVATE glfw tst::device)
+
+if (ENGINE STREQUAL "Vk")
+	target_include_directories(application PRIVATE ${Vulkan_INCLUDE_DIRS})
+	target_link_libraries(application PRIVATE ${Vulkan_LIBRARIES})
+endif (ENGINE STREQUAL "Vk")
+
 if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
 	target_link_libraries(application PRIVATE -lstdc++fs)
 endif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+	target_link_libraries(application PRIVATE -lc++fs)
+endif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")

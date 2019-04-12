@@ -46,10 +46,10 @@ namespace engine {
         EXPECT_CALL(dataLoader, load_shader_source(std::string_view("test"), std::string_view("fs")))
             .WillRepeatedly(Return(testFragmentShaderCorrect));
 
-        auto compiler = shader_compiler(dataLoader);
-        backend::shaderTypesSet set;
-        set[static_cast<std::size_t>(backend::shader_type::vertex)] = true;
-        set[static_cast<std::size_t>(backend::shader_type::fragment)] = true;
+        auto compiler = opengl::shader_compiler(dataLoader);
+        opengl::shaderTypesSet set;
+        set[static_cast<std::size_t>(opengl::shader_type::vertex)] = true;
+        set[static_cast<std::size_t>(opengl::shader_type::fragment)] = true;
 
         EXPECT_TRUE(compiler.compile_program("test", set));
     }
@@ -62,10 +62,10 @@ namespace engine {
         EXPECT_CALL(dataLoader, load_shader_source(std::string_view("test"), std::string_view("fs")))
             .WillRepeatedly(Return(testFragmentShaderNotCorrect));
 
-        auto compiler = shader_compiler(dataLoader);
-        backend::shaderTypesSet set;
-        set[static_cast<std::size_t>(backend::shader_type::vertex)] = true;
-        set[static_cast<std::size_t>(backend::shader_type::fragment)] = true;
+        auto compiler = opengl::shader_compiler(dataLoader);
+        opengl::shaderTypesSet set;
+        set[static_cast<std::size_t>(opengl::shader_type::vertex)] = true;
+        set[static_cast<std::size_t>(opengl::shader_type::fragment)] = true;
 
         EXPECT_FALSE(compiler.compile_program("test", set));
     }
@@ -78,10 +78,10 @@ namespace engine {
         EXPECT_CALL(dataLoader, load_shader_source(std::string_view("test"), std::string_view("fs")))
             .WillRepeatedly(Return(""));
 
-        auto compiler = shader_compiler(dataLoader);
-        backend::shaderTypesSet set;
-        set[static_cast<std::size_t>(backend::shader_type::vertex)] = true;
-        set[static_cast<std::size_t>(backend::shader_type::fragment)] = true;
+        auto compiler = opengl::shader_compiler(dataLoader);
+        opengl::shaderTypesSet set;
+        set[static_cast<std::size_t>(opengl::shader_type::vertex)] = true;
+        set[static_cast<std::size_t>(opengl::shader_type::fragment)] = true;
 
         EXPECT_FALSE(compiler.compile_program("test", set));
     }

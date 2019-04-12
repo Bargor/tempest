@@ -1,9 +1,9 @@
-// This file is part of Tempest-engine-GL project
+// This file is part of Tempest-engine project
 // Author: Karol Kontny
 
 #include "shader.h"
 
-#include "api_exception.h"
+#include "opengl_exception.h"
 
 #include <algorithm/algorithm.h>
 #include <assert.h>
@@ -11,7 +11,7 @@
 
 namespace tst {
 namespace engine {
-    namespace backend {
+    namespace opengl {
 
         shader::shader(shader_type type, std::string&& source, const std::string_view name)
             : m_type(type)
@@ -20,7 +20,7 @@ namespace engine {
             , m_name(name)
             , m_compiled(false) {
             if (!m_shaderId) {
-                throw api_exception(fmt::format("Can't create shader, %s\n", name));
+                throw opengl_exception(fmt::format("Can't create shader, %s\n", name));
             }
         }
 
@@ -80,7 +80,7 @@ namespace engine {
         shader_program::shader_program(const std::string_view name)
             : m_programId(glCreateProgram()), m_name(name), m_linked(false) {
             if (!m_programId) {
-                throw api_exception(fmt::format("Can't create program, %s\n", name));
+                throw opengl_exception(fmt::format("Can't create program, %s\n", name));
             }
         }
 
@@ -127,6 +127,6 @@ namespace engine {
             return true;
         }
 
-    } // namespace backend
+    } // namespace opengl
 } // namespace engine
 } // namespace tst
