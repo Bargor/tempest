@@ -7,7 +7,7 @@ namespace tst {
 namespace application {
 
     std::array<main_window::window_hint, 31> setup_context(const std::int32_t refreshRate) {
-        std::array<main_window::window_hint, 31> hints = {{{GLFW_RESIZABLE, GLFW_FALSE},
+        std::array<main_window::window_hint, 31> hints = {{{GLFW_RESIZABLE, GLFW_TRUE},
                                                            {GLFW_VISIBLE, GLFW_TRUE},
                                                            {GLFW_DECORATED, GLFW_TRUE},
                                                            {GLFW_FOCUSED, GLFW_TRUE},

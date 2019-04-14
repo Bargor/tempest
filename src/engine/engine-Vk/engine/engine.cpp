@@ -11,6 +11,7 @@
 
 #include <application/event_processor.h>
 #include <application/main_window.h>
+#include <assert.h>
 #include <util/variant.h>
 
 #ifdef NDEBUG
@@ -66,13 +67,30 @@ namespace engine {
                             m_logicalDevice.createSemaphore(vk::SemaphoreCreateInfo())})
         , m_inFlightFences({m_logicalDevice.createFence(vk::FenceCreateInfo(vk::FenceCreateFlagBits::eSignaled)),
                             m_logicalDevice.createFence(vk::FenceCreateInfo(vk::FenceCreateFlagBits::eSignaled))}) {
+        auto framebufferResizeCallback = [&](const application::event::arguments& args) {
+            m_logicalDevice.waitIdle();
 
-        auto framebufferResizeCallback = [&](const application::event::arguments&) {};
+			cleanup_swap_chain_dependancies();
+
+            assert(std::holds_alternative<application::event::framebuffer>(args));
+            m_swapChain->rebuild_swap_chain(std::get<application::event::framebuffer>(args).width,
+                                            std::get<application::event::framebuffer>(args).height);
+            m_renderPass = vulkan::create_render_pass(m_logicalDevice, m_swapChain->get_format());
+            m_pipelineLayout = vulkan::create_pipeline_layout(m_logicalDevice);
+            m_pipeline = vulkan::create_graphics_pipeline(
+                m_logicalDevice, m_pipelineLayout, m_renderPass, m_swapChain->get_extent(), *m_shaderCompiler.get());
+            m_framebuffers = vulkan::create_framebuffers(
+                m_logicalDevice, m_renderPass, m_swapChain->get_image_views(), m_swapChain->get_extent());
+            m_commandBuffers = vulkan::create_command_buffers(
+                m_logicalDevice, m_commandPool, m_framebuffers, m_renderPass, m_pipeline, m_swapChain->get_extent());
+        };
         m_eventProcessor.subscribe(core::variant_index<application::event::arguments, application::event::framebuffer>(),
                                    std::move(framebufferResizeCallback));
     }
 
     rendering_engine::~rendering_engine() {
+        cleanup_swap_chain_dependancies();
+
         for (auto& semaphore : m_imageAvailable) {
             m_logicalDevice.destroySemaphore(semaphore);
         }
@@ -83,12 +101,6 @@ namespace engine {
             m_logicalDevice.destroyFence(fence);
         }
         m_logicalDevice.destroyCommandPool(m_commandPool);
-        for (auto framebuffer : m_framebuffers) {
-            m_logicalDevice.destroyFramebuffer(framebuffer);
-        }
-        m_logicalDevice.destroyPipeline(m_pipeline);
-        m_logicalDevice.destroyPipelineLayout(m_pipelineLayout);
-        m_logicalDevice.destroyRenderPass(m_renderPass);
         m_swapChain.reset();
         m_vulkanInstance.destroySurfaceKHR(m_windowSurface);
         m_logicalDevice.destroy();
@@ -98,28 +110,53 @@ namespace engine {
         m_vulkanInstance.destroy();
     }
 
+    void rendering_engine::cleanup_swap_chain_dependancies() {
+        for (auto framebuffer : m_framebuffers) {
+            m_logicalDevice.destroyFramebuffer(framebuffer);
+        }
+
+        m_logicalDevice.freeCommandBuffers(m_commandPool, m_commandBuffers);
+
+        m_logicalDevice.destroyPipeline(m_pipeline);
+        m_logicalDevice.destroyPipelineLayout(m_pipelineLayout);
+        m_logicalDevice.destroyRenderPass(m_renderPass);
+    }
+
     void rendering_engine::frame(size_t frameCount) {
         std::uint32_t currentFrame = frameCount % m_maxConcurrentFrames;
 
         m_logicalDevice.waitForFences(1, &m_inFlightFences[currentFrame], true, std::numeric_limits<uint64_t>::max());
-        m_logicalDevice.resetFences(1, &m_inFlightFences[currentFrame]);
 
-        uint32_t imageIndex = m_logicalDevice
-                                  .acquireNextImageKHR(m_swapChain->get_native_swapchain(),
-                                                       std::numeric_limits<uint64_t>::max(),
-                                                       m_imageAvailable[currentFrame],
-                                                       vk::Fence())
-                                  .value;
+        auto acquireResult = m_logicalDevice.acquireNextImageKHR(m_swapChain->get_native_swapchain(),
+                                                                 std::numeric_limits<uint64_t>::max(),
+                                                                 m_imageAvailable[currentFrame],
+                                                                 vk::Fence());
+
+        if (acquireResult.result == vk::Result::eErrorOutOfDateKHR) {
+            return;
+        } else if (acquireResult.result != vk::Result::eSuccess && acquireResult.result != vk::Result::eSuboptimalKHR) {
+            throw vulkan::vulkan_exception("Failed to acquire image");
+        }
+        std::uint32_t imageIndex = acquireResult.value;
 
         vk::Semaphore waitSemaphores[] = {m_imageAvailable[currentFrame]};
         vk::Semaphore signalSemaphores[] = {m_renderFinished[currentFrame]};
         vk::PipelineStageFlags waitStages[] = {vk::PipelineStageFlagBits::eColorAttachmentOutput};
 
         vk::SubmitInfo submitInfo(1, waitSemaphores, waitStages, 1, &m_commandBuffers[imageIndex], 1, signalSemaphores);
+
+        m_logicalDevice.resetFences(1, &m_inFlightFences[currentFrame]);
+
         m_deviceQueues->m_graphicsQueueHandle.submit(1, &submitInfo, m_inFlightFences[currentFrame]);
 
         vk::PresentInfoKHR presentInfo(1, signalSemaphores, 1, &m_swapChain->get_native_swapchain(), &imageIndex);
-        m_deviceQueues->m_presentationQueueHandle.presentKHR(presentInfo);
+        auto presentResult = m_deviceQueues->m_presentationQueueHandle.presentKHR(presentInfo);
+        if (presentResult == vk::Result::eErrorOutOfDateKHR || presentResult == vk::Result::eSuboptimalKHR) {
+            return;
+        } else if (presentResult != vk::Result::eSuccess) {
+            throw vulkan::vulkan_exception("Failed to present image");
+        }
+
     }
 
     void rendering_engine::stop() {

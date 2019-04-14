@@ -3,7 +3,6 @@
 #pragma once
 
 #include "engine_init.h"
-
 #include "queue_indices.h"
 
 #include <memory>
@@ -43,6 +42,10 @@ namespace engine {
         void frame(size_t frameCount);
         void start();
         void stop();
+
+    private:
+
+		void cleanup_swap_chain_dependancies();
 
     private:
         application::data_loader& m_dataLoader;
