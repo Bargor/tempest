@@ -5,6 +5,7 @@
 #include "engine_init.h"
 #include "queue_indices.h"
 
+#include <application/event_utils.h>
 #include <memory>
 #include <vector>
 #include <vulkan/vulkan.hpp>
@@ -34,8 +35,8 @@ namespace engine {
         using ptr = std::unique_ptr<T>;
 
     public:
-        rendering_engine(application::data_loader& dataLoader,
-                         application::main_window& mainWindow,
+        rendering_engine(application::main_window& mainWindow,
+                         application::data_loader& dataLoader,
                          application::event_processor& eventProcessor);
         ~rendering_engine();
 
@@ -44,10 +45,11 @@ namespace engine {
         void stop();
 
     private:
-
-		void cleanup_swap_chain_dependancies();
+        void cleanup_swap_chain_dependancies();
+        void recreate_swap_chain(const application::event::arguments& args);
 
     private:
+        application::main_window& m_mainWindow;
         application::data_loader& m_dataLoader;
         application::event_processor& m_eventProcessor;
         ptr<scene::scene> m_scene;
@@ -73,6 +75,8 @@ namespace engine {
         std::vector<vk::Semaphore> m_imageAvailable;
         std::vector<vk::Semaphore> m_renderFinished;
         std::vector<vk::Fence> m_inFlightFences;
+
+		bool m_framebufferResized;
     };
 
 } // namespace engine

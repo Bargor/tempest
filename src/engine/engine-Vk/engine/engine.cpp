@@ -30,16 +30,17 @@ namespace engine {
             return {};
     }
 
-    rendering_engine::rendering_engine(application::data_loader& dataLoader,
-                                       application::main_window& mainWindow,
+    rendering_engine::rendering_engine(application::main_window& mainWindow,
+                                       application::data_loader& dataLoader,
                                        application::event_processor& eventProcessor)
-        : m_dataLoader(dataLoader)
+        : m_mainWindow(mainWindow)
+        , m_dataLoader(dataLoader)
         , m_eventProcessor(eventProcessor)
         , m_scene(std::make_unique<scene::scene>())
         , m_requiredValidationLayers(generateLayers())
         , m_vulkanInstance(vulkan::init_Vulkan_instance(m_requiredValidationLayers, enableValidationLayers))
         , m_debugMessenger(vulkan::setup_debug_messenger(m_vulkanInstance, enableValidationLayers))
-        , m_windowSurface(vulkan::create_window_surface(m_vulkanInstance, mainWindow.get_handle()))
+        , m_windowSurface(vulkan::create_window_surface(m_vulkanInstance, m_mainWindow.get_handle()))
         , m_physicalDevice(vulkan::select_physical_device(m_vulkanInstance, m_windowSurface, m_reqiuredDeviceExtensions))
         , m_queueIndices(vulkan::compute_queue_indices(m_physicalDevice, m_windowSurface))
         , m_logicalDevice(vulkan::create_logical_device(
@@ -66,24 +67,9 @@ namespace engine {
         , m_renderFinished({m_logicalDevice.createSemaphore(vk::SemaphoreCreateInfo()),
                             m_logicalDevice.createSemaphore(vk::SemaphoreCreateInfo())})
         , m_inFlightFences({m_logicalDevice.createFence(vk::FenceCreateInfo(vk::FenceCreateFlagBits::eSignaled)),
-                            m_logicalDevice.createFence(vk::FenceCreateInfo(vk::FenceCreateFlagBits::eSignaled))}) {
-        auto framebufferResizeCallback = [&](const application::event::arguments& args) {
-            m_logicalDevice.waitIdle();
-
-			cleanup_swap_chain_dependancies();
-
-            assert(std::holds_alternative<application::event::framebuffer>(args));
-            m_swapChain->rebuild_swap_chain(std::get<application::event::framebuffer>(args).width,
-                                            std::get<application::event::framebuffer>(args).height);
-            m_renderPass = vulkan::create_render_pass(m_logicalDevice, m_swapChain->get_format());
-            m_pipelineLayout = vulkan::create_pipeline_layout(m_logicalDevice);
-            m_pipeline = vulkan::create_graphics_pipeline(
-                m_logicalDevice, m_pipelineLayout, m_renderPass, m_swapChain->get_extent(), *m_shaderCompiler.get());
-            m_framebuffers = vulkan::create_framebuffers(
-                m_logicalDevice, m_renderPass, m_swapChain->get_image_views(), m_swapChain->get_extent());
-            m_commandBuffers = vulkan::create_command_buffers(
-                m_logicalDevice, m_commandPool, m_framebuffers, m_renderPass, m_pipeline, m_swapChain->get_extent());
-        };
+                            m_logicalDevice.createFence(vk::FenceCreateInfo(vk::FenceCreateFlagBits::eSignaled))})
+        , m_framebufferResized(false) {
+        auto framebufferResizeCallback = [&](const application::event::arguments&) { m_framebufferResized = true; };
         m_eventProcessor.subscribe(core::variant_index<application::event::arguments, application::event::framebuffer>(),
                                    std::move(framebufferResizeCallback));
     }
@@ -122,6 +108,24 @@ namespace engine {
         m_logicalDevice.destroyRenderPass(m_renderPass);
     }
 
+    void rendering_engine::recreate_swap_chain(const application::event::arguments& args) {
+        m_logicalDevice.waitIdle();
+
+        cleanup_swap_chain_dependancies();
+
+        assert(std::holds_alternative<application::event::framebuffer>(args));
+        m_swapChain->rebuild_swap_chain(std::get<application::event::framebuffer>(args).width,
+                                        std::get<application::event::framebuffer>(args).height);
+        m_renderPass = vulkan::create_render_pass(m_logicalDevice, m_swapChain->get_format());
+        m_pipelineLayout = vulkan::create_pipeline_layout(m_logicalDevice);
+        m_pipeline = vulkan::create_graphics_pipeline(
+            m_logicalDevice, m_pipelineLayout, m_renderPass, m_swapChain->get_extent(), *m_shaderCompiler.get());
+        m_framebuffers = vulkan::create_framebuffers(
+            m_logicalDevice, m_renderPass, m_swapChain->get_image_views(), m_swapChain->get_extent());
+        m_commandBuffers = vulkan::create_command_buffers(
+            m_logicalDevice, m_commandPool, m_framebuffers, m_renderPass, m_pipeline, m_swapChain->get_extent());
+    }
+
     void rendering_engine::frame(size_t frameCount) {
         std::uint32_t currentFrame = frameCount % m_maxConcurrentFrames;
 
@@ -133,6 +137,10 @@ namespace engine {
                                                                  vk::Fence());
 
         if (acquireResult.result == vk::Result::eErrorOutOfDateKHR) {
+            std::int32_t width, height;
+            glfwGetFramebufferSize(m_mainWindow.get_handle(), &width, &height);
+            m_mainWindow.set_size({width, height});
+            recreate_swap_chain(application::event::framebuffer{width, height});
             return;
         } else if (acquireResult.result != vk::Result::eSuccess && acquireResult.result != vk::Result::eSuboptimalKHR) {
             throw vulkan::vulkan_exception("Failed to acquire image");
@@ -150,13 +158,27 @@ namespace engine {
         m_deviceQueues->m_graphicsQueueHandle.submit(1, &submitInfo, m_inFlightFences[currentFrame]);
 
         vk::PresentInfoKHR presentInfo(1, signalSemaphores, 1, &m_swapChain->get_native_swapchain(), &imageIndex);
-        auto presentResult = m_deviceQueues->m_presentationQueueHandle.presentKHR(presentInfo);
-        if (presentResult == vk::Result::eErrorOutOfDateKHR || presentResult == vk::Result::eSuboptimalKHR) {
+
+		if (m_framebufferResized) {
+            m_framebufferResized = false;
+            std::int32_t width, height;
+            glfwGetFramebufferSize(m_mainWindow.get_handle(), &width, &height);
+            m_mainWindow.set_size({width, height});
+            recreate_swap_chain(application::event::framebuffer{width, height});
             return;
+		}
+
+        auto presentResult = m_deviceQueues->m_presentationQueueHandle.presentKHR(presentInfo);
+        
+        if (presentResult == vk::Result::eErrorOutOfDateKHR || presentResult == vk::Result::eSuboptimalKHR ||
+            m_framebufferResized) {
+            std::int32_t width, height;
+            glfwGetFramebufferSize(m_mainWindow.get_handle(), &width, &height);
+            m_mainWindow.set_size({width, height});
+            recreate_swap_chain(application::event::framebuffer{width, height});
         } else if (presentResult != vk::Result::eSuccess) {
             throw vulkan::vulkan_exception("Failed to present image");
         }
-
     }
 
     void rendering_engine::stop() {
