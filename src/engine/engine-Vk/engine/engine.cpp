@@ -112,12 +112,10 @@ namespace engine {
 
         cleanup_swap_chain_dependancies();
 
-		m_swapChain.reset();
+        m_swapChain.reset();
 
-		auto newSwapChain = std::make_unique<vulkan::swap_chain>(m_physicalDevice,
-                                                                 m_logicalDevice,
-                                                                 m_windowSurface,
-                                                                 m_queueIndices, width, height);
+        auto newSwapChain = std::make_unique<vulkan::swap_chain>(
+            m_physicalDevice, m_logicalDevice, m_windowSurface, m_queueIndices, width, height);
 
         m_swapChain = std::move(newSwapChain);
         m_renderPass = vulkan::create_render_pass(m_logicalDevice, m_swapChain->get_format());
@@ -144,8 +142,7 @@ namespace engine {
             std::int32_t width, height;
             glfwGetFramebufferSize(m_mainWindow.get_handle(), &width, &height);
             m_mainWindow.set_size({width, height});
-            recreate_swap_chain(width, height
-        );
+            recreate_swap_chain(width, height);
             return;
         } else if (acquireResult.result != vk::Result::eSuccess && acquireResult.result != vk::Result::eSuboptimalKHR) {
             throw vulkan::vulkan_exception("Failed to acquire image");
@@ -165,7 +162,7 @@ namespace engine {
         vk::PresentInfoKHR presentInfo(1, signalSemaphores, 1, &m_swapChain->get_native_swapchain(), &imageIndex);
 
         auto presentResult = m_deviceQueues->m_presentationQueueHandle.presentKHR(presentInfo);
-        
+
         if (presentResult == vk::Result::eErrorOutOfDateKHR || presentResult == vk::Result::eSuboptimalKHR ||
             m_framebufferResized) {
             m_framebufferResized = false;

@@ -31,8 +31,6 @@ namespace engine {
 
             ~swap_chain();
 
-			void cleanup();
-
             const vk::Extent2D& get_extent() const;
             const vk::Format& get_format() const;
             const std::vector<vk::ImageView>& get_image_views() const;

@@ -178,15 +178,11 @@ namespace engine {
         }
 
         swap_chain::~swap_chain() {
-            cleanup();
-        }
-
-		void swap_chain::cleanup() {
             std::for_each(m_imageViews.begin(), m_imageViews.end(), [this](vk::ImageView& view) {
                 m_logicalDevice.destroyImageView(view);
             });
             m_logicalDevice.destroySwapchainKHR(m_swapChain);
-		}
+        }
 
     } // namespace vulkan
 } // namespace engine
