@@ -43,6 +43,7 @@ namespace application {
         core::timer m_timer;
         std::size_t m_frameCount;
         bool m_shouldClose;
+        bool m_windowMinimized;
     };
 
 } // namespace application

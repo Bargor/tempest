@@ -11,7 +11,6 @@
 
 #include <application/event_processor.h>
 #include <application/main_window.h>
-#include <assert.h>
 #include <util/variant.h>
 
 #ifdef NDEBUG
