@@ -46,7 +46,7 @@ namespace engine {
 
     private:
         void cleanup_swap_chain_dependancies();
-        void recreate_swap_chain(const application::event::arguments& args);
+        void recreate_swap_chain(std::uint32_t width, std::uint32_t height);
 
     private:
         application::main_window& m_mainWindow;

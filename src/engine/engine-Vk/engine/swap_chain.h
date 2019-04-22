@@ -32,7 +32,6 @@ namespace engine {
             ~swap_chain();
 
 			void cleanup();
-			void rebuild_swap_chain(std::uint32_t width, std::uint32_t height);
 
             const vk::Extent2D& get_extent() const;
             const vk::Format& get_format() const;

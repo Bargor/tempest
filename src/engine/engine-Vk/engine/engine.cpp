@@ -108,14 +108,19 @@ namespace engine {
         m_logicalDevice.destroyRenderPass(m_renderPass);
     }
 
-    void rendering_engine::recreate_swap_chain(const application::event::arguments& args) {
+    void rendering_engine::recreate_swap_chain(std::uint32_t width, std::uint32_t height) {
         m_logicalDevice.waitIdle();
 
         cleanup_swap_chain_dependancies();
 
-        assert(std::holds_alternative<application::event::framebuffer>(args));
-        m_swapChain->rebuild_swap_chain(std::get<application::event::framebuffer>(args).width,
-                                        std::get<application::event::framebuffer>(args).height);
+		m_swapChain.reset();
+
+		auto newSwapChain = std::make_unique<vulkan::swap_chain>(m_physicalDevice,
+                                                                 m_logicalDevice,
+                                                                 m_windowSurface,
+                                                                 m_queueIndices, width, height);
+
+        m_swapChain = std::move(newSwapChain);
         m_renderPass = vulkan::create_render_pass(m_logicalDevice, m_swapChain->get_format());
         m_pipelineLayout = vulkan::create_pipeline_layout(m_logicalDevice);
         m_pipeline = vulkan::create_graphics_pipeline(
@@ -140,7 +145,8 @@ namespace engine {
             std::int32_t width, height;
             glfwGetFramebufferSize(m_mainWindow.get_handle(), &width, &height);
             m_mainWindow.set_size({width, height});
-            recreate_swap_chain(application::event::framebuffer{width, height});
+            recreate_swap_chain(width, height
+        );
             return;
         } else if (acquireResult.result != vk::Result::eSuccess && acquireResult.result != vk::Result::eSuboptimalKHR) {
             throw vulkan::vulkan_exception("Failed to acquire image");
@@ -159,23 +165,15 @@ namespace engine {
 
         vk::PresentInfoKHR presentInfo(1, signalSemaphores, 1, &m_swapChain->get_native_swapchain(), &imageIndex);
 
-		if (m_framebufferResized) {
-            m_framebufferResized = false;
-            std::int32_t width, height;
-            glfwGetFramebufferSize(m_mainWindow.get_handle(), &width, &height);
-            m_mainWindow.set_size({width, height});
-            recreate_swap_chain(application::event::framebuffer{width, height});
-            return;
-		}
-
         auto presentResult = m_deviceQueues->m_presentationQueueHandle.presentKHR(presentInfo);
         
         if (presentResult == vk::Result::eErrorOutOfDateKHR || presentResult == vk::Result::eSuboptimalKHR ||
             m_framebufferResized) {
+            m_framebufferResized = false;
             std::int32_t width, height;
             glfwGetFramebufferSize(m_mainWindow.get_handle(), &width, &height);
             m_mainWindow.set_size({width, height});
-            recreate_swap_chain(application::event::framebuffer{width, height});
+            recreate_swap_chain(width, height);
         } else if (presentResult != vk::Result::eSuccess) {
             throw vulkan::vulkan_exception("Failed to present image");
         }

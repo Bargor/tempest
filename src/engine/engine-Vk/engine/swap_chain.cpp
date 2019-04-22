@@ -188,21 +188,6 @@ namespace engine {
             m_logicalDevice.destroySwapchainKHR(m_swapChain);
 		}
 
-		void swap_chain::rebuild_swap_chain(std::uint32_t width, std::uint32_t height) {
-            cleanup();
-            m_extent = choose_extent(m_supportDetails.capabilities, width, height);
-            m_swapChain = create_swap_chain(m_windowSurface,
-                                          m_logicalDevice,
-                                          m_indices,
-                                          m_supportDetails,
-                                          m_surfaceFormat,
-                                          m_presentationMode,
-                                          m_extent,
-                                          m_imagesCount);
-            m_images = m_logicalDevice.getSwapchainImagesKHR(m_swapChain);
-            m_imageViews = create_image_views(m_logicalDevice, m_surfaceFormat, m_images);
-		}
-
     } // namespace vulkan
 } // namespace engine
 } // namespace tst
