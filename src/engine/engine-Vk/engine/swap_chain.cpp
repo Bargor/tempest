@@ -160,9 +160,9 @@ namespace engine {
                                std::uint32_t height)
             : m_logicalDevice(logicalDevice)
             , m_windowSurface(windowSurface)
+            , m_indices(indices)
             , m_supportDetails(check_support(physicalDevice, m_windowSurface))
             , m_surfaceFormat(choose_surface_format(m_supportDetails.formats))
-            , m_indices(indices)
             , m_presentationMode(choose_presentation_mode(m_supportDetails.presentModes))
             , m_extent(choose_extent(m_supportDetails.capabilities, width, height))
             , m_swapChain(create_swap_chain(m_windowSurface,
