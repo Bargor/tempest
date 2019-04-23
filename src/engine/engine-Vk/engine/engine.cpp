@@ -128,6 +128,15 @@ namespace engine {
             m_logicalDevice, m_commandPool, m_framebuffers, m_renderPass, m_pipeline, m_swapChain->get_extent());
     }
 
+    void rendering_engine::update_framebuffer() {
+        m_framebufferResized = false;
+
+        std::int32_t width, height;
+        glfwGetFramebufferSize(m_mainWindow.get_handle(), &width, &height);
+        m_mainWindow.set_size({width, height});
+        recreate_swap_chain(width, height);
+    }
+
     void rendering_engine::frame(size_t frameCount) {
         std::uint32_t currentFrame = frameCount % m_maxConcurrentFrames;
 
@@ -139,10 +148,7 @@ namespace engine {
                                                                  vk::Fence());
 
         if (acquireResult.result == vk::Result::eErrorOutOfDateKHR) {
-            std::int32_t width, height;
-            glfwGetFramebufferSize(m_mainWindow.get_handle(), &width, &height);
-            m_mainWindow.set_size({width, height});
-            recreate_swap_chain(width, height);
+            update_framebuffer();
             return;
         } else if (acquireResult.result != vk::Result::eSuccess && acquireResult.result != vk::Result::eSuboptimalKHR) {
             throw vulkan::vulkan_exception("Failed to acquire image");
@@ -165,11 +171,7 @@ namespace engine {
 
         if (presentResult == vk::Result::eErrorOutOfDateKHR || presentResult == vk::Result::eSuboptimalKHR ||
             m_framebufferResized) {
-            m_framebufferResized = false;
-            std::int32_t width, height;
-            glfwGetFramebufferSize(m_mainWindow.get_handle(), &width, &height);
-            m_mainWindow.set_size({width, height});
-            recreate_swap_chain(width, height);
+            update_framebuffer();
         } else if (presentResult != vk::Result::eSuccess) {
             throw vulkan::vulkan_exception("Failed to present image");
         }
