@@ -39,11 +39,7 @@ namespace application {
     }
 
     glfw_window::~glfw_window() {
-        if (m_windowHandle) {
-            assert(std::this_thread::get_id() == core::main_thread::get_id());
-            glfwDestroyWindow(m_windowHandle);
-            m_windowHandle = nullptr;
-        }
+        close();
     }
 
     void glfw_window::set_size(const window_size& size) noexcept {

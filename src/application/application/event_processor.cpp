@@ -9,9 +9,9 @@ namespace tst {
 namespace application {
 
     void event_processor::create_event(event&& event) noexcept {
-        m_events[m_readIndex++] = event;
-        m_readIndex &= m_mask;
-        assert(m_readIndex < m_queueSize);
+        m_events[m_writeIndex++] = event;
+        m_writeIndex &= m_mask;
+        assert(m_writeIndex < m_queueSize);
     }
 
     void event_processor::subscribe(const std::size_t type,

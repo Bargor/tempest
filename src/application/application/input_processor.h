@@ -27,11 +27,9 @@ namespace application {
             GLFWwindow*, const std::int32_t key, const std::int32_t scancode, const std::int32_t action, const std::int32_t mods);
         void window_iconify_callback(GLFWwindow*, const std::int32_t iconified);
         void window_close_callback(GLFWwindow*);
+        void framebuffer_size_callback(GLFWwindow*, const std::int32_t width, const std::int32_t hegiht);
 
-        std::array<event, event_processor::m_queueSize>& m_events;
-        std::uint32_t& m_writeIndex;
-        const std::uint32_t& m_queueSize;
-        const std::uint32_t m_mask;
+        event_processor& m_eventProcessor;
         GLFWwindow* const m_window;
     };
 

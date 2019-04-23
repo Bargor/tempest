@@ -7,6 +7,7 @@
 #include "vulkan_exception.h"
 
 #include <algorithm>
+#include <application/event_processor.h>
 
 namespace tst {
 namespace engine {
@@ -114,6 +115,30 @@ namespace engine {
                 }
             }
 
+			std::vector<vk::ImageView> create_image_views(const vk::Device& logicalDevice,
+                                                          const vk::SurfaceFormatKHR& surfaceFormat,
+                                                          const std::vector<vk::Image>& m_images) {
+                std::vector<vk::ImageView> imageViews(m_images.size());
+
+                for (std::uint32_t idx = 0; idx < imageViews.size(); idx++) {
+                    vk::ImageAspectFlags flags = vk::ImageAspectFlagBits::eColor;
+
+                    vk::ImageViewCreateInfo createInfo(vk::ImageViewCreateFlags(),
+                                                       m_images[idx],
+                                                       vk::ImageViewType::e2D,
+                                                       surfaceFormat.format,
+                                                       vk::ComponentMapping(),
+                                                       vk::ImageSubresourceRange(flags, 0, 1, 0, 1));
+
+                    try {
+                        imageViews[idx] = logicalDevice.createImageView(createInfo);
+                    } catch (std::runtime_error&) {
+                        throw vulkan_exception("Failed to create image views!");
+                    }
+                }
+                return imageViews;
+			}
+
             swap_chain::support_details check_support(const vk::PhysicalDevice& physicalDevice,
                                                       const vk::SurfaceKHR& m_windowSurface) {
                 swap_chain::support_details details;
@@ -129,44 +154,27 @@ namespace engine {
 
         swap_chain::swap_chain(const vk::PhysicalDevice& physicalDevice,
                                const vk::Device& logicalDevice,
-                               const vk::SurfaceKHR& m_windowSurface,
+                               const vk::SurfaceKHR& windowSurface,
                                const queue_family_indices& indices,
                                std::uint32_t width,
                                std::uint32_t height)
-            : m_supportDetails(check_support(physicalDevice, m_windowSurface))
+            : m_logicalDevice(logicalDevice)
+            , m_windowSurface(windowSurface)
+            , m_indices(indices)
+            , m_supportDetails(check_support(physicalDevice, m_windowSurface))
             , m_surfaceFormat(choose_surface_format(m_supportDetails.formats))
             , m_presentationMode(choose_presentation_mode(m_supportDetails.presentModes))
             , m_extent(choose_extent(m_supportDetails.capabilities, width, height))
-            , m_logicalDevice(logicalDevice)
             , m_swapChain(create_swap_chain(m_windowSurface,
                                             logicalDevice,
-                                            indices,
+                                            m_indices,
                                             m_supportDetails,
                                             m_surfaceFormat,
                                             m_presentationMode,
                                             m_extent,
                                             m_imagesCount)) {
-
             m_images = m_logicalDevice.getSwapchainImagesKHR(m_swapChain);
-            m_imageViews.resize(m_imagesCount);
-
-            for (std::uint32_t idx = 0; idx < m_imageViews.size(); idx++) {
-
-                vk::ImageAspectFlags flags = vk::ImageAspectFlagBits::eColor;
-
-                vk::ImageViewCreateInfo createInfo(vk::ImageViewCreateFlags(),
-                                                   m_images[idx],
-                                                   vk::ImageViewType::e2D,
-                                                   m_surfaceFormat.format,
-                                                   vk::ComponentMapping(),
-                                                   vk::ImageSubresourceRange(flags, 0, 1, 0, 1));
-
-                try {
-                    m_imageViews[idx] = logicalDevice.createImageView(createInfo);
-                } catch (std::runtime_error&) {
-                    throw vulkan_exception("Failed to create image views!");
-                }
-            }
+            m_imageViews = create_image_views(m_logicalDevice, m_surfaceFormat, m_images);
         }
 
         swap_chain::~swap_chain() {

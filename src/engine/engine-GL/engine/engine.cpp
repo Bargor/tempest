@@ -3,10 +3,10 @@
 
 #include "engine.h"
 
-#include <scene/scene.h>
-
-#include <fmt/printf.h>
 #include <GL/glew.h>
+#include <application/event_processor.h>
+#include <fmt/printf.h>
+#include <scene/scene.h>
 
 namespace tst {
 namespace engine {
@@ -20,15 +20,18 @@ namespace engine {
         }
     }
 
-    rendering_engine::rendering_engine(application::data_loader& dataLoader, application::main_window&)
+    rendering_engine::rendering_engine(application::main_window&,
+                                       application::data_loader& dataLoader,
+                                       application::event_processor&)
         : m_dataLoader(dataLoader), m_scene(std::make_unique<scene::scene>()) {
         init_OpenGL();
     }
 
     rendering_engine::~rendering_engine() {
     }
-	
-	void rendering_engine::stop() {}
+
+    void rendering_engine::stop() {
+    }
 
     void rendering_engine::frame(size_t) {
     }

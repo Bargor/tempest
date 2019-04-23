@@ -3,9 +3,9 @@
 #pragma once
 
 #include "engine_init.h"
-
 #include "queue_indices.h"
 
+#include <application/event_utils.h>
 #include <memory>
 #include <vector>
 #include <vulkan/vulkan.hpp>
@@ -14,6 +14,7 @@ namespace tst {
 namespace application {
     class data_loader;
     class main_window;
+    class event_processor;
 } // namespace application
 
 namespace scene {
@@ -34,7 +35,9 @@ namespace engine {
         using ptr = std::unique_ptr<T>;
 
     public:
-        rendering_engine(application::data_loader& dataLoader, application::main_window& mainWindow);
+        rendering_engine(application::main_window& mainWindow,
+                         application::data_loader& dataLoader,
+                         application::event_processor& eventProcessor);
         ~rendering_engine();
 
         void frame(size_t frameCount);
@@ -42,7 +45,14 @@ namespace engine {
         void stop();
 
     private:
+        void cleanup_swap_chain_dependancies();
+        void recreate_swap_chain(std::uint32_t width, std::uint32_t height);
+        void update_framebuffer();
+
+    private:
+        application::main_window& m_mainWindow;
         application::data_loader& m_dataLoader;
+        application::event_processor& m_eventProcessor;
         ptr<scene::scene> m_scene;
         std::vector<const char*> m_requiredValidationLayers;
         std::vector<const char*> m_reqiuredDeviceExtensions = {VK_KHR_SWAPCHAIN_EXTENSION_NAME};
@@ -66,6 +76,8 @@ namespace engine {
         std::vector<vk::Semaphore> m_imageAvailable;
         std::vector<vk::Semaphore> m_renderFinished;
         std::vector<vk::Fence> m_inFlightFences;
+
+		bool m_framebufferResized;
     };
 
 } // namespace engine

@@ -20,12 +20,18 @@ namespace application {
         , m_inputProcessor(inputProcessor)
         , m_mainWindow(mainWindow)
         , m_dataLoader(dataLoader)
-        , m_renderingEngine(std::make_unique<engine::rendering_engine>(m_dataLoader, mainWindow))
+        , m_renderingEngine(std::make_unique<engine::rendering_engine>(mainWindow, m_dataLoader, eventProcessor))
         , m_timer()
         , m_frameCount(0)
-        , m_shouldClose(false) {
+        , m_shouldClose(false)
+        , m_windowMinimized(false) {
         auto close_callback = [&](const event::arguments&) { m_shouldClose = true; };
+        auto iconify_callback = [&](const event::arguments& args) {
+            assert(std::holds_alternative<application::event::iconify>(args));
+            m_windowMinimized = std::get<application::event::iconify>(args).iconified;
+        };
         m_eventProcessor.subscribe(core::variant_index<event::arguments, event::closed>(), std::move(close_callback));
+        m_eventProcessor.subscribe(core::variant_index<event::arguments, event::iconify>(), std::move(iconify_callback));
     }
 
     simulation_engine::~simulation_engine() {
@@ -49,8 +55,10 @@ namespace application {
     void simulation_engine::main_loop() {
         m_inputProcessor.process_events();
         m_eventProcessor.process_events();
-        m_renderingEngine->frame(m_frameCount);
-        m_mainWindow.end_frame();
+        if (!m_windowMinimized) {
+            m_renderingEngine->frame(m_frameCount);
+            m_mainWindow.end_frame();
+        }
     }
 
 } // namespace application
