@@ -5,6 +5,7 @@
 
 #include "queue_indices.h"
 #include "resources/shader_compiler.h"
+#include "vertex_format.h"
 #include "vulkan_exception.h"
 
 #include <GLFW/glfw3.h>
@@ -273,8 +274,13 @@ namespace engine {
                                               const vk::RenderPass& renderPass,
                                               const vk::Extent2D& extent,
                                               const vulkan::shader_compiler& shaderCompiler) {
-            vk::PipelineVertexInputStateCreateInfo vertexInfo(
-                vk::PipelineVertexInputStateCreateFlags(), 0, nullptr, 0, nullptr);
+            vertex_format format;
+
+            vk::PipelineVertexInputStateCreateInfo vertexInfo(vk::PipelineVertexInputStateCreateFlags(),
+                                                              1,
+                                                              &format.get_binding_description(),
+                                                              static_cast<std::uint32_t>(format.get_attribute_descriptions().size()),
+                                                              format.get_attribute_descriptions().data());
             vk::PipelineInputAssemblyStateCreateInfo assemblyInfo(
                 vk::PipelineInputAssemblyStateCreateFlags(), vk::PrimitiveTopology::eTriangleList, false);
 
