@@ -149,6 +149,28 @@ matrix:
       env:
         - MATRIX_EVAL="CC=clang-8 && CXX=clang++-8" BUILD_TYPE=Debug ENGINE=GL
         - EXTRA_FLAGS="-stdlib=libc++ -fsanitize=memory"
+    # Clang Undefined Behavior sanitizer
+    - os: linux
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-xenial-8
+          packages:
+            - clang-8
+            - libc++-8-dev
+            - libc++abi-8-dev
+            - lld-8
+            - llvm-8
+            - llvm-8-dev
+            - llvm-8-runtime
+            - libgl1-mesa-dev
+            - libxinerama-dev
+            - libxcursor-dev
+            - xorg-dev
+      env:
+        - MATRIX_EVAL="CC=clang-8 && CXX=clang++-8" BUILD_TYPE=Debug ENGINE=GL
+        - EXTRA_FLAGS="-stdlib=libc++ -fsanitize=undefined"
     # Debug Vk
     - os: linux
       addons:
