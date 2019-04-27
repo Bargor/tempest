@@ -7,6 +7,7 @@
 #include "resources/shader_compiler.h"
 #include "scene/scene.h"
 #include "swap_chain.h"
+#include "vertex_buffer.h"
 #include "vulkan_exception.h"
 
 #include <application/event_processor.h>
@@ -59,8 +60,20 @@ namespace engine {
         , m_framebuffers(vulkan::create_framebuffers(
               m_logicalDevice, m_renderPass, m_swapChain->get_image_views(), m_swapChain->get_extent()))
         , m_commandPool(vulkan::create_command_pool(m_logicalDevice, m_queueIndices))
-        , m_commandBuffers(vulkan::create_command_buffers(
-              m_logicalDevice, m_commandPool, m_framebuffers, m_renderPass, m_pipeline, m_swapChain->get_extent()))
+        , m_vertexBuffer(std::make_unique<vulkan::vertex_buffer>(
+              m_logicalDevice,
+              m_physicalDevice,
+              vulkan::vertex_format(),
+              std::vector<vulkan::vertex>({{{0.0f, -0.5f}, {1.0f, 1.0f, 1.0f}},
+                                           {{0.5f, 0.5f}, {0.0f, 1.0f, 0.0f}},
+                                           {{-0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}}})))
+        , m_commandBuffers(vulkan::create_command_buffers(m_logicalDevice,
+                                                          m_commandPool,
+                                                          m_framebuffers,
+                                                          m_renderPass,
+                                                          m_pipeline,
+                                                          m_swapChain->get_extent(),
+                                                          *m_vertexBuffer.get()))
         , m_imageAvailable({m_logicalDevice.createSemaphore(vk::SemaphoreCreateInfo()),
                             m_logicalDevice.createSemaphore(vk::SemaphoreCreateInfo())})
         , m_renderFinished({m_logicalDevice.createSemaphore(vk::SemaphoreCreateInfo()),
@@ -76,6 +89,7 @@ namespace engine {
     rendering_engine::~rendering_engine() {
         cleanup_swap_chain_dependancies();
 
+        m_vertexBuffer.reset();
         for (auto& semaphore : m_imageAvailable) {
             m_logicalDevice.destroySemaphore(semaphore);
         }
@@ -124,8 +138,13 @@ namespace engine {
             m_logicalDevice, m_pipelineLayout, m_renderPass, m_swapChain->get_extent(), *m_shaderCompiler.get());
         m_framebuffers = vulkan::create_framebuffers(
             m_logicalDevice, m_renderPass, m_swapChain->get_image_views(), m_swapChain->get_extent());
-        m_commandBuffers = vulkan::create_command_buffers(
-            m_logicalDevice, m_commandPool, m_framebuffers, m_renderPass, m_pipeline, m_swapChain->get_extent());
+        m_commandBuffers = vulkan::create_command_buffers(m_logicalDevice,
+                                                          m_commandPool,
+                                                          m_framebuffers,
+                                                          m_renderPass,
+                                                          m_pipeline,
+                                                          m_swapChain->get_extent(),
+                                                          *m_vertexBuffer.get());
     }
 
     void rendering_engine::update_framebuffer() {

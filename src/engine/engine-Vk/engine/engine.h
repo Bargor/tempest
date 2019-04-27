@@ -28,6 +28,7 @@ namespace engine {
         class device_queues;
         class swap_chain;
         class shader_compiler;
+        class vertex_buffer;
     } // namespace vulkan
 
     class rendering_engine {
@@ -72,6 +73,7 @@ namespace engine {
         vk::Pipeline m_pipeline;
         std::vector<vk::Framebuffer> m_framebuffers;
         vk::CommandPool m_commandPool;
+        ptr<vulkan::vertex_buffer> m_vertexBuffer;
         std::vector<vk::CommandBuffer> m_commandBuffers;
         std::vector<vk::Semaphore> m_imageAvailable;
         std::vector<vk::Semaphore> m_renderFinished;

@@ -5,8 +5,9 @@
 
 #include "queue_indices.h"
 #include "resources/shader_compiler.h"
-#include "vertex_format.h"
+#include "vertex_buffer.h"
 #include "vulkan_exception.h"
+
 
 #include <GLFW/glfw3.h>
 #include <algorithm/algorithm.h>
@@ -379,7 +380,7 @@ namespace engine {
                                                               const std::vector<vk::Framebuffer>& framebuffers,
                                                               const vk::RenderPass& renderPass,
                                                               const vk::Pipeline& pipeline,
-                                                              const vk::Extent2D& extent) {
+                                                              const vk::Extent2D& extent, const vertex_buffer& vertexBuffer) {
             vk::CommandBufferAllocateInfo bufferAllocateInfo(
                 commandPool, vk::CommandBufferLevel::ePrimary, static_cast<std::uint32_t>(framebuffers.size()));
 
@@ -395,7 +396,11 @@ namespace engine {
                     renderPass, framebuffers[i], vk::Rect2D({0, 0}, extent), 1, &clearColor);
 
                 commandBuffers[i].beginRenderPass(renderPassInfo, vk::SubpassContents::eInline);
-                commandBuffers[i].bindPipeline(vk::PipelineBindPoint::eGraphics, pipeline);
+                commandBuffers[i].bindPipeline(vk::PipelineBindPoint::eGraphics, pipeline); 
+
+				std::vector<vk::Buffer> vertexBuffers = {vertexBuffer.get_handle()};
+                std::vector<vk::DeviceSize> offsets = {0};
+                commandBuffers[i].bindVertexBuffers(0, vertexBuffers, offsets);
                 commandBuffers[i].draw(3, 1, 0, 0);
                 commandBuffers[i].endRenderPass();
                 commandBuffers[i].end();

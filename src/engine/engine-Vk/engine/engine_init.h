@@ -15,6 +15,7 @@ namespace engine {
 
         struct queue_family_indices;
         class shader_compiler;
+        class vertex_buffer;
 
         template<typename T>
         using ptr = std::unique_ptr<T>;
@@ -56,7 +57,8 @@ namespace engine {
                                                               const std::vector<vk::Framebuffer>& framebuffers,
                                                               const vk::RenderPass& renderPass,
                                                               const vk::Pipeline& pipeline,
-                                                              const vk::Extent2D& extent);
+                                                              const vk::Extent2D& extent,
+                                                              const vertex_buffer& vertexBuffer);
 
         void DestroyDebugUtilsMessengerEXT(vk::Instance& instance,
                                            vk::DebugUtilsMessengerEXT& debugMessenger,

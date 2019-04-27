@@ -10,7 +10,7 @@ namespace engine {
 		vertex_format::vertex_format()
             : m_bindingDescription(vk::VertexInputBindingDescription(0, sizeof(vertex), vk::VertexInputRate::eVertex))
             , m_attributeDescriptions({{{0, 0, vk::Format::eR32G32Sfloat, offsetof(vertex, pos)},
-                                        {0, 1, vk::Format::eR32G32B32Sfloat, offsetof(vertex, color)}}}) {
+                                        {1, 0, vk::Format::eR32G32B32Sfloat, offsetof(vertex, color)}}}) {
             
         }
 
