@@ -7,6 +7,7 @@
 #include <application/input_processor.h>
 #include <application/main_window.h>
 #include <engine/engine.h>
+#include <fmt/printf.h>
 #include <util/variant.h>
 
 namespace tst {
@@ -24,7 +25,9 @@ namespace application {
         , m_timer()
         , m_frameCount(0)
         , m_shouldClose(false)
-        , m_windowMinimized(false) {
+        , m_windowMinimized(false)
+        , m_lastSecondTimer(std::chrono::microseconds::zero())
+        , m_lastSecondFrames(0) {
         auto close_callback = [&](const event::arguments&) { m_shouldClose = true; };
         auto iconify_callback = [&](const event::arguments& args) {
             assert(std::holds_alternative<application::event::iconify>(args));
@@ -48,6 +51,13 @@ namespace application {
             m_timer.reset();
             m_eventProcessor.create_event(event{event::time{lastFrameTime}});
             m_frameCount++;
+            m_lastSecondTimer += lastFrameTime;
+            m_lastSecondFrames++;
+            if (m_lastSecondTimer > std::chrono::seconds(1)) {
+                fmt::printf("FPS: %d\n", m_lastSecondFrames);
+                m_lastSecondFrames = 0;
+                m_lastSecondTimer = std::chrono::microseconds::zero();
+            }
         }
         m_renderingEngine->stop();
     }
