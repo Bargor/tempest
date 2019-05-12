@@ -2,6 +2,7 @@
 // Author: Karol Kontny
 #pragma once
 
+#include "buffer.h"
 #include "vertex_format.h"
 
 #include <vector>
@@ -10,26 +11,22 @@ namespace tst {
 namespace engine {
     namespace vulkan {
 
-        class vertex_buffer {
+        class vertex_buffer : public buffer {
         public:
-            vertex_buffer(const vk::Device& device,
-                          const vk::PhysicalDevice& physicalDevice,
-                          const vertex_format& format,
-                          std::vector<vertex>&& vertices);
+            vertex_buffer(device& device, const vertex_format& format, std::vector<vertex>&& vertices);
             ~vertex_buffer();
 
-			vk::Buffer get_handle() const;
+			std::uint32_t get_vertex_count() const;
 
         private:
-            std::uint32_t findMemoryType(uint32_t typeFilter, vk::MemoryPropertyFlags properties) const;
         private:
-            const vk::Device& m_device;
-            const vk::PhysicalDevice& m_physicalDevice;
             vertex_format m_format;
             std::vector<vertex> m_vertices;
-            vk::Buffer m_buffer;
-            vk::DeviceMemory m_bufferMemory;
         };
+
+		inline std::uint32_t vertex_buffer::get_vertex_count() const {
+            return static_cast<std::uint32_t>(m_vertices.size());
+		}
 
     } // namespace vulkan
 } // namespace engine

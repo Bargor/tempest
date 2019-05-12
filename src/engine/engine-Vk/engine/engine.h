@@ -24,7 +24,7 @@ namespace scene {
 namespace engine {
 
     namespace vulkan {
-        class physical_device;
+		class device;
         class device_queues;
         class swap_chain;
         class shader_compiler;
@@ -55,16 +55,10 @@ namespace engine {
         application::data_loader& m_dataLoader;
         application::event_processor& m_eventProcessor;
         ptr<scene::scene> m_scene;
-        std::vector<const char*> m_requiredValidationLayers;
         std::vector<const char*> m_reqiuredDeviceExtensions = {VK_KHR_SWAPCHAIN_EXTENSION_NAME};
         static constexpr std::uint32_t m_maxConcurrentFrames = 2;
 
-        vk::Instance m_vulkanInstance;
-        vk::DebugUtilsMessengerEXT m_debugMessenger;
-        vk::SurfaceKHR m_windowSurface;
-        vk::PhysicalDevice m_physicalDevice;
-        vulkan::queue_family_indices m_queueIndices;
-        vk::Device m_logicalDevice;
+		ptr<vulkan::device> m_device;
         ptr<vulkan::device_queues> m_deviceQueues;
         ptr<vulkan::swap_chain> m_swapChain;
         ptr<vulkan::shader_compiler> m_shaderCompiler;
@@ -79,7 +73,7 @@ namespace engine {
         std::vector<vk::Semaphore> m_renderFinished;
         std::vector<vk::Fence> m_inFlightFences;
 
-		bool m_framebufferResized;
+        bool m_framebufferResized;
     };
 
 } // namespace engine

@@ -11,7 +11,7 @@ namespace engine {
 
     namespace vulkan {
 
-        class physical_device;
+        class device;
         struct queue_family_indices;
 
         class swap_chain {
@@ -22,10 +22,7 @@ namespace engine {
                 std::vector<vk::PresentModeKHR> presentModes;
             };
 
-            swap_chain(const vk::PhysicalDevice& physicalDevice,
-                       const vk::Device& logicalDevice,
-                       const vk::SurfaceKHR& windowSurface,
-                       const queue_family_indices& indices,
+            swap_chain(const device& m_device,
                        std::uint32_t width,
                        std::uint32_t height);
 

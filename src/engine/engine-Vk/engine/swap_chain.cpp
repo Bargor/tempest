@@ -3,6 +3,7 @@
 
 #include "swap_chain.h"
 
+#include "device.h"
 #include "queue_indices.h"
 #include "vulkan_exception.h"
 
@@ -152,21 +153,18 @@ namespace engine {
 
         } // namespace
 
-        swap_chain::swap_chain(const vk::PhysicalDevice& physicalDevice,
-                               const vk::Device& logicalDevice,
-                               const vk::SurfaceKHR& windowSurface,
-                               const queue_family_indices& indices,
+        swap_chain::swap_chain(const device& device,
                                std::uint32_t width,
                                std::uint32_t height)
-            : m_logicalDevice(logicalDevice)
-            , m_windowSurface(windowSurface)
-            , m_indices(indices)
-            , m_supportDetails(check_support(physicalDevice, m_windowSurface))
+            : m_logicalDevice(device.m_logicalDevice)
+            , m_windowSurface(device.m_windowSurface)
+            , m_indices(device.m_queueIndices)
+            , m_supportDetails(check_support(device.m_physicalDevice, m_windowSurface))
             , m_surfaceFormat(choose_surface_format(m_supportDetails.formats))
             , m_presentationMode(choose_presentation_mode(m_supportDetails.presentModes))
             , m_extent(choose_extent(m_supportDetails.capabilities, width, height))
             , m_swapChain(create_swap_chain(m_windowSurface,
-                                            logicalDevice,
+                                            device.m_logicalDevice,
                                             m_indices,
                                             m_supportDetails,
                                             m_surfaceFormat,

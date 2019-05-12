@@ -13,8 +13,8 @@ namespace engine {
 
     namespace vulkan {
 
-        queue_family_indices compute_queue_indices(const vk::PhysicalDevice& physicalDevice,
-                                                   const vk::SurfaceKHR& windowSurface) {
+        queue_family_indices compute_queue_indices(const vk::SurfaceKHR& windowSurface,
+                                                   const vk::PhysicalDevice& physicalDevice) {
             auto queueFamilies = physicalDevice.getQueueFamilyProperties();
 
             queue_family_indices indices;
@@ -43,7 +43,7 @@ namespace engine {
                 if (indices.isValid()) return indices;
             }
 
-            throw vulkan_exception("Device is not supporting required queues");            
+            throw vulkan_exception("Device is not supporting required queues");
         }
     } // namespace vulkan
 
