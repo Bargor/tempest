@@ -4,7 +4,6 @@
 #include "engine.h"
 
 #include "device.h"
-#include "device_queue.h"
 #include "instance.h"
 #include "resources/shader_compiler.h"
 #include "scene/scene.h"
@@ -27,8 +26,6 @@ namespace engine {
         , m_eventProcessor(eventProcessor)
         , m_scene(std::make_unique<scene::scene>())
         , m_device(std::make_unique<vulkan::device>(m_mainWindow.get_handle(), m_reqiuredDeviceExtensions))
-        , m_deviceQueues(std::make_unique<vulkan::device_queues>((*m_device.get()).m_logicalDevice,
-                                                                 (*m_device.get()).m_queueIndices))
         , m_swapChain(std::make_unique<vulkan::swap_chain>(
               *m_device.get(), mainWindow.get_size().width, mainWindow.get_size().height))
         , m_shaderCompiler(std::make_unique<vulkan::shader_compiler>(m_dataLoader, (*m_device.get()).m_logicalDevice))
@@ -162,11 +159,11 @@ namespace engine {
 
         (*m_device.get()).m_logicalDevice.resetFences(1, &m_inFlightFences[currentFrame]);
 
-        m_deviceQueues->m_graphicsQueueHandle.submit(1, &submitInfo, m_inFlightFences[currentFrame]);
+        (*m_device.get()).m_graphicsQueueHandle.submit(1, &submitInfo, m_inFlightFences[currentFrame]);
 
         vk::PresentInfoKHR presentInfo(1, signalSemaphores, 1, &m_swapChain->get_native_swapchain(), &imageIndex);
 
-        auto presentResult = m_deviceQueues->m_presentationQueueHandle.presentKHR(presentInfo);
+        auto presentResult = (*m_device.get()).m_presentationQueueHandle.presentKHR(presentInfo);
 
         if (presentResult == vk::Result::eErrorOutOfDateKHR || presentResult == vk::Result::eSuboptimalKHR ||
             m_framebufferResized) {

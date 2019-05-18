@@ -59,7 +59,6 @@ namespace engine {
         static constexpr std::uint32_t m_maxConcurrentFrames = 2;
 
 		ptr<vulkan::device> m_device;
-        ptr<vulkan::device_queues> m_deviceQueues;
         ptr<vulkan::swap_chain> m_swapChain;
         ptr<vulkan::shader_compiler> m_shaderCompiler;
         vk::RenderPass m_renderPass;

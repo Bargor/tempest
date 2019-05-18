@@ -27,6 +27,10 @@ namespace engine {
             vk::PhysicalDevice m_physicalDevice;
             queue_family_indices m_queueIndices;
             vk::Device m_logicalDevice;
+            vk::Queue m_graphicsQueueHandle;
+            vk::Queue m_computeQueueHandle;
+            vk::Queue m_presentationQueueHandle;
+            vk::Queue m_transferQueueHandle;
         };
 
     } // namespace vulkan

@@ -103,7 +103,11 @@ namespace engine {
             , m_physicalDevice(select_physical_device(m_windowSurface, requiredExtensions))
             , m_queueIndices(compute_queue_indices(m_windowSurface, m_physicalDevice))
             , m_logicalDevice(create_logical_device(
-                  m_physicalDevice, m_queueIndices, instance::get_validation_layers(), requiredExtensions)) {
+                  m_physicalDevice, m_queueIndices, instance::get_validation_layers(), requiredExtensions))
+            , m_graphicsQueueHandle(m_logicalDevice.getQueue(m_queueIndices.graphicsIndex.value(), 0))
+            , m_computeQueueHandle(m_logicalDevice.getQueue(m_queueIndices.computeIndex.value(), 0))
+            , m_presentationQueueHandle(m_logicalDevice.getQueue(m_queueIndices.presentationIndex.value(), 0))
+            , m_transferQueueHandle(m_logicalDevice.getQueue(m_queueIndices.transferIndex.value(), 0)) {
         }
 
         device::~device() {
