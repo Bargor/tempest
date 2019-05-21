@@ -18,11 +18,13 @@ namespace application {
 namespace engine {
     namespace vulkan {
 
+		class device;
+
         using shader_set = std::vector<shader>;
 
         class shader_compiler {
         public:
-            shader_compiler(application::data_loader& data_loader, const vk::Device& device);
+            shader_compiler(application::data_loader& data_loader, const device& device);
             ~shader_compiler();
 
             shader_set compile_shaders(const std::string& name) const;

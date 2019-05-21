@@ -3,6 +3,8 @@
 
 #include "shader_compiler.h"
 
+#include "../device.h"
+
 #include <application/data_loader.h>
 #include <fmt/printf.h>
 
@@ -21,8 +23,8 @@ namespace engine {
             return std::system(command.c_str());
         }
 
-        shader_compiler::shader_compiler(application::data_loader& data_loader, const vk::Device& device)
-            : m_dataLoader(data_loader), m_device(device) {
+        shader_compiler::shader_compiler(application::data_loader& data_loader, const device& device)
+            : m_dataLoader(data_loader), m_device(device.m_logicalDevice) {
         }
 
         shader_compiler::~shader_compiler() {

@@ -28,7 +28,7 @@ namespace engine {
         , m_device(std::make_unique<vulkan::device>(m_mainWindow.get_handle(), m_reqiuredDeviceExtensions))
         , m_swapChain(std::make_unique<vulkan::swap_chain>(
               *m_device.get(), mainWindow.get_size().width, mainWindow.get_size().height))
-        , m_shaderCompiler(std::make_unique<vulkan::shader_compiler>(m_dataLoader, (*m_device.get()).m_logicalDevice))
+        , m_shaderCompiler(std::make_unique<vulkan::shader_compiler>(m_dataLoader, *m_device.get()))
         , m_renderPass(vulkan::create_render_pass((*m_device.get()).m_logicalDevice, m_swapChain->get_format()))
         , m_pipelineLayout(vulkan::create_pipeline_layout((*m_device.get()).m_logicalDevice))
         , m_pipeline(vulkan::create_graphics_pipeline((*m_device.get()).m_logicalDevice,
