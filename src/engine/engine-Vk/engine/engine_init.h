@@ -15,25 +15,11 @@ namespace engine {
 
         struct queue_family_indices;
         class shader_compiler;
+        class vertex_buffer;
+        class index_buffer;
 
         template<typename T>
         using ptr = std::unique_ptr<T>;
-
-        vk::Instance init_Vulkan_instance(std::vector<const char*>& requiredValidationLayers,
-                                          bool enableValidationLayers);
-
-        vk::DebugUtilsMessengerEXT setup_debug_messenger(vk::Instance& instance, bool enableValidationLayers);
-
-        vk::SurfaceKHR create_window_surface(vk::Instance& instance, GLFWwindow* window);
-
-        vk::PhysicalDevice select_physical_device(vk::Instance& instance,
-                                                  vk::SurfaceKHR& surface,
-                                                  const std::vector<const char*>& requiredExtensions);
-
-        vk::Device create_logical_device(const vk::PhysicalDevice& physicalDevice,
-                                         const queue_family_indices& indices,
-                                         const std::vector<const char*>& validationLayers,
-                                         const std::vector<const char*>& extensions);
 
         vk::RenderPass create_render_pass(const vk::Device& device, const vk::Format& format);
 
@@ -56,11 +42,9 @@ namespace engine {
                                                               const std::vector<vk::Framebuffer>& framebuffers,
                                                               const vk::RenderPass& renderPass,
                                                               const vk::Pipeline& pipeline,
-                                                              const vk::Extent2D& extent);
-
-        void DestroyDebugUtilsMessengerEXT(vk::Instance& instance,
-                                           vk::DebugUtilsMessengerEXT& debugMessenger,
-                                           const VkAllocationCallbacks* pAllocator);
+                                                              const vk::Extent2D& extent,
+                                                              const vertex_buffer& vertexBuffer,
+                                                              const index_buffer& indexBuffer);
 
     } // namespace vulkan
 } // namespace engine

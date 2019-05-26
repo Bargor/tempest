@@ -44,6 +44,8 @@ namespace application {
         std::size_t m_frameCount;
         bool m_shouldClose;
         bool m_windowMinimized;
+        std::chrono::microseconds m_lastSecondTimer;
+        std::uint32_t m_lastSecondFrames;
     };
 
 } // namespace application

@@ -2,22 +2,32 @@
 # Author: Karol Kontny
 
 set(ENGINE_HDRS
+	engine/instance.h
 	engine/vulkan_exception.h
+	engine/device.h
 	engine/engine_init.h
 	engine/engine.h
 	engine/queue_indices.h
 	engine/swap_chain.h
-	engine/device_queue.h
+	engine/buffer.h
+	engine/vertex_format.h
+	engine/vertex_buffer.h
+	engine/index_buffer.h
 	engine/resources/shader.h
 	engine/resources/shader_compiler.h
 )
 
 set(ENGINE_SRCS 
-	engine/engine.cpp
+	engine/instance.cpp
+	engine/device.cpp
 	engine/engine_init.cpp
+	engine/engine.cpp
 	engine/queue_indices.cpp
 	engine/swap_chain.cpp
-	engine/device_queue.cpp
+	engine/buffer.cpp
+	engine/vertex_format.cpp
+	engine/vertex_buffer.cpp
+	engine/index_buffer.cpp
 	engine/resources/shader.cpp
 	engine/resources/shader_compiler.cpp
 )

@@ -22,8 +22,8 @@ namespace engine {
             }
         };
 
-        queue_family_indices compute_queue_indices(const vk::PhysicalDevice& physicalDevice,
-                                                   const vk::SurfaceKHR& windowSurface);
+        queue_family_indices
+        compute_queue_indices(const vk::SurfaceKHR& windowSurface, const vk::PhysicalDevice& physicalDevice);
 
     } // namespace vulkan
 
