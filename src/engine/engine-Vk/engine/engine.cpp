@@ -41,6 +41,7 @@ namespace engine {
         , m_commandPool(vulkan::create_command_pool((*m_device.get()).m_logicalDevice, (*m_device.get()).m_queueIndices))
         , m_vertexBuffer(std::make_unique<vulkan::vertex_buffer>(
               *m_device.get(),
+			  m_commandPool,
               vulkan::vertex_format(),
               std::vector<vulkan::vertex>({{{0.0f, -0.5f}, {1.0f, 1.0f, 1.0f}},
                                            {{0.5f, 0.5f}, {0.0f, 1.0f, 0.0f}},

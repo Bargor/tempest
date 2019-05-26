@@ -13,10 +13,13 @@ namespace engine {
 
         class vertex_buffer : public buffer {
         public:
-            vertex_buffer(device& device, const vertex_format& format, std::vector<vertex>&& vertices);
+            vertex_buffer(device& device,
+                          vk::CommandPool& cmdPool,
+                          const vertex_format& format,
+                          std::vector<vertex>&& vertices);
             ~vertex_buffer();
 
-			std::uint32_t get_vertex_count() const;
+            std::uint32_t get_vertex_count() const;
 
         private:
         private:
@@ -24,9 +27,9 @@ namespace engine {
             std::vector<vertex> m_vertices;
         };
 
-		inline std::uint32_t vertex_buffer::get_vertex_count() const {
+        inline std::uint32_t vertex_buffer::get_vertex_count() const {
             return static_cast<std::uint32_t>(m_vertices.size());
-		}
+        }
 
     } // namespace vulkan
 } // namespace engine

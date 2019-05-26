@@ -10,16 +10,18 @@ namespace tst {
 namespace engine {
     namespace vulkan {
 
-        buffer::buffer(device& device, std::uint32_t size, vk::BufferUsageFlags flags)
-            : m_device(device), m_memSize(size) {
-            vk::BufferCreateInfo createInfo(vk::BufferCreateFlags(), size, flags, vk::SharingMode::eExclusive);
+        buffer::buffer(device& device,
+                       vk::CommandPool& cmdPool,
+                       std::uint32_t size,
+                       vk::BufferUsageFlags usageFlags,
+                       vk::MemoryPropertyFlags memoryFlags)
+            : m_device(device), m_cmdPool(cmdPool), m_memSize(size) {
+            vk::BufferCreateInfo createInfo(vk::BufferCreateFlags(), size, usageFlags, vk::SharingMode::eExclusive);
 
             m_buffer = m_device.m_logicalDevice.createBuffer(createInfo);
             vk::MemoryRequirements requirements = m_device.m_logicalDevice.getBufferMemoryRequirements(m_buffer);
-            vk::MemoryAllocateInfo allocateInfo(
-                requirements.size,
-                findMemoryType(requirements.memoryTypeBits,
-                               vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent));
+            vk::MemoryAllocateInfo allocateInfo(requirements.size,
+                                                findMemoryType(requirements.memoryTypeBits, memoryFlags));
 
             m_bufferMemory = device.m_logicalDevice.allocateMemory(allocateInfo);
             m_device.m_logicalDevice.bindBufferMemory(m_buffer, m_bufferMemory, 0);
@@ -32,6 +34,31 @@ namespace engine {
 
         vk::Buffer buffer::get_handle() const {
             return m_buffer;
+        }
+
+        void buffer::copy_data(void* data, std::uint32_t size) {
+            auto dataPtr = m_device.m_logicalDevice.mapMemory(m_bufferMemory, 0, m_memSize);
+            std::memcpy(dataPtr, data, size);
+            m_device.m_logicalDevice.unmapMemory(m_bufferMemory);
+        }
+
+        void buffer::copy_buffer(vk::Buffer& dstBuffer, std::uint32_t size) const {
+            vk::CommandBufferAllocateInfo allocInfo(m_cmdPool, vk::CommandBufferLevel::ePrimary, 1);
+
+            auto cmdBuffer = m_device.m_logicalDevice.allocateCommandBuffers(allocInfo);
+
+            vk::CommandBufferBeginInfo cmdBufferInfo(vk::CommandBufferUsageFlagBits::eOneTimeSubmit);
+
+            cmdBuffer[0].begin(cmdBufferInfo);
+            { 
+				vk::BufferCopy copyInfo(0, 0, size); 
+				cmdBuffer[0].copyBuffer(m_buffer, dstBuffer, copyInfo);
+			}
+            cmdBuffer[0].end();
+
+			vk::SubmitInfo submitInfo(0, nullptr, nullptr, 1, &cmdBuffer[0]);
+            m_device.m_graphicsQueueHandle.submit({submitInfo}, vk::Fence());
+            m_device.m_graphicsQueueHandle.waitIdle();
         }
 
         std::uint32_t buffer::findMemoryType(uint32_t typeFilter, vk::MemoryPropertyFlags propertyFlags) const {
