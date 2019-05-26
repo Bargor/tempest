@@ -4,6 +4,7 @@
 #include "engine.h"
 
 #include "device.h"
+#include "index_buffer.h"
 #include "instance.h"
 #include "resources/shader_compiler.h"
 #include "scene/scene.h"
@@ -41,18 +42,22 @@ namespace engine {
         , m_commandPool(vulkan::create_command_pool((*m_device.get()).m_logicalDevice, (*m_device.get()).m_queueIndices))
         , m_vertexBuffer(std::make_unique<vulkan::vertex_buffer>(
               *m_device.get(),
-			  m_commandPool,
+              m_commandPool,
               vulkan::vertex_format(),
-              std::vector<vulkan::vertex>({{{0.0f, -0.5f}, {1.0f, 1.0f, 1.0f}},
-                                           {{0.5f, 0.5f}, {0.0f, 1.0f, 0.0f}},
-                                           {{-0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}}})))
+              std::vector<vulkan::vertex>({{{-0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}},
+                                           {{0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}},
+                                           {{0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}},
+                                           {{-0.5f, 0.5f}, {1.0f, 1.0f, 1.0f}}})))
+        , m_indexBuffer(std::make_unique<vulkan::index_buffer>(
+              *m_device.get(), m_commandPool, vk::IndexType::eUint16, std::vector<std::uint16_t>({{0, 1, 2, 2, 3, 0}})))
         , m_commandBuffers(vulkan::create_command_buffers((*m_device.get()).m_logicalDevice,
                                                           m_commandPool,
                                                           m_framebuffers,
                                                           m_renderPass,
                                                           m_pipeline,
                                                           m_swapChain->get_extent(),
-                                                          *m_vertexBuffer.get()))
+                                                          *m_vertexBuffer.get(),
+                                                          *m_indexBuffer.get()))
         , m_imageAvailable({(*m_device.get()).m_logicalDevice.createSemaphore(vk::SemaphoreCreateInfo()),
                             (*m_device.get()).m_logicalDevice.createSemaphore(vk::SemaphoreCreateInfo())})
         , m_renderFinished({(*m_device.get()).m_logicalDevice.createSemaphore(vk::SemaphoreCreateInfo()),
@@ -120,7 +125,8 @@ namespace engine {
                                                           m_renderPass,
                                                           m_pipeline,
                                                           m_swapChain->get_extent(),
-                                                          *m_vertexBuffer.get());
+                                                          *m_vertexBuffer.get(),
+                                                          *m_indexBuffer.get());
     }
 
     void rendering_engine::update_framebuffer() {

@@ -3,8 +3,9 @@
 
 #include "engine_init.h"
 
-#include "resources/shader_compiler.h"
+#include "index_buffer.h"
 #include "queue_indices.h"
+#include "resources/shader_compiler.h"
 #include "vertex_buffer.h"
 #include "vulkan_exception.h"
 
@@ -164,7 +165,8 @@ namespace engine {
                                                               const vk::RenderPass& renderPass,
                                                               const vk::Pipeline& pipeline,
                                                               const vk::Extent2D& extent,
-                                                              const vertex_buffer& vertexBuffer) {
+                                                              const vertex_buffer& vertexBuffer,
+                                                              const index_buffer& indexBuffer) {
             vk::CommandBufferAllocateInfo bufferAllocateInfo(
                 commandPool, vk::CommandBufferLevel::ePrimary, static_cast<std::uint32_t>(framebuffers.size()));
 
@@ -185,7 +187,8 @@ namespace engine {
                 std::vector<vk::Buffer> vertexBuffers = {vertexBuffer.get_handle()};
                 std::vector<vk::DeviceSize> offsets = {0};
                 commandBuffers[i].bindVertexBuffers(0, vertexBuffers, offsets);
-                commandBuffers[i].draw(3, 1, 0, 0);
+                commandBuffers[i].bindIndexBuffer(indexBuffer.get_handle(), 0, vk::IndexType::eUint16);
+                commandBuffers[i].drawIndexed(indexBuffer.get_index_count(), 1, 0, 0, 0);
                 commandBuffers[i].endRenderPass();
                 commandBuffers[i].end();
             }

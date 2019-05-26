@@ -12,6 +12,7 @@ set(ENGINE_HDRS
 	engine/buffer.h
 	engine/vertex_format.h
 	engine/vertex_buffer.h
+	engine/index_buffer.h
 	engine/resources/shader.h
 	engine/resources/shader_compiler.h
 )
@@ -26,6 +27,7 @@ set(ENGINE_SRCS
 	engine/buffer.cpp
 	engine/vertex_format.cpp
 	engine/vertex_buffer.cpp
+	engine/index_buffer.cpp
 	engine/resources/shader.cpp
 	engine/resources/shader_compiler.cpp
 )

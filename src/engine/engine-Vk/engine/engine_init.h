@@ -16,6 +16,7 @@ namespace engine {
         struct queue_family_indices;
         class shader_compiler;
         class vertex_buffer;
+        class index_buffer;
 
         template<typename T>
         using ptr = std::unique_ptr<T>;
@@ -42,7 +43,8 @@ namespace engine {
                                                               const vk::RenderPass& renderPass,
                                                               const vk::Pipeline& pipeline,
                                                               const vk::Extent2D& extent,
-                                                              const vertex_buffer& vertexBuffer);
+                                                              const vertex_buffer& vertexBuffer,
+                                                              const index_buffer& indexBuffer);
 
     } // namespace vulkan
 } // namespace engine

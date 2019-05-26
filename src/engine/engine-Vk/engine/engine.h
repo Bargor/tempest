@@ -24,11 +24,12 @@ namespace scene {
 namespace engine {
 
     namespace vulkan {
-		class device;
+        class device;
         class device_queues;
         class swap_chain;
         class shader_compiler;
         class vertex_buffer;
+        class index_buffer;
     } // namespace vulkan
 
     class rendering_engine {
@@ -58,7 +59,7 @@ namespace engine {
         std::vector<const char*> m_reqiuredDeviceExtensions = {VK_KHR_SWAPCHAIN_EXTENSION_NAME};
         static constexpr std::uint32_t m_maxConcurrentFrames = 2;
 
-		ptr<vulkan::device> m_device;
+        ptr<vulkan::device> m_device;
         ptr<vulkan::swap_chain> m_swapChain;
         ptr<vulkan::shader_compiler> m_shaderCompiler;
         vk::RenderPass m_renderPass;
@@ -67,6 +68,7 @@ namespace engine {
         std::vector<vk::Framebuffer> m_framebuffers;
         vk::CommandPool m_commandPool;
         ptr<vulkan::vertex_buffer> m_vertexBuffer;
+        ptr<vulkan::index_buffer> m_indexBuffer;
         std::vector<vk::CommandBuffer> m_commandBuffers;
         std::vector<vk::Semaphore> m_imageAvailable;
         std::vector<vk::Semaphore> m_renderFinished;

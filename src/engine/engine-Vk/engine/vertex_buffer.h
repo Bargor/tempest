@@ -22,7 +22,6 @@ namespace engine {
             std::uint32_t get_vertex_count() const;
 
         private:
-        private:
             vertex_format m_format;
             std::vector<vertex> m_vertices;
         };
