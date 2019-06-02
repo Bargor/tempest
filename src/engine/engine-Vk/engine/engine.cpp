@@ -138,8 +138,8 @@ namespace engine {
                                                       *m_shaderCompiler.get());
         m_framebuffers = vulkan::create_framebuffers(
             (*m_device.get()).m_logicalDevice, m_renderPass, m_swapChain->get_image_views(), m_swapChain->get_extent());
-        m_uniformBuffers = std::vector<vulkan::uniform_buffer>(m_swapChain->get_image_views().size(),
-                                                               vulkan::uniform_buffer(*m_device.get(), m_commandPool)),
+        m_uniformBuffers = std::move(std::vector<vulkan::uniform_buffer>(m_swapChain->get_image_views().size(),
+                                                               vulkan::uniform_buffer(*m_device.get(), m_commandPool))),
         m_descriptorPool =
             vulkan::create_descriptor_pool((*m_device.get()).m_logicalDevice, m_swapChain->get_image_views().size());
         m_commandBuffers = vulkan::create_command_buffers((*m_device.get()).m_logicalDevice,
