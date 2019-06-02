@@ -14,20 +14,23 @@ namespace engine {
             friend class engine;
 
         public:
-            buffer(device& device,
-                   vk::CommandPool& cmdPool,
+            buffer(const device& device,
+                   const vk::CommandPool& cmdPool,
                    std::uint32_t size,
                    vk::BufferUsageFlags flags,
                    vk::MemoryPropertyFlags memoryFlags);
             ~buffer();
+
+            buffer(buffer&& other) noexcept;
+            buffer(const buffer&) = delete;
 
             vk::Buffer get_handle() const;
             void copy_data(void* data, std::uint32_t size);
             void copy_buffer(vk::Buffer& dstBuffer, std::uint32_t size) const;
 
         protected:
-            device& m_device;
-            vk::CommandPool& m_cmdPool;
+            const device& m_device;
+            const vk::CommandPool& m_cmdPool;
             std::uint32_t m_memSize;
             vk::Buffer m_buffer;
             vk::DeviceMemory m_bufferMemory;

@@ -10,8 +10,8 @@ namespace tst {
 namespace engine {
     namespace vulkan {
 
-        buffer::buffer(device& device,
-                       vk::CommandPool& cmdPool,
+        buffer::buffer(const device& device,
+                       const vk::CommandPool& cmdPool,
                        std::uint32_t size,
                        vk::BufferUsageFlags usageFlags,
                        vk::MemoryPropertyFlags memoryFlags)
@@ -32,6 +32,16 @@ namespace engine {
             m_device.m_logicalDevice.freeMemory(m_bufferMemory);
         }
 
+        buffer::buffer(buffer&& other) noexcept
+            : m_device(other.m_device)
+            , m_cmdPool(other.m_cmdPool)
+            , m_memSize(other.m_memSize)
+            , m_buffer(other.m_buffer)
+            , m_bufferMemory(other.m_bufferMemory) {
+            other.m_buffer = nullptr;
+            other.m_bufferMemory = nullptr;
+        }
+
         vk::Buffer buffer::get_handle() const {
             return m_buffer;
         }
@@ -50,13 +60,13 @@ namespace engine {
             vk::CommandBufferBeginInfo cmdBufferInfo(vk::CommandBufferUsageFlagBits::eOneTimeSubmit);
 
             cmdBuffer[0].begin(cmdBufferInfo);
-            { 
-				vk::BufferCopy copyInfo(0, 0, size); 
-				cmdBuffer[0].copyBuffer(m_buffer, dstBuffer, copyInfo);
-			}
+            {
+                vk::BufferCopy copyInfo(0, 0, size);
+                cmdBuffer[0].copyBuffer(m_buffer, dstBuffer, copyInfo);
+            }
             cmdBuffer[0].end();
 
-			vk::SubmitInfo submitInfo(0, nullptr, nullptr, 1, &cmdBuffer[0]);
+            vk::SubmitInfo submitInfo(0, nullptr, nullptr, 1, &cmdBuffer[0]);
             m_device.m_graphicsQueueHandle.submit({submitInfo}, vk::Fence());
             m_device.m_graphicsQueueHandle.waitIdle();
         }

@@ -17,6 +17,7 @@ namespace engine {
             friend class swap_chain;
             friend class buffer;
             friend class vertex_buffer;
+            friend class uniform_buffer;
             friend class shader_compiler;
 
         public:

@@ -10,6 +10,7 @@ set(ENGINE_HDRS
 	engine/queue_indices.h
 	engine/swap_chain.h
 	engine/buffer.h
+	engine/uniform_buffer.h
 	engine/vertex_format.h
 	engine/vertex_buffer.h
 	engine/index_buffer.h
@@ -25,6 +26,7 @@ set(ENGINE_SRCS
 	engine/queue_indices.cpp
 	engine/swap_chain.cpp
 	engine/buffer.cpp
+	engine/uniform_buffer.cpp
 	engine/vertex_format.cpp
 	engine/vertex_buffer.cpp
 	engine/index_buffer.cpp

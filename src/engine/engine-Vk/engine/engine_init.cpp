@@ -6,6 +6,7 @@
 #include "index_buffer.h"
 #include "queue_indices.h"
 #include "resources/shader_compiler.h"
+#include "uniform_buffer.h"
 #include "vertex_buffer.h"
 #include "vulkan_exception.h"
 
@@ -47,10 +48,20 @@ namespace engine {
             return device.createRenderPass(renderPassInfo);
         }
 
-        vk::PipelineLayout create_pipeline_layout(const vk::Device& device) {
-            vk::PipelineLayoutCreateInfo pipelineLayoutInfo(vk::PipelineLayoutCreateFlags(), 0, nullptr, 0, nullptr);
-
+        vk::PipelineLayout create_pipeline_layout(const vk::Device& device,
+                                                  const vk::DescriptorSetLayout& descriptorSetLayout) {
+            vk::PipelineLayoutCreateInfo pipelineLayoutInfo(
+                vk::PipelineLayoutCreateFlags(), 1, &descriptorSetLayout, 0, nullptr);
             return device.createPipelineLayout(pipelineLayoutInfo);
+        }
+
+        vk::DescriptorSetLayout create_descriptor_set_layout(const vk::Device& device) {
+            vk::DescriptorSetLayoutBinding descriptorBinding(
+                0, vk::DescriptorType::eUniformBuffer, 1, vk::ShaderStageFlagBits::eVertex, nullptr);
+
+            vk::DescriptorSetLayoutCreateInfo setLayoutInfo(vk::DescriptorSetLayoutCreateFlags(), 1, &descriptorBinding);
+
+            return device.createDescriptorSetLayout(setLayoutInfo, nullptr);
         }
 
         vk::Pipeline create_graphics_pipeline(const vk::Device& device,
@@ -159,6 +170,47 @@ namespace engine {
             return device.createCommandPool(createInfo);
         }
 
+        vk::DescriptorPool create_descriptor_pool(const vk::Device& device, std::size_t size) {
+            vk::DescriptorPoolSize poolSize(vk::DescriptorType::eUniformBuffer, static_cast<std::uint32_t>(size));
+
+            vk::DescriptorPoolCreateInfo poolCreateInfo(
+                vk::DescriptorPoolCreateFlags(), static_cast<std::uint32_t>(size), 1, &poolSize);
+
+            return device.createDescriptorPool(poolCreateInfo);
+        }
+
+        std::vector<uniform_buffer> create_uniform_buffers(const device& device,
+                                                           const vk::CommandPool& cmdPool,
+                                                           std::size_t size) {
+            std::vector<uniform_buffer> buffers;
+            while (--size) {
+                buffers.emplace_back(uniform_buffer(device, cmdPool));
+            }
+            return buffers;
+        }
+
+        std::vector<vk::DescriptorSet> create_descriptor_sets(const vk::Device& device,
+                                                              std::size_t size,
+                                                              const vk::DescriptorPool& descriptorPool,
+                                                              const vk::DescriptorSetLayout& descriptorSetLayout,
+                                                              const std::vector<uniform_buffer>& uniformBuffers) {
+            std::vector<vk::DescriptorSetLayout> layouts(size, descriptorSetLayout);
+            vk::DescriptorSetAllocateInfo allocInfo(descriptorPool, static_cast<std::uint32_t>(size), layouts.data());
+
+            auto descriptorSets = device.allocateDescriptorSets(allocInfo);
+
+            for (std::size_t i = 0; i < size; ++i) {
+                vk::DescriptorBufferInfo bufferInfo(uniformBuffers[i].get_handle(), 0, sizeof(uniform_buffer_object));
+
+                vk::WriteDescriptorSet descriptorWrite(
+                    descriptorSets[i], 0, 0, 1, vk::DescriptorType::eUniformBuffer, nullptr, &bufferInfo, nullptr);
+
+                device.updateDescriptorSets({descriptorWrite}, {});
+            }
+
+            return descriptorSets;
+        }
+
         std::vector<vk::CommandBuffer> create_command_buffers(const vk::Device& device,
                                                               const vk::CommandPool& commandPool,
                                                               const std::vector<vk::Framebuffer>& framebuffers,
@@ -166,7 +218,9 @@ namespace engine {
                                                               const vk::Pipeline& pipeline,
                                                               const vk::Extent2D& extent,
                                                               const vertex_buffer& vertexBuffer,
-                                                              const index_buffer& indexBuffer) {
+                                                              const index_buffer& indexBuffer,
+                                                              const vk::PipelineLayout& pipelineLayout,
+                                                              const std::vector<vk::DescriptorSet>& descriptorSets) {
             vk::CommandBufferAllocateInfo bufferAllocateInfo(
                 commandPool, vk::CommandBufferLevel::ePrimary, static_cast<std::uint32_t>(framebuffers.size()));
 
@@ -188,6 +242,8 @@ namespace engine {
                 std::vector<vk::DeviceSize> offsets = {0};
                 commandBuffers[i].bindVertexBuffers(0, vertexBuffers, offsets);
                 commandBuffers[i].bindIndexBuffer(indexBuffer.get_handle(), 0, vk::IndexType::eUint16);
+                commandBuffers[i].bindDescriptorSets(
+                    vk::PipelineBindPoint::eGraphics, pipelineLayout, 0, descriptorSets[i], {});
                 commandBuffers[i].drawIndexed(indexBuffer.get_index_count(), 1, 0, 0, 0);
                 commandBuffers[i].endRenderPass();
                 commandBuffers[i].end();
