@@ -54,8 +54,8 @@ namespace engine {
                                            {{-0.5f, 0.5f}, {1.0f, 1.0f, 1.0f}}})))
         , m_indexBuffer(std::make_unique<vulkan::index_buffer>(
               *m_device.get(), m_commandPool, vk::IndexType::eUint16, std::vector<std::uint16_t>({{0, 1, 2, 2, 3, 0}})))
-        , m_uniformBuffers(std::move(
-              vulkan::create_uniform_buffers(*m_device.get(), m_commandPool, m_swapChain->get_image_views().size())))
+        , m_uniformBuffers(
+              vulkan::create_uniform_buffers(*m_device.get(), m_commandPool, m_swapChain->get_image_views().size()))
         , m_descriptorPool(
               vulkan::create_descriptor_pool((*m_device.get()).m_logicalDevice, m_swapChain->get_image_views().size()))
         , m_descriptorSets(vulkan::create_descriptor_sets((*m_device.get()).m_logicalDevice,
@@ -138,10 +138,15 @@ namespace engine {
                                                       *m_shaderCompiler.get());
         m_framebuffers = vulkan::create_framebuffers(
             (*m_device.get()).m_logicalDevice, m_renderPass, m_swapChain->get_image_views(), m_swapChain->get_extent());
-        m_uniformBuffers = std::move(std::vector<vulkan::uniform_buffer>(m_swapChain->get_image_views().size(),
-                                                               vulkan::uniform_buffer(*m_device.get(), m_commandPool))),
+        m_uniformBuffers =
+            vulkan::create_uniform_buffers(*m_device.get(), m_commandPool, m_swapChain->get_image_views().size()),
         m_descriptorPool =
             vulkan::create_descriptor_pool((*m_device.get()).m_logicalDevice, m_swapChain->get_image_views().size());
+        m_descriptorSets = vulkan::create_descriptor_sets((*m_device.get()).m_logicalDevice,
+                                                        m_swapChain->get_image_views().size(),
+                                                        m_descriptorPool,
+                                                        m_descriptorSetLayout,
+                                                        m_uniformBuffers);
         m_commandBuffers = vulkan::create_command_buffers((*m_device.get()).m_logicalDevice,
                                                           m_commandPool,
                                                           m_framebuffers,

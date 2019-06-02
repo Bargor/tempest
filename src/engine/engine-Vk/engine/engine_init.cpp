@@ -183,7 +183,7 @@ namespace engine {
                                                            const vk::CommandPool& cmdPool,
                                                            std::size_t size) {
             std::vector<uniform_buffer> buffers;
-            while (--size) {
+            while (size--) {
                 buffers.emplace_back(uniform_buffer(device, cmdPool));
             }
             return buffers;
