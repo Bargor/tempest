@@ -9,11 +9,14 @@
 #include "resources/shader_compiler.h"
 #include "scene/scene.h"
 #include "swap_chain.h"
+#include "uniform_buffer.h"
 #include "vertex_buffer.h"
 #include "vulkan_exception.h"
 
 #include <application/event_processor.h>
 #include <application/main_window.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 #include <util/variant.h>
 
 namespace tst {
@@ -31,7 +34,8 @@ namespace engine {
               *m_device.get(), mainWindow.get_size().width, mainWindow.get_size().height))
         , m_shaderCompiler(std::make_unique<vulkan::shader_compiler>(m_dataLoader, *m_device.get()))
         , m_renderPass(vulkan::create_render_pass((*m_device.get()).m_logicalDevice, m_swapChain->get_format()))
-        , m_pipelineLayout(vulkan::create_pipeline_layout((*m_device.get()).m_logicalDevice))
+        , m_descriptorSetLayout(vulkan::create_descriptor_set_layout((*m_device.get()).m_logicalDevice))
+        , m_pipelineLayout(vulkan::create_pipeline_layout((*m_device.get()).m_logicalDevice, m_descriptorSetLayout))
         , m_pipeline(vulkan::create_graphics_pipeline((*m_device.get()).m_logicalDevice,
                                                       m_pipelineLayout,
                                                       m_renderPass,
@@ -50,6 +54,15 @@ namespace engine {
                                            {{-0.5f, 0.5f}, {1.0f, 1.0f, 1.0f}}})))
         , m_indexBuffer(std::make_unique<vulkan::index_buffer>(
               *m_device.get(), m_commandPool, vk::IndexType::eUint16, std::vector<std::uint16_t>({{0, 1, 2, 2, 3, 0}})))
+        , m_uniformBuffers(
+              vulkan::create_uniform_buffers(*m_device.get(), m_commandPool, m_swapChain->get_image_views().size()))
+        , m_descriptorPool(
+              vulkan::create_descriptor_pool((*m_device.get()).m_logicalDevice, m_swapChain->get_image_views().size()))
+        , m_descriptorSets(vulkan::create_descriptor_sets((*m_device.get()).m_logicalDevice,
+                                                          m_swapChain->get_image_views().size(),
+                                                          m_descriptorPool,
+                                                          m_descriptorSetLayout,
+                                                          m_uniformBuffers))
         , m_commandBuffers(vulkan::create_command_buffers((*m_device.get()).m_logicalDevice,
                                                           m_commandPool,
                                                           m_framebuffers,
@@ -57,7 +70,9 @@ namespace engine {
                                                           m_pipeline,
                                                           m_swapChain->get_extent(),
                                                           *m_vertexBuffer.get(),
-                                                          *m_indexBuffer.get()))
+                                                          *m_indexBuffer.get(),
+                                                          m_pipelineLayout,
+                                                          m_descriptorSets))
         , m_imageAvailable({(*m_device.get()).m_logicalDevice.createSemaphore(vk::SemaphoreCreateInfo()),
                             (*m_device.get()).m_logicalDevice.createSemaphore(vk::SemaphoreCreateInfo())})
         , m_renderFinished({(*m_device.get()).m_logicalDevice.createSemaphore(vk::SemaphoreCreateInfo()),
@@ -73,6 +88,8 @@ namespace engine {
 
     rendering_engine::~rendering_engine() {
         cleanup_swap_chain_dependancies();
+
+        (*m_device.get()).m_logicalDevice.destroyDescriptorSetLayout(m_descriptorSetLayout);
 
         m_vertexBuffer.reset();
         for (auto& semaphore : m_imageAvailable) {
@@ -98,6 +115,8 @@ namespace engine {
         (*m_device.get()).m_logicalDevice.destroyPipeline(m_pipeline);
         (*m_device.get()).m_logicalDevice.destroyPipelineLayout(m_pipelineLayout);
         (*m_device.get()).m_logicalDevice.destroyRenderPass(m_renderPass);
+
+        (*m_device.get()).m_logicalDevice.destroyDescriptorPool(m_descriptorPool);
     }
 
     void rendering_engine::recreate_swap_chain(std::uint32_t width, std::uint32_t height) {
@@ -111,7 +130,7 @@ namespace engine {
 
         m_swapChain = std::move(newSwapChain);
         m_renderPass = vulkan::create_render_pass((*m_device.get()).m_logicalDevice, m_swapChain->get_format());
-        m_pipelineLayout = vulkan::create_pipeline_layout((*m_device.get()).m_logicalDevice);
+        m_pipelineLayout = vulkan::create_pipeline_layout((*m_device.get()).m_logicalDevice, m_descriptorSetLayout);
         m_pipeline = vulkan::create_graphics_pipeline((*m_device.get()).m_logicalDevice,
                                                       m_pipelineLayout,
                                                       m_renderPass,
@@ -119,6 +138,15 @@ namespace engine {
                                                       *m_shaderCompiler.get());
         m_framebuffers = vulkan::create_framebuffers(
             (*m_device.get()).m_logicalDevice, m_renderPass, m_swapChain->get_image_views(), m_swapChain->get_extent());
+        m_uniformBuffers =
+            vulkan::create_uniform_buffers(*m_device.get(), m_commandPool, m_swapChain->get_image_views().size()),
+        m_descriptorPool =
+            vulkan::create_descriptor_pool((*m_device.get()).m_logicalDevice, m_swapChain->get_image_views().size());
+        m_descriptorSets = vulkan::create_descriptor_sets((*m_device.get()).m_logicalDevice,
+                                                        m_swapChain->get_image_views().size(),
+                                                        m_descriptorPool,
+                                                        m_descriptorSetLayout,
+                                                        m_uniformBuffers);
         m_commandBuffers = vulkan::create_command_buffers((*m_device.get()).m_logicalDevice,
                                                           m_commandPool,
                                                           m_framebuffers,
@@ -126,7 +154,9 @@ namespace engine {
                                                           m_pipeline,
                                                           m_swapChain->get_extent(),
                                                           *m_vertexBuffer.get(),
-                                                          *m_indexBuffer.get());
+                                                          *m_indexBuffer.get(),
+                                                          m_pipelineLayout,
+                                                          m_descriptorSets);
     }
 
     void rendering_engine::update_framebuffer() {
@@ -136,6 +166,24 @@ namespace engine {
         glfwGetFramebufferSize(m_mainWindow.get_handle(), &width, &height);
         m_mainWindow.set_size({width, height});
         recreate_swap_chain(width, height);
+    }
+
+    void rendering_engine::update_uniform_buffer(vulkan::uniform_buffer& buffer) {
+        static auto startTime = std::chrono::high_resolution_clock::now();
+
+        auto currentTime = std::chrono::high_resolution_clock::now();
+        float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
+
+        vulkan::uniform_buffer_object ubo;
+        ubo.model = glm::rotate(glm::mat4(1.0f), time * glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+        ubo.view = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+        ubo.proj = glm::perspective(glm::radians(45.0f),
+                                    m_swapChain->get_extent().width / static_cast<float>(m_swapChain->get_extent().width),
+                                    0.1f,
+                                    10.0f);
+        ubo.proj[1][1] *= -1;
+
+        buffer.update_buffer(ubo);
     }
 
     void rendering_engine::frame(size_t frameCount) {
@@ -161,6 +209,8 @@ namespace engine {
         vk::Semaphore waitSemaphores[] = {m_imageAvailable[currentFrame]};
         vk::Semaphore signalSemaphores[] = {m_renderFinished[currentFrame]};
         vk::PipelineStageFlags waitStages[] = {vk::PipelineStageFlagBits::eColorAttachmentOutput};
+
+        update_uniform_buffer(m_uniformBuffers[imageIndex]);
 
         vk::SubmitInfo submitInfo(1, waitSemaphores, waitStages, 1, &m_commandBuffers[imageIndex], 1, signalSemaphores);
 

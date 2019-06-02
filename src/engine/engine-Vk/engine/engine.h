@@ -30,6 +30,7 @@ namespace engine {
         class shader_compiler;
         class vertex_buffer;
         class index_buffer;
+        class uniform_buffer;
     } // namespace vulkan
 
     class rendering_engine {
@@ -50,6 +51,7 @@ namespace engine {
         void cleanup_swap_chain_dependancies();
         void recreate_swap_chain(std::uint32_t width, std::uint32_t height);
         void update_framebuffer();
+        void update_uniform_buffer(vulkan::uniform_buffer& buffer);
 
     private:
         application::main_window& m_mainWindow;
@@ -63,12 +65,16 @@ namespace engine {
         ptr<vulkan::swap_chain> m_swapChain;
         ptr<vulkan::shader_compiler> m_shaderCompiler;
         vk::RenderPass m_renderPass;
+        vk::DescriptorSetLayout m_descriptorSetLayout;
         vk::PipelineLayout m_pipelineLayout;
         vk::Pipeline m_pipeline;
         std::vector<vk::Framebuffer> m_framebuffers;
         vk::CommandPool m_commandPool;
         ptr<vulkan::vertex_buffer> m_vertexBuffer;
         ptr<vulkan::index_buffer> m_indexBuffer;
+        std::vector<vulkan::uniform_buffer> m_uniformBuffers;
+        vk::DescriptorPool m_descriptorPool;
+        std::vector<vk::DescriptorSet> m_descriptorSets;
         std::vector<vk::CommandBuffer> m_commandBuffers;
         std::vector<vk::Semaphore> m_imageAvailable;
         std::vector<vk::Semaphore> m_renderFinished;
