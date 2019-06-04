@@ -9,6 +9,8 @@
 namespace tst {
 namespace application {
 
+    using objectId = void*;
+
     struct event {
         struct mouse_pos {
             double xpos;
@@ -55,6 +57,7 @@ namespace application {
         using arguments =
             std::variant<mouse_pos, mouse_button, scroll, keyboard, focus, iconify, closed, time, framebuffer>;
 
+        objectId id;
         arguments args;
     };
 

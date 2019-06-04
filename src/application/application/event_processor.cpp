@@ -15,8 +15,10 @@ namespace application {
     }
 
     void event_processor::subscribe(const std::size_t type,
+                                    objectId id,
                                     std::function<void(const event::arguments&)>&& callback) noexcept {
-        m_listeners[type].emplace_back(std::move(callback));
+        subscriber subscriber{id, std::move(callback)};
+        m_listeners[type].emplace_back(subscriber);
     }
 
     void event_processor::process_events() {
@@ -24,7 +26,7 @@ namespace application {
             auto& event = m_events[m_readIndex++];
             m_readIndex &= m_mask;
             for (auto& listener : m_listeners[event.args.index()]) {
-                listener(event.args);
+                if (event.id != listener.id) listener.callback(event.args);
             }
         }
     }
