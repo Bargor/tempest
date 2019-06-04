@@ -83,6 +83,7 @@ namespace engine {
         , m_framebufferResized(false) {
         auto framebufferResizeCallback = [&](const application::event::arguments&) { m_framebufferResized = true; };
         m_eventProcessor.subscribe(core::variant_index<application::event::arguments, application::event::framebuffer>(),
+                                   this,
                                    std::move(framebufferResizeCallback));
     }
 
@@ -143,10 +144,10 @@ namespace engine {
         m_descriptorPool =
             vulkan::create_descriptor_pool((*m_device.get()).m_logicalDevice, m_swapChain->get_image_views().size());
         m_descriptorSets = vulkan::create_descriptor_sets((*m_device.get()).m_logicalDevice,
-                                                        m_swapChain->get_image_views().size(),
-                                                        m_descriptorPool,
-                                                        m_descriptorSetLayout,
-                                                        m_uniformBuffers);
+                                                          m_swapChain->get_image_views().size(),
+                                                          m_descriptorPool,
+                                                          m_descriptorSetLayout,
+                                                          m_uniformBuffers);
         m_commandBuffers = vulkan::create_command_buffers((*m_device.get()).m_logicalDevice,
                                                           m_commandPool,
                                                           m_framebuffers,
