@@ -2,8 +2,9 @@
 // Author: Karol Kontny
 #pragma once
 
-#include <GLFW/glfw3.h>
 #include "window.h"
+
+#include <GLFW/glfw3.h>
 
 namespace tst {
 namespace application {
@@ -40,6 +41,7 @@ namespace application {
 
     protected:
         glfw_window(std::string&& name,
+                    event_processor& eventProcessor,
                     const window_size& size,
                     fullscreen_option windowMode,
                     visible_option visibility,

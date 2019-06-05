@@ -32,9 +32,9 @@ namespace application {
         void run();
 
     private:
+        ptr<event_processor> m_eventProcessor;
         ptr<main_window> m_mainWindow;
         ptr<device::monitor> m_monitor;
-        ptr<event_processor> m_eventProcessor;
         ptr<input_processor> m_inputProcessor;
         ptr<data_loader> m_dataLoader;
         ptr<simulation_engine> m_engine;

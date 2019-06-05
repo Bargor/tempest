@@ -14,6 +14,8 @@ namespace device {
 
 namespace application {
 
+    class event_processor;
+
     class window {
     public:
         enum class fullscreen_option { fullscreen, windowed };
@@ -46,6 +48,7 @@ namespace application {
 
     protected:
         window(std::string&& name,
+               event_processor& m_eventProcessor,
                const window_size& size,
                fullscreen_option windowMode,
                visible_option visibility,
@@ -55,6 +58,8 @@ namespace application {
 
     protected:
         std::string m_name;
+        event_processor& m_eventProcessor;
+
         window_size m_size;
         fullscreen_option m_windowMode;
         visible_option m_visible;

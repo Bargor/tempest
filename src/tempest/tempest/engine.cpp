@@ -31,10 +31,13 @@ namespace application {
         auto close_callback = [&](const event::arguments&) { m_shouldClose = true; };
         auto iconify_callback = [&](const event::arguments& args) {
             assert(std::holds_alternative<application::event::iconify>(args));
-            m_windowMinimized = std::get<application::event::iconify>(args).iconified;
+            m_windowMinimized =
+                std::get<application::event::iconify>(args).open == window::open_option::iconified ? true : false;
         };
-        m_eventProcessor.subscribe(core::variant_index<event::arguments, event::closed>(), this, std::move(close_callback));
-        m_eventProcessor.subscribe(core::variant_index<event::arguments, event::iconify>(), this, std::move(iconify_callback));
+        m_eventProcessor.subscribe(
+            core::variant_index<event::arguments, event::closed>(), this, std::move(close_callback));
+        m_eventProcessor.subscribe(
+            core::variant_index<event::arguments, event::iconify>(), this, std::move(iconify_callback));
     }
 
     simulation_engine::~simulation_engine() {

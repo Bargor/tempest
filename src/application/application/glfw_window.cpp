@@ -3,17 +3,19 @@
 
 #include "glfw_window.h"
 
+#include "event_processor.h"
 #include "glfw_exception.h"
 
-#include <thread/main_thread.h>
-#include <device/monitor.h>
-#include <thread>
 #include <assert.h>
+#include <device/monitor.h>
+#include <thread/main_thread.h>
+#include <thread>
 
 namespace tst {
 namespace application {
 
     glfw_window::glfw_window(std::string&& name,
+                             event_processor& eventProcessor,
                              const window_size& size,
                              fullscreen_option windowMode,
                              visible_option visibility,
@@ -22,7 +24,7 @@ namespace application {
                              vsync_option vsync,
                              const device::monitor* monitor,
                              const std::array<window_hint, 31>& hints)
-        : window(std::move(name), size, windowMode, visibility, open, focus)
+        : window(std::move(name), eventProcessor, size, windowMode, visibility, open, focus)
         , m_vsync(vsync)
         , m_monitor(monitor)
         , m_windowHandle(nullptr) {
@@ -34,7 +36,9 @@ namespace application {
         m_windowHandle = (windowMode == fullscreen_option::fullscreen) ?
             glfwCreateWindow(m_size.width, m_size.height, m_name.c_str(), m_monitor->get_handle(), nullptr) :
             glfwCreateWindow(m_size.width, m_size.height, m_name.c_str(), nullptr, nullptr);
-        if (!m_windowHandle) { throw glfw_exception("Can't create window"); }
+        if (!m_windowHandle) {
+            throw glfw_exception("Can't create window");
+        }
         glfwSwapInterval(static_cast<int>(vsync));
     }
 
@@ -47,6 +51,7 @@ namespace application {
         assert(std::this_thread::get_id() == core::main_thread::get_id());
         glfwSetWindowSize(m_windowHandle, size.width, size.height);
         m_size = size;
+        m_eventProcessor.create_event(event{this, event::framebuffer{size.width, size.width}});
     }
 
     position<std::int32_t> glfw_window::get_position() const noexcept {
@@ -76,6 +81,7 @@ namespace application {
         assert(m_focused == focus_option::unfocused);
         glfwFocusWindow(m_windowHandle);
         m_focused = focus_option::focused;
+        m_eventProcessor.create_event(event{this, event::focus{m_focused}});
     }
 
     void glfw_window::show() noexcept {
@@ -84,6 +90,7 @@ namespace application {
         assert(m_windowMode == fullscreen_option::windowed);
         glfwShowWindow(m_windowHandle);
         m_visible = visible_option::visible;
+        m_eventProcessor.create_event(event{this, event::visible{m_visible}});
     }
 
     void glfw_window::hide() noexcept {
@@ -93,6 +100,7 @@ namespace application {
         assert(std::this_thread::get_id() == core::main_thread::get_id());
         glfwHideWindow(m_windowHandle);
         m_visible = visible_option::hidden;
+        m_eventProcessor.create_event(event{this, event::visible{m_visible}});
     }
 
     void glfw_window::iconify() noexcept {
@@ -101,6 +109,7 @@ namespace application {
         assert(std::this_thread::get_id() == core::main_thread::get_id());
         glfwIconifyWindow(m_windowHandle);
         m_opened = open_option::iconified;
+        m_eventProcessor.create_event(event{this, event::iconify{m_opened}});
     }
 
     void glfw_window::restore() noexcept {
@@ -109,6 +118,7 @@ namespace application {
         assert(std::this_thread::get_id() == core::main_thread::get_id());
         m_opened = open_option::opened;
         glfwRestoreWindow(m_windowHandle);
+        m_eventProcessor.create_event(event{this, event::iconify{m_opened}});
     }
 
     void glfw_window::maximize() noexcept {
@@ -116,6 +126,7 @@ namespace application {
         assert(std::this_thread::get_id() == core::main_thread::get_id());
         m_opened = open_option::maximized;
         glfwMaximizeWindow(m_windowHandle);
+        m_eventProcessor.create_event(event{this, event::iconify{m_opened}});
     }
 
     void glfw_window::close() noexcept {
@@ -123,19 +134,26 @@ namespace application {
             assert(std::this_thread::get_id() == core::main_thread::get_id());
             glfwDestroyWindow(m_windowHandle);
             m_windowHandle = nullptr;
+            m_eventProcessor.create_event(event{this, event::closed{}});
         }
     }
 
-    glfw_window::vsync_option glfw_window::get_vsync() const noexcept { return m_vsync; }
+    glfw_window::vsync_option glfw_window::get_vsync() const noexcept {
+        return m_vsync;
+    }
 
     void glfw_window::set_vsync(vsync_option option) noexcept {
         glfwSwapInterval(static_cast<int>(option));
         m_vsync = option;
     }
 
-    void glfw_window::end_frame() noexcept { glfwSwapBuffers(m_windowHandle); }
+    void glfw_window::end_frame() noexcept {
+        glfwSwapBuffers(m_windowHandle);
+    }
 
-    GLFWwindow* glfw_window::get_handle() const noexcept { return m_windowHandle; }
+    GLFWwindow* glfw_window::get_handle() const noexcept {
+        return m_windowHandle;
+    }
 
 } // namespace application
 } // namespace tst

@@ -17,6 +17,7 @@ namespace application {
 
     public:
         main_window(std::string&& name,
+                    event_processor& eventProcessor,
                     const window_size& size,
                     fullscreen_option windowMode,
                     const device::monitor* monitor,

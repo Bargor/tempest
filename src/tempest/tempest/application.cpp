@@ -16,14 +16,15 @@ namespace tst {
 namespace application {
 
     application::application(const program_params& params, ptr<device::monitor> monitor, std::string&& name)
-        : m_mainWindow(std::make_unique<main_window>(
+        : m_eventProcessor(std::make_unique<event_processor>())
+        , m_mainWindow(std::make_unique<main_window>(
               std::move(name),
+              *m_eventProcessor.get(),
               main_window::window_size{monitor->get_width() / 2, monitor->get_height() / 2},
               params.windowMode,
               monitor.get(),
               setup_context(monitor->get_refresh_rate())))
         , m_monitor(std::move(monitor))
-        , m_eventProcessor(std::make_unique<event_processor>())
         , m_inputProcessor(std::make_unique<input_processor>(*m_eventProcessor.get(), *m_mainWindow.get()))
         , m_dataLoader(
               std::make_unique<data_loader>(std::initializer_list<std::filesystem::path>({params.executionDirectory})))
