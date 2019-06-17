@@ -82,6 +82,7 @@ namespace engine {
                (*m_device.get()).m_logicalDevice.createFence(vk::FenceCreateInfo(vk::FenceCreateFlagBits::eSignaled))})
         , m_framebufferResized(false) {
         auto framebufferResizeCallback = [&](const application::event::arguments&) { m_framebufferResized = true; };
+
         m_eventProcessor.subscribe(core::variant_index<application::event::arguments, application::event::framebuffer>(),
                                    this,
                                    std::move(framebufferResizeCallback));

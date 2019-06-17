@@ -46,8 +46,7 @@ namespace application {
         };
 
         struct framebuffer {
-            std::int32_t width;
-            std::int32_t height;
+            window::window_size size;
         };
 
         struct closed {};

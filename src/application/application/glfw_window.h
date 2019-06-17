@@ -55,6 +55,16 @@ namespace application {
         vsync_option m_vsync;
         const device::monitor* m_monitor;
         GLFWwindow* m_windowHandle;
+
+	private:
+        void set_size_internal(const window_size& size, bool broadcast) noexcept;
+        void focus_internal(bool broadcast) noexcept;
+        void show_internal(bool broadcast) noexcept;
+        void hide_internal(bool broadcast) noexcept;
+        void iconify_internal(bool broadcast) noexcept;
+        void restore_internal(bool broadcast) noexcept;
+        void maximize_internal(bool broadcast) noexcept;
+        void close_internal(bool broadcast) noexcept;
     };
 
 } // namespace application

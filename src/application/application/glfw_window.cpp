@@ -10,6 +10,7 @@
 #include <device/monitor.h>
 #include <thread/main_thread.h>
 #include <thread>
+#include <util/variant.h>
 
 namespace tst {
 namespace application {
@@ -40,18 +41,55 @@ namespace application {
             throw glfw_exception("Can't create window");
         }
         glfwSwapInterval(static_cast<int>(vsync));
+
+        auto set_size_callback = [&](const event::arguments& args) {
+            assert(std::holds_alternative<application::event::framebuffer>(args));
+            set_size_internal(std::get<application::event::framebuffer>(args).size, false);
+        };
+        auto focus_callback = [&](const event::arguments&) { focus_internal(false); };
+        auto visible_callback = [&](const event::arguments& args) {
+            if (std::get<application::event::visible>(args).visible == visible_option::visible) {
+                show_internal(false);
+            } else {
+                hide_internal(false);
+            }
+        };
+        auto iconify_callback = [&](const event::arguments& args) {
+            if (std::get<application::event::iconify>(args).open == open_option::iconified) {
+                iconify_internal(false);
+            } else if (std::get<application::event::iconify>(args).open == open_option::maximized) {
+                maximize_internal(false);
+            } else {
+                restore_internal(false);
+			}
+        };
+        auto close_callback = [&](const event::arguments&) { close_internal(false); };
+
+        m_eventProcessor.subscribe(
+            core::variant_index<event::arguments, event::framebuffer>(), this, std::move(set_size_callback));
+        m_eventProcessor.subscribe(core::variant_index<event::arguments, event::focus>(), this, std::move(focus_callback));
+        m_eventProcessor.subscribe(
+            core::variant_index<event::arguments, event::visible>(), this, std::move(visible_callback));
+        m_eventProcessor.subscribe(
+            core::variant_index<event::arguments, event::iconify>(), this, std::move(iconify_callback));
+        m_eventProcessor.subscribe(
+            core::variant_index<event::arguments, event::closed>(), this, std::move(close_callback));
     }
 
     glfw_window::~glfw_window() {
         close();
     }
 
-    void glfw_window::set_size(const window_size& size) noexcept {
+    void glfw_window::set_size_internal(const window_size& size, bool broadcast) noexcept {
         assert(m_windowHandle);
         assert(std::this_thread::get_id() == core::main_thread::get_id());
-        glfwSetWindowSize(m_windowHandle, size.width, size.height);
+        //glfwSetWindowSize(m_windowHandle, size.width, size.height);
         m_size = size;
-        m_eventProcessor.create_event(event{this, event::framebuffer{size.width, size.width}});
+        if (broadcast) m_eventProcessor.create_event(event{this, event::framebuffer{size.width, size.width}});
+    }
+
+    void glfw_window::set_size(const window_size& size) noexcept {
+        set_size_internal(size, true);
     }
 
     position<std::int32_t> glfw_window::get_position() const noexcept {
@@ -75,66 +113,94 @@ namespace application {
         m_name = name;
     }
 
-    void glfw_window::focus() noexcept {
+    void glfw_window::focus_internal(bool broadcast) noexcept {
         assert(m_windowHandle);
         assert(std::this_thread::get_id() == core::main_thread::get_id());
         assert(m_focused == focus_option::unfocused);
         glfwFocusWindow(m_windowHandle);
         m_focused = focus_option::focused;
-        m_eventProcessor.create_event(event{this, event::focus{m_focused}});
+        if (broadcast) m_eventProcessor.create_event(event{this, event::focus{m_focused}});
     }
 
-    void glfw_window::show() noexcept {
+    void glfw_window::focus() noexcept {
+        focus_internal(true);
+    }
+
+    void glfw_window::show_internal(bool broadcast) noexcept {
         assert(m_windowHandle);
         assert(m_visible == visible_option::hidden);
         assert(m_windowMode == fullscreen_option::windowed);
         glfwShowWindow(m_windowHandle);
         m_visible = visible_option::visible;
-        m_eventProcessor.create_event(event{this, event::visible{m_visible}});
+        if (broadcast) m_eventProcessor.create_event(event{this, event::visible{m_visible}});
     }
 
-    void glfw_window::hide() noexcept {
+    void glfw_window::show() noexcept {
+        show_internal(true);
+    }
+
+    void glfw_window::hide_internal(bool broadcast) noexcept {
         assert(m_windowHandle);
         assert(m_visible == visible_option::visible);
         assert(m_windowMode == fullscreen_option::windowed);
         assert(std::this_thread::get_id() == core::main_thread::get_id());
         glfwHideWindow(m_windowHandle);
         m_visible = visible_option::hidden;
-        m_eventProcessor.create_event(event{this, event::visible{m_visible}});
+        if (broadcast) m_eventProcessor.create_event(event{this, event::visible{m_visible}});
     }
 
-    void glfw_window::iconify() noexcept {
+    void glfw_window::hide() noexcept {
+        hide_internal(true);
+    }
+
+    void glfw_window::iconify_internal(bool broadcast) noexcept {
         assert(m_windowHandle);
         assert(m_opened != open_option::iconified);
         assert(std::this_thread::get_id() == core::main_thread::get_id());
         glfwIconifyWindow(m_windowHandle);
         m_opened = open_option::iconified;
-        m_eventProcessor.create_event(event{this, event::iconify{m_opened}});
+        if (broadcast) m_eventProcessor.create_event(event{this, event::iconify{m_opened}});
     }
 
-    void glfw_window::restore() noexcept {
+    void glfw_window::iconify() noexcept {
+        iconify_internal(true);
+    }
+
+    void glfw_window::restore_internal(bool broadcast) noexcept {
         assert(m_windowHandle);
         assert(m_opened != open_option::opened);
         assert(std::this_thread::get_id() == core::main_thread::get_id());
         m_opened = open_option::opened;
         glfwRestoreWindow(m_windowHandle);
-        m_eventProcessor.create_event(event{this, event::iconify{m_opened}});
+        if (broadcast) m_eventProcessor.create_event(event{this, event::iconify{m_opened}});
+    }
+
+    void glfw_window::restore() noexcept {
+        restore_internal(false);
     }
 
     void glfw_window::maximize() noexcept {
+        maximize_internal(true);
+    }
+
+    void glfw_window::maximize_internal(bool broadcast) noexcept {
         assert(m_opened != open_option::maximized);
         assert(std::this_thread::get_id() == core::main_thread::get_id());
         m_opened = open_option::maximized;
         glfwMaximizeWindow(m_windowHandle);
-        m_eventProcessor.create_event(event{this, event::iconify{m_opened}});
+        if (broadcast) m_eventProcessor.create_event(event{this, event::iconify{m_opened}});
     }
 
     void glfw_window::close() noexcept {
+        close_internal(true);
+    }
+
+    void glfw_window::close_internal(bool broadcast) noexcept {
         if (m_windowHandle) {
             assert(std::this_thread::get_id() == core::main_thread::get_id());
             glfwDestroyWindow(m_windowHandle);
             m_windowHandle = nullptr;
-            m_eventProcessor.create_event(event{this, event::closed{}});
+            if (broadcast) m_eventProcessor.create_event(event{this, event::closed{}});
         }
     }
 
