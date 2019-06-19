@@ -3,17 +3,20 @@
 
 #include "glfw_window.h"
 
+#include "event_processor.h"
 #include "glfw_exception.h"
 
-#include <thread/main_thread.h>
-#include <device/monitor.h>
-#include <thread>
 #include <assert.h>
+#include <device/monitor.h>
+#include <thread/main_thread.h>
+#include <thread>
+#include <util/variant.h>
 
 namespace tst {
 namespace application {
 
     glfw_window::glfw_window(std::string&& name,
+                             event_processor& eventProcessor,
                              const window_size& size,
                              fullscreen_option windowMode,
                              visible_option visibility,
@@ -22,7 +25,7 @@ namespace application {
                              vsync_option vsync,
                              const device::monitor* monitor,
                              const std::array<window_hint, 31>& hints)
-        : window(std::move(name), size, windowMode, visibility, open, focus)
+        : window(std::move(name), eventProcessor, size, windowMode, visibility, open, focus)
         , m_vsync(vsync)
         , m_monitor(monitor)
         , m_windowHandle(nullptr) {
@@ -34,19 +37,68 @@ namespace application {
         m_windowHandle = (windowMode == fullscreen_option::fullscreen) ?
             glfwCreateWindow(m_size.width, m_size.height, m_name.c_str(), m_monitor->get_handle(), nullptr) :
             glfwCreateWindow(m_size.width, m_size.height, m_name.c_str(), nullptr, nullptr);
-        if (!m_windowHandle) { throw glfw_exception("Can't create window"); }
+        if (!m_windowHandle) {
+            throw glfw_exception("Can't create window");
+        }
         glfwSwapInterval(static_cast<int>(vsync));
+
+        auto set_size_callback = [&](const event::arguments& args) {
+            assert(std::holds_alternative<application::event::framebuffer>(args));
+            set_size_internal(std::get<application::event::framebuffer>(args).size, false);
+        };
+        auto focus_callback = [&](const event::arguments& args) { 
+			if (std::get<application::event::focus>(args).focused == focus_option::focused) {
+                focus_internal(false); 
+            } else {
+                unfocus();
+			}
+				
+		};
+        auto visible_callback = [&](const event::arguments& args) {
+            if (std::get<application::event::visible>(args).visible == visible_option::visible) {
+                show_internal(false);
+            } else {
+                hide_internal(false);
+            }
+        };
+        auto iconify_callback = [&](const event::arguments& args) {
+            if (std::get<application::event::iconify>(args).open == open_option::iconified) {
+                iconify_internal(false);
+            } else if (std::get<application::event::iconify>(args).open == open_option::maximized) {
+                maximize_internal(false);
+            } else {
+                restore_internal(false);
+            }
+        };
+        auto close_callback = [&](const event::arguments&) { close_internal(false); };
+
+        m_eventProcessor.subscribe(
+            core::variant_index<event::arguments, event::framebuffer>(), this, std::move(set_size_callback));
+        m_eventProcessor.subscribe(core::variant_index<event::arguments, event::focus>(), this, std::move(focus_callback));
+        m_eventProcessor.subscribe(
+            core::variant_index<event::arguments, event::visible>(), this, std::move(visible_callback));
+        m_eventProcessor.subscribe(
+            core::variant_index<event::arguments, event::iconify>(), this, std::move(iconify_callback));
+        m_eventProcessor.subscribe(
+            core::variant_index<event::arguments, event::closed>(), this, std::move(close_callback));
     }
 
     glfw_window::~glfw_window() {
         close();
     }
 
-    void glfw_window::set_size(const window_size& size) noexcept {
+    void glfw_window::set_size_internal(const window_size& size, bool broadcast) noexcept {
         assert(m_windowHandle);
         assert(std::this_thread::get_id() == core::main_thread::get_id());
-        glfwSetWindowSize(m_windowHandle, size.width, size.height);
         m_size = size;
+        if (broadcast) {
+            glfwSetWindowSize(m_windowHandle, size.width, size.height);
+            m_eventProcessor.create_event(event{this, event::framebuffer{size.width, size.width}});
+        }
+    }
+
+    void glfw_window::set_size(const window_size& size) noexcept {
+        set_size_internal(size, false);
     }
 
     position<std::int32_t> glfw_window::get_position() const noexcept {
@@ -70,72 +122,134 @@ namespace application {
         m_name = name;
     }
 
-    void glfw_window::focus() noexcept {
+    void glfw_window::focus_internal(bool broadcast) noexcept {
         assert(m_windowHandle);
         assert(std::this_thread::get_id() == core::main_thread::get_id());
         assert(m_focused == focus_option::unfocused);
-        glfwFocusWindow(m_windowHandle);
         m_focused = focus_option::focused;
+        if (broadcast) {
+            glfwFocusWindow(m_windowHandle);
+            m_eventProcessor.create_event(event{this, event::focus{m_focused}});
+        }
     }
 
-    void glfw_window::show() noexcept {
+    void glfw_window::focus() noexcept {
+        focus_internal(true);
+    }
+
+	void glfw_window::unfocus() noexcept {
+        assert(m_windowHandle);
+        assert(std::this_thread::get_id() == core::main_thread::get_id());
+        assert(m_focused == focus_option::focused);
+        m_focused = focus_option::unfocused;
+    }
+
+    void glfw_window::show_internal(bool broadcast) noexcept {
         assert(m_windowHandle);
         assert(m_visible == visible_option::hidden);
         assert(m_windowMode == fullscreen_option::windowed);
-        glfwShowWindow(m_windowHandle);
         m_visible = visible_option::visible;
+        if (broadcast) {
+            glfwShowWindow(m_windowHandle);
+            m_eventProcessor.create_event(event{this, event::visible{m_visible}});
+        }
     }
 
-    void glfw_window::hide() noexcept {
+    void glfw_window::show() noexcept {
+        show_internal(true);
+    }
+
+    void glfw_window::hide_internal(bool broadcast) noexcept {
         assert(m_windowHandle);
         assert(m_visible == visible_option::visible);
         assert(m_windowMode == fullscreen_option::windowed);
         assert(std::this_thread::get_id() == core::main_thread::get_id());
-        glfwHideWindow(m_windowHandle);
         m_visible = visible_option::hidden;
+        if (broadcast) {
+            glfwHideWindow(m_windowHandle);
+            m_eventProcessor.create_event(event{this, event::visible{m_visible}});
+        }
     }
 
-    void glfw_window::iconify() noexcept {
+    void glfw_window::hide() noexcept {
+        hide_internal(true);
+    }
+
+    void glfw_window::iconify_internal(bool broadcast) noexcept {
         assert(m_windowHandle);
         assert(m_opened != open_option::iconified);
         assert(std::this_thread::get_id() == core::main_thread::get_id());
-        glfwIconifyWindow(m_windowHandle);
         m_opened = open_option::iconified;
+        if (broadcast) {
+            glfwIconifyWindow(m_windowHandle);
+            m_eventProcessor.create_event(event{this, event::iconify{m_opened}});
+        }
     }
 
-    void glfw_window::restore() noexcept {
+    void glfw_window::iconify() noexcept {
+        iconify_internal(true);
+    }
+
+    void glfw_window::restore_internal(bool broadcast) noexcept {
         assert(m_windowHandle);
         assert(m_opened != open_option::opened);
         assert(std::this_thread::get_id() == core::main_thread::get_id());
         m_opened = open_option::opened;
-        glfwRestoreWindow(m_windowHandle);
-    }
-
-    void glfw_window::maximize() noexcept {
-        assert(m_opened != open_option::maximized);
-        assert(std::this_thread::get_id() == core::main_thread::get_id());
-        m_opened = open_option::maximized;
-        glfwMaximizeWindow(m_windowHandle);
-    }
-
-    void glfw_window::close() noexcept {
-        if (m_windowHandle) {
-            assert(std::this_thread::get_id() == core::main_thread::get_id());
-            glfwDestroyWindow(m_windowHandle);
-            m_windowHandle = nullptr;
+        if (broadcast) {
+            glfwRestoreWindow(m_windowHandle);
+            m_eventProcessor.create_event(event{this, event::iconify{m_opened}});
         }
     }
 
-    glfw_window::vsync_option glfw_window::get_vsync() const noexcept { return m_vsync; }
+    void glfw_window::restore() noexcept {
+        restore_internal(false);
+    }
+
+    void glfw_window::maximize() noexcept {
+        maximize_internal(true);
+    }
+
+    void glfw_window::maximize_internal(bool broadcast) noexcept {
+        assert(m_opened != open_option::maximized);
+        assert(std::this_thread::get_id() == core::main_thread::get_id());
+        m_opened = open_option::maximized;
+        if (broadcast) {
+            glfwMaximizeWindow(m_windowHandle);
+            m_eventProcessor.create_event(event{this, event::iconify{m_opened}});
+        }
+    }
+
+    void glfw_window::close() noexcept {
+        close_internal(true);
+    }
+
+    void glfw_window::close_internal(bool broadcast) noexcept {
+        if (m_windowHandle) {
+            assert(std::this_thread::get_id() == core::main_thread::get_id());
+            if (broadcast) {
+                glfwDestroyWindow(m_windowHandle);
+                m_windowHandle = nullptr;
+                m_eventProcessor.create_event(event{this, event::closed{}});
+            }
+        }
+    }
+
+    glfw_window::vsync_option glfw_window::get_vsync() const noexcept {
+        return m_vsync;
+    }
 
     void glfw_window::set_vsync(vsync_option option) noexcept {
         glfwSwapInterval(static_cast<int>(option));
         m_vsync = option;
     }
 
-    void glfw_window::end_frame() noexcept { glfwSwapBuffers(m_windowHandle); }
+    void glfw_window::end_frame() noexcept {
+        glfwSwapBuffers(m_windowHandle);
+    }
 
-    GLFWwindow* glfw_window::get_handle() const noexcept { return m_windowHandle; }
+    GLFWwindow* glfw_window::get_handle() const noexcept {
+        return m_windowHandle;
+    }
 
 } // namespace application
 } // namespace tst

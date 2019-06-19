@@ -6,8 +6,12 @@
 #include <chrono>
 #include <variant>
 
+#include "window.h"
+
 namespace tst {
 namespace application {
+
+    using objectId = void*;
 
     struct event {
         struct mouse_pos {
@@ -34,27 +38,31 @@ namespace application {
         };
 
         struct iconify {
-            std::int32_t iconified;
+            window::open_option open;
         };
 
         struct focus {
-            std::int32_t focused;
+            window::focus_option focused;
         };
 
         struct framebuffer {
-            std::int32_t width;
-            std::int32_t height;
+            window::window_size size;
         };
 
         struct closed {};
+
+		struct visible {
+            window::visible_option visible;
+		};
 
         struct time {
             std::chrono::microseconds time;
         };
 
         using arguments =
-            std::variant<mouse_pos, mouse_button, scroll, keyboard, focus, iconify, closed, time, framebuffer>;
+            std::variant<mouse_pos, mouse_button, scroll, keyboard, focus, iconify, closed, visible, time, framebuffer>;
 
+        objectId id;
         arguments args;
     };
 

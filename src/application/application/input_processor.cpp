@@ -14,8 +14,7 @@ namespace tst {
 namespace application {
 
     input_processor::input_processor(event_processor& event_processor, const glfw_window& window)
-        : m_eventProcessor(event_processor)
-        , m_window(window.get_handle()) {
+        : m_eventProcessor(event_processor), m_window(window.get_handle()) {
         assert(std::this_thread::get_id() == core::main_thread::get_id());
         glfwSetWindowUserPointer(m_window, this);
 
@@ -83,22 +82,22 @@ namespace application {
 
     void input_processor::window_focus_callback(GLFWwindow*, const std::int32_t focused) {
         assert(std::this_thread::get_id() == core::main_thread::get_id());
-        m_eventProcessor.create_event(event{event::focus{focused}});
+        m_eventProcessor.create_event(event{this, event::focus{static_cast<window::focus_option>(focused)}});
     }
 
     void input_processor::cursor_pos_callback(GLFWwindow*, double xpos, double ypos) {
         assert(std::this_thread::get_id() == core::main_thread::get_id());
-        m_eventProcessor.create_event(event{event::mouse_pos{xpos, ypos}});
+        m_eventProcessor.create_event(event{this, event::mouse_pos{xpos, ypos}});
     }
 
     void input_processor::mouse_button_callback(GLFWwindow*, std::int32_t button, std::int32_t action, std::int32_t mods) {
         assert(std::this_thread::get_id() == core::main_thread::get_id());
-        m_eventProcessor.create_event(event{event::mouse_button{button, action, mods}});
+        m_eventProcessor.create_event(event{this, event::mouse_button{button, action, mods}});
     }
 
     void input_processor::mouse_scroll_callback(GLFWwindow*, double xoffset, double yoffset) {
         assert(std::this_thread::get_id() == core::main_thread::get_id());
-        m_eventProcessor.create_event(event{event::scroll{xoffset, yoffset}});
+        m_eventProcessor.create_event(event{this, event::scroll{xoffset, yoffset}});
     }
 
     void input_processor::key_callback(GLFWwindow*,
@@ -107,24 +106,22 @@ namespace application {
                                        const std::int32_t action,
                                        const std::int32_t mods) {
         assert(std::this_thread::get_id() == core::main_thread::get_id());
-        m_eventProcessor.create_event(event{event::keyboard{key, scancode, action, mods}});
+        m_eventProcessor.create_event(event{this, event::keyboard{key, scancode, action, mods}});
     }
 
     void input_processor::window_iconify_callback(GLFWwindow*, const std::int32_t iconified) {
         assert(std::this_thread::get_id() == core::main_thread::get_id());
-        m_eventProcessor.create_event(event{event::iconify{iconified}});
+        m_eventProcessor.create_event(event{this, event::iconify{static_cast<window::open_option>(iconified)}});
     }
 
     void input_processor::window_close_callback(GLFWwindow*) {
         assert(std::this_thread::get_id() == core::main_thread::get_id());
-        m_eventProcessor.create_event(event{event::closed{}});
+        m_eventProcessor.create_event(event{this, event::closed{}});
     }
 
-    void input_processor::framebuffer_size_callback(GLFWwindow*,
-                                                           const std::int32_t width,
-                                                           const std::int32_t height) {
+    void input_processor::framebuffer_size_callback(GLFWwindow*, const std::int32_t width, const std::int32_t height) {
         assert(std::this_thread::get_id() == core::main_thread::get_id());
-        m_eventProcessor.create_event(event{event::framebuffer{width, height}});
+        m_eventProcessor.create_event(event{this, event::framebuffer{width, height}});
     }
 } // namespace application
 } // namespace tst
