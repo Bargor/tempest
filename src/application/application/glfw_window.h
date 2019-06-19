@@ -26,6 +26,7 @@ namespace application {
         void set_position(const position<std::int32_t>& pos) noexcept override;
         void set_title(const std::string&) noexcept override;
         void focus() noexcept override;
+        void unfocus() noexcept override;
         void show() noexcept override;
         void hide() noexcept override;
         void iconify() noexcept override;

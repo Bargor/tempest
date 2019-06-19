@@ -46,7 +46,14 @@ namespace application {
             assert(std::holds_alternative<application::event::framebuffer>(args));
             set_size_internal(std::get<application::event::framebuffer>(args).size, false);
         };
-        auto focus_callback = [&](const event::arguments&) { focus_internal(false); };
+        auto focus_callback = [&](const event::arguments& args) { 
+			if (std::get<application::event::focus>(args).focused == focus_option::focused) {
+                focus_internal(false); 
+            } else {
+                unfocus();
+			}
+				
+		};
         auto visible_callback = [&](const event::arguments& args) {
             if (std::get<application::event::visible>(args).visible == visible_option::visible) {
                 show_internal(false);
@@ -91,7 +98,7 @@ namespace application {
     }
 
     void glfw_window::set_size(const window_size& size) noexcept {
-        set_size_internal(size, true);
+        set_size_internal(size, false);
     }
 
     position<std::int32_t> glfw_window::get_position() const noexcept {
@@ -128,6 +135,13 @@ namespace application {
 
     void glfw_window::focus() noexcept {
         focus_internal(true);
+    }
+
+	void glfw_window::unfocus() noexcept {
+        assert(m_windowHandle);
+        assert(std::this_thread::get_id() == core::main_thread::get_id());
+        assert(m_focused == focus_option::focused);
+        m_focused = focus_option::unfocused;
     }
 
     void glfw_window::show_internal(bool broadcast) noexcept {

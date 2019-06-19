@@ -39,6 +39,7 @@ namespace application {
         virtual void set_position(const position<std::int32_t>& pos) noexcept = 0;
         virtual void set_title(const std::string&) noexcept = 0;
         virtual void focus() noexcept = 0;
+        virtual void unfocus() noexcept = 0;
         virtual void show() noexcept = 0;
         virtual void hide() noexcept = 0;
         virtual void iconify() noexcept = 0;
