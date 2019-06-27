@@ -4,7 +4,7 @@ version: 0.0.1.{build}
 environment:
   matrix:
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
-      GENERATOR: "Visual Studio 15 2019 Win64"
+      GENERATOR: "Visual Studio 16 2019 -A x64"
       ENGINE: "GL"
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
       GENERATOR: "Visual Studio 15 2017 Win64"
