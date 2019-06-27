@@ -2,11 +2,14 @@
 version: 0.0.1.{build}
  
 environment:
-  APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
-  GENERATOR: "Visual Studio 15 2017 Win64"
-
   matrix:
-  - ENGINE: "GL"
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+      GENERATOR: "Visual Studio 16 2019"
+      ARCH: "-Ax64"
+      ENGINE: "GL"
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+      GENERATOR: "Visual Studio 15 2017 Win64"
+      ENGINE: "GL"
 
 platform:
   - x64
@@ -22,7 +25,7 @@ install:
 
 before_build:
     - cmd: echo %GENERATOR%
-    - cmd: cmake -G"%GENERATOR%" . -DTEMPEST_BUILD_ALL=ON -DENGINE=%ENGINE%
+    - cmd: cmake -G"%GENERATOR%" "%ARCH%" . -DTEMPEST_BUILD_ALL=ON -DENGINE=%ENGINE%
     - sh: cmake . 
 
 build:
