@@ -11,6 +11,10 @@ namespace engine {
     class rendering_engine;
 }
 
+namespace scene {
+    class scene;
+}
+
 namespace application {
 
     class event_processor;
@@ -39,6 +43,7 @@ namespace application {
         input_processor& m_inputProcessor;
         main_window& m_mainWindow;
         data_loader& m_dataLoader;
+        ptr<scene::scene> m_scene;
         ptr<engine::rendering_engine> m_renderingEngine;
         core::timer m_timer;
         std::size_t m_frameCount;

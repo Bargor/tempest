@@ -17,10 +17,6 @@ namespace application {
     class event_processor;
 } // namespace application
 
-namespace scene {
-    class scene;
-}
-
 namespace engine {
 
     namespace vulkan {
@@ -57,7 +53,6 @@ namespace engine {
         application::main_window& m_mainWindow;
         application::data_loader& m_dataLoader;
         application::event_processor& m_eventProcessor;
-        ptr<scene::scene> m_scene;
         std::vector<const char*> m_reqiuredDeviceExtensions = {VK_KHR_SWAPCHAIN_EXTENSION_NAME};
         static constexpr std::uint32_t m_maxConcurrentFrames = 2;
 

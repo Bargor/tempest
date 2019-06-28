@@ -7,7 +7,6 @@
 #include "index_buffer.h"
 #include "instance.h"
 #include "resources/shader_compiler.h"
-#include "scene/scene.h"
 #include "swap_chain.h"
 #include "uniform_buffer.h"
 #include "vertex_buffer.h"
@@ -28,7 +27,6 @@ namespace engine {
         : m_mainWindow(mainWindow)
         , m_dataLoader(dataLoader)
         , m_eventProcessor(eventProcessor)
-        , m_scene(std::make_unique<scene::scene>())
         , m_device(std::make_unique<vulkan::device>(m_mainWindow.get_handle(), m_reqiuredDeviceExtensions))
         , m_swapChain(std::make_unique<vulkan::swap_chain>(
               *m_device.get(), mainWindow.get_size().width, mainWindow.get_size().height))

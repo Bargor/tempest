@@ -8,6 +8,7 @@
 #include <application/main_window.h>
 #include <engine/engine.h>
 #include <fmt/printf.h>
+#include <scene/scene.h>
 #include <util/variant.h>
 
 namespace tst {
@@ -21,6 +22,7 @@ namespace application {
         , m_inputProcessor(inputProcessor)
         , m_mainWindow(mainWindow)
         , m_dataLoader(dataLoader)
+        , m_scene(std::make_unique<scene::scene>())
         , m_renderingEngine(std::make_unique<engine::rendering_engine>(mainWindow, m_dataLoader, eventProcessor))
         , m_timer()
         , m_frameCount(0)
