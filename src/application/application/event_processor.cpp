@@ -16,8 +16,9 @@ namespace application {
 
     void event_processor::subscribe(const std::size_t type,
                                     objectId id,
-                                    std::function<void(const event::arguments&)>&& callback) noexcept {
-        subscriber subscriber{id, std::move(callback)};
+                                    std::function<void(const event::arguments&)>&& callback,
+                                    std::chrono::duration<std::uint64_t, std::micro> updateFrequency) noexcept {
+        subscriber subscriber{id, updateFrequency, std::move(callback)};
         m_listeners[type].emplace_back(subscriber);
     }
 
