@@ -23,7 +23,7 @@ namespace engine {
 
     rendering_engine::rendering_engine(application::main_window&,
                                        application::data_loader& dataLoader,
-                                       application::event_processor<app_event>&)
+                                       application::event_processor<application::app_event>&)
         : m_dataLoader(dataLoader), m_scene(std::make_unique<scene::scene>()) {
         init_OpenGL();
     }
