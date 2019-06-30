@@ -34,7 +34,7 @@ namespace application {
 
         void subscribe(const std::size_t type,
                        objectId id,
-                       std::function<void(typename const Event::arguments&)>&& callback,
+                       std::function<void(const typename Event::arguments&)>&& callback,
                        std::chrono::duration<std::uint64_t, std::micro> updateFrequency =
                            std::chrono::microseconds::zero()) noexcept;
         void process_events();
