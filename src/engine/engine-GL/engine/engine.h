@@ -26,7 +26,7 @@ namespace engine {
     public:
         rendering_engine(application::main_window&,
                          application::data_loader& dataLoader,
-                         application::event_processor<app_event>&);
+                         application::event_processor<application::app_event>&);
         ~rendering_engine();
 
         void frame(size_t frameCount);
