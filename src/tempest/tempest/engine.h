@@ -17,17 +17,20 @@ namespace scene {
 
 namespace application {
 
+	template<typename Event>
     class event_processor;
     class input_processor;
     class main_window;
     class data_loader;
+
+	struct app_event;
 
     class simulation_engine {
         template<typename T>
         using ptr = std::unique_ptr<T>;
 
     public:
-        simulation_engine(event_processor& eventProcessor,
+        simulation_engine(event_processor<app_event>& eventProcessor,
                           input_processor& inputProcessor,
                           main_window& mainWindow,
                           data_loader& dataLoader);
@@ -39,7 +42,7 @@ namespace application {
         void main_loop();
 
     private:
-        event_processor& m_eventProcessor;
+        event_processor<app_event>& m_eventProcessor;
         input_processor& m_inputProcessor;
         main_window& m_mainWindow;
         data_loader& m_dataLoader;

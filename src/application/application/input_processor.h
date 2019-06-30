@@ -12,9 +12,11 @@ namespace application {
 
     class glfw_window;
 
+	struct app_event;
+
     class input_processor {
     public:
-        input_processor(event_processor& event_processor, const glfw_window& window);
+        input_processor(event_processor<app_event>& event_processor, const glfw_window& window);
 
         void process_events();
 
@@ -29,7 +31,7 @@ namespace application {
         void window_close_callback(GLFWwindow*);
         void framebuffer_size_callback(GLFWwindow*, const std::int32_t width, const std::int32_t hegiht);
 
-        event_processor& m_eventProcessor;
+        event_processor<app_event>& m_eventProcessor;
         GLFWwindow* const m_window;
     };
 
