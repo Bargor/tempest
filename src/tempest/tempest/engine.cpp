@@ -25,7 +25,6 @@ namespace application {
         , m_dataLoader(dataLoader)
         , m_scene(std::make_unique<scene::scene>())
         , m_renderingEngine(std::make_unique<engine::rendering_engine>(mainWindow, m_dataLoader, eventProcessor))
-        , m_timer()
         , m_frameCount(0)
         , m_shouldClose(false)
         , m_windowMinimized(false)
@@ -37,33 +36,27 @@ namespace application {
             m_windowMinimized =
                 std::get<application::app_event::iconify>(args).open == window::open_option::iconified ? true : false;
         };
+        auto time_callback = [&](const app_event::arguments&) {
+            fmt::printf("FPS: %d\n", m_lastSecondFrames);
+            m_lastSecondFrames = 0;
+        };
         m_eventProcessor.subscribe(
             core::variant_index<app_event::arguments, app_event::closed>(), this, std::move(close_callback));
         m_eventProcessor.subscribe(
             core::variant_index<app_event::arguments, app_event::iconify>(), this, std::move(iconify_callback));
+        m_eventProcessor.subscribe(core::variant_index<app_event::arguments, app_event::time>(),
+                                   this,
+                                   std::move(time_callback),
+                                   std::chrono::seconds(1));
     }
 
     simulation_engine::~simulation_engine() {
     }
 
     void simulation_engine::run() {
-        auto lastFrameTime = std::chrono::microseconds::zero();
         while (!m_shouldClose) {
-            m_timer.start();
             main_loop();
-            m_timer.stop();
-
-            lastFrameTime = m_timer.get_time();
-            m_timer.reset();
-            m_eventProcessor.create_event(app_event{this, app_event::time{lastFrameTime}});
             m_frameCount++;
-            m_lastSecondTimer += lastFrameTime;
-            m_lastSecondFrames++;
-            if (m_lastSecondTimer > std::chrono::seconds(1)) {
-                fmt::printf("FPS: %d\n", m_lastSecondFrames);
-                m_lastSecondFrames = 0;
-                m_lastSecondTimer = std::chrono::microseconds::zero();
-            }
         }
         m_renderingEngine->stop();
     }
@@ -74,6 +67,7 @@ namespace application {
         if (!m_windowMinimized) {
             m_renderingEngine->frame(m_frameCount);
             m_mainWindow.end_frame();
+            m_lastSecondFrames++;
         }
     }
 

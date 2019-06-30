@@ -48,7 +48,6 @@ namespace application {
         data_loader& m_dataLoader;
         ptr<scene::scene> m_scene;
         ptr<engine::rendering_engine> m_renderingEngine;
-        core::timer m_timer;
         std::size_t m_frameCount;
         bool m_shouldClose;
         bool m_windowMinimized;
