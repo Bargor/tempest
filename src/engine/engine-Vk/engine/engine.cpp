@@ -12,6 +12,7 @@
 #include "vertex_buffer.h"
 #include "vulkan_exception.h"
 
+#include <application/app_event.h>
 #include <application/event_processor.h>
 #include <application/main_window.h>
 #include <glm/glm.hpp>
@@ -23,7 +24,7 @@ namespace engine {
 
     rendering_engine::rendering_engine(application::main_window& mainWindow,
                                        application::data_loader& dataLoader,
-                                       application::event_processor& eventProcessor)
+                                       application::event_processor<application::app_event>& eventProcessor)
         : m_mainWindow(mainWindow)
         , m_dataLoader(dataLoader)
         , m_eventProcessor(eventProcessor)
@@ -79,9 +80,10 @@ namespace engine {
               {(*m_device.get()).m_logicalDevice.createFence(vk::FenceCreateInfo(vk::FenceCreateFlagBits::eSignaled)),
                (*m_device.get()).m_logicalDevice.createFence(vk::FenceCreateInfo(vk::FenceCreateFlagBits::eSignaled))})
         , m_framebufferResized(false) {
-        auto framebufferResizeCallback = [&](const application::event::arguments&) { m_framebufferResized = true; };
+        auto framebufferResizeCallback = [&](const application::app_event::arguments&) { m_framebufferResized = true; };
 
-        m_eventProcessor.subscribe(core::variant_index<application::event::arguments, application::event::framebuffer>(),
+        m_eventProcessor.subscribe(
+            core::variant_index<application::app_event::arguments, application::app_event::framebuffer>(),
                                    this,
                                    std::move(framebufferResizeCallback));
     }

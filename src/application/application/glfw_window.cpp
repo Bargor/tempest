@@ -3,6 +3,7 @@
 
 #include "glfw_window.h"
 
+#include "app_event.h"
 #include "event_processor.h"
 #include "glfw_exception.h"
 
@@ -16,7 +17,7 @@ namespace tst {
 namespace application {
 
     glfw_window::glfw_window(std::string&& name,
-                             event_processor& eventProcessor,
+                             event_processor<app_event>& eventProcessor,
                              const window_size& size,
                              fullscreen_option windowMode,
                              visible_option visibility,
@@ -42,45 +43,46 @@ namespace application {
         }
         glfwSwapInterval(static_cast<int>(vsync));
 
-        auto set_size_callback = [&](const event::arguments& args) {
-            assert(std::holds_alternative<application::event::framebuffer>(args));
-            set_size_internal(std::get<application::event::framebuffer>(args).size, false);
+        auto set_size_callback = [&](const app_event::arguments& args) {
+            assert(std::holds_alternative<app_event::framebuffer>(args));
+            set_size_internal(std::get<app_event::framebuffer>(args).size, false);
         };
-        auto focus_callback = [&](const event::arguments& args) { 
-			if (std::get<application::event::focus>(args).focused == focus_option::focused) {
+        auto focus_callback = [&](const app_event::arguments& args) { 
+			if (std::get<app_event::focus>(args).focused == focus_option::focused) {
                 focus_internal(false); 
             } else {
                 unfocus();
 			}
 				
 		};
-        auto visible_callback = [&](const event::arguments& args) {
-            if (std::get<application::event::visible>(args).visible == visible_option::visible) {
+        auto visible_callback = [&](const app_event::arguments& args) {
+            if (std::get<app_event::visible>(args).visible == visible_option::visible) {
                 show_internal(false);
             } else {
                 hide_internal(false);
             }
         };
-        auto iconify_callback = [&](const event::arguments& args) {
-            if (std::get<application::event::iconify>(args).open == open_option::iconified) {
+        auto iconify_callback = [&](const app_event::arguments& args) {
+            if (std::get<app_event::iconify>(args).open == open_option::iconified) {
                 iconify_internal(false);
-            } else if (std::get<application::event::iconify>(args).open == open_option::maximized) {
+            } else if (std::get<app_event::iconify>(args).open == open_option::maximized) {
                 maximize_internal(false);
             } else {
                 restore_internal(false);
             }
         };
-        auto close_callback = [&](const event::arguments&) { close_internal(false); };
+        auto close_callback = [&](const app_event::arguments&) { close_internal(false); };
 
         m_eventProcessor.subscribe(
-            core::variant_index<event::arguments, event::framebuffer>(), this, std::move(set_size_callback));
-        m_eventProcessor.subscribe(core::variant_index<event::arguments, event::focus>(), this, std::move(focus_callback));
+            core::variant_index<app_event::arguments, app_event::framebuffer>(), this, std::move(set_size_callback));
         m_eventProcessor.subscribe(
-            core::variant_index<event::arguments, event::visible>(), this, std::move(visible_callback));
+            core::variant_index<app_event::arguments, app_event::focus>(), this, std::move(focus_callback));
         m_eventProcessor.subscribe(
-            core::variant_index<event::arguments, event::iconify>(), this, std::move(iconify_callback));
+            core::variant_index<app_event::arguments, app_event::visible>(), this, std::move(visible_callback));
         m_eventProcessor.subscribe(
-            core::variant_index<event::arguments, event::closed>(), this, std::move(close_callback));
+            core::variant_index<app_event::arguments, app_event::iconify>(), this, std::move(iconify_callback));
+        m_eventProcessor.subscribe(
+            core::variant_index<app_event::arguments, app_event::closed>(), this, std::move(close_callback));
     }
 
     glfw_window::~glfw_window() {
@@ -93,7 +95,7 @@ namespace application {
         m_size = size;
         if (broadcast) {
             glfwSetWindowSize(m_windowHandle, size.width, size.height);
-            m_eventProcessor.create_event(event{this, event::framebuffer{size.width, size.width}});
+            m_eventProcessor.create_event(app_event{this, app_event::framebuffer{size.width, size.width}});
         }
     }
 
@@ -129,7 +131,7 @@ namespace application {
         m_focused = focus_option::focused;
         if (broadcast) {
             glfwFocusWindow(m_windowHandle);
-            m_eventProcessor.create_event(event{this, event::focus{m_focused}});
+            m_eventProcessor.create_event(app_event{this, app_event::focus{m_focused}});
         }
     }
 
@@ -151,7 +153,7 @@ namespace application {
         m_visible = visible_option::visible;
         if (broadcast) {
             glfwShowWindow(m_windowHandle);
-            m_eventProcessor.create_event(event{this, event::visible{m_visible}});
+            m_eventProcessor.create_event(app_event{this, app_event::visible{m_visible}});
         }
     }
 
@@ -167,7 +169,7 @@ namespace application {
         m_visible = visible_option::hidden;
         if (broadcast) {
             glfwHideWindow(m_windowHandle);
-            m_eventProcessor.create_event(event{this, event::visible{m_visible}});
+            m_eventProcessor.create_event(app_event{this, app_event::visible{m_visible}});
         }
     }
 
@@ -182,7 +184,7 @@ namespace application {
         m_opened = open_option::iconified;
         if (broadcast) {
             glfwIconifyWindow(m_windowHandle);
-            m_eventProcessor.create_event(event{this, event::iconify{m_opened}});
+            m_eventProcessor.create_event(app_event{this, app_event::iconify{m_opened}});
         }
     }
 
@@ -197,7 +199,7 @@ namespace application {
         m_opened = open_option::opened;
         if (broadcast) {
             glfwRestoreWindow(m_windowHandle);
-            m_eventProcessor.create_event(event{this, event::iconify{m_opened}});
+            m_eventProcessor.create_event(app_event{this, app_event::iconify{m_opened}});
         }
     }
 
@@ -215,7 +217,7 @@ namespace application {
         m_opened = open_option::maximized;
         if (broadcast) {
             glfwMaximizeWindow(m_windowHandle);
-            m_eventProcessor.create_event(event{this, event::iconify{m_opened}});
+            m_eventProcessor.create_event(app_event{this, app_event::iconify{m_opened}});
         }
     }
 
@@ -229,7 +231,7 @@ namespace application {
             if (broadcast) {
                 glfwDestroyWindow(m_windowHandle);
                 m_windowHandle = nullptr;
-                m_eventProcessor.create_event(event{this, event::closed{}});
+                m_eventProcessor.create_event(app_event{this, app_event::closed{}});
             }
         }
     }

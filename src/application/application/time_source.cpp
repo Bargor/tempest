@@ -1,7 +1,5 @@
-// This file is part of Tempest-application project
+// This file is part of Tempest project
 // Author: Karol Kontny
-
-#include "event_processor.h"
 
 #include "time_source.h"
 

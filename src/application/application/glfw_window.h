@@ -42,7 +42,7 @@ namespace application {
 
     protected:
         glfw_window(std::string&& name,
-                    event_processor& eventProcessor,
+                    event_processor<app_event>& eventProcessor,
                     const window_size& size,
                     fullscreen_option windowMode,
                     visible_option visibility,
