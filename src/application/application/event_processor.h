@@ -85,7 +85,7 @@ namespace application {
     template<typename Event>
     void event_processor<Event>::process_events() {
         auto now = m_timeSource.now();
-        create_event(Event{this, Event::time{m_timeSource.get_time()}});
+        create_event(Event{this, typename Event::time{m_timeSource.get_time()}});
 
         while (m_writeIndex != m_readIndex) { // it requires that number of events is less that queue size to work
             auto& event = m_events[m_readIndex++];
@@ -96,7 +96,6 @@ namespace application {
                         listener.lastUpdateTime = now;
                         listener.callback(event.args);
                     }
-                    
                 }
             }
         }
