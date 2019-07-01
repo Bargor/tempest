@@ -3,10 +3,14 @@
 
 set(SCENE_HDRS
 	scene/scene.h
+	scene/scene_state.h
+	scene/scene_object.h
 )
 
 set(SCENE_SRCS 
 	scene/scene.cpp
+	scene/scene_state.cpp
+	scene/scene_object.cpp
 )
 
 include(${PROJECT_SOURCE_DIR}/cmake/TstAddLibrary.cmake)
