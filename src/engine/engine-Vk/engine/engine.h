@@ -5,7 +5,6 @@
 #include "engine_init.h"
 #include "queue_indices.h"
 
-#include <application/event_utils.h>
 #include <memory>
 #include <vector>
 #include <vulkan/vulkan.hpp>
@@ -14,12 +13,11 @@ namespace tst {
 namespace application {
     class data_loader;
     class main_window;
+	template<typename Event>
     class event_processor;
-} // namespace application
 
-namespace scene {
-    class scene;
-}
+	struct app_event;
+} // namespace application
 
 namespace engine {
 
@@ -40,7 +38,7 @@ namespace engine {
     public:
         rendering_engine(application::main_window& mainWindow,
                          application::data_loader& dataLoader,
-                         application::event_processor& eventProcessor);
+                         application::event_processor<application::app_event>& eventProcessor);
         ~rendering_engine();
 
         void frame(size_t frameCount);
@@ -56,8 +54,7 @@ namespace engine {
     private:
         application::main_window& m_mainWindow;
         application::data_loader& m_dataLoader;
-        application::event_processor& m_eventProcessor;
-        ptr<scene::scene> m_scene;
+        application::event_processor<application::app_event>& m_eventProcessor;
         std::vector<const char*> m_reqiuredDeviceExtensions = {VK_KHR_SWAPCHAIN_EXTENSION_NAME};
         static constexpr std::uint32_t m_maxConcurrentFrames = 2;
 

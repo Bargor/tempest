@@ -14,7 +14,9 @@ namespace device {
 
 namespace application {
 
+	template<typename Event>
     class event_processor;
+    struct app_event;
 
     class window {
     public:
@@ -49,7 +51,7 @@ namespace application {
 
     protected:
         window(std::string&& name,
-               event_processor& m_eventProcessor,
+               event_processor<app_event>& m_eventProcessor,
                const window_size& size,
                fullscreen_option windowMode,
                visible_option visibility,
@@ -59,7 +61,7 @@ namespace application {
 
     protected:
         std::string m_name;
-        event_processor& m_eventProcessor;
+        event_processor<app_event>& m_eventProcessor;
 
         window_size m_size;
         fullscreen_option m_windowMode;

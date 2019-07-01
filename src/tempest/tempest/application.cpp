@@ -5,6 +5,7 @@
 #include "engine.h"
 #include "context.h"
 
+#include <application/app_event.h>
 #include <application/data_loader.h>
 #include <application/argument_parser.h>
 #include <application/event_processor.h>
@@ -17,7 +18,8 @@ namespace application {
 
     application::application(const program_params& params, ptr<device::monitor> monitor, std::string&& name)
         : m_monitor(std::move(monitor))
-        , m_eventProcessor(std::make_unique<event_processor>())
+        , m_timeSource(std::make_unique<time_source>())
+        , m_eventProcessor(std::make_unique<event_processor<app_event>>(*m_timeSource.get()))
         , m_mainWindow(std::make_unique<main_window>(
               std::move(name),
               *m_eventProcessor.get(),
