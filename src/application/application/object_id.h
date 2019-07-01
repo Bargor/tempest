@@ -1,8 +1,11 @@
 // This file is part of Tempest-application project
 // Author: Karol Kontny
 
-#include "event_utils.h"
+#pragma once
 
 namespace tst {
-namespace application {}
+namespace application {
+
+    using objectId = void*;
+}
 } // namespace tst

@@ -8,7 +8,9 @@ namespace tst {
 namespace application {
     class data_loader;
     class main_window;
+	template<typename Event>
     class event_processor;
+    struct app_event;
 } // namespace application
 
 namespace scene {
@@ -22,7 +24,9 @@ namespace engine {
         using ptr = std::unique_ptr<T>;
 
     public:
-        rendering_engine(application::main_window&, application::data_loader& dataLoader, application::event_processor&);
+        rendering_engine(application::main_window&,
+                         application::data_loader& dataLoader,
+                         application::event_processor<application::app_event>&);
         ~rendering_engine();
 
         void frame(size_t frameCount);

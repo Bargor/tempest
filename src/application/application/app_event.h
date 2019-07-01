@@ -6,14 +6,13 @@
 #include <chrono>
 #include <variant>
 
+#include "object_id.h"
 #include "window.h"
 
 namespace tst {
 namespace application {
 
-    using objectId = void*;
-
-    struct event {
+    struct app_event {
         struct mouse_pos {
             double xpos;
             double ypos;
