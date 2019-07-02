@@ -17,4 +17,4 @@ include(${PROJECT_SOURCE_DIR}/cmake/TstAddLibrary.cmake)
 
 tst_add_library(scene "${SCENE_HDRS}" "${SCENE_SRCS}")
 
-target_link_libraries(scene PUBLIC tst::application glm)
+target_link_libraries(scene PUBLIC tst::engine tst::resources glm)
