@@ -23,4 +23,4 @@ include(${PROJECT_SOURCE_DIR}/cmake/TstAddLibrary.cmake)
 
 tst_add_executable(tempest "${TEMPEST_HDRS}" "${TEMPEST_SRCS}")
 
-target_link_libraries(tempest PUBLIC tst::application tst::engine tst::device glfw)
+target_link_libraries(tempest PUBLIC tst::application tst::engine tst::scene tst::device glfw)
