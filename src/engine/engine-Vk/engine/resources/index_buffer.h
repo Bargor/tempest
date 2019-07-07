@@ -11,25 +11,27 @@ namespace tst {
 namespace engine {
     namespace vulkan {
 
+		template<typename IndexType>
         class index_buffer : public buffer {
         public:
 
         public:
-            index_buffer(device& device,
+            index_buffer(vk::Device& logicalDevice,
+				         vk::PhysicalDevice& physicalDevice,
+				         vk::Queue& queueHandle,
                          vk::CommandPool& cmdPool,
-                         vk::IndexType format,
-                         std::vector<std::uint16_t>&& indices);
+                         vk::IndexType format, std::vector<IndexType>&& indices);
             ~index_buffer();
 
             std::uint32_t get_index_count() const;
 
         private:
-        private:
             vk::IndexType m_format;
-            std::vector<std::uint16_t> m_indices;
+            std::vector<IndexType> m_indices;
         };
 
-        inline std::uint32_t index_buffer::get_index_count() const {
+		template<typename IndexType>
+        inline std::uint32_t index_buffer<IndexType>::get_index_count() const {
             return static_cast<std::uint32_t>(m_indices.size());
         }
 

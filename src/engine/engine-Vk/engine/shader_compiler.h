@@ -2,7 +2,7 @@
 // Author: Karol Kontny
 #pragma once
 
-#include "shader.h"
+#include "resources/shader.h"
 
 #include <filesystem>
 #include <optional>

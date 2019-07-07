@@ -3,7 +3,7 @@
 
 #include "shader_compiler.h"
 
-#include "../device.h"
+#include "device.h"
 
 #include <application/data_loader.h>
 #include <fmt/printf.h>

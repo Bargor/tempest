@@ -8,14 +8,14 @@ namespace tst {
 namespace engine {
     namespace vulkan {
 
-		class device;
-
         class buffer {
             friend class engine;
 
         public:
-            buffer(const device& device,
-                   const vk::CommandPool& cmdPool,
+            buffer(const vk::Device& logicalDevice,
+                   const vk::PhysicalDevice& physicalDevice,
+				   const vk::Queue& queueHandle,
+				   const vk::CommandPool& cmdPool,
                    std::uint32_t size,
                    vk::BufferUsageFlags flags,
                    vk::MemoryPropertyFlags memoryFlags);
@@ -29,13 +29,15 @@ namespace engine {
             void copy_buffer(vk::Buffer& dstBuffer, std::uint32_t size) const;
 
         protected:
-            const device& m_device;
+            const vk::Device& m_logicalDevice;
+            const vk::PhysicalDevice& m_physicalDevice;
+            const vk::Queue& m_queueHandle;
             const vk::CommandPool& m_cmdPool;
             std::uint32_t m_memSize;
             vk::Buffer m_buffer;
             vk::DeviceMemory m_bufferMemory;
 
-		private:
+        private:
             std::uint32_t findMemoryType(uint32_t typeFilter, vk::MemoryPropertyFlags properties) const;
         };
 

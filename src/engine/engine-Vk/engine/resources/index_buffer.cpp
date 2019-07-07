@@ -3,18 +3,21 @@
 
 #include "index_buffer.h"
 
-#include "device.h"
-#include "vulkan_exception.h"
+#include "../vulkan_exception.h"
 
 namespace tst {
 namespace engine {
     namespace vulkan {
 
-        index_buffer::index_buffer(device& device,
-                                   vk::CommandPool& cmdPool,
+        index_buffer::index_buffer(const vk::Device& logicalDevice,
+                                   const vk::PhysicalDevice& physicalDevice,
+                                   const vk::Queue& queueHandle,
+                                   const vk::CommandPool& cmdPool,
                                    vk::IndexType format,
                                    std::vector<std::uint16_t>&& indices)
-            : buffer(device,
+            : buffer(logicalDevice,
+                     physicalDevice,
+                     queueHandle,
                      cmdPool,
                      static_cast<std::uint32_t>(indices.size()) * sizeof(vertex),
                      vk::BufferUsageFlagBits::eIndexBuffer | vk::BufferUsageFlagBits::eTransferDst,
