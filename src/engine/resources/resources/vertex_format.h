@@ -2,18 +2,25 @@
 // Author: Karol Kontny
 #pragma once
 
-#include "vertex_format.h"
+#include <glm/glm.hpp>
+#include <vector>
 
 namespace tst {
 namespace engine {
 	namespace resources {
 
-        class vertex_buffer {
+		struct vertex {
+            glm::vec2 pos;
+            glm::vec3 color;
+        };
+
+        class vertex_format {
         public:
-            vertex_buffer(const vertex_format& format, std::vector<vertex>&& vertices);
+            vertex_format();
 
         private:
         };
 	}
+
 }
 }
