@@ -14,6 +14,7 @@ namespace engine {
 
         class device {
             friend class rendering_engine;
+            friend class engine_frontend;
             friend class swap_chain;
             friend class buffer;
             friend class vertex_buffer;
@@ -23,6 +24,8 @@ namespace engine {
         public:
             device(GLFWwindow* window, const std::vector<const char*>& requiredExtensions);
             ~device();
+
+			vk::CommandPool create_command_pool() const;
 
         private:
             vk::SurfaceKHR m_windowSurface;

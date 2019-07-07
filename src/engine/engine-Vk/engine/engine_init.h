@@ -39,8 +39,6 @@ namespace engine {
                                                          const std::vector<vk::ImageView>& imageViews,
                                                          const vk::Extent2D& extent);
 
-        vk::CommandPool create_command_pool(const vk::Device& device, const queue_family_indices& indices);
-
         vk::DescriptorPool create_descriptor_pool(const vk::Device& device, std::size_t size);
 
 		std::vector<uniform_buffer> create_uniform_buffers(const device& device,

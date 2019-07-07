@@ -164,12 +164,6 @@ namespace engine {
             return framebuffers;
         }
 
-        vk::CommandPool create_command_pool(const vk::Device& device, const queue_family_indices& indices) {
-            vk::CommandPoolCreateInfo createInfo(vk::CommandPoolCreateFlags(), indices.graphicsIndex.value());
-
-            return device.createCommandPool(createInfo);
-        }
-
         vk::DescriptorPool create_descriptor_pool(const vk::Device& device, std::size_t size) {
             vk::DescriptorPoolSize poolSize(vk::DescriptorType::eUniformBuffer, static_cast<std::uint32_t>(size));
 
