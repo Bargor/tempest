@@ -24,7 +24,7 @@ namespace engine {
         };
 
         template<typename IndexType>
-        index_buffer<IndexType>::create_index_buffer(std::vector<IndexType>&& indices) const {
+        index_buffer<IndexType> engine_frontend::create_index_buffer(std::vector<IndexType>&& indices) const {
             return m_device.create_vertex_buffer(indices);
         }
 

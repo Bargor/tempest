@@ -7,6 +7,11 @@
 
 namespace tst {
 namespace engine {
+
+	namespace api {
+        class engine_frontend;
+	}
+
     namespace resources {
 
         class index_buffer {
