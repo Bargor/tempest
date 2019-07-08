@@ -3,8 +3,7 @@
 
 #include "buffer.h"
 
-#include "device.h"
-#include "vulkan_exception.h"
+#include "../vulkan_exception.h"
 
 namespace tst {
 namespace engine {
@@ -29,7 +28,7 @@ namespace engine {
             vk::MemoryAllocateInfo allocateInfo(requirements.size,
                                                 findMemoryType(requirements.memoryTypeBits, memoryFlags));
 
-            m_bufferMemory = device.m_logicalDevice.allocateMemory(allocateInfo);
+            m_bufferMemory = m_logicalDevice.allocateMemory(allocateInfo);
             m_logicalDevice.bindBufferMemory(m_buffer, m_bufferMemory, 0);
         }
 
@@ -39,7 +38,9 @@ namespace engine {
         }
 
         buffer::buffer(buffer&& other) noexcept
-            : m_device(other.m_device)
+            : m_logicalDevice(other.m_logicalDevice)
+            , m_physicalDevice(other.m_physicalDevice)
+            , m_queueHandle(other.m_queueHandle)
             , m_cmdPool(other.m_cmdPool)
             , m_memSize(other.m_memSize)
             , m_buffer(other.m_buffer)
@@ -73,8 +74,8 @@ namespace engine {
             cmdBuffer[0].end();
 
             vk::SubmitInfo submitInfo(0, nullptr, nullptr, 1, &cmdBuffer[0]);
-            m_graphicsQueueHandle.submit({submitInfo}, vk::Fence());
-            m_graphicsQueueHandle.waitIdle();
+            m_queueHandle.submit({submitInfo}, vk::Fence());
+            m_queueHandle.waitIdle();
         }
 
         std::uint32_t buffer::findMemoryType(uint32_t typeFilter, vk::MemoryPropertyFlags propertyFlags) const {

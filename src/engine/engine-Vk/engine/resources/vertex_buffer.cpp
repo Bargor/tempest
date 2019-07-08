@@ -3,24 +3,29 @@
 
 #include "vertex_buffer.h"
 
-#include "device.h"
-#include "vulkan_exception.h"
+#include "../vulkan_exception.h"
 
 namespace tst {
 namespace engine {
     namespace vulkan {
 
-        vertex_buffer::vertex_buffer(device& device,
+        vertex_buffer::vertex_buffer(const vk::Device& logicalDevice,
+                                     const vk::PhysicalDevice& physicallDevice,
+                                     const vk::Queue queueHandle,
                                      vk::CommandPool& cmdPool,
                                      const vertex_format&,
                                      std::vector<vertex>&& vertices)
-            : buffer(device,
+            : buffer(logicalDevice,
+                     physicallDevice,
+                     queueHandle,
                      cmdPool,
                      static_cast<std::uint32_t>(vertices.size()) * sizeof(vertex),
                      vk::BufferUsageFlagBits::eVertexBuffer | vk::BufferUsageFlagBits::eTransferDst,
                      vk::MemoryPropertyFlagBits::eDeviceLocal)
             , m_vertices(vertices) {
-            buffer stagingBuffer(device,
+            buffer stagingBuffer(logicalDevice,
+                                 physicallDevice,
+                                 queueHandle,
                                  cmdPool,
                                  m_memSize,
                                  vk::BufferUsageFlagBits::eTransferSrc,

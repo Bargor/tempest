@@ -3,15 +3,19 @@
 
 #include "uniform_buffer.h"
 
-#include "device.h"
-#include "vulkan_exception.h"
+#include "../vulkan_exception.h"
 
 namespace tst {
 namespace engine {
     namespace vulkan {
 
-        uniform_buffer::uniform_buffer(const device& device, const vk::CommandPool& cmdPool)
-            : buffer(device,
+        uniform_buffer::uniform_buffer(const vk::Device& logicalDevice,
+                                       const vk::PhysicalDevice& physicalDevice,
+                                       const vk::Queue queueHandle,
+                                       const vk::CommandPool& cmdPool)
+            : buffer(logicalDevice,
+                     physicalDevice,
+                     queueHandle,
                      cmdPool,
                      sizeof(uniform_buffer_object),
                      vk::BufferUsageFlagBits::eUniformBuffer,
@@ -21,14 +25,13 @@ namespace engine {
         uniform_buffer::~uniform_buffer() {
         }
 
-		uniform_buffer::uniform_buffer(uniform_buffer&& other) noexcept : buffer(std::move(other)) {
-        
-		}
+        uniform_buffer::uniform_buffer(uniform_buffer&& other) noexcept : buffer(std::move(other)) {
+        }
 
         void uniform_buffer::update_buffer(const uniform_buffer_object& ubo) {
-            auto dataPtr = m_device.m_logicalDevice.mapMemory(m_bufferMemory, 0, sizeof(uniform_buffer_object));
+            auto dataPtr = m_logicalDevice.mapMemory(m_bufferMemory, 0, sizeof(uniform_buffer_object));
             std::memcpy(dataPtr, &ubo, sizeof(uniform_buffer_object));
-            m_device.m_logicalDevice.unmapMemory(m_bufferMemory);
+            m_logicalDevice.unmapMemory(m_bufferMemory);
         }
 
     } // namespace vulkan

@@ -4,9 +4,9 @@
 
 #include "queue_indices.h"
 
+#include <GLFW/glfw3.h>
 #include <vector>
 #include <vulkan/vulkan.hpp>
-#include <GLFW/glfw3.h>
 
 namespace tst {
 namespace engine {
@@ -25,7 +25,10 @@ namespace engine {
             device(GLFWwindow* window, const std::vector<const char*>& requiredExtensions);
             ~device();
 
-			vk::CommandPool create_command_pool() const;
+            vk::CommandPool create_command_pool() const;
+            const vk::Device& get_logical_device() const noexcept;
+            const vk::PhysicalDevice& get_physical_device() const noexcept;
+            const vk::Queue& get_graphics_queue() const noexcept;
 
         private:
             vk::SurfaceKHR m_windowSurface;
@@ -37,6 +40,18 @@ namespace engine {
             vk::Queue m_presentationQueueHandle;
             vk::Queue m_transferQueueHandle;
         };
+
+        inline const vk::Device& device::get_logical_device() const noexcept {
+            return m_logicalDevice;
+        }
+
+        inline const vk::PhysicalDevice& device::get_physical_device() const noexcept {
+            return m_physicalDevice;
+        }
+
+        inline const vk::Queue& device::get_graphics_queue() const noexcept {
+            return m_graphicsQueueHandle;
+        }
 
     } // namespace vulkan
 } // namespace engine

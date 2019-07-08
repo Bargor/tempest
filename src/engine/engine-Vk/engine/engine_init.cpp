@@ -3,11 +3,12 @@
 
 #include "engine_init.h"
 
-#include "index_buffer.h"
+#include "device.h"
 #include "queue_indices.h"
-#include "resources/shader_compiler.h"
-#include "uniform_buffer.h"
-#include "vertex_buffer.h"
+#include "resources/index_buffer.h"
+#include "resources/uniform_buffer.h"
+#include "resources/vertex_buffer.h"
+#include "shader_compiler.h"
 #include "vulkan_exception.h"
 
 #include <cstdlib>
@@ -178,7 +179,8 @@ namespace engine {
                                                            std::size_t size) {
             std::vector<uniform_buffer> buffers;
             while (size--) {
-                buffers.emplace_back(uniform_buffer(device, cmdPool));
+                buffers.emplace_back(uniform_buffer(
+                    device.get_logical_device(), device.get_physical_device(), device.get_graphics_queue(), cmdPool));
             }
             return buffers;
         }
@@ -212,7 +214,7 @@ namespace engine {
                                                               const vk::Pipeline& pipeline,
                                                               const vk::Extent2D& extent,
                                                               const vertex_buffer& vertexBuffer,
-                                                              const index_buffer& indexBuffer,
+                                                              const index_buffer<std::uint16_t>& indexBuffer,
                                                               const vk::PipelineLayout& pipelineLayout,
                                                               const std::vector<vk::DescriptorSet>& descriptorSets) {
             vk::CommandBufferAllocateInfo bufferAllocateInfo(

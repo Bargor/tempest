@@ -13,10 +13,10 @@ namespace tst {
 namespace application {
     class data_loader;
     class main_window;
-	template<typename Event>
+    template<typename Event>
     class event_processor;
 
-	struct app_event;
+    struct app_event;
 } // namespace application
 
 namespace engine {
@@ -27,6 +27,7 @@ namespace engine {
         class swap_chain;
         class shader_compiler;
         class vertex_buffer;
+        template<typename IndexType>
         class index_buffer;
         class uniform_buffer;
     } // namespace vulkan
@@ -68,7 +69,7 @@ namespace engine {
         std::vector<vk::Framebuffer> m_framebuffers;
         vk::CommandPool m_commandPool;
         ptr<vulkan::vertex_buffer> m_vertexBuffer;
-        ptr<vulkan::index_buffer> m_indexBuffer;
+        ptr<vulkan::index_buffer<std::uint16_t>> m_indexBuffer;
         std::vector<vulkan::uniform_buffer> m_uniformBuffers;
         vk::DescriptorPool m_descriptorPool;
         std::vector<vk::DescriptorSet> m_descriptorSets;

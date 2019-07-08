@@ -13,7 +13,9 @@ namespace engine {
 
         class vertex_buffer : public buffer {
         public:
-            vertex_buffer(device& device,
+            vertex_buffer(const vk::Device& logicalDevice,
+                          const vk::PhysicalDevice& m_physicallDevice,
+                          const vk::Queue m_queueHandle,
                           vk::CommandPool& cmdPool,
                           const vertex_format& format,
                           std::vector<vertex>&& vertices);

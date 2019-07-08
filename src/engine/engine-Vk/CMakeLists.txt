@@ -29,11 +29,11 @@ set(ENGINE_SRCS
 	engine/engine_frontend.cpp
 	engine/queue_indices.cpp
 	engine/swap_chain.cpp
+	engine/shader_compiler.cpp
 	engine/resources/buffer.cpp
 	engine/resources/uniform_buffer.cpp
 	engine/resources/vertex_format.cpp
 	engine/resources/vertex_buffer.cpp
-	engine/resources/shader_compiler.cpp
 	engine/resources/shader.cpp
 	engine/resources/index_buffer.cpp
 )

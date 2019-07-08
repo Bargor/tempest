@@ -3,15 +3,15 @@
 #pragma once
 
 #include "buffer.h"
-#include <glm/glm.hpp>
 
+#include <glm/glm.hpp>
 #include <vector>
 
 namespace tst {
 namespace engine {
     namespace vulkan {
 
-		struct uniform_buffer_object {
+        struct uniform_buffer_object {
             glm::mat4 model;
             glm::mat4 view;
             glm::mat4 proj;
@@ -19,15 +19,17 @@ namespace engine {
 
         class uniform_buffer : public buffer {
         public:
-            uniform_buffer(const device& device,
-                          const vk::CommandPool& cmdPool);
+            uniform_buffer(const vk::Device& logicalDevice,
+                           const vk::PhysicalDevice& m_physicallDevice,
+                           const vk::Queue m_queueHandle,
+                           const vk::CommandPool& cmdPool);
 
-			uniform_buffer(uniform_buffer&& other) noexcept;
+            uniform_buffer(uniform_buffer&& other) noexcept;
             uniform_buffer(const uniform_buffer& other) = delete;
 
-			~uniform_buffer();
+            ~uniform_buffer();
 
-			void update_buffer(const uniform_buffer_object& ubo);
+            void update_buffer(const uniform_buffer_object& ubo);
 
         private:
             uniform_buffer_object m_data;

@@ -4,12 +4,12 @@
 #include "engine.h"
 
 #include "device.h"
-#include "index_buffer.h"
 #include "instance.h"
-#include "resources/shader_compiler.h"
+#include "resources/index_buffer.h"
+#include "resources/uniform_buffer.h"
+#include "resources/vertex_buffer.h"
+#include "shader_compiler.h"
 #include "swap_chain.h"
-#include "uniform_buffer.h"
-#include "vertex_buffer.h"
 #include "vulkan_exception.h"
 
 #include <application/app_event.h>
@@ -42,17 +42,24 @@ namespace engine {
                                                       *m_shaderCompiler.get()))
         , m_framebuffers(vulkan::create_framebuffers(
               (*m_device.get()).m_logicalDevice, m_renderPass, m_swapChain->get_image_views(), m_swapChain->get_extent()))
-        , m_commandPool(vulkan::create_command_pool((*m_device.get()).m_logicalDevice, (*m_device.get()).m_queueIndices))
+        , m_commandPool(m_device->create_command_pool())
         , m_vertexBuffer(std::make_unique<vulkan::vertex_buffer>(
-              *m_device.get(),
+              m_device->get_logical_device(),
+              m_device->get_physical_device(),
+              m_device->get_graphics_queue(),
               m_commandPool,
               vulkan::vertex_format(),
               std::vector<vulkan::vertex>({{{-0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}},
                                            {{0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}},
                                            {{0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}},
                                            {{-0.5f, 0.5f}, {1.0f, 1.0f, 1.0f}}})))
-        , m_indexBuffer(std::make_unique<vulkan::index_buffer>(
-              *m_device.get(), m_commandPool, vk::IndexType::eUint16, std::vector<std::uint16_t>({{0, 1, 2, 2, 3, 0}})))
+        , m_indexBuffer(
+              std::make_unique<vulkan::index_buffer<std::uint16_t>>(m_device->get_logical_device(),
+                                                                    m_device->get_physical_device(),
+                                                                    m_device->get_graphics_queue(),
+                                                                    m_commandPool,
+                                                                    vk::IndexType::eUint16,
+                                                                    std::vector<std::uint16_t>({{0, 1, 2, 2, 3, 0}})))
         , m_uniformBuffers(
               vulkan::create_uniform_buffers(*m_device.get(), m_commandPool, m_swapChain->get_image_views().size()))
         , m_descriptorPool(
@@ -84,8 +91,8 @@ namespace engine {
 
         m_eventProcessor.subscribe(
             core::variant_index<application::app_event::arguments, application::app_event::framebuffer>(),
-                                   this,
-                                   std::move(framebufferResizeCallback));
+            this,
+            std::move(framebufferResizeCallback));
     }
 
     rendering_engine::~rendering_engine() {

@@ -16,6 +16,7 @@ namespace engine {
         struct queue_family_indices;
         class shader_compiler;
         class vertex_buffer;
+        template<typename IndexType>
         class index_buffer;
         class uniform_buffer;
         class device;
@@ -41,7 +42,7 @@ namespace engine {
 
         vk::DescriptorPool create_descriptor_pool(const vk::Device& device, std::size_t size);
 
-		std::vector<uniform_buffer> create_uniform_buffers(const device& device,
+        std::vector<uniform_buffer> create_uniform_buffers(const device& device,
                                                            const vk::CommandPool& cmdPool,
                                                            std::size_t size);
 
@@ -58,7 +59,7 @@ namespace engine {
                                                               const vk::Pipeline& pipeline,
                                                               const vk::Extent2D& extent,
                                                               const vertex_buffer& vertexBuffer,
-                                                              const index_buffer& indexBuffer,
+                                                              const index_buffer<std::uint16_t>& indexBuffer,
                                                               const vk::PipelineLayout& pipelineLayout,
                                                               const std::vector<vk::DescriptorSet>& descriptorSets);
 
