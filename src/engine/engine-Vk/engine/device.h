@@ -3,6 +3,7 @@
 #pragma once
 
 #include "queue_indices.h"
+#include "resources/index_buffer.h"
 
 #include <GLFW/glfw3.h>
 #include <vector>
@@ -26,6 +27,8 @@ namespace engine {
             ~device();
 
             vk::CommandPool create_command_pool() const;
+            template<typename IndexType>
+            index_buffer<IndexType> create_index_buffer(std::vector<IndexType>&& indices, vk::CommandPool& cmdPool) const;
             const vk::Device& get_logical_device() const noexcept;
             const vk::PhysicalDevice& get_physical_device() const noexcept;
             const vk::Queue& get_graphics_queue() const noexcept;
@@ -51,6 +54,17 @@ namespace engine {
 
         inline const vk::Queue& device::get_graphics_queue() const noexcept {
             return m_graphicsQueueHandle;
+        }
+
+        template<typename IndexType>
+        index_buffer<IndexType> device::create_index_buffer(std::vector<IndexType>&& indices,
+                                                            vk::CommandPool& cmdPool) const {
+            return index_buffer<std::uint16_t>(m_logicalDevice,
+                                               m_physicalDevice,
+                                               m_graphicsQueueHandle,
+                                               cmdPool,
+                                               vk::IndexType::eUint16,
+                                               std::move(indices));
         }
 
     } // namespace vulkan

@@ -8,15 +8,11 @@
 namespace tst {
 namespace engine {
 
-	namespace api {
-        class engine_frontend;
-	}
-
     namespace resources {
 
         class index_buffer {
         public:
-            index_buffer(std::vector<std::uint16_t>&& indices);
+            index_buffer(api::index_buffer<std::uint16_t>&& nativeBuffer);
             ~index_buffer();
 
         private:

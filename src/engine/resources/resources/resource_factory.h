@@ -24,6 +24,11 @@ namespace engine {
             resource_factory();
             ~resource_factory();
 
+        public:
+            index_buffer create_index_buffer(std::vector<std::uint16_t>&& indices);
+            vertex_buffer create_vertex_buffer();
+            uniform_buffer create_uniform_buffer();
+
         private:
             api::device& m_nativeDevice;
         };

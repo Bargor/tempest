@@ -24,6 +24,8 @@ namespace engine {
                          std::vector<IndexType>&& indices);
             ~index_buffer();
 
+            index_buffer(index_buffer&& other) noexcept;
+
             std::uint32_t get_index_count() const;
 
         private:
@@ -46,7 +48,7 @@ namespace engine {
                      vk::BufferUsageFlagBits::eIndexBuffer | vk::BufferUsageFlagBits::eTransferDst,
                      vk::MemoryPropertyFlagBits::eDeviceLocal)
             , m_format(format)
-            , m_indices(indices) {
+            , m_indices(std::move(indices)) {
             buffer stagingBuffer(logicalDevice,
                                  physicalDevice,
                                  queueHandle,
@@ -55,8 +57,13 @@ namespace engine {
                                  vk::BufferUsageFlagBits::eTransferSrc,
                                  vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent);
 
-            stagingBuffer.copy_data(indices.data(), m_memSize);
+            stagingBuffer.copy_data(m_indices.data(), m_memSize);
             stagingBuffer.copy_buffer(m_buffer, m_memSize);
+        }
+
+        template<typename IndexType>
+        index_buffer<IndexType>::index_buffer(index_buffer&& other) noexcept
+            : buffer(std::move(other)), m_format(other.m_format), m_indices(std::move(other.m_indices)) {
         }
 
         template<typename IndexType>

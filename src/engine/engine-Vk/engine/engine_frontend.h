@@ -25,7 +25,7 @@ namespace engine {
 
         template<typename IndexType>
         index_buffer<IndexType> engine_frontend::create_index_buffer(std::vector<IndexType>&& indices) const {
-            return m_device.create_vertex_buffer(indices);
+            return m_device.create_index_buffer(indices);
         }
 
     } // namespace vulkan
