@@ -44,22 +44,14 @@ namespace engine {
               (*m_device.get()).m_logicalDevice, m_renderPass, m_swapChain->get_image_views(), m_swapChain->get_extent()))
         , m_commandPool(m_device->create_command_pool())
         , m_vertexBuffer(std::make_unique<vulkan::vertex_buffer>(
-              m_device->get_logical_device(),
-              m_device->get_physical_device(),
-              m_device->get_graphics_queue(),
-              m_commandPool,
-              vulkan::vertex_format(),
-              std::vector<vulkan::vertex>({{{-0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}},
-                                           {{0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}},
-                                           {{0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}},
-                                           {{-0.5f, 0.5f}, {1.0f, 1.0f, 1.0f}}})))
-        , m_indexBuffer(
-              std::make_unique<vulkan::index_buffer<std::uint16_t>>(m_device->get_logical_device(),
-                                                                    m_device->get_physical_device(),
-                                                                    m_device->get_graphics_queue(),
-                                                                    m_commandPool,
-                                                                    vk::IndexType::eUint16,
-                                                                    std::vector<std::uint16_t>({{0, 1, 2, 2, 3, 0}})))
+              m_device->create_vertex_buffer(vulkan::vertex_format(),
+                                             std::vector<vulkan::vertex>({{{-0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}},
+                                                                          {{0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}},
+                                                                          {{0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}},
+                                                                          {{-0.5f, 0.5f}, {1.0f, 1.0f, 1.0f}}}),
+                                             m_commandPool)))
+        , m_indexBuffer(std::make_unique<vulkan::index_buffer<std::uint16_t>>(
+              m_device->create_index_buffer(std::vector<std::uint16_t>({{0, 1, 2, 2, 3, 0}}), m_commandPool)))
         , m_uniformBuffers(
               vulkan::create_uniform_buffers(*m_device.get(), m_commandPool, m_swapChain->get_image_views().size()))
         , m_descriptorPool(

@@ -115,10 +115,21 @@ namespace engine {
             m_logicalDevice.destroy();
         }
 
-		vk::CommandPool device::create_command_pool() const {
+        vk::CommandPool device::create_command_pool() const {
             vk::CommandPoolCreateInfo createInfo(vk::CommandPoolCreateFlags(), m_queueIndices.graphicsIndex.value());
 
             return m_logicalDevice.createCommandPool(createInfo);
+        }
+
+        vertex_buffer device::create_vertex_buffer(const vertex_format& format,
+                                                   std::vector<vertex>&& vertices,
+                                                   vk::CommandPool& cmdPool) const {
+            return vertex_buffer(
+                m_logicalDevice, m_physicalDevice, m_graphicsQueueHandle, cmdPool, format, std::move(vertices));
+        }
+
+        uniform_buffer device::create_uniform_buffer(const vk::CommandPool& cmdPool) const {
+            return uniform_buffer(m_logicalDevice, m_physicalDevice, m_graphicsQueueHandle, cmdPool);
         }
 
     } // namespace vulkan

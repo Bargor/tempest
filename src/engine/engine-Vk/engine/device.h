@@ -4,6 +4,8 @@
 
 #include "queue_indices.h"
 #include "resources/index_buffer.h"
+#include "resources/uniform_buffer.h"
+#include "resources/vertex_buffer.h"
 
 #include <GLFW/glfw3.h>
 #include <vector>
@@ -17,9 +19,6 @@ namespace engine {
             friend class rendering_engine;
             friend class engine_frontend;
             friend class swap_chain;
-            friend class buffer;
-            friend class vertex_buffer;
-            friend class uniform_buffer;
             friend class shader_compiler;
 
         public:
@@ -29,6 +28,10 @@ namespace engine {
             vk::CommandPool create_command_pool() const;
             template<typename IndexType>
             index_buffer<IndexType> create_index_buffer(std::vector<IndexType>&& indices, vk::CommandPool& cmdPool) const;
+            vertex_buffer create_vertex_buffer(const vertex_format& format,
+                                               std::vector<vertex>&& vertices,
+                                               vk::CommandPool& cmdPool) const;
+            uniform_buffer create_uniform_buffer(const vk::CommandPool& cmdPool) const;
             const vk::Device& get_logical_device() const noexcept;
             const vk::PhysicalDevice& get_physical_device() const noexcept;
             const vk::Queue& get_graphics_queue() const noexcept;

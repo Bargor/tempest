@@ -16,10 +16,12 @@ namespace engine {
             vertex_buffer(const vk::Device& logicalDevice,
                           const vk::PhysicalDevice& m_physicallDevice,
                           const vk::Queue m_queueHandle,
-                          vk::CommandPool& cmdPool,
+                          const vk::CommandPool& cmdPool,
                           const vertex_format& format,
                           std::vector<vertex>&& vertices);
             ~vertex_buffer();
+
+            vertex_buffer(vertex_buffer&& other) noexcept;
 
             std::uint32_t get_vertex_count() const;
 
