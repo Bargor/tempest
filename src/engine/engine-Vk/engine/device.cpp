@@ -115,7 +115,7 @@ namespace engine {
             m_logicalDevice.destroy();
         }
 
-		vk::CommandPool device::create_command_pool() const {
+        vk::CommandPool device::create_command_pool() const {
             vk::CommandPoolCreateInfo createInfo(vk::CommandPoolCreateFlags(), m_queueIndices.graphicsIndex.value());
 
             return m_logicalDevice.createCommandPool(createInfo);
