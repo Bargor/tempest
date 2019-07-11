@@ -13,7 +13,7 @@ namespace engine {
 
         class vertex_buffer {
         public:
-            vertex_buffer(const vertex_format& format, std::vector<vertex>&& vertices);
+            vertex_buffer(api::vertex_buffer&& nativeBuffer);
             ~vertex_buffer();
 
         private:

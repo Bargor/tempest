@@ -26,7 +26,7 @@ namespace engine {
 
         public:
             index_buffer create_index_buffer(std::vector<std::uint16_t>&& indices);
-            vertex_buffer create_vertex_buffer();
+            vertex_buffer create_vertex_buffer(const vertex_format& format, std::vector<vertex>&& vertices);
             uniform_buffer create_uniform_buffer();
 
         private:
