@@ -179,8 +179,7 @@ namespace engine {
                                                            std::size_t size) {
             std::vector<uniform_buffer> buffers;
             while (size--) {
-                buffers.emplace_back(uniform_buffer(
-                    device.get_logical_device(), device.get_physical_device(), device.get_graphics_queue(), cmdPool));
+                buffers.emplace_back(uniform_buffer(device.create_uniform_buffer(cmdPool)));
             }
             return buffers;
         }

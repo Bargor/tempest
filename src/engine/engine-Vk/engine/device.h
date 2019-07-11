@@ -32,9 +32,6 @@ namespace engine {
                                                std::vector<vertex>&& vertices,
                                                vk::CommandPool& cmdPool) const;
             uniform_buffer create_uniform_buffer(const vk::CommandPool& cmdPool) const;
-            const vk::Device& get_logical_device() const noexcept;
-            const vk::PhysicalDevice& get_physical_device() const noexcept;
-            const vk::Queue& get_graphics_queue() const noexcept;
 
         private:
             vk::SurfaceKHR m_windowSurface;
@@ -46,18 +43,6 @@ namespace engine {
             vk::Queue m_presentationQueueHandle;
             vk::Queue m_transferQueueHandle;
         };
-
-        inline const vk::Device& device::get_logical_device() const noexcept {
-            return m_logicalDevice;
-        }
-
-        inline const vk::PhysicalDevice& device::get_physical_device() const noexcept {
-            return m_physicalDevice;
-        }
-
-        inline const vk::Queue& device::get_graphics_queue() const noexcept {
-            return m_graphicsQueueHandle;
-        }
 
         template<typename IndexType>
         index_buffer<IndexType> device::create_index_buffer(std::vector<IndexType>&& indices,
