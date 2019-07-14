@@ -10,6 +10,7 @@
 #include <engine/engine.h>
 #include <fmt/printf.h>
 #include <scene/scene.h>
+#include <scene/scene_state.h>
 #include <util/variant.h>
 
 namespace tst {

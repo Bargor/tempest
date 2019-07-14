@@ -13,15 +13,15 @@
 namespace tst {
 namespace engine {
 
-    namespace api {
+	namespace api{
         class device;
-    }
+	}
 
     namespace resources {
 
         class resource_factory {
         public:
-            resource_factory();
+            resource_factory(api::device& device);
             ~resource_factory();
 
         public:
@@ -31,6 +31,7 @@ namespace engine {
 
         private:
             api::device& m_nativeDevice;
+            vk::CommandPool m_commandPool;
         };
 
     } // namespace resources

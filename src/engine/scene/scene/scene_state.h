@@ -2,6 +2,12 @@
 // Author: Karol Kontny
 #pragma once
 
+#include "scene.h"
+
 namespace tst {
-namespace scene {}
+namespace scene {
+
+	scene update_scene(scene& scene);
+
+}
 } // namespace tst

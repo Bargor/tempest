@@ -187,6 +187,10 @@ namespace engine {
         buffer.update_buffer(ubo);
     }
 
+    void rendering_engine::submitCommandBuffer(vk::CommandBuffer& buffer) {
+        m_buffersToRender.push_back(buffer);
+    }
+
     void rendering_engine::frame(size_t frameCount) {
         std::uint32_t currentFrame = frameCount % m_maxConcurrentFrames;
 
@@ -229,6 +233,8 @@ namespace engine {
         } else if (presentResult != vk::Result::eSuccess) {
             throw vulkan::vulkan_exception("Failed to present image");
         }
+
+        m_buffersToRender.clear();
     }
 
     void rendering_engine::stop() {

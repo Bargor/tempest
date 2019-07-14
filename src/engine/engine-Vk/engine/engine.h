@@ -51,6 +51,7 @@ namespace engine {
         void recreate_swap_chain(std::uint32_t width, std::uint32_t height);
         void update_framebuffer();
         void update_uniform_buffer(vulkan::uniform_buffer& buffer);
+        void submitCommandBuffer(vk::CommandBuffer& buffer);
 
     private:
         application::main_window& m_mainWindow;
@@ -79,6 +80,8 @@ namespace engine {
         std::vector<vk::Fence> m_inFlightFences;
 
         bool m_framebufferResized;
+
+        std::vector<vk::CommandBuffer> m_buffersToRender;
     };
 
 } // namespace engine

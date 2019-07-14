@@ -4,5 +4,8 @@
 #include "scene_state.h"
 
 namespace tst {
-namespace scene {}
+namespace scene {
+
+	
+}
 } // namespace tst

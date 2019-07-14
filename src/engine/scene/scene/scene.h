@@ -5,16 +5,19 @@
 
 #include <map>
 
+#include "scene_object.h"
+#include "scene_state.h"
+
 namespace tst {
 
 namespace scene {
 
     class scene {
     public:
-        int get_placeholder() const;
+        void add_object(scene_object& object);
 
     private:
-        int m_placeholder;
+        
     };
 
 }

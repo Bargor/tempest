@@ -14,7 +14,7 @@ set(RESOURCES_SRCS
 	resources/vertex_format.cpp
 	resources/index_buffer.cpp
 	resources/uniform_buffer.cpp
-	resources/resource_factory.h
+	resources/resource_factory.cpp
 )
 
 include(${PROJECT_SOURCE_DIR}/cmake/TstAddLibrary.cmake)
