@@ -8,14 +8,9 @@
 #include "vertex_format.h"
 
 #include <engine/api.h>
-#include <engine/resources/index_buffer.h>
 
 namespace tst {
 namespace engine {
-
-	namespace api{
-        class device;
-	}
 
     namespace resources {
 

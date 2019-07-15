@@ -2,14 +2,13 @@
 // Author: Karol Kontny
 #pragma once
 
-#include "vertex_format.h"
-
 #include <engine/api.h>
 #include <engine/resources/vertex_buffer.h>
+#include <engine/vertex_format.h>
 
 namespace tst {
 namespace engine {
-	namespace resources {
+    namespace resources {
 
         class vertex_buffer {
         public:
@@ -19,6 +18,6 @@ namespace engine {
         private:
             api::vertex_buffer m_nativeVertexBuffer;
         };
-	}
-}
-}
+    } // namespace resources
+} // namespace engine
+} // namespace tst

@@ -6,7 +6,9 @@
 namespace tst {
 namespace engine {
 
-    namespace vulkan {}
+    namespace vulkan {
+        class device;
+    }
 
     namespace api = vulkan;
 } // namespace engine
