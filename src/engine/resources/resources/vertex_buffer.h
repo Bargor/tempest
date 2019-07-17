@@ -4,7 +4,7 @@
 
 #include <engine/api.h>
 #include <engine/resources/vertex_buffer.h>
-#include <engine/vertex_format.h>
+#include <engine/resources/vertex_format.h>
 
 namespace tst {
 namespace engine {
