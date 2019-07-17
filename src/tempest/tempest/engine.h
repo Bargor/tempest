@@ -22,6 +22,7 @@ namespace application {
     class input_processor;
     class main_window;
     class data_loader;
+    class time_source;
 
     struct app_event;
 
@@ -30,7 +31,8 @@ namespace application {
         using ptr = std::unique_ptr<T>;
 
     public:
-        simulation_engine(event_processor<app_event>& eventProcessor,
+        simulation_engine(time_source& timeSource,
+                          event_processor<app_event>& eventProcessor,
                           input_processor& inputProcessor,
                           main_window& mainWindow,
                           data_loader& dataLoader);
@@ -42,6 +44,7 @@ namespace application {
         void main_loop();
 
     private:
+        time_source& m_timeSource;
         event_processor<app_event>& m_eventProcessor;
         input_processor& m_inputProcessor;
         main_window& m_mainWindow;
@@ -49,9 +52,10 @@ namespace application {
         ptr<scene::scene> m_scene;
         ptr<engine::rendering_engine> m_renderingEngine;
         std::size_t m_frameCounter;
+        std::uint32_t m_lastSecondFrames;
         bool m_shouldClose;
         bool m_windowMinimized;
-        std::uint32_t m_lastSecondFrames;
+        std::chrono::duration<std::uint64_t, std::micro> m_lastFrameDuration;
     };
 
 } // namespace application

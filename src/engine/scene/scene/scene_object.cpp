@@ -3,6 +3,33 @@
 
 #include "scene_object.h"
 
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+
 namespace tst {
-namespace scene {}
+namespace scene {
+
+    scene_object::state scene_object::update_object(std::chrono::duration<std::uint64_t, std::micro> elapsedTime) const {
+        float time = std::chrono::duration<float, std::chrono::seconds::period>(elapsedTime).count();
+
+        state newState;
+        newState.indices = &m_indices;
+        newState.vertices = &m_vertices;
+
+        engine::api::uniform_buffer_object ubo;
+
+        ubo.model = glm::rotate(glm::mat4(1.0f), time * glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+        ubo.view = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+        ubo.proj = glm::perspective(glm::radians(45.0f),
+                                    m_swapChain->get_extent().width / static_cast<float>(m_swapChain->get_extent().width),
+                                    0.1f,
+                                    10.0f);
+        ubo.proj[1][1] *= -1;
+
+        newState.transformation = ubo;
+
+        return newState;
+    }
+
+} // namespace scene
 } // namespace tst

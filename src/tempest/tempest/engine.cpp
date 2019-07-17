@@ -10,17 +10,18 @@
 #include <engine/engine.h>
 #include <fmt/printf.h>
 #include <scene/scene.h>
-#include <scene/scene_state.h>
 #include <util/variant.h>
 
 namespace tst {
 namespace application {
 
-    simulation_engine::simulation_engine(event_processor<app_event>& eventProcessor,
+    simulation_engine::simulation_engine(time_source& timeSource,
+                                         event_processor<app_event>& eventProcessor,
                                          input_processor& inputProcessor,
                                          main_window& mainWindow,
                                          data_loader& dataLoader)
-        : m_eventProcessor(eventProcessor)
+        : m_timeSource(timeSource)
+        , m_eventProcessor(eventProcessor)
         , m_inputProcessor(inputProcessor)
         , m_mainWindow(mainWindow)
         , m_dataLoader(dataLoader)
@@ -64,11 +65,14 @@ namespace application {
     void simulation_engine::main_loop() {
         m_inputProcessor.process_events();
         m_eventProcessor.process_events();
+        auto frameStart = m_timeSource.now();
         if (!m_windowMinimized) {
-            auto & m_scene->m_renderingEngine->frame(m_frameCount);
+            auto& newScene = scene::update_scene(*m_scene, m_lastFrameDuration);
+            m_renderingEngine->frame(m_frameCount);
             m_mainWindow.end_frame();
             m_lastSecondFrames++;
         }
+        m_lastFrameDuration = frameStart - m_timeSource.now();
     }
 
 } // namespace application

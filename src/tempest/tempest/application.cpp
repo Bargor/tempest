@@ -2,15 +2,15 @@
 // Author: Karol Kontny
 
 #include "application.h"
-#include "engine.h"
+
 #include "context.h"
+#include "engine.h"
 
 #include <application/app_event.h>
-#include <application/data_loader.h>
 #include <application/argument_parser.h>
+#include <application/data_loader.h>
 #include <application/event_processor.h>
 #include <application/input_processor.h>
-
 #include <device/monitor.h>
 
 namespace tst {
@@ -30,12 +30,19 @@ namespace application {
         , m_inputProcessor(std::make_unique<input_processor>(*m_eventProcessor.get(), *m_mainWindow.get()))
         , m_dataLoader(
               std::make_unique<data_loader>(std::initializer_list<std::filesystem::path>({params.executionDirectory})))
-        , m_engine(std::make_unique<simulation_engine>(
-              *m_eventProcessor.get(), *m_inputProcessor.get(), *m_mainWindow.get(), *m_dataLoader.get())) {}
+        , m_engine(std::make_unique<simulation_engine>(*m_timeSource.get(),
+                                                       *m_eventProcessor.get(),
+                                                       *m_inputProcessor.get(),
+                                                       *m_mainWindow.get(),
+                                                       *m_dataLoader.get())) {
+    }
 
-    application::~application() {}
+    application::~application() {
+    }
 
-    void application::run() { m_engine->run(); }
+    void application::run() {
+        m_engine->run();
+    }
 
 } // namespace application
 } // namespace tst
