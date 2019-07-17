@@ -17,13 +17,13 @@ namespace scene {
 
 namespace application {
 
-	template<typename Event>
+    template<typename Event>
     class event_processor;
     class input_processor;
     class main_window;
     class data_loader;
 
-	struct app_event;
+    struct app_event;
 
     class simulation_engine {
         template<typename T>
@@ -48,10 +48,9 @@ namespace application {
         data_loader& m_dataLoader;
         ptr<scene::scene> m_scene;
         ptr<engine::rendering_engine> m_renderingEngine;
-        std::size_t m_frameCount;
+        std::size_t m_frameCounter;
         bool m_shouldClose;
         bool m_windowMinimized;
-        std::chrono::microseconds m_lastSecondTimer;
         std::uint32_t m_lastSecondFrames;
     };
 

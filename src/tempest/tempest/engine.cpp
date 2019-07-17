@@ -26,10 +26,9 @@ namespace application {
         , m_dataLoader(dataLoader)
         , m_scene(std::make_unique<scene::scene>())
         , m_renderingEngine(std::make_unique<engine::rendering_engine>(mainWindow, m_dataLoader, eventProcessor))
-        , m_frameCount(0)
+        , m_frameCounter(0)
         , m_shouldClose(false)
         , m_windowMinimized(false)
-        , m_lastSecondTimer(std::chrono::microseconds::zero())
         , m_lastSecondFrames(0) {
         auto close_callback = [&](const app_event::arguments&) { m_shouldClose = true; };
         auto iconify_callback = [&](const app_event::arguments& args) {
@@ -57,7 +56,7 @@ namespace application {
     void simulation_engine::run() {
         while (!m_shouldClose) {
             main_loop();
-            m_frameCount++;
+            m_frameCounter++;
         }
         m_renderingEngine->stop();
     }
@@ -66,7 +65,7 @@ namespace application {
         m_inputProcessor.process_events();
         m_eventProcessor.process_events();
         if (!m_windowMinimized) {
-            m_renderingEngine->frame(m_frameCount);
+            auto & m_scene->m_renderingEngine->frame(m_frameCount);
             m_mainWindow.end_frame();
             m_lastSecondFrames++;
         }
