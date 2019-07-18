@@ -2,6 +2,7 @@
 // Author: Karol Kontny
 #pragma once
 
+#include <engine/api.h>
 #include <memory>
 #include <time/timer.h>
 
@@ -50,7 +51,8 @@ namespace application {
         main_window& m_mainWindow;
         data_loader& m_dataLoader;
         ptr<scene::scene> m_scene;
-        ptr<engine::rendering_engine> m_renderingEngine;
+        ptr<engine::api::rendering_engine> m_renderingEngine;
+        engine::api::device& m_renderingDevice;
         std::size_t m_frameCounter;
         std::uint32_t m_lastSecondFrames;
         bool m_shouldClose;
