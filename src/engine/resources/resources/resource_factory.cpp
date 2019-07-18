@@ -20,7 +20,8 @@ namespace engine {
             return m_nativeDevice.create_index_buffer(std::move(indices), m_commandPool);
         }
 
-        vertex_buffer resource_factory::create_vertex_buffer(const vertex_format& format, std::vector<vertex>&& vertices) {
+        vertex_buffer resource_factory::create_vertex_buffer(const engine::vertex_format& format,
+                                                             std::vector<vertex>&& vertices) {
             return m_nativeDevice.create_vertex_buffer(format, std::move(vertices), m_commandPool);
         }
 

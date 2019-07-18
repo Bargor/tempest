@@ -5,9 +5,9 @@
 #include "index_buffer.h"
 #include "uniform_buffer.h"
 #include "vertex_buffer.h"
-#include "vertex_format.h"
 
 #include <engine/api.h>
+#include <engine/resources/vertex_format.h>
 
 namespace tst {
 namespace engine {
@@ -21,7 +21,7 @@ namespace engine {
 
         public:
             index_buffer create_index_buffer(std::vector<std::uint16_t>&& indices);
-            vertex_buffer create_vertex_buffer(const vertex_format& format, std::vector<vertex>&& vertices);
+            vertex_buffer create_vertex_buffer(const engine::vertex_format& format, std::vector<vertex>&& vertices);
             uniform_buffer create_uniform_buffer();
 
         private:

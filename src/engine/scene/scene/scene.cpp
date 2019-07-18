@@ -1,5 +1,7 @@
 #include "scene.h"
 
+#include <resources/resource_factory.h>
+
 namespace tst {
 namespace scene {
     std::vector<scene_object::state> update_scene(const scene& scene,
@@ -9,6 +11,10 @@ namespace scene {
             newSceneState.emplace_back(object.update_object(elapsedTime));
         }
         return newSceneState;
+    }
+
+    scene::scene(engine::api::device& device)
+        : m_resourceFactory(std::make_unique<resources::resource_factory>(device)) {
     }
 
     void scene::add_object(scene_object&& object) {
