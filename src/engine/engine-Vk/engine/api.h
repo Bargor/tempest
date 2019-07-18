@@ -8,7 +8,8 @@ namespace engine {
 
     namespace vulkan {
         class device;
-    }
+        class rendering_engine;
+    } // namespace vulkan
 
     namespace api = vulkan;
 } // namespace engine
