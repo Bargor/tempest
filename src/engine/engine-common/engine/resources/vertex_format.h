@@ -32,11 +32,12 @@ namespace engine {
             uint3,
             uint4
         };
+
         enum class location { position, normal, texcoord, binormal };
 
         struct attribute_descriptor {
-            location location;
-            format format;
+            vertex_format::location location;
+            vertex_format::format format;
             std::uint32_t offset;
             std::uint32_t stride;
             std::uint32_t divisor;
