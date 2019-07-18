@@ -25,8 +25,9 @@ namespace application {
         , m_inputProcessor(inputProcessor)
         , m_mainWindow(mainWindow)
         , m_dataLoader(dataLoader)
-        , m_scene(std::make_unique<scene::scene>())
-        , m_renderingEngine(std::make_unique<engine::rendering_engine>(mainWindow, m_dataLoader, eventProcessor))
+        , m_renderingEngine(std::make_unique<engine::api::rendering_engine>(mainWindow, dataLoader, eventProcessor))
+        , m_renderingDevice(m_renderingEngine->get_GPU())
+        , m_scene(std::make_unique<scene::scene>(m_renderingDevice))
         , m_frameCounter(0)
         , m_shouldClose(false)
         , m_windowMinimized(false)
@@ -49,6 +50,9 @@ namespace application {
                                    this,
                                    std::move(time_callback),
                                    std::chrono::seconds(1));
+
+        // engine::resources::vertex_buffer scene::scene_object object();
+        // m_scene->add_object();
     }
 
     simulation_engine::~simulation_engine() {
