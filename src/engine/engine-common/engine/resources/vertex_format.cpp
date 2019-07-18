@@ -7,7 +7,6 @@ namespace tst {
 namespace engine {
 
     vertex_format::vertex_format() {
-    
     }
 
     void vertex_format::add_attribute(

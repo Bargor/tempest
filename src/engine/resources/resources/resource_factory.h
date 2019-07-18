@@ -26,7 +26,7 @@ namespace engine {
 
         private:
             api::device& m_nativeDevice;
-            vk::CommandPool m_commandPool;
+            vk::CommandPool& m_commandPool;
         };
 
     } // namespace resources

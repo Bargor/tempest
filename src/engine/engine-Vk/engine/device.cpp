@@ -112,13 +112,20 @@ namespace engine {
 
         device::~device() {
             instance::get_instance().m_instance.destroySurfaceKHR(m_windowSurface);
+
+            for (auto& commandPool : m_commandPools) {
+                m_logicalDevice.destroyCommandPool(commandPool);
+            }
+
             m_logicalDevice.destroy();
         }
 
-        vk::CommandPool device::create_command_pool() const {
+        vk::CommandPool& device::create_command_pool() {
             vk::CommandPoolCreateInfo createInfo(vk::CommandPoolCreateFlags(), m_queueIndices.graphicsIndex.value());
 
-            return m_logicalDevice.createCommandPool(createInfo);
+            m_commandPools.push_back(m_logicalDevice.createCommandPool(createInfo));
+
+            return m_commandPools.back();
         }
 
         vertex_buffer device::create_vertex_buffer(const vertex_format& format,

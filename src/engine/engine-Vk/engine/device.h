@@ -25,7 +25,8 @@ namespace engine {
             device(GLFWwindow* window, const std::vector<const char*>& requiredExtensions);
             ~device();
 
-            vk::CommandPool create_command_pool() const;
+            vk::CommandPool& create_command_pool();
+
             template<typename IndexType>
             index_buffer<IndexType> create_index_buffer(std::vector<IndexType>&& indices, vk::CommandPool& cmdPool) const;
             vertex_buffer create_vertex_buffer(const vertex_format& format,
@@ -42,6 +43,8 @@ namespace engine {
             vk::Queue m_computeQueueHandle;
             vk::Queue m_presentationQueueHandle;
             vk::Queue m_transferQueueHandle;
+
+            std::vector<vk::CommandPool> m_commandPools;
         };
 
         template<typename IndexType>

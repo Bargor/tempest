@@ -108,7 +108,6 @@ namespace engine {
             for (auto& fence : m_inFlightFences) {
                 (*m_device.get()).m_logicalDevice.destroyFence(fence);
             }
-            (*m_device.get()).m_logicalDevice.destroyCommandPool(m_commandPool);
             m_swapChain.reset();
         }
 
