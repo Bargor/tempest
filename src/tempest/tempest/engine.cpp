@@ -9,6 +9,7 @@
 #include <application/main_window.h>
 #include <engine/engine.h>
 #include <fmt/printf.h>
+#include <resources/resource_factory.h>
 #include <scene/scene.h>
 #include <util/variant.h>
 
@@ -27,7 +28,8 @@ namespace application {
         , m_dataLoader(dataLoader)
         , m_renderingEngine(std::make_unique<engine::api::rendering_engine>(mainWindow, dataLoader, eventProcessor))
         , m_renderingDevice(m_renderingEngine->get_GPU())
-        , m_scene(std::make_unique<scene::scene>(m_renderingDevice))
+        , m_scene(std::make_unique<scene::scene>())
+        , m_resourceFactory(std::make_unique<engine::resources::resource_factory>(m_renderingDevice))
         , m_frameCounter(0)
         , m_shouldClose(false)
         , m_windowMinimized(false)
@@ -51,8 +53,16 @@ namespace application {
                                    std::move(time_callback),
                                    std::chrono::seconds(1));
 
-        // engine::resources::vertex_buffer scene::scene_object object();
-        // m_scene->add_object();
+        auto vertexBuffer = {
+            m_resourceFactory->create_vertex_buffer(engine::vertex_format{},
+                                                    std::vector<engine::vertex>({{{-0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}},
+                                                                                 {{0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}},
+                                                                                 {{0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}},
+                                                                                 {{-0.5f, 0.5f}, {1.0f, 1.0f, 1.0f}}}))};
+        auto indexBuffer = {m_resourceFactory->create_index_buffer(std::vector<std::uint16_t>({{0, 1, 2, 2, 3, 0}}))};
+
+        scene::scene_object object(std::move(vertexBuffer), {std::move(indexBuffer)});
+        m_scene->add_object(std::move(object));
     }
 
     simulation_engine::~simulation_engine() {

@@ -10,6 +10,10 @@ namespace tst {
 
 namespace engine {
     class rendering_engine;
+
+    namespace resources {
+        class resource_factory;
+    }
 }
 
 namespace scene {
@@ -52,6 +56,7 @@ namespace application {
         data_loader& m_dataLoader;
         ptr<engine::api::rendering_engine> m_renderingEngine;
         engine::api::device& m_renderingDevice;
+        ptr<engine::resources::resource_factory> m_resourceFactory;
         ptr<scene::scene> m_scene;
         std::size_t m_frameCounter;
         std::uint32_t m_lastSecondFrames;
