@@ -3,39 +3,39 @@
 
 set(ENGINE_HDRS
     engine/api.h
-	engine/instance.h
-	engine/vulkan_exception.h
 	engine/device.h
-	engine/engine_init.h
 	engine/engine.h
 	engine/engine_frontend.h
+	engine/engine_init.h
+	engine/instance.h
 	engine/queue_indices.h
 	engine/swap_chain.h
 	engine/shader_compiler.h
 	engine/resources/buffer.h
-	engine/resources/uniform_buffer.h
-	engine/resources/vertex_format.h
-	engine/resources/vertex_buffer.h
-	engine/resources/shader.h
 	engine/resources/index_buffer.h
+	engine/resources/shader.h
+	engine/resources/uniform_buffer.h
+	engine/resources/vertex_buffer.h
+	engine/resources/vk_vertex_format.h
+	engine/vulkan_exception.h
 )
 
 set(ENGINE_SRCS 
     engine/api.cpp
-	engine/instance.cpp
 	engine/device.cpp
-	engine/engine_init.cpp
 	engine/engine.cpp
-	engine/engine_frontend.cpp
+	engine/engine_frontend
+	engine/engine_init.cpp
+	engine/instance.cpp
 	engine/queue_indices.cpp
 	engine/swap_chain.cpp
 	engine/shader_compiler.cpp
 	engine/resources/buffer.cpp
-	engine/resources/uniform_buffer.cpp
-	engine/resources/vertex_format.cpp
-	engine/resources/vertex_buffer.cpp
-	engine/resources/shader.cpp
 	engine/resources/index_buffer.cpp
+	engine/resources/shader.cpp
+	engine/resources/uniform_buffer.cpp
+	engine/resources/vertex_buffer.cpp
+	engine/resources/vk_vertex_format.cpp
 )
 
 include(${PROJECT_SOURCE_DIR}/cmake/TstAddLibrary.cmake)

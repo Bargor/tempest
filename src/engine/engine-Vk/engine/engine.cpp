@@ -48,8 +48,8 @@ namespace engine {
                                                          m_swapChain->get_extent()))
             , m_commandPool(m_device->create_command_pool())
             , m_vertexBuffer(std::make_unique<vulkan::vertex_buffer>(
-                  m_device->create_vertex_buffer(vulkan::vertex_format(),
-                                                 std::vector<vulkan::vertex>({{{-0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}},
+                  m_device->create_vertex_buffer(vertex_format(),
+                                                 std::vector<vertex>({{{-0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}},
                                                                               {{0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}},
                                                                               {{0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}},
                                                                               {{-0.5f, 0.5f}, {1.0f, 1.0f, 1.0f}}}),

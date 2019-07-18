@@ -9,9 +9,11 @@
 
 namespace tst {
 
-namespace resources {
-    class resource_factory;
-}
+namespace engine {
+    namespace resources {
+        class resource_factory;
+    }
+} // namespace engine
 
 namespace scene {
 
@@ -28,11 +30,12 @@ namespace scene {
 
     public:
         scene(engine::api::device& device);
+        ~scene();
 
         void add_object(scene_object&& object);
 
     private:
-        ptr<resources::resource_factory> m_resourceFactory;
+        ptr<engine::resources::resource_factory> m_resourceFactory;
         std::vector<scene_object> m_objects;
     };
 

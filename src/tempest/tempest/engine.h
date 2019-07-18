@@ -50,9 +50,9 @@ namespace application {
         input_processor& m_inputProcessor;
         main_window& m_mainWindow;
         data_loader& m_dataLoader;
-        ptr<scene::scene> m_scene;
         ptr<engine::api::rendering_engine> m_renderingEngine;
         engine::api::device& m_renderingDevice;
+        ptr<scene::scene> m_scene;
         std::size_t m_frameCounter;
         std::uint32_t m_lastSecondFrames;
         bool m_shouldClose;

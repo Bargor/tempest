@@ -14,7 +14,10 @@ namespace scene {
     }
 
     scene::scene(engine::api::device& device)
-        : m_resourceFactory(std::make_unique<resources::resource_factory>(device)) {
+        : m_resourceFactory(std::make_unique<engine::resources::resource_factory>(device)) {
+    }
+
+    scene::~scene() {
     }
 
     void scene::add_object(scene_object&& object) {

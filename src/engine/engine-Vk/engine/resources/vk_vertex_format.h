@@ -3,6 +3,8 @@
 
 #pragma once
 
+#include <engine/resources/vertex_format.h>
+
 #include <array>
 #include <glm/glm.hpp>
 #include <vulkan/vulkan.hpp>
@@ -11,14 +13,9 @@ namespace tst {
 namespace engine {
     namespace vulkan {
 
-        struct vertex {
-            glm::vec2 pos;
-            glm::vec3 color;
-        };
-
-        class vertex_format {
+        class vk_vertex_format {
         public:
-            vertex_format();
+            vk_vertex_format(const vertex_format& inputFormat);
 
             const vk::VertexInputBindingDescription& get_binding_description() const;
             const std::array<vk::VertexInputAttributeDescription, 2>& get_attribute_descriptions() const;

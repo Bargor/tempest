@@ -4,7 +4,6 @@
 
 #include "../vulkan_exception.h"
 #include "buffer.h"
-#include "vertex_format.h"
 
 #include <vector>
 
