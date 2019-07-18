@@ -12,19 +12,23 @@ namespace scene {
 
     class scene_object {
     public:
+        using vertex_buffers = std::vector<engine::resources::vertex_buffer>;
+        using index_buffers = std::vector<engine::resources::index_buffer>;
+
         struct state {
             engine::api::uniform_buffer_object transformation;
-            const std::vector<engine::resources::vertex_buffer>* vertices;
-            const std::vector<engine::resources::index_buffer>* indices;
+            const vertex_buffers* vertices;
+            const index_buffers* indices;
         };
 
     public:
+        scene_object(vertex_buffers&& vertexBuffers, index_buffers&& indexBuffers) noexcept;
         state& get_object_state() const;
         state update_object(std::chrono::duration<std::uint64_t, std::micro> elapsedTime) const;
 
     private:
-        std::vector<engine::resources::vertex_buffer> m_vertices;
-        std::vector<engine::resources::index_buffer> m_indices;
+        vertex_buffers m_vertices;
+        index_buffers m_indices;
         state m_objectState;
     };
 
