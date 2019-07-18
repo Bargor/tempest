@@ -5,12 +5,14 @@ set(RESOURCES_HDRS
 	resources/vertex_buffer.h
 	resources/index_buffer.h
 	resources/uniform_buffer.h
+	resources/resource_factory.h
 )
 
 set(RESOURCES_SRCS 
 	resources/vertex_buffer.cpp
 	resources/index_buffer.cpp
 	resources/uniform_buffer.cpp
+	resources/resource_factory.cpp
 )
 
 include(${PROJECT_SOURCE_DIR}/cmake/TstAddLibrary.cmake)
