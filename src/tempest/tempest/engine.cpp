@@ -67,8 +67,8 @@ namespace application {
         m_eventProcessor.process_events();
         auto frameStart = m_timeSource.now();
         if (!m_windowMinimized) {
-            auto& newScene = scene::update_scene(*m_scene, m_lastFrameDuration);
-            m_renderingEngine->frame(m_frameCount);
+            auto newSceneState = scene::update_scene(*m_scene, m_lastFrameDuration);
+            m_renderingEngine->frame(m_frameCounter);
             m_mainWindow.end_frame();
             m_lastSecondFrames++;
         }
