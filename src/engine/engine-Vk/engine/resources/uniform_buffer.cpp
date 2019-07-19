@@ -29,6 +29,7 @@ namespace engine {
         }
 
         void uniform_buffer::update_buffer(const uniform_buffer_object& ubo) {
+            m_data = ubo;
             auto dataPtr = m_logicalDevice.mapMemory(m_bufferMemory, 0, sizeof(uniform_buffer_object));
             std::memcpy(dataPtr, &ubo, sizeof(uniform_buffer_object));
             m_logicalDevice.unmapMemory(m_bufferMemory);

@@ -3,10 +3,14 @@
 
 set(ENGINE_HDRS
     engine/api.h
+	engine/engine.h
 	engine/opengl_exception.h
+	engine/resources/index_buffer.h
+	engine/resources/uniform_buffer.h
+	engine/resources/vertex_buffer.h
+	engine/resources/gl_vertex_format.h
 	engine/shader.h
 	engine/shader_compiler.h
-	engine/engine.h
 )
 
 set(ENGINE_SRCS 
