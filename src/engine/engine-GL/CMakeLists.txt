@@ -3,6 +3,7 @@
 
 set(ENGINE_HDRS
     engine/api.h
+	engine/device.h
 	engine/engine.h
 	engine/opengl_exception.h
 	engine/resources/index_buffer.h
@@ -14,6 +15,7 @@ set(ENGINE_HDRS
 )
 
 set(ENGINE_SRCS 
+    engine/device.cpp
 	engine/shader.cpp
 	engine/shader_compiler.cpp
 	engine/engine.cpp
