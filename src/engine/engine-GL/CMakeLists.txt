@@ -2,6 +2,7 @@
 # Author: Karol Kontny
 
 set(ENGINE_HDRS
+    engine/api.h
 	engine/opengl_exception.h
 	engine/shader.h
 	engine/shader_compiler.h
