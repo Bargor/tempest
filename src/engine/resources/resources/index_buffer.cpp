@@ -14,6 +14,9 @@ namespace engine {
         index_buffer::~index_buffer() {
         }
 
+        index_buffer::index_buffer(index_buffer&& other) noexcept : m_nativeIndexBuffer(std::move(other.m_nativeIndexBuffer)) {
+        }
+
     } // namespace resources
 } // namespace engine
 } // namespace tst

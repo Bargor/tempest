@@ -15,6 +15,8 @@ namespace engine {
             index_buffer(api::index_buffer<std::uint16_t>&& nativeBuffer);
             ~index_buffer();
 
+            index_buffer(index_buffer&& other) noexcept;
+
         private:
             api::index_buffer<std::uint16_t> m_nativeIndexBuffer;
         };

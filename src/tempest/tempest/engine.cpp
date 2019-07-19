@@ -55,11 +55,11 @@ namespace application {
 
         std::vector<engine::resources::vertex_buffer> vertexBuffers;
         vertexBuffers.emplace_back(
-            std::move(m_resourceFactory->create_vertex_buffer(engine::vertex_format{},
+            m_resourceFactory->create_vertex_buffer(engine::vertex_format{},
                                                     std::vector<engine::vertex>({{{-0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}},
                                                                                  {{0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}},
                                                                                  {{0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}},
-                                                                                 {{-0.5f, 0.5f}, {1.0f, 1.0f, 1.0f}}}))));
+                                                                                 {{-0.5f, 0.5f}, {1.0f, 1.0f, 1.0f}}})));
         std::vector<engine::resources::index_buffer> indexBuffers;
         indexBuffers.emplace_back(
             m_resourceFactory->create_index_buffer(std::vector<std::uint16_t>({{0, 1, 2, 2, 3, 0}})));
