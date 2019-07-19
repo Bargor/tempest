@@ -2,6 +2,8 @@
 // Author: Karol Kontny
 #pragma once
 
+#include <vector>
+
 namespace tst {
 namespace engine {
     namespace opengl {
