@@ -12,6 +12,9 @@ namespace engine {
 
         vertex_buffer::~vertex_buffer() {
         }
+
+        vertex_buffer::vertex_buffer(vertex_buffer&& other) noexcept : m_nativeVertexBuffer(std::move(other.m_nativeVertexBuffer)) {
+        }
     } // namespace resources
 } // namespace engine
 } // namespace tst

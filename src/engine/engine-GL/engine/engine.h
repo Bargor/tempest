@@ -18,6 +18,8 @@ namespace scene {
 }
 
 namespace engine {
+	
+	namespace opengl {
 
     class rendering_engine {
         template<typename T>
@@ -37,6 +39,7 @@ namespace engine {
         application::data_loader& m_dataLoader;
         ptr<scene::scene> m_scene;
     };
-
+	
+	}
 } // namespace engine
 } // namespace tst

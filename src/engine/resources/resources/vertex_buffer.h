@@ -15,6 +15,8 @@ namespace engine {
             vertex_buffer(api::vertex_buffer&& nativeBuffer);
             ~vertex_buffer();
 
+            vertex_buffer(vertex_buffer&& other) noexcept;
+
         private:
             api::vertex_buffer m_nativeVertexBuffer;
         };

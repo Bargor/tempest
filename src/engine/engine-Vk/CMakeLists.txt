@@ -21,7 +21,6 @@ set(ENGINE_HDRS
 )
 
 set(ENGINE_SRCS 
-    engine/api.cpp
 	engine/device.cpp
 	engine/engine.cpp
 	engine/engine_frontend.cpp

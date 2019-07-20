@@ -26,14 +26,14 @@ namespace application {
         , m_inputProcessor(inputProcessor)
         , m_mainWindow(mainWindow)
         , m_dataLoader(dataLoader)
-        , m_renderingEngine(std::make_unique<engine::api::rendering_engine>(mainWindow, dataLoader, eventProcessor))
+        , m_renderingEngine(std::make_unique<engine::api::rendering_engine>(m_mainWindow, m_dataLoader, m_eventProcessor))
         , m_renderingDevice(m_renderingEngine->get_GPU())
-        , m_scene(std::make_unique<scene::scene>())
         , m_resourceFactory(std::make_unique<engine::resources::resource_factory>(m_renderingDevice))
+        , m_scene(std::make_unique<scene::scene>())
         , m_frameCounter(0)
+        , m_lastSecondFrames(0)
         , m_shouldClose(false)
-        , m_windowMinimized(false)
-        , m_lastSecondFrames(0) {
+        , m_windowMinimized(false) {
         auto close_callback = [&](const app_event::arguments&) { m_shouldClose = true; };
         auto iconify_callback = [&](const app_event::arguments& args) {
             assert(std::holds_alternative<application::app_event::iconify>(args));
@@ -53,13 +53,16 @@ namespace application {
                                    std::move(time_callback),
                                    std::chrono::seconds(1));
 
-        auto vertexBuffers = {
+        std::vector<engine::resources::vertex_buffer> vertexBuffers;
+        vertexBuffers.emplace_back(
             m_resourceFactory->create_vertex_buffer(engine::vertex_format{},
                                                     std::vector<engine::vertex>({{{-0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}},
                                                                                  {{0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}},
                                                                                  {{0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}},
-                                                                                 {{-0.5f, 0.5f}, {1.0f, 1.0f, 1.0f}}}))};
-        auto indexBuffers = {m_resourceFactory->create_index_buffer(std::vector<std::uint16_t>({{0, 1, 2, 2, 3, 0}}))};
+                                                                                 {{-0.5f, 0.5f}, {1.0f, 1.0f, 1.0f}}})));
+        std::vector<engine::resources::index_buffer> indexBuffers;
+        indexBuffers.emplace_back(
+            m_resourceFactory->create_index_buffer(std::vector<std::uint16_t>({{0, 1, 2, 2, 3, 0}})));
 
         scene::scene_object object(std::move(vertexBuffers), std::move(indexBuffers));
         m_scene->add_object(std::move(object));

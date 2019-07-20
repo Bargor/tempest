@@ -11,6 +11,7 @@
 
 namespace tst {
 namespace engine {
+	namespace opengl {
 
     void init_OpenGL() {
         glewExperimental = GL_TRUE;
@@ -37,5 +38,6 @@ namespace engine {
     void rendering_engine::frame(size_t) {
     }
 
+	}
 } // namespace engine
 } // namespace tst
