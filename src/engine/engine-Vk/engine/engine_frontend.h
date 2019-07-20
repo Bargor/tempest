@@ -15,19 +15,10 @@ namespace engine {
         public:
             engine_frontend(device& device);
 
-            template<typename IndexType>
-            index_buffer<IndexType> create_index_buffer(std::vector<IndexType>&& indices) const;
-
         private:
             device& m_device;
             vk::CommandPool m_commandPool;
         };
-
-        template<typename IndexType>
-        index_buffer<IndexType> engine_frontend::create_index_buffer(std::vector<IndexType>&& indices) const {
-            return m_device.create_index_buffer(indices);
-        }
-
     } // namespace vulkan
 
 } // namespace engine

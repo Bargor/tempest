@@ -24,7 +24,7 @@ set(ENGINE_SRCS
     engine/api.cpp
 	engine/device.cpp
 	engine/engine.cpp
-	engine/engine_frontend
+	engine/engine_frontend.cpp
 	engine/engine_init.cpp
 	engine/instance.cpp
 	engine/queue_indices.cpp
