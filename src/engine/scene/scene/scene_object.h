@@ -3,9 +3,9 @@
 #pragma once
 
 #include <chrono>
-#include <resources/index_buffer.h>
-#include <resources/uniform_buffer.h>
-#include <resources/vertex_buffer.h>
+#include <engine/resources/index_buffer.h>
+#include <engine/resources/uniform_buffer.h>
+#include <engine/resources/vertex_buffer.h>
 
 namespace tst {
 namespace scene {

@@ -15,9 +15,11 @@ namespace engine {
         public:
             engine_frontend(device& device);
 
+            vk::CommandBuffer create_command_buffer();
+
         private:
             device& m_device;
-            vk::CommandPool m_commandPool;
+            vk::CommandPool& m_commandPool;
         };
     } // namespace vulkan
 

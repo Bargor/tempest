@@ -2,23 +2,23 @@
 # Author: Karol Kontny
 
 set(ENGINE_HDRS
-    engine/api.h
-	engine/device.h
-	engine/engine.h
-	engine/opengl_exception.h
-	engine/resources/index_buffer.h
-	engine/resources/uniform_buffer.h
-	engine/resources/vertex_buffer.h
-	engine/resources/gl_vertex_format.h
-	engine/shader.h
-	engine/shader_compiler.h
+    engine-impl/api.h
+	engine-impl/device.h
+	engine-impl/engine.h
+	engine-impl/opengl_exception.h
+	engine-impl/resources/index_buffer.h
+	engine-impl/resources/uniform_buffer.h
+	engine-impl/resources/vertex_buffer.h
+	engine-impl/resources/gl_vertex_format.h
+	engine-impl/shader.h
+	engine-impl/shader_compiler.h
 )
 
 set(ENGINE_SRCS 
-    engine/device.cpp
-	engine/shader.cpp
-	engine/shader_compiler.cpp
-	engine/engine.cpp
+    engine-impl/device.cpp
+	engine-impl/shader.cpp
+	engine-impl/shader_compiler.cpp
+	engine-impl/engine.cpp
 )
 
 add_definitions (-DGLEW_NO_GLU)

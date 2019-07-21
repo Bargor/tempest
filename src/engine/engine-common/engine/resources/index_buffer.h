@@ -2,8 +2,8 @@
 // Author: Karol Kontny
 #pragma once
 
-#include <engine/api.h>
-#include <engine/resources/index_buffer.h>
+#include <engine-impl/api.h>
+#include <engine-impl/resources/index_buffer.h>
 
 namespace tst {
 namespace engine {
@@ -12,13 +12,13 @@ namespace engine {
 
         class index_buffer {
         public:
-            index_buffer(api::index_buffer<std::uint16_t>&& nativeBuffer);
+            index_buffer(api::index_buffer<std::uint16_t>&& bufferImpl);
             ~index_buffer();
 
             index_buffer(index_buffer&& other) noexcept;
 
         private:
-            api::index_buffer<std::uint16_t> m_nativeIndexBuffer;
+            api::index_buffer<std::uint16_t> m_indexBufferImpl;
         };
 
     } // namespace resources

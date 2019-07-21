@@ -70,7 +70,7 @@ namespace engine {
                                               const vk::RenderPass& renderPass,
                                               const vk::Extent2D& extent,
                                               const vulkan::shader_compiler& shaderCompiler) {
-            vk_vertex_format format(vertex_format{});
+            vertex_format format;
 
             vk::PipelineVertexInputStateCreateInfo vertexInfo(
                 vk::PipelineVertexInputStateCreateFlags(),

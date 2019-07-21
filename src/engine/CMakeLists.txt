@@ -1,7 +1,6 @@
 # This file is part of Tempest project
 # Author: Karol Kontny
 
-add_subdirectory(resources)
 add_subdirectory(scene)
 add_subdirectory(engine-common)
 if (ENGINE STREQUAL "GL")

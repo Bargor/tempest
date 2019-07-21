@@ -2,39 +2,41 @@
 # Author: Karol Kontny
 
 set(ENGINE_HDRS
-    engine/api.h
-	engine/device.h
-	engine/engine.h
-	engine/engine_frontend.h
-	engine/engine_init.h
-	engine/instance.h
-	engine/queue_indices.h
-	engine/swap_chain.h
-	engine/shader_compiler.h
-	engine/resources/buffer.h
-	engine/resources/index_buffer.h
-	engine/resources/shader.h
-	engine/resources/uniform_buffer.h
-	engine/resources/vertex_buffer.h
-	engine/resources/vk_vertex_format.h
-	engine/vulkan_exception.h
+    engine-impl/api.h
+	engine-impl/device.h
+	engine-impl/engine.h
+	engine-impl/engine_frontend.h
+	engine-impl/engine_init.h
+	engine-impl/instance.h
+	engine-impl/queue_indices.h
+	engine-impl/swap_chain.h
+	engine-impl/shader_compiler.h
+	engine-impl/resource_factory.h
+	engine-impl/resources/buffer.h
+	engine-impl/resources/index_buffer.h
+	engine-impl/resources/shader.h
+	engine-impl/resources/uniform_buffer.h
+	engine-impl/resources/vertex_buffer.h
+	engine-impl/resources/vertex_format.h
+	engine-impl/vulkan_exception.h
 )
 
 set(ENGINE_SRCS 
-	engine/device.cpp
-	engine/engine.cpp
-	engine/engine_frontend.cpp
-	engine/engine_init.cpp
-	engine/instance.cpp
-	engine/queue_indices.cpp
-	engine/swap_chain.cpp
-	engine/shader_compiler.cpp
-	engine/resources/buffer.cpp
-	engine/resources/index_buffer.cpp
-	engine/resources/shader.cpp
-	engine/resources/uniform_buffer.cpp
-	engine/resources/vertex_buffer.cpp
-	engine/resources/vk_vertex_format.cpp
+	engine-impl/device.cpp
+	engine-impl/engine.cpp
+	engine-impl/engine_frontend.cpp
+	engine-impl/engine_init.cpp
+	engine-impl/instance.cpp
+	engine-impl/queue_indices.cpp
+	engine-impl/swap_chain.cpp
+	engine-impl/shader_compiler.cpp
+	engine-impl/resource_factory.cpp
+	engine-impl/resources/buffer.cpp
+	engine-impl/resources/index_buffer.cpp
+	engine-impl/resources/shader.cpp
+	engine-impl/resources/uniform_buffer.cpp
+	engine-impl/resources/vertex_buffer.cpp
+	engine-impl/resources/vertex_format.cpp
 )
 
 include(${PROJECT_SOURCE_DIR}/cmake/TstAddLibrary.cmake)

@@ -9,7 +9,7 @@
 #include <application/main_window.h>
 #include <engine/engine.h>
 #include <fmt/printf.h>
-#include <resources/resource_factory.h>
+#include <engine/resource_factory.h>
 #include <scene/scene.h>
 #include <util/variant.h>
 
@@ -26,7 +26,7 @@ namespace application {
         , m_inputProcessor(inputProcessor)
         , m_mainWindow(mainWindow)
         , m_dataLoader(dataLoader)
-        , m_renderingEngine(std::make_unique<engine::api::rendering_engine>(m_mainWindow, m_dataLoader, m_eventProcessor))
+        , m_renderingEngine(std::make_unique<engine::rendering_engine>(m_mainWindow, m_dataLoader, m_eventProcessor))
         , m_renderingDevice(m_renderingEngine->get_GPU())
         , m_resourceFactory(std::make_unique<engine::resources::resource_factory>(m_renderingDevice))
         , m_scene(std::make_unique<scene::scene>())

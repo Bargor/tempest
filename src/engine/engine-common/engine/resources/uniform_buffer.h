@@ -2,8 +2,8 @@
 // Author: Karol Kontny
 #pragma once
 
-#include <engine/api.h>
-#include <engine/resources/uniform_buffer.h>
+#include <engine-impl/api.h>
+#include <engine-impl/resources/uniform_buffer.h>
 
 namespace tst {
 namespace engine {
@@ -11,11 +11,11 @@ namespace engine {
 
         class uniform_buffer {
         public:
-            uniform_buffer(api::uniform_buffer&& nativeBuffer);
+            uniform_buffer(api::uniform_buffer&& bufferImpl);
             ~uniform_buffer();
 
         private:
-            api::uniform_buffer m_nativeUniformBuffer;
+            api::uniform_buffer m_uniformBufferImpl;
         };
 
     } // namespace resources

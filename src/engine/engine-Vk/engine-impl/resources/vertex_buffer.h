@@ -3,7 +3,7 @@
 #pragma once
 
 #include "buffer.h"
-#include "vk_vertex_format.h"
+#include "vertex_format.h"
 
 #include <vector>
 

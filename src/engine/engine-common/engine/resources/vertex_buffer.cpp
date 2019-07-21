@@ -6,14 +6,14 @@
 namespace tst {
 namespace engine {
     namespace resources {
-        vertex_buffer::vertex_buffer(api::vertex_buffer&& nativeBuffer)
-            : m_nativeVertexBuffer(std::move(nativeBuffer)) {
+        vertex_buffer::vertex_buffer(api::vertex_buffer&& bufferImpl) : m_vertexBufferImpl(std::move(bufferImpl)) {
         }
 
         vertex_buffer::~vertex_buffer() {
         }
 
-        vertex_buffer::vertex_buffer(vertex_buffer&& other) noexcept : m_nativeVertexBuffer(std::move(other.m_nativeVertexBuffer)) {
+        vertex_buffer::vertex_buffer(vertex_buffer&& other) noexcept
+            : m_vertexBufferImpl(std::move(other.m_vertexBufferImpl)) {
         }
     } // namespace resources
 } // namespace engine
