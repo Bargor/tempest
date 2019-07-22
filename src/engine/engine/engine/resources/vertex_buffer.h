@@ -10,7 +10,7 @@ namespace tst {
 namespace engine {
     namespace resources {
 
-        class vertex_buffer {
+        class vertex_buffer : public api::vertex_buffer {
         public:
             vertex_buffer(api::vertex_buffer&& bufferImpl);
             ~vertex_buffer();
@@ -18,7 +18,6 @@ namespace engine {
             vertex_buffer(vertex_buffer&& other) noexcept;
 
         private:
-            api::vertex_buffer m_vertexBufferImpl;
         };
     } // namespace resources
 } // namespace engine

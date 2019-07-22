@@ -8,7 +8,7 @@ namespace engine {
     namespace resources {
 
         uniform_buffer::uniform_buffer(api::uniform_buffer&& bufferImpl)
-            : m_uniformBufferImpl(std::move(bufferImpl)) {
+            : api::uniform_buffer(std::move(bufferImpl)) {
         }
 
 		uniform_buffer::~uniform_buffer() {

@@ -9,13 +9,12 @@ namespace tst {
 namespace engine {
     namespace resources {
 
-        class uniform_buffer {
+        class uniform_buffer : public api::uniform_buffer {
         public:
             uniform_buffer(api::uniform_buffer&& bufferImpl);
             ~uniform_buffer();
 
         private:
-            api::uniform_buffer m_uniformBufferImpl;
         };
 
     } // namespace resources
