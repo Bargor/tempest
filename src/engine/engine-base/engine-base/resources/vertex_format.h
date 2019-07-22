@@ -9,11 +9,13 @@
 
 namespace tst {
 namespace engine {
-
-    struct vertex {
+	
+	struct vertex {
         glm::vec2 pos;
         glm::vec3 color;
     };
+	
+	namespace base {
 
     class vertex_format {
     public:
@@ -53,5 +55,7 @@ namespace engine {
     private:
         std::vector<attribute_descriptor> m_attributes;
     };
+	
+	}
 } // namespace engine
 } // namespace tst

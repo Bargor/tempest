@@ -5,6 +5,8 @@
 
 namespace tst {
 namespace engine {
+	
+	namespace base {
 
     vertex_format::vertex_format() {
     }
@@ -19,6 +21,7 @@ namespace engine {
     const std::vector<vertex_format::attribute_descriptor>& vertex_format::get_atttibutes() const noexcept {
         return m_attributes;
     }
+	}
 
 } // namespace engine
 } // namespace tst

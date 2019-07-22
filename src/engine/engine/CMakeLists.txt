@@ -1,7 +1,7 @@
 # This file is part of Tempest project
 # Author: Karol Kontny
 
-set(ENGINE_COMMON_HDRS
+set(ENGINE_HDRS
     engine/device.h
 	engine/engine.h
 	engine/resource_factory.h
@@ -11,7 +11,7 @@ set(ENGINE_COMMON_HDRS
 	engine/resources/vertex_format.h
 )
 
-set(ENGINE_COMMON_SRCS 
+set(ENGINE_SRCS 
     engine/device.cpp
 	engine/engine.cpp
 	engine/resource_factory.cpp
@@ -23,6 +23,6 @@ set(ENGINE_COMMON_SRCS
 
 include(${PROJECT_SOURCE_DIR}/cmake/TstAddLibrary.cmake)
 
-tst_add_library(engine-common "${ENGINE_COMMON_HDRS}" "${ENGINE_COMMON_SRCS}")
+tst_add_library(engine "${ENGINE_HDRS}" "${ENGINE_SRCS}")
 
-target_link_libraries(engine-common PUBLIC glm fmt::fmt tst::engine)
+target_link_libraries(engine PUBLIC tst::engine-impl)

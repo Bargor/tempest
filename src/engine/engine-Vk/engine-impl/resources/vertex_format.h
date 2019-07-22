@@ -7,12 +7,16 @@
 #include <glm/glm.hpp>
 #include <vulkan/vulkan.hpp>
 
+#include <engine-base/resources/vertex_format.h>
+
 namespace tst {
 namespace engine {
     namespace vulkan {
 
-        class vertex_format {
+        class vertex_format : public base::vertex_format {
         public:
+            using super = base::vertex_format;
+
             vertex_format();
 
             const vk::VertexInputBindingDescription& get_binding_description() const;

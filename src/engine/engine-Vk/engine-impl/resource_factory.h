@@ -10,9 +10,9 @@
 namespace tst {
 namespace engine {
 
-    class device;
-
     namespace vulkan {
+
+        class device;
 
         class resource_factory {
         public:

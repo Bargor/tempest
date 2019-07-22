@@ -28,7 +28,7 @@ namespace application {
         , m_dataLoader(dataLoader)
         , m_renderingEngine(std::make_unique<engine::rendering_engine>(m_mainWindow, m_dataLoader, m_eventProcessor))
         , m_renderingDevice(m_renderingEngine->get_GPU())
-        , m_resourceFactory(std::make_unique<engine::resources::resource_factory>(m_renderingDevice))
+        , m_resourceFactory(std::make_unique<engine::resource_factory>(m_renderingDevice))
         , m_scene(std::make_unique<scene::scene>())
         , m_frameCounter(0)
         , m_lastSecondFrames(0)

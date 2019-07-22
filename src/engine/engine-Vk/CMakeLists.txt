@@ -41,11 +41,11 @@ set(ENGINE_SRCS
 
 include(${PROJECT_SOURCE_DIR}/cmake/TstAddLibrary.cmake)
 
-tst_add_library(engine "${ENGINE_HDRS}" "${ENGINE_SRCS}")
+tst_add_library(engine-impl "${ENGINE_HDRS}" "${ENGINE_SRCS}")
 
-target_include_directories(engine PUBLIC ${Vulkan_INCLUDE_DIRS})
+target_include_directories(engine-impl PUBLIC ${Vulkan_INCLUDE_DIRS})
 
-target_link_libraries(engine PUBLIC tst::application tst::engine-common glfw ${Vulkan_LIBRARIES})
+target_link_libraries(engine-impl PUBLIC tst::application tst::engine-base glfw ${Vulkan_LIBRARIES})
 
 add_custom_target(
         copy_shader_files
@@ -56,4 +56,4 @@ add_custom_target(
         COMMENT "Copying Files for target: test_SphereShader" VERBATIM
         )
 
-add_dependencies(engine copy_shader_files)
+add_dependencies(engine-impl copy_shader_files)
