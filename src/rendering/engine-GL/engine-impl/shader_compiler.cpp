@@ -1,12 +1,12 @@
 // This file is part of Tempest-engine project
 // Author: Karol Kontny
 
+#include "opengl_exception.h"
 #include "shader_compiler.h"
 
 #include <algorithm>
 #include <application/data_exception.h>
 #include <application/data_loader.h>
-#include <engine/opengl_exception.h>
 #include <fmt/printf.h>
 
 namespace tst {
