@@ -2,6 +2,7 @@
 // Author: Karol Kontny
 #pragma once
 
+#include "device.h"
 #include "resources/index_buffer.h"
 #include "resources/uniform_buffer.h"
 #include "resources/vertex_buffer.h"

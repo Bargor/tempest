@@ -3,8 +3,6 @@
 
 #include "resource_factory.h"
 
-#include "device.h"
-
 namespace tst {
 namespace engine {
     namespace vulkan {
