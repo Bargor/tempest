@@ -13,10 +13,6 @@ namespace application {
     struct app_event;
 } // namespace application
 
-namespace scene {
-    class scene;
-}
-
 namespace engine {
 	
 	namespace opengl {
@@ -37,7 +33,6 @@ namespace engine {
 
     private:
         application::data_loader& m_dataLoader;
-        ptr<scene::scene> m_scene;
     };
 	
 	}

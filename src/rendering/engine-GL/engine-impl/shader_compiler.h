@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include <engine/shader.h>
+#include "shader.h"
 #include <optional>
 
 namespace tst {
