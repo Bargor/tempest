@@ -30,6 +30,7 @@ namespace engine {
         void frame(size_t frameCount);
         void start();
         void stop();
+		device& get_GPU() const noexcept;
 
     private:
         application::data_loader& m_dataLoader;
