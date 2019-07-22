@@ -248,6 +248,9 @@ namespace engine {
             m_buffersToRender.clear();
         }
 
+        void rendering_engine::start() {
+        }
+
         void rendering_engine::stop() {
             (*m_device.get()).m_logicalDevice.waitIdle();
         }
