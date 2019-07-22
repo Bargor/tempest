@@ -15,7 +15,8 @@ namespace engine {
 
     class device;
 
-        class resource_factory {
+        class resource_factory : api::resource_factory {
+            using super = api::resource_factory;
         public:
             resource_factory(device& device);
             ~resource_factory();
@@ -27,7 +28,6 @@ namespace engine {
             resources::uniform_buffer create_uniform_buffer();
 
         private:
-            api::resource_factory m_factoryImpl;
         };
 } // namespace engine
 } // namespace tst

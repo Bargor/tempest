@@ -12,6 +12,8 @@ namespace engine {
 
         class vertex_buffer : public api::vertex_buffer {
         public:
+            using super = api::vertex_buffer;
+
             vertex_buffer(api::vertex_buffer&& bufferImpl);
             ~vertex_buffer();
 
