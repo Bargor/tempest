@@ -28,7 +28,7 @@ namespace engine {
                                        application::event_processor<application::app_event>&)
         : m_dataLoader(dataLoader)
         , m_device(std::make_unique<device>())
-        , m_shaderCompiler(std::make_unique<shader_compiler>(dataLoader)) {
+        , m_shaderCompiler(std::make_unique<shader_compiler>(m_dataLoader)) {
         init_OpenGL();
     }
 
