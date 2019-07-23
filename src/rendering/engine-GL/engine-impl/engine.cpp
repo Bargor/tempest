@@ -3,6 +3,7 @@
 
 #include "engine.h"
 #include "device.h"
+#include "shader_compiler.h"
 
 #include <GL/glew.h>
 #include <application/app_event.h>
@@ -26,7 +27,8 @@ namespace engine {
                                        application::data_loader& dataLoader,
                                        application::event_processor<application::app_event>&)
         : m_dataLoader(dataLoader)
-        , m_device(std::make_unique<device>()) {
+        , m_device(std::make_unique<device>())
+        , m_shaderCompiler(std::make_unique<shader_compiler>(dataLoader)) {
         init_OpenGL();
     }
 
