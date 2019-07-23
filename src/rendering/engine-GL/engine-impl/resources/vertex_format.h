@@ -13,7 +13,7 @@ namespace engine {
             using super = base::vertex_format;
 
             vertex_format();
-
+            ~vertex_format();
         private:
         };
     } // namespace opengl

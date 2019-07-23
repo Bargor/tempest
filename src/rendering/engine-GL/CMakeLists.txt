@@ -21,6 +21,7 @@ set(ENGINE_SRCS
 	engine-impl/resources/index_buffer.cpp
 	engine-impl/resources/uniform_buffer.cpp
 	engine-impl/resources/vertex_buffer.cpp
+	engine-impl/resources/vertex_format.cpp
 	engine-impl/resource_factory.cpp
 	engine-impl/shader.cpp
 	engine-impl/shader_compiler.cpp
