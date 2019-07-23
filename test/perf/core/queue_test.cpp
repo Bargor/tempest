@@ -71,7 +71,7 @@ namespace core {
     } // namespace core
 
     BENCHMARK(BM_spinlock_queue_int)->RangeMultiplier(2)->Range(size, 8 << 18)->Threads(2);
-    BENCHMARK(BM_spsc_queue_int)->RangeMultiplier(2)->Range(size, 8 << 18)->Threads(2);
+    //BENCHMARK(BM_spsc_queue_int)->RangeMultiplier(2)->Range(size, 8 << 18)->Threads(2);
 	
     static void BM_spsc_queue_s512(benchmark::State& state) {
         static spsc_queue<s512, size> queue;
@@ -129,7 +129,7 @@ namespace core {
     }
 	
 	BENCHMARK(BM_spinlock_queue_s512)->RangeMultiplier(2)->Range(size, 8 << 18)->Threads(2);
-    BENCHMARK(BM_spsc_queue_s512)->RangeMultiplier(2)->Range(size, 8 << 18)->Threads(2);
+    //BENCHMARK(BM_spsc_queue_s512)->RangeMultiplier(2)->Range(size, 8 << 18)->Threads(2);
 
     static void BM_spinlock_queue_push(benchmark::State& state) {
         std::queue<std::int32_t> queue;
@@ -164,8 +164,8 @@ namespace core {
         state.SetBytesProcessed(int64_t(state.iterations()) * int64_t(state.range(0)));
     }
 
-    BENCHMARK(BM_spinlock_queue_push)->RangeMultiplier(2)->Range(size, 1 << 16);
-    BENCHMARK(BM_spsc_queue_push)->RangeMultiplier(2)->Range(size, 1 << 16);
+    //BENCHMARK(BM_spinlock_queue_push)->RangeMultiplier(2)->Range(size, 1 << 16);
+    //BENCHMARK(BM_spsc_queue_push)->RangeMultiplier(2)->Range(size, 1 << 16);
 	
 	static void BM_spinlock_queue_pop(benchmark::State& state) {
         std::queue<std::int32_t> queue;
@@ -210,7 +210,7 @@ namespace core {
         state.SetBytesProcessed(int64_t(state.iterations()) * int64_t(state.range(0)));
     }
 
-    BENCHMARK(BM_spinlock_queue_pop)->RangeMultiplier(2)->Range(size, 1 << 16);
-    BENCHMARK(BM_spsc_queue_pop)->RangeMultiplier(2)->Range(size, 1 << 16);
+    //BENCHMARK(BM_spinlock_queue_pop)->RangeMultiplier(2)->Range(size, 1 << 16);
+    //BENCHMARK(BM_spsc_queue_pop)->RangeMultiplier(2)->Range(size, 1 << 16);
 } // namespace core
 } // namespace tst
