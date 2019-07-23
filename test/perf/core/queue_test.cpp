@@ -47,6 +47,8 @@ namespace core {
         std::int32_t push_count = 0;
         std::int32_t pop_count = 0;
 
+        printf("In test\n");
+
         for (auto _ : state) {
             if (state.thread_index == 0) {
                 while (push_count < state.range(0)) {
