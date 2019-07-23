@@ -131,7 +131,7 @@ namespace core {
 	BENCHMARK(BM_spinlock_queue_s512)->RangeMultiplier(2)->Range(size, 8 << 18)->Threads(2);
     //BENCHMARK(BM_spsc_queue_s512)->RangeMultiplier(2)->Range(size, 8 << 18)->Threads(2);
 
-    static void BM_spinlock_queue_push(benchmark::State& state) {
+    /*static void BM_spinlock_queue_push(benchmark::State& state) {
         std::queue<std::int32_t> queue;
         spinlock spin;
 
@@ -147,7 +147,7 @@ namespace core {
         }
 
         state.SetBytesProcessed(int64_t(state.iterations()) * int64_t(state.range(0)));
-    }
+    }*/
 
     /* static void BM_spsc_queue_push(benchmark::State& state) {
         spsc_queue<std::int32_t, 1 << 16> queue;
