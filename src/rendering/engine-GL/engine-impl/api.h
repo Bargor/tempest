@@ -9,6 +9,7 @@ namespace engine {
     namespace opengl {
         class device;
         class rendering_engine;
+        class vertex_format;
     } // namespace opengl
 
     namespace api = opengl;
