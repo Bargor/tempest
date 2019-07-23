@@ -24,7 +24,7 @@ namespace engine {
 
             index_buffer(index_buffer&& other) noexcept;
 
-            std::uint32_t get_index_count() const;
+            std::uint32_t get_index_count() const noexcept;
 
         private:
             vk::IndexType m_format;
@@ -69,7 +69,7 @@ namespace engine {
         }
 
         template<typename IndexType>
-        std::uint32_t index_buffer<IndexType>::get_index_count() const {
+        std::uint32_t index_buffer<IndexType>::get_index_count() const noexcept {
             return static_cast<std::uint32_t>(m_indices.size());
         }
 
