@@ -36,6 +36,7 @@ namespace engine {
 
     private:
         application::data_loader& m_dataLoader;
+        ptr<device> m_device;
     };
 	
 	}

@@ -60,18 +60,18 @@ namespace engine {
             std::vector<const char*> m_reqiuredDeviceExtensions = {VK_KHR_SWAPCHAIN_EXTENSION_NAME};
             static constexpr std::uint32_t m_maxConcurrentFrames = 2;
 
-            ptr<vulkan::device> m_device;
-            ptr<vulkan::swap_chain> m_swapChain;
-            ptr<vulkan::shader_compiler> m_shaderCompiler;
+            ptr<device> m_device;
+            ptr<swap_chain> m_swapChain;
+            ptr<shader_compiler> m_shaderCompiler;
             vk::RenderPass m_renderPass;
             vk::DescriptorSetLayout m_descriptorSetLayout;
             vk::PipelineLayout m_pipelineLayout;
             vk::Pipeline m_pipeline;
             std::vector<vk::Framebuffer> m_framebuffers;
             vk::CommandPool m_commandPool;
-            ptr<vulkan::vertex_buffer> m_vertexBuffer;
-            ptr<vulkan::index_buffer<std::uint16_t>> m_indexBuffer;
-            std::vector<vulkan::uniform_buffer> m_uniformBuffers;
+            ptr<vertex_buffer> m_vertexBuffer;
+            ptr<index_buffer<std::uint16_t>> m_indexBuffer;
+            std::vector<uniform_buffer> m_uniformBuffers;
             vk::DescriptorPool m_descriptorPool;
             std::vector<vk::DescriptorSet> m_descriptorSets;
             std::vector<vk::CommandBuffer> m_commandBuffers;
