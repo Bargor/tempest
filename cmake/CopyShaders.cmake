@@ -1,1 +1,1 @@
-file(COPY ${SOURCE_DIR}/engine/shaders/ DESTINATION "${DESTINATION_DIR}")
+file(COPY ${SOURCE_DIR}/engine-impl/shaders/ DESTINATION "${DESTINATION_DIR}")

@@ -22,6 +22,6 @@ if(TEMPEST_BUILD_ALL)
 	
 	add_subdirectory(device)
 	add_subdirectory(application)
-	add_subdirectory(engine)
+	add_subdirectory(rendering)
 	add_subdirectory(tempest)
 endif(TEMPEST_BUILD_ALL)
