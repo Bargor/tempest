@@ -55,6 +55,7 @@ namespace core {
                     spin.lock();
                     queue.push(push_count);
                     spin.unlock();
+                    printf ("%d\n", push_count);
                     ++push_count;
                 }
             } else {
@@ -63,6 +64,7 @@ namespace core {
                         spin.lock();
                         queue.pop();
                         spin.unlock();
+                        printf ("%d\n", pop_count);
                         ++pop_count;
                     }
                 }
