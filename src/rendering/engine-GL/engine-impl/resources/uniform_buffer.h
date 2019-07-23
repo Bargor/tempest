@@ -15,8 +15,10 @@ namespace engine {
         };
 		
         class uniform_buffer {
+        public:
             uniform_buffer();
             ~uniform_buffer();
+        private:
 		};
 	}
 }
