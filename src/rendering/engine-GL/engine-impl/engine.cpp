@@ -33,14 +33,17 @@ namespace engine {
     rendering_engine::~rendering_engine() {
     }
 
+    void rendering_engine::frame(size_t) {
+    }
+
+    void rendering_engine::start() {
+    }
+
     void rendering_engine::stop() {
     }
 	
 	device& rendering_engine::get_GPU() const noexcept {
             return *m_device;
-    }
-
-    void rendering_engine::frame(size_t) {
     }
 
 	}

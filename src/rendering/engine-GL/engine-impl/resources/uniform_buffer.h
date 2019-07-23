@@ -15,6 +15,8 @@ namespace engine {
         };
 		
         class uniform_buffer {
+            uniform_buffer();
+            ~uniform_buffer();
 		};
 	}
 }

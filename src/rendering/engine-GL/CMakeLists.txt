@@ -9,16 +9,19 @@ set(ENGINE_HDRS
 	engine-impl/resources/index_buffer.h
 	engine-impl/resources/uniform_buffer.h
 	engine-impl/resources/vertex_buffer.h
-	engine-impl/resources/gl_vertex_format.h
+	engine-impl/resources/vertex_format.h
 	engine-impl/shader.h
 	engine-impl/shader_compiler.h
 )
 
 set(ENGINE_SRCS 
     engine-impl/device.cpp
+	engine-impl/engine.cpp
+	engine-impl/resources/index_buffer.cpp
+	engine-impl/resources/uniform_buffer.cpp
+	engine-impl/resources/vertex_buffer.cpp
 	engine-impl/shader.cpp
 	engine-impl/shader_compiler.cpp
-	engine-impl/engine.cpp
 )
 
 add_definitions (-DGLEW_NO_GLU)
