@@ -2,6 +2,7 @@
 // Author: Karol Kontny
 
 #include "engine.h"
+#include "device.h"
 
 #include <GL/glew.h>
 #include <application/app_event.h>

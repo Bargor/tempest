@@ -17,6 +17,8 @@ namespace engine {
 	
 	namespace opengl {
 
+    class device;
+
     class rendering_engine {
         template<typename T>
         using ptr = std::unique_ptr<T>;
