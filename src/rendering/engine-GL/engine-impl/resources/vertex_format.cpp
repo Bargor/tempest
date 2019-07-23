@@ -10,8 +10,8 @@ namespace engine {
 
         }
 
-        vertex_format::vertex_format() {
-            
+        vertex_format::~vertex_format() {
+
         }
     }
 }
