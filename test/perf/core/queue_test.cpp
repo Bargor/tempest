@@ -17,7 +17,7 @@ namespace core {
 
     constexpr std::size_t size = 1023;
 
-    /*void BM_spsc_queue_int(benchmark::State& state) {
+    void BM_spsc_queue_int(benchmark::State& state) {
         static spsc_queue<std::int32_t, size> queue;
         std::int32_t count = 0;
 
@@ -38,7 +38,7 @@ namespace core {
         }
 
         state.SetBytesProcessed(int64_t(state.iterations()) * int64_t(state.range(0)));
-    }*/
+    }
 
     static void BM_spinlock_queue_int(benchmark::State& state) {
         static std::queue<std::int32_t> queue;
@@ -76,7 +76,7 @@ namespace core {
     } // namespace core
 
     BENCHMARK(BM_spinlock_queue_int)->RangeMultiplier(2)->Range(size, 8 << 4)->Threads(2);
-    //BENCHMARK(BM_spsc_queue_int)->RangeMultiplier(2)->Range(size, 8 << 18)->Threads(2);
+    BENCHMARK(BM_spsc_queue_int)->RangeMultiplier(2)->Range(size, 8 << 18)->Threads(2);
 	
     /*static void BM_spsc_queue_s512(benchmark::State& state) {
         static spsc_queue<s512, size> queue;
