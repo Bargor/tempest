@@ -64,10 +64,10 @@ namespace core {
                         spin.lock();
                         queue.pop();
                         spin.unlock();
-                        printf ("pop %d\n", pop_count);
+                        printf ("1 pop %d\n", pop_count);
                         ++pop_count;
                     }
-                    printf ("pop %d\n", pop_count);
+                    printf ("2 pop %d\n", pop_count);
                 }
             }
         }
