@@ -154,7 +154,7 @@ namespace core {
         state.SetBytesProcessed(int64_t(state.iterations()) * int64_t(state.range(0)));
     }*/
 
-    /* static void BM_spsc_queue_push(benchmark::State& state) {
+    static void BM_spsc_queue_push(benchmark::State& state) {
         spsc_queue<std::int32_t, 1 << 16> queue;
 
         std::int32_t count = 0;
@@ -170,7 +170,7 @@ namespace core {
     }
 
     //BENCHMARK(BM_spinlock_queue_push)->RangeMultiplier(2)->Range(size, 1 << 16);
-    //BENCHMARK(BM_spsc_queue_push)->RangeMultiplier(2)->Range(size, 1 << 16);
+    BENCHMARK(BM_spsc_queue_push)->RangeMultiplier(2)->Range(size, 1 << 16);
 	
 	static void BM_spinlock_queue_pop(benchmark::State& state) {
         std::queue<std::int32_t> queue;
@@ -213,9 +213,9 @@ namespace core {
         }
 
         state.SetBytesProcessed(int64_t(state.iterations()) * int64_t(state.range(0)));
-    }*/
+    }
 
     //BENCHMARK(BM_spinlock_queue_pop)->RangeMultiplier(2)->Range(size, 1 << 16);
-    //BENCHMARK(BM_spsc_queue_pop)->RangeMultiplier(2)->Range(size, 1 << 16);
+    BENCHMARK(BM_spsc_queue_pop)->RangeMultiplier(2)->Range(size, 1 << 16);
 } // namespace core
 } // namespace tst
