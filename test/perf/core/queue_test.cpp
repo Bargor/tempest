@@ -67,6 +67,7 @@ namespace core {
                         printf ("pop %d\n", pop_count);
                         ++pop_count;
                     }
+                    printf ("pop %d\n", pop_count);
                 }
             }
         }
