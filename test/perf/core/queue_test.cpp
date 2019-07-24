@@ -215,7 +215,7 @@ namespace core {
         state.SetBytesProcessed(int64_t(state.iterations()) * int64_t(state.range(0)));
     }
 
-    //BENCHMARK(BM_spinlock_queue_pop)->RangeMultiplier(2)->Range(size, 1 << 16);
+    BENCHMARK(BM_spinlock_queue_pop)->RangeMultiplier(2)->Range(size, 1 << 16);
     BENCHMARK(BM_spsc_queue_pop)->RangeMultiplier(2)->Range(size, 1 << 16);
 } // namespace core
 } // namespace tst
