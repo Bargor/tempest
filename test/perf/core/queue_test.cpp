@@ -65,9 +65,9 @@ namespace core {
                         spin.unlock();
                         ++pop_count;
                     }
-                }
-                if (push_count == state.range(0) && queue.empty() && pop_count < state.range(0)) {
-                    printf("%d %d\n", push_count, pop_count);
+                    if (push_count == state.range(0) && queue.empty() && pop_count < state.range(0)) {
+                        printf("%d %d\n", push_count, pop_count);
+                    }
                 }
             }
         }
