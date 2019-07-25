@@ -99,9 +99,10 @@ namespace core {
         state.SetBytesProcessed(int64_t(state.iterations()) * int64_t(state.range(0)));
     }
 
+    std::queue<s512> queue_s512;
+    spinlock spin_s512;
+
     static void BM_spinlock_queue_s512(benchmark::State& state) {
-        static std::queue<s512> queue;
-        static spinlock spin;
 		s512 item = {{0,1,2,3,4,5,6,7}};
 
         std::int32_t push_count = 0;
@@ -110,18 +111,18 @@ namespace core {
         for (auto _ : state) {
             if (state.thread_index == 0) {
                 while (push_count < state.range(0)) {
-                    spin.lock();
-                    queue.push(item);
+                    spin_s512.lock();
+                    queue_s512.push(item);
+                    spin_s512.unlock();
                     ++push_count;
-                    spin.unlock();
                 }
             } else {
                 while (pop_count < state.range(0)) {
                     if (!queue.empty()) {
-                        spin.lock();
-                        queue.pop();
+                        spin_s512.lock();
+                        queue_s512.pop();
+                        spin_s512.unlock();
                         ++pop_count;
-                        spin.unlock();
                     }
                 }
             }
