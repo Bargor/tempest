@@ -105,8 +105,8 @@ namespace core {
     static void BM_spinlock_queue_s512(benchmark::State& state) {
 		s512 item = {{0,1,2,3,4,5,6,7}};
 
-        std::int32_t push_count = 0;
-        std::int32_t pop_count = 0;
+        std::int64_t push_count = 0;
+        std::int64_t pop_count = 0;
 
         for (auto _ : state) {
             if (state.thread_index == 0) {
