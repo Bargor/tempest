@@ -5,6 +5,7 @@
 
 #include <memory>
 #include <thread>
+#include <string>
 
 namespace tst {
 
@@ -15,10 +16,13 @@ namespace device {
 namespace application {
 
     class main_window;
+	template<typename Event>
     class event_processor;
     class input_processor;
     class simulation_engine;
     class data_loader;
+    class time_source;
+    struct app_event;
     struct program_params;
 
     class application {
@@ -31,9 +35,10 @@ namespace application {
         void run();
 
     private:
-        ptr<main_window> m_mainWindow;
         ptr<device::monitor> m_monitor;
-        ptr<event_processor> m_eventProcessor;
+        ptr<time_source> m_timeSource;
+        ptr<event_processor<app_event>> m_eventProcessor;
+        ptr<main_window> m_mainWindow;
         ptr<input_processor> m_inputProcessor;
         ptr<data_loader> m_dataLoader;
         ptr<simulation_engine> m_engine;

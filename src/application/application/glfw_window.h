@@ -2,8 +2,9 @@
 // Author: Karol Kontny
 #pragma once
 
-#include <GLFW/glfw3.h>
 #include "window.h"
+
+#include <GLFW/glfw3.h>
 
 namespace tst {
 namespace application {
@@ -25,6 +26,7 @@ namespace application {
         void set_position(const position<std::int32_t>& pos) noexcept override;
         void set_title(const std::string&) noexcept override;
         void focus() noexcept override;
+        void unfocus() noexcept override;
         void show() noexcept override;
         void hide() noexcept override;
         void iconify() noexcept override;
@@ -40,6 +42,7 @@ namespace application {
 
     protected:
         glfw_window(std::string&& name,
+                    event_processor<app_event>& eventProcessor,
                     const window_size& size,
                     fullscreen_option windowMode,
                     visible_option visibility,
@@ -53,6 +56,16 @@ namespace application {
         vsync_option m_vsync;
         const device::monitor* m_monitor;
         GLFWwindow* m_windowHandle;
+
+	private:
+        void set_size_internal(const window_size& size, bool broadcast) noexcept;
+        void focus_internal(bool broadcast) noexcept;
+        void show_internal(bool broadcast) noexcept;
+        void hide_internal(bool broadcast) noexcept;
+        void iconify_internal(bool broadcast) noexcept;
+        void restore_internal(bool broadcast) noexcept;
+        void maximize_internal(bool broadcast) noexcept;
+        void close_internal(bool broadcast) noexcept;
     };
 
 } // namespace application

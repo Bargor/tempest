@@ -9,21 +9,19 @@ if(TEMPEST_BUILD_ALL)
 	set(GLFW_BUILD_DOCS OFF CACHE BOOL "Build the GLFW documentation")
 	
 	set(GLM_TEST_ENABLE OFF CACHE BOOL "Build unit tests")
-
-	add_definitions (-DGLEW_NO_GLU)
-	
-	list(APPEND CMAKE_PREFIX_PATH "${PROJECT_SOURCE_DIR}/libs/glew/")
-	find_package(GLEW REQUIRED)
 	
 	add_subdirectory(${PROJECT_SOURCE_DIR}/libs/glfw ${LIBRARY_OUTPUT_PATH}/glfw)
 	add_subdirectory(${PROJECT_SOURCE_DIR}/libs/glm ${LIBRARY_OUTPUT_PATH}/glm)
 	
+	add_definitions (-DGLEW_NO_GLU)
+	if (ENGINE STREQUAL "Vk")
+		find_package(Vulkan REQUIRED)
+		add_definitions (-DGLFW_INCLUDE_VULKAN)
+	endif(ENGINE STREQUAL "Vk")
+	
+	
 	add_subdirectory(device)
 	add_subdirectory(application)
-	if (ENGINE STREQUAL "Engine-GL")
-		add_subdirectory(engine-GL)
-	elseif(ENGINE_GL STREQUAL "Engine-Vk")
-		add_subdirectory(engine-Vk)
-	endif(ENGINE STREQUAL "Engine-GL")
+	add_subdirectory(rendering)
 	add_subdirectory(tempest)
 endif(TEMPEST_BUILD_ALL)

@@ -1,4 +1,4 @@
-// This file is part of Tempest-engine-GL project
+// This file is part of Tempest project
 // Author: Karol Kontny
 
 #include <GLFW/glfw3.h>
@@ -14,6 +14,7 @@
 #include <cstdlib>
 #include <device/monitor.h>
 #include <fmt/printf.h>
+#include <filesystem>
 
 namespace tst {
 
@@ -43,6 +44,7 @@ void deinit_Glfw() {
 
 int main(int argc, const char** argv) {
     const tst::application::program_params params = tst::application::parse_arguments(argc, argv);
+    std::filesystem::current_path(params.executionDirectory);
     tst::init_Glfw();
     try {
         auto monitor = tst::init_monitor();
@@ -53,7 +55,11 @@ int main(int argc, const char** argv) {
         glfwGetError(&description);
         fmt::printf("%s, error: %s\n", ex.what(), description);
         std::exit(EXIT_FAILURE);
-    } catch (...) { fmt::printf("Unknown error\n"); }
+    } catch (std::exception& ex) {
+        fmt::printf("error: %s\n", ex.what());
+    } catch (...) {
+        fmt::printf("Unknown error\n");
+    }
     tst::deinit_Glfw();
     return 0;
 }

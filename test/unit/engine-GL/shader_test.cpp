@@ -1,8 +1,8 @@
 // This file is part of Tempest-engine-Gl project
 // Author: Karol Kontny
 
-#include "engine/OpenGL/opengl_exception.h"
-#include "engine/OpenGL/shader.h"
+#include <engine/opengl_exception.h>
+#include <engine/shader.h>
 
 #include <gtest/gtest.h>
 

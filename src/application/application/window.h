@@ -14,6 +14,10 @@ namespace device {
 
 namespace application {
 
+	template<typename Event>
+    class event_processor;
+    struct app_event;
+
     class window {
     public:
         enum class fullscreen_option { fullscreen, windowed };
@@ -37,6 +41,7 @@ namespace application {
         virtual void set_position(const position<std::int32_t>& pos) noexcept = 0;
         virtual void set_title(const std::string&) noexcept = 0;
         virtual void focus() noexcept = 0;
+        virtual void unfocus() noexcept = 0;
         virtual void show() noexcept = 0;
         virtual void hide() noexcept = 0;
         virtual void iconify() noexcept = 0;
@@ -46,6 +51,7 @@ namespace application {
 
     protected:
         window(std::string&& name,
+               event_processor<app_event>& m_eventProcessor,
                const window_size& size,
                fullscreen_option windowMode,
                visible_option visibility,
@@ -55,6 +61,8 @@ namespace application {
 
     protected:
         std::string m_name;
+        event_processor<app_event>& m_eventProcessor;
+
         window_size m_size;
         fullscreen_option m_windowMode;
         visible_option m_visible;

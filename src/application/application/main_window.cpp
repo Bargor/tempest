@@ -14,11 +14,13 @@ namespace tst {
 namespace application {
 
     main_window::main_window(std::string&& name,
+                             event_processor<app_event>& eventProcessor,
                              const window_size& size,
                              fullscreen_option windowMode,
                              const device::monitor* monitor,
                              const std::array<window_hint, 31>& hints)
         : glfw_window(std::move(name),
+                      eventProcessor,
                       size,
                       windowMode,
                       visible_option::visible,
