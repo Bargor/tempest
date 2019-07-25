@@ -66,7 +66,7 @@ namespace core {
                         ++pop_count;
                     }
                 }
-                if (push_count == state.range(0) && queue_s512.empty() && pop_count < state.range(0)) {
+                if (push_count == state.range(0) && queue.empty() && pop_count < state.range(0)) {
                     printf("%d %d\n", push_count, pop_count);
                 }
             }
