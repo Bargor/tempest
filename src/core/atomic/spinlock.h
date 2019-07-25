@@ -18,12 +18,12 @@ namespace core {
     };
 
     void TST_INLINE spinlock::lock() noexcept {
-        while (m_lock.test_and_set(std::memory_order_acquire)) {
+        while (m_lock.test_and_set()) {
         }
     }
 
     void TST_INLINE spinlock::unlock() noexcept {
-        m_lock.clear(std::memory_order_release);
+        m_lock.clear();
     }
 
 } // namespace core
