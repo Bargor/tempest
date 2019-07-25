@@ -118,7 +118,7 @@ namespace core {
                 }
             } else {
                 while (pop_count < state.range(0)) {
-                    if (!queue.empty()) {
+                    if (!queue_s512.empty()) {
                         spin_s512.lock();
                         queue_s512.pop();
                         spin_s512.unlock();
