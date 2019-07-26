@@ -24,6 +24,7 @@ namespace engine {
         void start();
         void stop();
         device& get_GPU() noexcept;
+        void submitDrawCommands(std::vector<DrawCommand>);
 
     private:
         api::rendering_engine m_engineImpl;
