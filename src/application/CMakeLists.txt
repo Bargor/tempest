@@ -7,11 +7,13 @@ set(APPLICATION_HDRS
 	application/main_window.h
 	application/argument_parser.h
 	application/event_processor.h
-	application/event_utils.h
+	application/app_event.h
 	application/input_processor.h
 	application/glfw_exception.h
 	application/data_exception.h
 	application/data_loader.h
+	application/time_source.h
+	application/object_id.h
 )
 
 set(APPLICATION_SRCS 
@@ -20,9 +22,10 @@ set(APPLICATION_SRCS
 	application/main_window.cpp
 	application/argument_parser.cpp
 	application/event_processor.cpp
-	application/event_utils.cpp
+	application/app_event.cpp
 	application/input_processor.cpp
 	application/data_loader.cpp
+	application/time_source.cpp
 )
 
 include(${PROJECT_SOURCE_DIR}/cmake/TstAddLibrary.cmake)
