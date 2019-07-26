@@ -224,6 +224,7 @@ matrix:
       env:
         - MATRIX_EVAL="CC=clang-8 && CXX=clang++-8" BUILD_TYPE=Debug ENGINE=GL
         - EXTRA_FLAGS="-stdlib=libc++ -fsanitize=undefined -fno-omit-frame-pointer"
+        - UBSAN_OPTIONS=print_stacktrace=1
     
         
 before_install:
