@@ -6,6 +6,7 @@
 #include <engine-impl/engine.h>
 
 #include <engine/device.h>
+#include <engine/draw_command.h>
 
 namespace tst {
 namespace engine {
@@ -24,7 +25,8 @@ namespace engine {
         void start();
         void stop();
         device& get_GPU() noexcept;
-        void submitDrawCommands(std::vector<DrawCommand>);
+        std::vector<draw_command> drawFrame(std::vector<scene_object::state>& );
+        void submit_draw_commands(std::vector<draw_command>& drawCommands);
 
     private:
         api::rendering_engine m_engineImpl;

@@ -24,7 +24,7 @@ namespace engine {
         }
 
         shader_compiler::shader_compiler(application::data_loader& data_loader, const device& device)
-            : m_dataLoader(data_loader), m_device(device.m_logicalDevice) {
+            : m_dataLoader(data_loader), m_device(device) {
         }
 
         shader_compiler::~shader_compiler() {
@@ -48,7 +48,8 @@ namespace engine {
                     continue;
                 }
 
-                shader shaderModule(m_device, static_cast<shader::shader_type>(idx), std::move(bytecode.value()), name);
+                shader shaderModule =
+                    m_device.crate_shader(static_cast<shader::shader_type>(idx), std::move(bytecode.value()), name);
 
                 shaders.emplace_back(std::move(shaderModule));
             }

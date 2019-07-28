@@ -139,6 +139,10 @@ namespace engine {
             return uniform_buffer(m_logicalDevice, m_physicalDevice, m_graphicsQueueHandle, cmdPool);
         }
 
+        shader device::crate_shader(shader::shader_type type, std::vector<char>&& source, const std::string_view name) const {
+            return shader(m_logicalDevice, type, std::move(source), name);
+        }
+
     } // namespace vulkan
 } // namespace engine
 } // namespace tst

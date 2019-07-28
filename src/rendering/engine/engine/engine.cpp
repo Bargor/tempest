@@ -33,5 +33,9 @@ namespace engine {
         return m_device;
     }
 
+    void rendering_engine::submit_draw_commands(std::vector<draw_command>& drawCommands) {
+        
+    }
+
 } // namespace engine
 } // namespace tst

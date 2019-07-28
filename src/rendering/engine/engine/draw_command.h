@@ -3,13 +3,16 @@
 #pragma once
 
 #include <engine-impl/api.h>
+#include <engine-impl/draw_command.h>
 
 namespace tst {
 namespace engine {
 
-    class draw_command {
+    class draw_command : public api::draw_command {
         public:
+
         private:
+            
     };
 
 }
