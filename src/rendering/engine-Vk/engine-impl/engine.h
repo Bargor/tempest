@@ -45,6 +45,7 @@ namespace engine {
             void start();
             void stop();
             device& get_GPU() const noexcept;
+            bool drawFrame();
 
         private:
             void cleanup_swap_chain_dependancies();
@@ -52,6 +53,8 @@ namespace engine {
             void update_framebuffer();
             void update_uniform_buffer(vulkan::uniform_buffer& buffer);
             void submitCommandBuffer(vk::CommandBuffer& buffer);
+            std::vector<vk::CommandBuffer> prepare_draw();
+            
 
         private:
             application::main_window& m_mainWindow;

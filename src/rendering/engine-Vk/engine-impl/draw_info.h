@@ -7,10 +7,11 @@
 namespace tst {
 namespace engine {
     namespace vulkan {
-        class draw_command {
+        class draw_info {
         public:
+
         private:
-            vk::CommandBuffer m_buffer;
+            
         };
     } // namespace vulkan
 } // namespace engine

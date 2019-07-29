@@ -1,7 +1,7 @@
 // This file is part of Tempest project
 // Author: Karol Kontny
 
-#include "draw_command.h"
+#include "draw_info.h"
 
 namespace tst {
 namespace engine {

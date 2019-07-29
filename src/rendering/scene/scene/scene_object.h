@@ -19,6 +19,7 @@ namespace scene {
             engine::api::uniform_buffer_object transformation;
             const vertex_buffers* vertices;
             const index_buffers* indices;
+            const scene_object& object;
         };
 
     public:
