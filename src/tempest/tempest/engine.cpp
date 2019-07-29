@@ -64,7 +64,7 @@ namespace application {
         indexBuffers.emplace_back(
             m_resourceFactory->create_index_buffer(std::vector<std::uint16_t>({{0, 1, 2, 2, 3, 0}})));
 
-        scene::scene_object object(std::move(vertexBuffers), std::move(indexBuffers));
+        scene::scene_object object(std::move(vertexBuffers[0]), std::move(indexBuffers[0]));
         m_scene->add_object(std::move(object));
     }
 

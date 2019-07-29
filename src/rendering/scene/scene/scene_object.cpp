@@ -9,8 +9,9 @@
 namespace tst {
 namespace scene {
 
-    scene_object::scene_object(vertex_buffers&& vertexBuffers, index_buffers&& indexBuffers) noexcept
-        : m_vertices(std::move(vertexBuffers)), m_indices(std::move(indexBuffers)), m_objectState(state{engine::api::uniform_buffer_object{glm::mat4(), glm::mat4(), glm::mat4()}, &vertexBuffers, &indexBuffers, *this}) {
+    scene_object::scene_object(engine::resources::vertex_buffer&& vertexBuffer,
+                               engine::resources::index_buffer&& indexBuffer) noexcept
+        : m_vertices(std::move(vertexBuffer)), m_indices(std::move(indexBuffer)), m_objectState(state{engine::api::uniform_buffer_object{glm::mat4(), glm::mat4(), glm::mat4()}, &vertexBuffer, &indexBuffer, *this}) {
         engine::api::uniform_buffer_object ubo = {glm::mat4(), glm::mat4(), glm::mat4()};
     }
 

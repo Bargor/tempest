@@ -17,19 +17,19 @@ namespace scene {
 
         struct state {
             engine::api::uniform_buffer_object transformation;
-            const vertex_buffers* vertices;
-            const index_buffers* indices;
+            const engine::resources::vertex_buffer* vertices;
+            const engine::resources::index_buffer* indices;
             const scene_object& object;
         };
 
     public:
-        scene_object(vertex_buffers&& vertexBuffers, index_buffers&& indexBuffers) noexcept;
+        scene_object(engine::resources::vertex_buffer&& vertexBuffer, engine::resources::index_buffer&& indexBuffer) noexcept;
         state& get_object_state() const;
         state update_object(std::chrono::duration<std::uint64_t, std::micro> elapsedTime) const;
 
     private:
-        vertex_buffers m_vertices;
-        index_buffers m_indices;
+        engine::resources::vertex_buffer m_vertices;
+        engine::resources::index_buffer m_indices;
         state m_objectState;
     };
 
