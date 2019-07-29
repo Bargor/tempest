@@ -85,6 +85,7 @@ namespace application {
         auto frameStart = m_timeSource.now();
         if (!m_windowMinimized) {
             auto newSceneState = scene::update_scene(*m_scene, m_lastFrameDuration);
+            auto drawInfo = scene::prepare_draw_info(newSceneState);
             //auto drawCommands = engine.prepare_draw(newSceneState);
             m_renderingEngine->frame(m_frameCounter);
             m_mainWindow.end_frame();
