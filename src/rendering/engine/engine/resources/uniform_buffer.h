@@ -17,6 +17,8 @@ namespace engine {
         private:
         };
 
+        static_assert(sizeof(uniform_buffer) == sizeof(api::uniform_buffer));
+
     } // namespace resources
 } // namespace engine
 } // namespace tst

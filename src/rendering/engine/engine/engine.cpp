@@ -11,22 +11,22 @@ namespace engine {
     rendering_engine::rendering_engine(application::main_window& mainWindow,
                                        application::data_loader& dataLoader,
                                        application::event_processor<application::app_event>& eventProcessor)
-        : m_engineImpl(mainWindow, dataLoader, eventProcessor), m_device(m_engineImpl.get_GPU()) {
+        : api::rendering_engine(mainWindow, dataLoader, eventProcessor), m_device(super::get_GPU()) {
     }
 
     rendering_engine::~rendering_engine() {
     }
 
     void rendering_engine::frame(size_t frameCount) {
-            m_engineImpl.frame(frameCount);
+        super::frame(frameCount);
     }
 
     void rendering_engine::start() {
-        m_engineImpl.start();
+        super::start();
     }
 
     void rendering_engine::stop() {
-        m_engineImpl.stop();
+        super::stop();
     }
 
     device& rendering_engine::get_GPU() noexcept {

@@ -21,6 +21,8 @@ namespace engine {
 
         private:
         };
+
+        static_assert(sizeof(vertex_buffer) == sizeof(api::vertex_buffer));
     } // namespace resources
 } // namespace engine
 } // namespace tst

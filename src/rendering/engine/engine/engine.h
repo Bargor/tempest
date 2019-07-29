@@ -13,8 +13,9 @@ namespace engine {
 
     class device;
 
-    class rendering_engine {
+    class rendering_engine : api::rendering_engine {
     public:
+        using super = api::rendering_engine;
 
         rendering_engine(application::main_window& mainWindow,
                          application::data_loader& dataLoader,
@@ -28,7 +29,6 @@ namespace engine {
         bool drawFrame(std::vector<draw_info>&& infos);
 
     private:
-        api::rendering_engine m_engineImpl;
         device m_device;
     };
 

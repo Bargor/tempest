@@ -10,7 +10,7 @@ namespace engine {
 
     namespace resources {
 
-        class index_buffer {
+        class index_buffer : public api::index_buffer<std::uint16_t> {
         public:
             index_buffer(api::index_buffer<std::uint16_t>&& bufferImpl);
             ~index_buffer();
@@ -18,8 +18,9 @@ namespace engine {
             index_buffer(index_buffer&& other) noexcept;
 
         private:
-            api::index_buffer<std::uint16_t> m_indexBufferImpl;
         };
+
+        static_assert(sizeof(index_buffer) == sizeof(api::index_buffer<std::uint16_t>));
 
     } // namespace resources
 } // namespace engine

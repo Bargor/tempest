@@ -5,7 +5,7 @@
 
 namespace tst {
 namespace engine {
-    device::device(api::device& deviceImpl) : m_deviceImpl(deviceImpl) {
+    device::device(api::device& deviceImpl) : api::device(deviceImpl) {
     }
 
     device::~device() {

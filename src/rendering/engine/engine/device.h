@@ -12,15 +12,18 @@
 namespace tst {
 namespace engine {
 
-    class device {
+    class device : public api::device {
         friend class resource_factory;
     public:
+        using super = api::device;
+
         device(api::device& deviceImpl);
         ~device();
 
     private:
-        api::device& m_deviceImpl;
     };
 
+
+    static_assert(sizeof(device) == sizeof(api::device));
 }
 }
