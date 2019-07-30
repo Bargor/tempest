@@ -29,5 +29,7 @@ namespace engine {
 
         private:
         };
+
+        static_assert(!std::is_polymorphic_v<resource_factory>);
 } // namespace engine
 } // namespace tst

@@ -21,6 +21,7 @@ namespace engine {
     private:
     };
 
+    static_assert(!std::is_polymorphic_v<vertex_format>);
     static_assert(sizeof(vertex_format) == sizeof(api::vertex_format));
 
 } // namespace engine

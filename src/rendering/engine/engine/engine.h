@@ -32,5 +32,7 @@ namespace engine {
         device m_device;
     };
 
+    static_assert(!std::is_polymorphic_v<rendering_engine>);
+
 } // namespace engine
 } // namespace tst

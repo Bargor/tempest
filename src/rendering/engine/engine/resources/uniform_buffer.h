@@ -17,6 +17,7 @@ namespace engine {
         private:
         };
 
+        static_assert(!std::is_polymorphic_v<uniform_buffer>);
         static_assert(sizeof(uniform_buffer) == sizeof(api::uniform_buffer));
 
     } // namespace resources

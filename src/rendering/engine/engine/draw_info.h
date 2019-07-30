@@ -29,6 +29,7 @@ namespace engine {
     private:
     };
 
+    static_assert(!std::is_polymorphic_v<draw_info>);
     static_assert(sizeof(draw_info) == sizeof(api::draw_info));
 
 } // namespace engine

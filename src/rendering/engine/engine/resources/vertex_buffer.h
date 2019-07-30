@@ -22,6 +22,7 @@ namespace engine {
         private:
         };
 
+        static_assert(!std::is_polymorphic_v<vertex_buffer>);
         static_assert(sizeof(vertex_buffer) == sizeof(api::vertex_buffer));
     } // namespace resources
 } // namespace engine

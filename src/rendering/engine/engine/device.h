@@ -8,6 +8,7 @@
 
 #include <engine-impl/api.h>
 #include <engine-impl/device.h>
+#include <type_traits>
 
 namespace tst {
 namespace engine {
@@ -23,7 +24,7 @@ namespace engine {
     private:
     };
 
-
+    static_assert(!std::is_polymorphic_v<device>);
     static_assert(sizeof(device) == sizeof(api::device));
 }
 }

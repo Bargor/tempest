@@ -21,6 +21,7 @@ namespace engine {
         };
 
         static_assert(sizeof(index_buffer) == sizeof(api::index_buffer<std::uint16_t>));
+        static_assert(!std::is_polymorphic_v<index_buffer>);
 
     } // namespace resources
 } // namespace engine
