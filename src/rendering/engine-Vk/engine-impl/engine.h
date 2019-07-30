@@ -46,7 +46,9 @@ namespace engine {
             void start();
             void stop();
             device& get_GPU() const noexcept;
-            bool draw_frame(std::vector<draw_info>&& infos);
+
+            template<typename Iter>
+            bool draw_frame(Iter first, Iter last);
 
         private:
             void cleanup_swap_chain_dependancies();
@@ -54,8 +56,10 @@ namespace engine {
             void update_framebuffer();
             void update_uniform_buffer(vulkan::uniform_buffer& buffer);
             void submit_command_buffer(vk::CommandBuffer& buffer);
-            std::vector<vk::CommandBuffer> prepare_draw(std::vector<draw_info>&& infos);
 
+            template<typename Iter>
+            std::vector<vk::CommandBuffer> prepare_draw(Iter first, Iter last);
+            vk::CommandBuffer generate_command_buffer(const draw_info& drawInfo);
 
         private:
             application::main_window& m_mainWindow;
@@ -87,6 +91,31 @@ namespace engine {
 
             std::vector<vk::CommandBuffer> m_buffersToRender;
         };
+
+        template<typename Iter>
+        std::vector<vk::CommandBuffer> rendering_engine::prepare_draw(Iter first, Iter last) {
+            std::vector<vk::CommandBuffer> buffers;
+
+            for (; first != last; ++first) {
+                auto& drawItem = *first;
+                buffers.emplace_back(generate_command_buffer(drawItem));
+            }
+
+            return buffers;
+        }
+
+        template<typename Iter>
+        bool rendering_engine::draw_frame(Iter first, Iter last) {
+
+            auto commandBuffers = prepare_draw(first, last);
+
+            for(auto& commandBuffer : commandBuffers) {
+                submit_command_buffer(commandBuffer);
+            }
+            
+            return true;
+        }
+
     } // namespace vulkan
 
 } // namespace engine

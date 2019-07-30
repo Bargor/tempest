@@ -33,11 +33,5 @@ namespace engine {
         return m_device;
     }
 
-    bool rendering_engine::draw_frame(std::vector<draw_info>&& infos) {
-        super::draw_frame(std::vector<api::draw_info>(infos.begin(), infos.end()));
-
-        return true;
-    }
-
 } // namespace engine
 } // namespace tst

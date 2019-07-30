@@ -26,11 +26,20 @@ namespace engine {
         void start();
         void stop();
         device& get_GPU() noexcept;
-        bool draw_frame(std::vector<draw_info>&& infos);
+
+        template<typename Iter>
+        bool draw_frame(Iter first, Iter last);
 
     private:
         device m_device;
     };
+
+    template<typename Iter>
+    bool rendering_engine::draw_frame(Iter first, Iter last) {
+        super::draw_frame(first, last);
+
+        return true;
+    }
 
     static_assert(!std::is_polymorphic_v<rendering_engine>);
 
