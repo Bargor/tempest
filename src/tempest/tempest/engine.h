@@ -51,8 +51,8 @@ namespace application {
         input_processor& m_inputProcessor;
         main_window& m_mainWindow;
         data_loader& m_dataLoader;
+        ptr<engine::device> m_renderingDevice;
         ptr<engine::rendering_engine> m_renderingEngine;
-        engine::device& m_renderingDevice;
         ptr<engine::resource_factory> m_resourceFactory;
         ptr<scene::scene> m_scene;
         std::size_t m_frameCounter;

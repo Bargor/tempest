@@ -23,6 +23,7 @@ namespace engine {
 
         public:
             device(GLFWwindow* window, const std::vector<const char*>& requiredExtensions);
+            device(const device& device) = delete;
             ~device();
 
             vk::CommandPool& create_command_pool();

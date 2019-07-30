@@ -19,19 +19,18 @@ namespace engine {
 
         rendering_engine(application::main_window& mainWindow,
                          application::data_loader& dataLoader,
-                         application::event_processor<application::app_event>& eventProcessor);
+                         application::event_processor<application::app_event>& eventProcessor,
+                         device& device);
         ~rendering_engine();
 
         void frame(size_t frameCount);
         void start();
         void stop();
-        device& get_GPU() noexcept;
 
         template<typename Iter>
         bool draw_frame(Iter first, Iter last);
 
     private:
-        device m_device;
     };
 
     template<typename Iter>

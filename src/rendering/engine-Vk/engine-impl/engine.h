@@ -39,13 +39,13 @@ namespace engine {
         public:
             rendering_engine(application::main_window& mainWindow,
                              application::data_loader& dataLoader,
-                             application::event_processor<application::app_event>& eventProcessor);
+                             application::event_processor<application::app_event>& eventProcessor,
+                             device& device);
             ~rendering_engine();
 
             void frame(size_t frameCount);
             void start();
             void stop();
-            device& get_GPU() const noexcept;
 
             template<typename Iter>
             bool draw_frame(Iter first, Iter last);
@@ -68,7 +68,7 @@ namespace engine {
             std::vector<const char*> m_reqiuredDeviceExtensions = {VK_KHR_SWAPCHAIN_EXTENSION_NAME};
             static constexpr std::uint32_t m_maxConcurrentFrames = 2;
 
-            ptr<device> m_device;
+            device& m_device;
             ptr<swap_chain> m_swapChain;
             ptr<shader_compiler> m_shaderCompiler;
             vk::RenderPass m_renderPass;
@@ -76,7 +76,7 @@ namespace engine {
             vk::PipelineLayout m_pipelineLayout;
             vk::Pipeline m_pipeline;
             std::vector<vk::Framebuffer> m_framebuffers;
-            vk::CommandPool m_commandPool;
+            vk::CommandPool& m_commandPool;
             ptr<vertex_buffer> m_vertexBuffer;
             ptr<index_buffer<std::uint16_t>> m_indexBuffer;
             std::vector<uniform_buffer> m_uniformBuffers;
@@ -106,13 +106,12 @@ namespace engine {
 
         template<typename Iter>
         bool rendering_engine::draw_frame(Iter first, Iter last) {
-
             auto commandBuffers = prepare_draw(first, last);
 
-            for(auto& commandBuffer : commandBuffers) {
+            for (auto& commandBuffer : commandBuffers) {
                 submit_command_buffer(commandBuffer);
             }
-            
+
             return true;
         }
 
