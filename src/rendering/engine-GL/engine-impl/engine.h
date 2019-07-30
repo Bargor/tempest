@@ -35,11 +35,20 @@ namespace engine {
             void stop();
             device& get_GPU() const noexcept;
 
+            template<typename Iter>
+            bool draw_frame(Iter first, Iter last);
+
         private:
             application::data_loader& m_dataLoader;
             ptr<device> m_device;
             ptr<shader_compiler> m_shaderCompiler;
         };
+
+        template<typename Iter>
+        bool rendering_engine::draw_frame(Iter , Iter ) {
+            
+            return true;
+        }
 	
 	}
 } // namespace engine
