@@ -17,7 +17,7 @@ namespace scene {
 
         for (auto& state : sceneState) {
             engine::draw_info info(state.transformation, &(state.vertices[0]), &(state.indices[0]));
-            drawInfos.emplace_back(info);
+            drawInfos.emplace_back(std::move(info));
         }
 
         return drawInfos;

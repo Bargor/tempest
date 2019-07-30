@@ -16,6 +16,8 @@ namespace engine {
             draw_info(const uniform_buffer_object& transformation,
                       const vertex_buffer* vertices,
                       const index_buffer<std::uint16_t>* indices);
+
+            ~draw_info() = default;
         private:
             const uniform_buffer_object& m_transformation;
             const vertex_buffer* m_vertices;

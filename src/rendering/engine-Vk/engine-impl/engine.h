@@ -2,6 +2,7 @@
 // Author: Karol Kontny
 #pragma once
 
+#include "draw_info.h"
 #include "engine_init.h"
 #include "queue_indices.h"
 
@@ -45,16 +46,16 @@ namespace engine {
             void start();
             void stop();
             device& get_GPU() const noexcept;
-            bool drawFrame();
+            bool draw_frame(std::vector<draw_info>&& infos);
 
         private:
             void cleanup_swap_chain_dependancies();
             void recreate_swap_chain(std::uint32_t width, std::uint32_t height);
             void update_framebuffer();
             void update_uniform_buffer(vulkan::uniform_buffer& buffer);
-            void submitCommandBuffer(vk::CommandBuffer& buffer);
-            std::vector<vk::CommandBuffer> prepare_draw();
-            
+            void submit_command_buffer(vk::CommandBuffer& buffer);
+            std::vector<vk::CommandBuffer> prepare_draw(std::vector<draw_info>&& infos);
+
 
         private:
             application::main_window& m_mainWindow;

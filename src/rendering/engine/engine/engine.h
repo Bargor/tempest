@@ -13,7 +13,7 @@ namespace engine {
 
     class device;
 
-    class rendering_engine : api::rendering_engine {
+    class rendering_engine final : api::rendering_engine {
     public:
         using super = api::rendering_engine;
 
@@ -26,7 +26,7 @@ namespace engine {
         void start();
         void stop();
         device& get_GPU() noexcept;
-        bool drawFrame(std::vector<draw_info>&& infos);
+        bool draw_frame(std::vector<draw_info>&& infos);
 
     private:
         device m_device;

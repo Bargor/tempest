@@ -11,5 +11,12 @@ namespace engine {
         : api::draw_info(transformation, vertices, indices) {
     }
 
+    draw_info::draw_info(api::draw_info&& impl)
+        : api::draw_info(std::move(impl)) {
+    }
+
+    draw_info::draw_info(draw_info&& other) noexcept : api::draw_info(std::move(other)) {
+    }
+
 } // namespace engine
 } // namespace tst

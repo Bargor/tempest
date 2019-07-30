@@ -12,7 +12,7 @@
 namespace tst {
 namespace engine {
 
-    class draw_info : public api::draw_info {
+    class draw_info final : public api::draw_info {
     public:
         using super = api::draw_info;
 
@@ -22,6 +22,9 @@ namespace engine {
         draw_info(const api::uniform_buffer_object& transformation,
                   const resources::vertex_buffer* vertices,
                   const resources::index_buffer* indices);
+
+        draw_info(api::draw_info&& impl);
+        draw_info(draw_info&& other) noexcept;
 
     private:
     };

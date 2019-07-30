@@ -12,7 +12,7 @@
 namespace tst {
 namespace engine {
 
-    class device : public api::device {
+    class device final : public api::device {
         friend class resource_factory;
     public:
         using super = api::device;

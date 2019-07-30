@@ -195,8 +195,18 @@ namespace engine {
             buffer.update_buffer(ubo);
         }
 
-        void rendering_engine::submitCommandBuffer(vk::CommandBuffer& buffer) {
+        void rendering_engine::submit_command_buffer(vk::CommandBuffer& buffer) {
             m_buffersToRender.push_back(buffer);
+        }
+
+        std::vector<vk::CommandBuffer> rendering_engine::prepare_draw(std::vector<draw_info>&& infos) {
+            std::vector<vk::CommandBuffer> buffers;
+
+            for (auto& info : infos) {
+                info;
+            }
+
+            return buffers;
         }
 
         void rendering_engine::frame(size_t frameCount) {
@@ -257,6 +267,17 @@ namespace engine {
 
         device& rendering_engine::get_GPU() const noexcept {
             return *m_device;
+        }
+
+        bool rendering_engine::draw_frame(std::vector<draw_info>&& infos) {
+
+            auto commandBuffers = prepare_draw(std::move(infos));
+
+            for(auto& commandBuffer : commandBuffers) {
+                submit_command_buffer(commandBuffer);
+            }
+            
+            return true;
         }
 
     } // namespace vulkan

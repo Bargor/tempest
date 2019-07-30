@@ -18,7 +18,7 @@ namespace engine {
             const uniform_buffer_object& m_transformation;
             const vertex_buffer* m_vertices;
             const index_buffer<std::uint16_t>* m_indices;
-        }
+        };
     }
 }
 }
