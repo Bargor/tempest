@@ -4,6 +4,7 @@
 set(ENGINE_HDRS
     engine-impl/api.h
 	engine-impl/device.h
+	engine-impl/draw_info.h
 	engine-impl/engine.h
 	engine-impl/opengl_exception.h
 	engine-impl/resources/index_buffer.h
@@ -17,6 +18,7 @@ set(ENGINE_HDRS
 
 set(ENGINE_SRCS 
     engine-impl/device.cpp
+	engine-impl/draw_info.cpp
 	engine-impl/engine.cpp
 	engine-impl/resources/index_buffer.cpp
 	engine-impl/resources/uniform_buffer.cpp
