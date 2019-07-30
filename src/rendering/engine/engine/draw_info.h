@@ -16,7 +16,6 @@ namespace engine {
     public:
         using super = api::draw_info;
 
-        draw_info() = default;
         ~draw_info() = default;
 
         draw_info(const api::uniform_buffer_object& transformation,
