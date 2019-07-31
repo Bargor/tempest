@@ -14,6 +14,8 @@ namespace engine {
 
                 gpu_info(const vk::PhysicalDevice& physicalDevice);
             private:
+                std::uint32_t maxPushConstantSize;
+                std::uint32_t maxMemoryAllocationCount;
         };
     }
 }

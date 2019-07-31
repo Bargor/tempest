@@ -12,5 +12,8 @@ namespace engine {
             using super = api::gpu_info;
         private:
     };
+
+    static_assert(!std::is_polymorphic_v<gpu_info>);
+    static_assert(sizeof(gpu_info) == sizeof(api::gpu_info));
 }
 }
