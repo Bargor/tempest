@@ -10,6 +10,8 @@ namespace engine {
         class gpu_info : public base::gpu_info {
             public:
                 using super = base::gpu_info;
+
+                gpu_info();
             private:
         };
     }
