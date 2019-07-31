@@ -18,7 +18,7 @@ namespace engine {
     public:
         using super = api::device;
 
-        device(GLFWwindow* window, const std::vector<const char*>& requiredExtensions);
+        device(GLFWwindow* window);
         ~device();
 
     private:

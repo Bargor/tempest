@@ -5,7 +5,7 @@
 
 namespace tst {
 namespace engine {
-    device::device(GLFWwindow* window, const std::vector<const char*>& requiredExtensions) : api::device(window, requiredExtensions) {
+    device::device(GLFWwindow* window) : api::device(window) {
     }
 
     device::~device() {

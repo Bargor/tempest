@@ -6,6 +6,7 @@
 #include "resources/uniform_buffer.h"
 #include "resources/vertex_buffer.h"
 
+#include <GLFW/glfw3.h>
 #include <vector>
 
 namespace tst {
@@ -13,7 +14,7 @@ namespace engine {
     namespace opengl {
 		class device {
             public:
-                device();
+                device(GLFWwindow* window);
                 ~device();
 
             template<typename IndexType>

@@ -26,7 +26,7 @@ namespace application {
         , m_inputProcessor(inputProcessor)
         , m_mainWindow(mainWindow)
         , m_dataLoader(dataLoader)
-        , m_renderingDevice(std::make_unique<engine::device>(m_mainWindow.get_handle(), std::vector<const char*>{VK_KHR_SWAPCHAIN_EXTENSION_NAME}))
+        , m_renderingDevice(std::make_unique<engine::device>(m_mainWindow.get_handle()))
         , m_renderingEngine(std::make_unique<engine::rendering_engine>(m_mainWindow, m_dataLoader, m_eventProcessor, *m_renderingDevice))
         , m_resourceFactory(std::make_unique<engine::resource_factory>(*m_renderingDevice))
         , m_scene(std::make_unique<scene::scene>())

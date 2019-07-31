@@ -7,12 +7,10 @@ namespace tst {
 namespace engine {
     namespace opengl {
 
-        device::device() {
-
+        device::device(GLFWwindow*) {
         }
 
-        device::~device() {
-            
+        device::~device() {          
         }
 
         vertex_buffer device::create_vertex_buffer(const vertex_format& format,

@@ -98,12 +98,12 @@ namespace engine {
             }
         }
 
-        device::device(GLFWwindow* window, const std::vector<const char*>& requiredExtensions)
+        device::device(GLFWwindow* window)
             : m_windowSurface(create_window_surface(window))
-            , m_physicalDevice(select_physical_device(m_windowSurface, requiredExtensions))
+            , m_physicalDevice(select_physical_device(m_windowSurface, {VK_KHR_SWAPCHAIN_EXTENSION_NAME}))
             , m_queueIndices(compute_queue_indices(m_windowSurface, m_physicalDevice))
             , m_logicalDevice(create_logical_device(
-                  m_physicalDevice, m_queueIndices, instance::get_validation_layers(), requiredExtensions))
+                  m_physicalDevice, m_queueIndices, instance::get_validation_layers(), {VK_KHR_SWAPCHAIN_EXTENSION_NAME}))
             , m_graphicsQueueHandle(m_logicalDevice.getQueue(m_queueIndices.graphicsIndex.value(), 0))
             , m_computeQueueHandle(m_logicalDevice.getQueue(m_queueIndices.computeIndex.value(), 0))
             , m_presentationQueueHandle(m_logicalDevice.getQueue(m_queueIndices.presentationIndex.value(), 0))

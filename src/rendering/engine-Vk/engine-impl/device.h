@@ -22,7 +22,7 @@ namespace engine {
             friend class swap_chain;
 
         public:
-            device(GLFWwindow* window, const std::vector<const char*>& requiredExtensions);
+            device(GLFWwindow* window);
             device(const device& device) = delete;
             ~device();
 
