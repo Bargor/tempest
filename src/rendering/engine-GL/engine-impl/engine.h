@@ -45,7 +45,7 @@ namespace engine {
         };
 
         template<typename Iter>
-        bool rendering_engine::draw_frame(Iter , Iter ) {
+        bool rendering_engine::draw_frame(Iter, Iter) {
             
             return true;
         }

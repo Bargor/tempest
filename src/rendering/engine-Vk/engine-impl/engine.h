@@ -41,6 +41,7 @@ namespace engine {
                              application::data_loader& dataLoader,
                              application::event_processor<application::app_event>& eventProcessor,
                              device& device);
+            rendering_engine(const rendering_engine& engine) = delete;
             ~rendering_engine();
 
             void frame(size_t frameCount);
@@ -76,7 +77,7 @@ namespace engine {
             vk::PipelineLayout m_pipelineLayout;
             vk::Pipeline m_pipeline;
             std::vector<vk::Framebuffer> m_framebuffers;
-            vk::CommandPool& m_commandPool;
+            vk::CommandPool m_commandPool;
             ptr<vertex_buffer> m_vertexBuffer;
             ptr<index_buffer<std::uint16_t>> m_indexBuffer;
             std::vector<uniform_buffer> m_uniformBuffers;
