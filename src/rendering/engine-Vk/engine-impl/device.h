@@ -16,9 +16,13 @@ namespace tst {
 namespace engine {
     namespace vulkan {
 
+        class gpu_info;
+
         class device {
+            template<typename T>
+            using ptr = std::unique_ptr<T>;
+
             friend class rendering_engine;
-            friend class engine_frontend;
             friend class swap_chain;
 
         public:
@@ -39,6 +43,7 @@ namespace engine {
         private:
             vk::SurfaceKHR m_windowSurface;
             vk::PhysicalDevice m_physicalDevice;
+            ptr<gpu_info> m_gpuInfo;
             queue_family_indices m_queueIndices;
             vk::Device m_logicalDevice;
             vk::Queue m_graphicsQueueHandle;

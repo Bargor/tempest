@@ -9,6 +9,7 @@ namespace engine {
     namespace vulkan {
         class device;
         class draw_command;
+        class gpu_info;
         class rendering_engine;
         class vertex_format;
     } // namespace vulkan
