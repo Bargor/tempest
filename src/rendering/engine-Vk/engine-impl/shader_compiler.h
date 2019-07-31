@@ -36,7 +36,7 @@ namespace engine {
 
         private:
             application::data_loader& m_dataLoader;
-            const vk::Device& m_device;
+            const device& m_device;
 
             static constexpr char m_shaderExtension[] = ".spv";
         };

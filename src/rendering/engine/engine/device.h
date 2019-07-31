@@ -8,19 +8,23 @@
 
 #include <engine-impl/api.h>
 #include <engine-impl/device.h>
+#include <type_traits>
 
 namespace tst {
 namespace engine {
 
-    class device {
+    class device final : public api::device {
         friend class resource_factory;
     public:
-        device(api::device& deviceImpl);
+        using super = api::device;
+
+        device(GLFWwindow* window);
         ~device();
 
     private:
-        api::device& m_deviceImpl;
     };
 
+    static_assert(!std::is_polymorphic_v<device>);
+    static_assert(sizeof(device) == sizeof(api::device));
 }
 }

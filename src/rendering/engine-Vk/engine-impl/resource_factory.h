@@ -28,7 +28,7 @@ namespace engine {
 
         private:
             device& m_device;
-            vk::CommandPool& m_commandPool;
+            vk::CommandPool m_commandPool;
         };
 
         template<typename IndexType>

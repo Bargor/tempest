@@ -15,7 +15,7 @@ namespace engine {
 
     class device;
 
-        class resource_factory : api::resource_factory {
+        class resource_factory final : api::resource_factory {
             using super = api::resource_factory;
         public:
             resource_factory(device& device);
@@ -29,5 +29,7 @@ namespace engine {
 
         private:
         };
+
+        static_assert(!std::is_polymorphic_v<resource_factory>);
 } // namespace engine
 } // namespace tst

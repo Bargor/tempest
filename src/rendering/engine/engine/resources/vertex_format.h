@@ -6,6 +6,8 @@
 #include <engine-impl/api.h>
 #include <engine-impl/resources/vertex_format.h>
 
+#include <type_traits>
+
 namespace tst {
 namespace engine {
 
@@ -18,5 +20,9 @@ namespace engine {
         ~vertex_format();
     private:
     };
+
+    static_assert(!std::is_polymorphic_v<vertex_format>);
+    static_assert(sizeof(vertex_format) == sizeof(api::vertex_format));
+
 } // namespace engine
 } // namespace tst

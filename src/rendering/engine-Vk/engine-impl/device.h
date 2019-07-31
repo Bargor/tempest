@@ -4,6 +4,7 @@
 
 #include "queue_indices.h"
 #include "resources/index_buffer.h"
+#include "resources/shader.h"
 #include "resources/uniform_buffer.h"
 #include "resources/vertex_buffer.h"
 
@@ -19,10 +20,10 @@ namespace engine {
             friend class rendering_engine;
             friend class engine_frontend;
             friend class swap_chain;
-            friend class shader_compiler;
 
         public:
-            device(GLFWwindow* window, const std::vector<const char*>& requiredExtensions);
+            device(GLFWwindow* window);
+            device(const device& device) = delete;
             ~device();
 
             vk::CommandPool& create_command_pool();
@@ -33,6 +34,7 @@ namespace engine {
                                                std::vector<vertex>&& vertices,
                                                vk::CommandPool& cmdPool) const;
             uniform_buffer create_uniform_buffer(const vk::CommandPool& cmdPool) const;
+            shader crate_shader(shader::shader_type type, std::vector<char>&& source, const std::string_view name) const;
 
         private:
             vk::SurfaceKHR m_windowSurface;

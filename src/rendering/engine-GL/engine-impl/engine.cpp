@@ -1,11 +1,12 @@
 // This file is part of Tempest-engine-GL project
 // Author: Karol Kontny
 
+#include <GL/glew.h>
+
 #include "engine.h"
 #include "device.h"
 #include "shader_compiler.h"
 
-#include <GL/glew.h>
 #include <application/app_event.h>
 #include <application/event_processor.h>
 #include <fmt/printf.h>
@@ -25,9 +26,10 @@ namespace engine {
 
     rendering_engine::rendering_engine(application::main_window&,
                                        application::data_loader& dataLoader,
-                                       application::event_processor<application::app_event>&)
+                                       application::event_processor<application::app_event>&,
+                                       device& device)
         : m_dataLoader(dataLoader)
-        , m_device(std::make_unique<device>())
+        , m_device(device)
         , m_shaderCompiler(std::make_unique<shader_compiler>(m_dataLoader)) {
         init_OpenGL();
     }
@@ -43,10 +45,7 @@ namespace engine {
 
     void rendering_engine::stop() {
     }
-	
-	device& rendering_engine::get_GPU() const noexcept {
-            return *m_device;
-    }
+
 
 	}
 } // namespace engine

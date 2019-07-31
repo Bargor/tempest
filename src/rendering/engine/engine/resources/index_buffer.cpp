@@ -8,14 +8,14 @@ namespace engine {
     namespace resources {
 
         index_buffer::index_buffer(api::index_buffer<std::uint16_t>&& bufferImpl)
-            : m_indexBufferImpl(std::move(bufferImpl)) {
+            : api::index_buffer<std::uint16_t>(std::move(bufferImpl)) {
         }
 
         index_buffer::~index_buffer() {
         }
 
         index_buffer::index_buffer(index_buffer&& other) noexcept
-            : m_indexBufferImpl(std::move(other.m_indexBufferImpl)) {
+            : api::index_buffer<std::uint16_t>(std::move(other)) {
         }
 
     } // namespace resources

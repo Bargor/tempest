@@ -26,46 +26,45 @@ namespace engine {
 
         rendering_engine::rendering_engine(application::main_window& mainWindow,
                                            application::data_loader& dataLoader,
-                                           application::event_processor<application::app_event>& eventProcessor)
+                                           application::event_processor<application::app_event>& eventProcessor,
+                                           device& device)
             : m_mainWindow(mainWindow)
             , m_dataLoader(dataLoader)
             , m_eventProcessor(eventProcessor)
-            , m_device(std::make_unique<vulkan::device>(m_mainWindow.get_handle(), m_reqiuredDeviceExtensions))
+            , m_device(device)
             , m_swapChain(std::make_unique<vulkan::swap_chain>(
-                  *m_device.get(), mainWindow.get_size().width, mainWindow.get_size().height))
-            , m_shaderCompiler(std::make_unique<vulkan::shader_compiler>(m_dataLoader, *m_device.get()))
-            , m_renderPass(vulkan::create_render_pass((*m_device.get()).m_logicalDevice, m_swapChain->get_format()))
-            , m_descriptorSetLayout(vulkan::create_descriptor_set_layout((*m_device.get()).m_logicalDevice))
-            , m_pipelineLayout(vulkan::create_pipeline_layout((*m_device.get()).m_logicalDevice, m_descriptorSetLayout))
-            , m_pipeline(vulkan::create_graphics_pipeline((*m_device.get()).m_logicalDevice,
+                  m_device, mainWindow.get_size().width, mainWindow.get_size().height))
+            , m_shaderCompiler(std::make_unique<vulkan::shader_compiler>(m_dataLoader, m_device))
+            , m_renderPass(vulkan::create_render_pass(m_device.m_logicalDevice, m_swapChain->get_format()))
+            , m_descriptorSetLayout(vulkan::create_descriptor_set_layout(m_device.m_logicalDevice))
+            , m_pipelineLayout(vulkan::create_pipeline_layout(m_device.m_logicalDevice, m_descriptorSetLayout))
+            , m_pipeline(vulkan::create_graphics_pipeline(m_device.m_logicalDevice,
                                                           m_pipelineLayout,
                                                           m_renderPass,
                                                           m_swapChain->get_extent(),
                                                           *m_shaderCompiler.get()))
-            , m_framebuffers(vulkan::create_framebuffers((*m_device.get()).m_logicalDevice,
-                                                         m_renderPass,
-                                                         m_swapChain->get_image_views(),
-                                                         m_swapChain->get_extent()))
-            , m_commandPool(m_device->create_command_pool())
+            , m_framebuffers(vulkan::create_framebuffers(
+                  m_device.m_logicalDevice, m_renderPass, m_swapChain->get_image_views(), m_swapChain->get_extent()))
+            , m_commandPool(m_device.create_command_pool())
             , m_vertexBuffer(std::make_unique<vulkan::vertex_buffer>(
-                  m_device->create_vertex_buffer(vertex_format(),
-                                                 std::vector<vertex>({{{-0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}},
-                                                                              {{0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}},
-                                                                              {{0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}},
-                                                                              {{-0.5f, 0.5f}, {1.0f, 1.0f, 1.0f}}}),
-                                                 m_commandPool)))
+                  m_device.create_vertex_buffer(vertex_format(),
+                                                std::vector<vertex>({{{-0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}},
+                                                                     {{0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}},
+                                                                     {{0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}},
+                                                                     {{-0.5f, 0.5f}, {1.0f, 1.0f, 1.0f}}}),
+                                                m_commandPool)))
             , m_indexBuffer(std::make_unique<vulkan::index_buffer<std::uint16_t>>(
-                  m_device->create_index_buffer(std::vector<std::uint16_t>({{0, 1, 2, 2, 3, 0}}), m_commandPool)))
+                  m_device.create_index_buffer(std::vector<std::uint16_t>({{0, 1, 2, 2, 3, 0}}), m_commandPool)))
             , m_uniformBuffers(
-                  vulkan::create_uniform_buffers(*m_device.get(), m_commandPool, m_swapChain->get_image_views().size()))
-            , m_descriptorPool(vulkan::create_descriptor_pool((*m_device.get()).m_logicalDevice,
-                                                              m_swapChain->get_image_views().size()))
-            , m_descriptorSets(vulkan::create_descriptor_sets((*m_device.get()).m_logicalDevice,
+                  vulkan::create_uniform_buffers(m_device, m_commandPool, m_swapChain->get_image_views().size()))
+            , m_descriptorPool(
+                  vulkan::create_descriptor_pool(m_device.m_logicalDevice, m_swapChain->get_image_views().size()))
+            , m_descriptorSets(vulkan::create_descriptor_sets(m_device.m_logicalDevice,
                                                               m_swapChain->get_image_views().size(),
                                                               m_descriptorPool,
                                                               m_descriptorSetLayout,
                                                               m_uniformBuffers))
-            , m_commandBuffers(vulkan::create_command_buffers((*m_device.get()).m_logicalDevice,
+            , m_commandBuffers(vulkan::create_command_buffers(m_device.m_logicalDevice,
                                                               m_commandPool,
                                                               m_framebuffers,
                                                               m_renderPass,
@@ -75,13 +74,13 @@ namespace engine {
                                                               *m_indexBuffer.get(),
                                                               m_pipelineLayout,
                                                               m_descriptorSets))
-            , m_imageAvailable({(*m_device.get()).m_logicalDevice.createSemaphore(vk::SemaphoreCreateInfo()),
-                                (*m_device.get()).m_logicalDevice.createSemaphore(vk::SemaphoreCreateInfo())})
-            , m_renderFinished({(*m_device.get()).m_logicalDevice.createSemaphore(vk::SemaphoreCreateInfo()),
-                                (*m_device.get()).m_logicalDevice.createSemaphore(vk::SemaphoreCreateInfo())})
+            , m_imageAvailable({m_device.m_logicalDevice.createSemaphore(vk::SemaphoreCreateInfo()),
+                                m_device.m_logicalDevice.createSemaphore(vk::SemaphoreCreateInfo())})
+            , m_renderFinished({m_device.m_logicalDevice.createSemaphore(vk::SemaphoreCreateInfo()),
+                                m_device.m_logicalDevice.createSemaphore(vk::SemaphoreCreateInfo())})
             , m_inFlightFences(
-                  {(*m_device.get()).m_logicalDevice.createFence(vk::FenceCreateInfo(vk::FenceCreateFlagBits::eSignaled)),
-                   (*m_device.get()).m_logicalDevice.createFence(vk::FenceCreateInfo(vk::FenceCreateFlagBits::eSignaled))})
+                  {m_device.m_logicalDevice.createFence(vk::FenceCreateInfo(vk::FenceCreateFlagBits::eSignaled)),
+                   m_device.m_logicalDevice.createFence(vk::FenceCreateInfo(vk::FenceCreateFlagBits::eSignaled))})
             , m_framebufferResized(false) {
             auto framebufferResizeCallback = [&](const application::app_event::arguments&) {
                 m_framebufferResized = true;
@@ -96,66 +95,64 @@ namespace engine {
         rendering_engine::~rendering_engine() {
             cleanup_swap_chain_dependancies();
 
-            (*m_device.get()).m_logicalDevice.destroyDescriptorSetLayout(m_descriptorSetLayout);
+            m_device.m_logicalDevice.destroyDescriptorSetLayout(m_descriptorSetLayout);
 
             m_vertexBuffer.reset();
             for (auto& semaphore : m_imageAvailable) {
-                (*m_device.get()).m_logicalDevice.destroySemaphore(semaphore);
+                m_device.m_logicalDevice.destroySemaphore(semaphore);
             }
             for (auto& semaphore : m_renderFinished) {
-                (*m_device.get()).m_logicalDevice.destroySemaphore(semaphore);
+                m_device.m_logicalDevice.destroySemaphore(semaphore);
             }
             for (auto& fence : m_inFlightFences) {
-                (*m_device.get()).m_logicalDevice.destroyFence(fence);
+                m_device.m_logicalDevice.destroyFence(fence);
             }
             m_swapChain.reset();
         }
 
         void rendering_engine::cleanup_swap_chain_dependancies() {
             for (auto framebuffer : m_framebuffers) {
-                (*m_device.get()).m_logicalDevice.destroyFramebuffer(framebuffer);
+                m_device.m_logicalDevice.destroyFramebuffer(framebuffer);
             }
 
-            (*m_device.get()).m_logicalDevice.freeCommandBuffers(m_commandPool, m_commandBuffers);
+            m_device.m_logicalDevice.freeCommandBuffers(m_commandPool, m_commandBuffers);
 
-            (*m_device.get()).m_logicalDevice.destroyPipeline(m_pipeline);
-            (*m_device.get()).m_logicalDevice.destroyPipelineLayout(m_pipelineLayout);
-            (*m_device.get()).m_logicalDevice.destroyRenderPass(m_renderPass);
+            m_device.m_logicalDevice.destroyPipeline(m_pipeline);
+            m_device.m_logicalDevice.destroyPipelineLayout(m_pipelineLayout);
+            m_device.m_logicalDevice.destroyRenderPass(m_renderPass);
 
-            (*m_device.get()).m_logicalDevice.destroyDescriptorPool(m_descriptorPool);
+            m_device.m_logicalDevice.destroyDescriptorPool(m_descriptorPool);
         }
 
         void rendering_engine::recreate_swap_chain(std::uint32_t width, std::uint32_t height) {
-            (*m_device.get()).m_logicalDevice.waitIdle();
+            m_device.m_logicalDevice.waitIdle();
 
             cleanup_swap_chain_dependancies();
 
             m_swapChain.reset();
 
-            auto newSwapChain = std::make_unique<vulkan::swap_chain>(*m_device.get(), width, height);
+            auto newSwapChain = std::make_unique<vulkan::swap_chain>(m_device, width, height);
 
             m_swapChain = std::move(newSwapChain);
-            m_renderPass = vulkan::create_render_pass((*m_device.get()).m_logicalDevice, m_swapChain->get_format());
-            m_pipelineLayout = vulkan::create_pipeline_layout((*m_device.get()).m_logicalDevice, m_descriptorSetLayout);
-            m_pipeline = vulkan::create_graphics_pipeline((*m_device.get()).m_logicalDevice,
+            m_renderPass = vulkan::create_render_pass(m_device.m_logicalDevice, m_swapChain->get_format());
+            m_pipelineLayout = vulkan::create_pipeline_layout(m_device.m_logicalDevice, m_descriptorSetLayout);
+            m_pipeline = vulkan::create_graphics_pipeline(m_device.m_logicalDevice,
                                                           m_pipelineLayout,
                                                           m_renderPass,
                                                           m_swapChain->get_extent(),
                                                           *m_shaderCompiler.get());
-            m_framebuffers = vulkan::create_framebuffers((*m_device.get()).m_logicalDevice,
-                                                         m_renderPass,
-                                                         m_swapChain->get_image_views(),
-                                                         m_swapChain->get_extent());
+            m_framebuffers = vulkan::create_framebuffers(
+                m_device.m_logicalDevice, m_renderPass, m_swapChain->get_image_views(), m_swapChain->get_extent());
             m_uniformBuffers =
-                vulkan::create_uniform_buffers(*m_device.get(), m_commandPool, m_swapChain->get_image_views().size()),
+                vulkan::create_uniform_buffers(m_device, m_commandPool, m_swapChain->get_image_views().size()),
             m_descriptorPool =
-                vulkan::create_descriptor_pool((*m_device.get()).m_logicalDevice, m_swapChain->get_image_views().size());
-            m_descriptorSets = vulkan::create_descriptor_sets((*m_device.get()).m_logicalDevice,
+                vulkan::create_descriptor_pool(m_device.m_logicalDevice, m_swapChain->get_image_views().size());
+            m_descriptorSets = vulkan::create_descriptor_sets(m_device.m_logicalDevice,
                                                               m_swapChain->get_image_views().size(),
                                                               m_descriptorPool,
                                                               m_descriptorSetLayout,
                                                               m_uniformBuffers);
-            m_commandBuffers = vulkan::create_command_buffers((*m_device.get()).m_logicalDevice,
+            m_commandBuffers = vulkan::create_command_buffers(m_device.m_logicalDevice,
                                                               m_commandPool,
                                                               m_framebuffers,
                                                               m_renderPass,
@@ -195,22 +192,24 @@ namespace engine {
             buffer.update_buffer(ubo);
         }
 
-        void rendering_engine::submitCommandBuffer(vk::CommandBuffer& buffer) {
+        vk::CommandBuffer rendering_engine::generate_command_buffer(const draw_info&) {
+            return vk::CommandBuffer{};
+        }
+
+        void rendering_engine::submit_command_buffer(vk::CommandBuffer& buffer) {
             m_buffersToRender.push_back(buffer);
         }
 
         void rendering_engine::frame(size_t frameCount) {
             std::uint32_t currentFrame = frameCount % m_maxConcurrentFrames;
 
-            (*m_device.get())
-                .m_logicalDevice.waitForFences(
-                    1, &m_inFlightFences[currentFrame], true, std::numeric_limits<uint64_t>::max());
+            m_device.m_logicalDevice.waitForFences(
+                1, &m_inFlightFences[currentFrame], true, std::numeric_limits<uint64_t>::max());
 
-            auto acquireResult = (*m_device.get())
-                                     .m_logicalDevice.acquireNextImageKHR(m_swapChain->get_native_swapchain(),
-                                                                          std::numeric_limits<uint64_t>::max(),
-                                                                          m_imageAvailable[currentFrame],
-                                                                          vk::Fence());
+            auto acquireResult = m_device.m_logicalDevice.acquireNextImageKHR(m_swapChain->get_native_swapchain(),
+                                                                              std::numeric_limits<uint64_t>::max(),
+                                                                              m_imageAvailable[currentFrame],
+                                                                              vk::Fence());
 
             if (acquireResult.result == vk::Result::eErrorOutOfDateKHR) {
                 update_framebuffer();
@@ -230,13 +229,13 @@ namespace engine {
             vk::SubmitInfo submitInfo(
                 1, waitSemaphores, waitStages, 1, &m_commandBuffers[imageIndex], 1, signalSemaphores);
 
-            (*m_device.get()).m_logicalDevice.resetFences(1, &m_inFlightFences[currentFrame]);
+            m_device.m_logicalDevice.resetFences(1, &m_inFlightFences[currentFrame]);
 
-            (*m_device.get()).m_graphicsQueueHandle.submit(1, &submitInfo, m_inFlightFences[currentFrame]);
+            m_device.m_graphicsQueueHandle.submit(1, &submitInfo, m_inFlightFences[currentFrame]);
 
             vk::PresentInfoKHR presentInfo(1, signalSemaphores, 1, &m_swapChain->get_native_swapchain(), &imageIndex);
 
-            auto presentResult = (*m_device.get()).m_presentationQueueHandle.presentKHR(presentInfo);
+            auto presentResult = m_device.m_presentationQueueHandle.presentKHR(presentInfo);
 
             if (presentResult == vk::Result::eErrorOutOfDateKHR || presentResult == vk::Result::eSuboptimalKHR ||
                 m_framebufferResized) {
@@ -252,11 +251,7 @@ namespace engine {
         }
 
         void rendering_engine::stop() {
-            (*m_device.get()).m_logicalDevice.waitIdle();
-        }
-
-        device& rendering_engine::get_GPU() const noexcept {
-            return *m_device;
+            m_device.m_logicalDevice.waitIdle();
         }
 
     } // namespace vulkan

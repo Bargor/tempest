@@ -8,6 +8,7 @@ namespace engine {
 
     namespace vulkan {
         class device;
+        class draw_command;
         class rendering_engine;
         class vertex_format;
     } // namespace vulkan

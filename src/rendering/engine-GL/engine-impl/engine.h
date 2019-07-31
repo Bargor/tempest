@@ -27,19 +27,28 @@ namespace engine {
         public:
             rendering_engine(application::main_window&,
                             application::data_loader& dataLoader,
-                            application::event_processor<application::app_event>&);
+                            application::event_processor<application::app_event>&,
+                            device& device);
             ~rendering_engine();
 
             void frame(size_t frameCount);
             void start();
             void stop();
-            device& get_GPU() const noexcept;
+
+            template<typename Iter>
+            bool draw_frame(Iter first, Iter last);
 
         private:
             application::data_loader& m_dataLoader;
-            ptr<device> m_device;
+            device& m_device;
             ptr<shader_compiler> m_shaderCompiler;
         };
+
+        template<typename Iter>
+        bool rendering_engine::draw_frame(Iter, Iter) {
+            
+            return true;
+        }
 	
 	}
 } // namespace engine

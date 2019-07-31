@@ -2,6 +2,7 @@
 // Author: Karol Kontny
 #pragma once
 
+#include "draw_info.h"
 #include "engine_init.h"
 #include "queue_indices.h"
 
@@ -38,20 +39,28 @@ namespace engine {
         public:
             rendering_engine(application::main_window& mainWindow,
                              application::data_loader& dataLoader,
-                             application::event_processor<application::app_event>& eventProcessor);
+                             application::event_processor<application::app_event>& eventProcessor,
+                             device& device);
+            rendering_engine(const rendering_engine& engine) = delete;
             ~rendering_engine();
 
             void frame(size_t frameCount);
             void start();
             void stop();
-            device& get_GPU() const noexcept;
+
+            template<typename Iter>
+            bool draw_frame(Iter first, Iter last);
 
         private:
             void cleanup_swap_chain_dependancies();
             void recreate_swap_chain(std::uint32_t width, std::uint32_t height);
             void update_framebuffer();
             void update_uniform_buffer(vulkan::uniform_buffer& buffer);
-            void submitCommandBuffer(vk::CommandBuffer& buffer);
+            void submit_command_buffer(vk::CommandBuffer& buffer);
+
+            template<typename Iter>
+            std::vector<vk::CommandBuffer> prepare_draw(Iter first, Iter last);
+            vk::CommandBuffer generate_command_buffer(const draw_info& drawInfo);
 
         private:
             application::main_window& m_mainWindow;
@@ -60,7 +69,7 @@ namespace engine {
             std::vector<const char*> m_reqiuredDeviceExtensions = {VK_KHR_SWAPCHAIN_EXTENSION_NAME};
             static constexpr std::uint32_t m_maxConcurrentFrames = 2;
 
-            ptr<device> m_device;
+            device& m_device;
             ptr<swap_chain> m_swapChain;
             ptr<shader_compiler> m_shaderCompiler;
             vk::RenderPass m_renderPass;
@@ -83,6 +92,30 @@ namespace engine {
 
             std::vector<vk::CommandBuffer> m_buffersToRender;
         };
+
+        template<typename Iter>
+        std::vector<vk::CommandBuffer> rendering_engine::prepare_draw(Iter first, Iter last) {
+            std::vector<vk::CommandBuffer> buffers;
+
+            for (; first != last; ++first) {
+                auto& drawItem = *first;
+                buffers.emplace_back(generate_command_buffer(drawItem));
+            }
+
+            return buffers;
+        }
+
+        template<typename Iter>
+        bool rendering_engine::draw_frame(Iter first, Iter last) {
+            auto commandBuffers = prepare_draw(first, last);
+
+            for (auto& commandBuffer : commandBuffers) {
+                submit_command_buffer(commandBuffer);
+            }
+
+            return true;
+        }
+
     } // namespace vulkan
 
 } // namespace engine

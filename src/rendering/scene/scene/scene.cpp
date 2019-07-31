@@ -11,6 +11,18 @@ namespace scene {
         return newSceneState;
     }
 
+    std::vector<engine::draw_info> prepare_draw_info(const std::vector<scene_object::state>& sceneState) {
+        std::vector<engine::draw_info> drawInfos;
+        drawInfos.reserve(sceneState.size());
+
+        for (auto& state : sceneState) {
+            engine::draw_info info(state.transformation, &(state.vertices[0]), &(state.indices[0]));
+            drawInfos.emplace_back(std::move(info));
+        }
+
+        return drawInfos;
+    }
+
     scene::scene() {
     }
 

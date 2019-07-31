@@ -26,9 +26,9 @@ namespace application {
         , m_inputProcessor(inputProcessor)
         , m_mainWindow(mainWindow)
         , m_dataLoader(dataLoader)
-        , m_renderingEngine(std::make_unique<engine::rendering_engine>(m_mainWindow, m_dataLoader, m_eventProcessor))
-        , m_renderingDevice(m_renderingEngine->get_GPU())
-        , m_resourceFactory(std::make_unique<engine::resource_factory>(m_renderingDevice))
+        , m_renderingDevice(std::make_unique<engine::device>(m_mainWindow.get_handle()))
+        , m_renderingEngine(std::make_unique<engine::rendering_engine>(m_mainWindow, m_dataLoader, m_eventProcessor, *m_renderingDevice))
+        , m_resourceFactory(std::make_unique<engine::resource_factory>(*m_renderingDevice))
         , m_scene(std::make_unique<scene::scene>())
         , m_frameCounter(0)
         , m_lastSecondFrames(0)
@@ -64,7 +64,7 @@ namespace application {
         indexBuffers.emplace_back(
             m_resourceFactory->create_index_buffer(std::vector<std::uint16_t>({{0, 1, 2, 2, 3, 0}})));
 
-        scene::scene_object object(std::move(vertexBuffers), std::move(indexBuffers));
+        scene::scene_object object(std::move(vertexBuffers[0]), std::move(indexBuffers[0]));
         m_scene->add_object(std::move(object));
     }
 
@@ -85,6 +85,8 @@ namespace application {
         auto frameStart = m_timeSource.now();
         if (!m_windowMinimized) {
             auto newSceneState = scene::update_scene(*m_scene, m_lastFrameDuration);
+            auto drawInfo = scene::prepare_draw_info(newSceneState);
+            m_renderingEngine->draw_frame(drawInfo.begin(), drawInfo.end());
             m_renderingEngine->frame(m_frameCounter);
             m_mainWindow.end_frame();
             m_lastSecondFrames++;
