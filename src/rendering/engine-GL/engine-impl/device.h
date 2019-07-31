@@ -24,7 +24,6 @@ namespace engine {
             uniform_buffer create_uniform_buffer() const;
 
             private:
-
 		};
 
         template<typename IndexType>
