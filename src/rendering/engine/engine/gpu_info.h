@@ -10,6 +10,7 @@ namespace engine {
     class gpu_info final : public api::gpu_info {
         public:
             using super = api::gpu_info;
+            gpu_info(const api::gpu_info& info);
         private:
     };
 

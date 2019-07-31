@@ -5,6 +5,10 @@
 
 namespace tst {
 namespace engine {
+
+    gpu_info::gpu_info(const api::gpu_info& info) : api::gpu_info(info) {
+    
+    }
     
 }
 }

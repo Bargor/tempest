@@ -40,6 +40,8 @@ namespace engine {
             uniform_buffer create_uniform_buffer(const vk::CommandPool& cmdPool) const;
             shader crate_shader(shader::shader_type type, std::vector<char>&& source, const std::string_view name) const;
 
+            gpu_info& get_GPU_info() const noexcept;
+
         private:
             vk::SurfaceKHR m_windowSurface;
             vk::PhysicalDevice m_physicalDevice;
@@ -63,6 +65,10 @@ namespace engine {
                                                cmdPool,
                                                vk::IndexType::eUint16,
                                                std::move(indices));
+        }
+
+        TST_INLINE gpu_info& device::get_GPU_info() const noexcept {
+            return *m_gpuInfo;
         }
 
     } // namespace vulkan
