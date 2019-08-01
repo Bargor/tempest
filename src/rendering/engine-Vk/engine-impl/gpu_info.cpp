@@ -38,7 +38,6 @@ namespace engine {
                 super::deviceVendor = device_vendor::other;
             }
             super::deviceName = deviceProperties.deviceName;
-            deviceProperties.limits;
 
             maxIndexValue = deviceProperties.limits.maxDrawIndexedIndexValue;
             maxFramebufferWidth = deviceProperties.limits.maxFramebufferWidth;
