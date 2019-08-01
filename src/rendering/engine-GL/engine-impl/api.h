@@ -8,6 +8,7 @@ namespace engine {
 
     namespace opengl {
         class device;
+        class gpu_info;
         class rendering_engine;
         class vertex_format;
     } // namespace opengl

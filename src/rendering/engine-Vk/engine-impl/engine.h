@@ -66,7 +66,6 @@ namespace engine {
             application::main_window& m_mainWindow;
             application::data_loader& m_dataLoader;
             application::event_processor<application::app_event>& m_eventProcessor;
-            std::vector<const char*> m_reqiuredDeviceExtensions = {VK_KHR_SWAPCHAIN_EXTENSION_NAME};
             static constexpr std::uint32_t m_maxConcurrentFrames = 2;
 
             device& m_device;

@@ -6,6 +6,7 @@ set(ENGINE_HDRS
 	engine-impl/device.h
 	engine-impl/draw_info.h
 	engine-impl/engine.h
+	engine-impl/gpu_info.h
 	engine-impl/opengl_exception.h
 	engine-impl/resources/index_buffer.h
 	engine-impl/resources/uniform_buffer.h
@@ -20,6 +21,7 @@ set(ENGINE_SRCS
     engine-impl/device.cpp
 	engine-impl/draw_info.cpp
 	engine-impl/engine.cpp
+	engine-impl/gpu_info.cpp
 	engine-impl/resources/index_buffer.cpp
 	engine-impl/resources/uniform_buffer.cpp
 	engine-impl/resources/vertex_buffer.cpp
@@ -41,7 +43,9 @@ tst_add_library(engine-impl "${ENGINE_HDRS}" "${ENGINE_SRCS}")
 target_include_directories(engine-impl PUBLIC ${GLEW_INCLUDE_DIRS})
 
 target_link_libraries(engine-impl PUBLIC tst::application tst::engine-base glfw PRIVATE ${GLEW_LIBRARIES})
-
+if(WIN32)
+    target_link_libraries(engine-impl PRIVATE opengl32)
+endif(WIN32)
 if(UNIX)
 	target_link_libraries(engine-impl PRIVATE -lGL -lX11 -lXxf86vm -lXrandr -lXi -ldl)
 endif(UNIX)

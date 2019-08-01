@@ -3,6 +3,7 @@
 
 #include "device.h"
 
+#include "gpu_info.h"
 #include "instance.h"
 #include "vulkan_exception.h"
 
@@ -21,7 +22,7 @@ namespace engine {
                 VK_SUCCESS) {
                 throw vulkan_exception("Failed to create window surface!");
             }
-            return vk::SurfaceKHR(surface);
+            return surface;
         }
 
         bool check_extensions_support(const vk::PhysicalDevice& handle,
@@ -101,6 +102,7 @@ namespace engine {
         device::device(GLFWwindow* window)
             : m_windowSurface(create_window_surface(window))
             , m_physicalDevice(select_physical_device(m_windowSurface, {VK_KHR_SWAPCHAIN_EXTENSION_NAME}))
+            , m_gpuInfo(std::make_unique<gpu_info>(m_physicalDevice))
             , m_queueIndices(compute_queue_indices(m_windowSurface, m_physicalDevice))
             , m_logicalDevice(create_logical_device(
                   m_physicalDevice, m_queueIndices, instance::get_validation_layers(), {VK_KHR_SWAPCHAIN_EXTENSION_NAME}))

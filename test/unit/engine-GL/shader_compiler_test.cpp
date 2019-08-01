@@ -2,7 +2,7 @@
 // Author: Karol Kontny
 
 #include "application/data_loader.h"
-#include "engine/shader_compiler.h"
+#include "engine-impl/shader_compiler.h"
 
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
