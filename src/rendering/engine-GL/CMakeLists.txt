@@ -43,7 +43,9 @@ tst_add_library(engine-impl "${ENGINE_HDRS}" "${ENGINE_SRCS}")
 target_include_directories(engine-impl PUBLIC ${GLEW_INCLUDE_DIRS})
 
 target_link_libraries(engine-impl PUBLIC tst::application tst::engine-base glfw PRIVATE ${GLEW_LIBRARIES})
-
+if(WIN32)
+    target_link_libraries(engine-impl PRIVATE opengl32)
+endif(WIN32)
 if(UNIX)
 	target_link_libraries(engine-impl PRIVATE -lGL -lX11 -lXxf86vm -lXrandr -lXi -ldl)
 endif(UNIX)
