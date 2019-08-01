@@ -2,6 +2,6 @@
 # Author: Karol Kontny
 
 add_subdirectory(core)
-if (ENGINE STREQUAL "Engine-GL")
+if (ENGINE STREQUAL "GL")
 	add_subdirectory(engine-GL)
-endif (ENGINE STREQUAL "Engine-GL")
+endif (ENGINE STREQUAL "GL")

@@ -15,4 +15,4 @@ tst_add_executable(engine_test "" "${TEST_SRCS}")
 
 add_test(NAME tst.engine_unit_test COMMAND engine_test)
 
-target_link_libraries(engine_test PRIVATE tst::engine gmock gtest glfw)
+target_link_libraries(engine_test PRIVATE tst::engine-impl gmock gtest glfw)
