@@ -3,6 +3,7 @@
 #pragma once
 
 #include "command_list.h"
+#include "device.h"
 
 #include <memory>
 #include <vector>
@@ -20,7 +21,6 @@ namespace engine {
 	
 	namespace opengl {
 
-        class device;
         class shader_compiler;
 
         class rendering_engine {
