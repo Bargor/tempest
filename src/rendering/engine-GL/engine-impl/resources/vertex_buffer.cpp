@@ -1,4 +1,5 @@
-
+// This file is part of Tempest-engine project
+// Author: Karol Kontny
 
 #include "vertex_buffer.h"
 
@@ -7,7 +8,7 @@ namespace engine {
     namespace opengl {
 
         vertex_buffer::vertex_buffer(const vertex_format&,
-                                     std::vector<vertex>&& vertices) : buffer(vertices.size() * sizeof(vertex))
+                                     std::vector<vertex>&& vertices) : buffer(vertices.size() * sizeof(vertex), vertices.data(), GL_STATIC_DRAW)
             , m_vertices(std::move(vertices)) {
         }
 

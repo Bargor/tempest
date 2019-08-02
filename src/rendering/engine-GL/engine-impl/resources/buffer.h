@@ -10,7 +10,7 @@ namespace engine {
     namespace opengl {
         class buffer {
         public:
-            buffer(std::uint64_t size);
+            buffer(std::uint64_t size, void* data, GLenum usage);
             ~buffer();
 
             buffer(buffer&& other) noexcept;

@@ -26,7 +26,7 @@ namespace engine {
 
         template<typename IndexType>
         index_buffer<IndexType>::index_buffer(std::vector<IndexType>&& indices)
-            : buffer(indices.size() * sizeof(IndexType)), m_indices(std::move(indices)) {
+            : buffer(indices.size() * sizeof(IndexType), indices.data(), GL_STATIC_DRAW), m_indices(std::move(indices)) {
         }
 
         template<typename IndexType>

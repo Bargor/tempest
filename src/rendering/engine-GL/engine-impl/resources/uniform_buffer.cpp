@@ -6,7 +6,7 @@
 namespace tst {
 namespace engine {
     namespace opengl {
-        uniform_buffer::uniform_buffer() : buffer(sizeof(uniform_buffer_object)) {        
+        uniform_buffer::uniform_buffer() : buffer(sizeof(uniform_buffer_object), nullptr, GL_STREAM_DRAW) {        
         }
 
         uniform_buffer::~uniform_buffer() {          
