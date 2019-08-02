@@ -23,6 +23,10 @@ namespace engine {
         uniform_buffer device::create_uniform_buffer() const {
             return uniform_buffer();
         }
+
+        bool device::draw() {
+            return true;
+        }
     }
 }
 }

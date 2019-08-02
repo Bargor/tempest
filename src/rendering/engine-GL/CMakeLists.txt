@@ -3,6 +3,7 @@
 
 set(ENGINE_HDRS
     engine-impl/api.h
+	engine-impl/command_list.h
 	engine-impl/device.h
 	engine-impl/draw_info.h
 	engine-impl/engine.h
@@ -19,6 +20,7 @@ set(ENGINE_HDRS
 )
 
 set(ENGINE_SRCS 
+    engine-impl/command_list.cpp
     engine-impl/device.cpp
 	engine-impl/draw_info.cpp
 	engine-impl/engine.cpp

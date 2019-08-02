@@ -2,7 +2,10 @@
 // Author: Karol Kontny
 #pragma once
 
+#include "command_list.h"
+
 #include <memory>
+#include <vector>
 
 namespace tst {
 namespace application {
@@ -36,6 +39,8 @@ namespace engine {
             void stop();
 
             template<typename Iter>
+            std::vector<command_list> prepare_draw(Iter first, Iter last);
+            template<typename Iter>
             bool draw_frame(Iter first, Iter last);
 
         private:
@@ -45,8 +50,27 @@ namespace engine {
         };
 
         template<typename Iter>
-        bool rendering_engine::draw_frame(Iter, Iter) {
-            
+        std::vector<command_list> rendering_engine::prepare_draw(Iter, Iter) {
+            std::vector<command_list> commands;
+
+            /*for (; first != last; ++first) {
+                auto& drawItem = *first;
+                buffers.emplace_back(generate_command_buffer(drawItem));
+            }*/
+
+            return commands;
+        }
+
+        template<typename Iter>
+        bool rendering_engine::draw_frame(Iter first, Iter last) {
+            auto commandLists = prepare_draw(first, last);
+
+            for (auto& commandList : commandLists) {
+                m_device.submit_command_list(commandList);
+            }
+
+            m_device.draw();
+
             return true;
         }
 	
