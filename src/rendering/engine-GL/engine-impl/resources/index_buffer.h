@@ -26,12 +26,12 @@ namespace engine {
 
         template<typename IndexType>
         index_buffer<IndexType>::index_buffer(std::vector<IndexType>&& indices)
-            : buffer(), m_indices(std::move(indices)) {
+            : buffer(indices.size() * sizeof(IndexType)), m_indices(std::move(indices)) {
         }
 
         template<typename IndexType>
-        index_buffer<IndexType>::index_buffer(index_buffer&& other)
-            : buffer(std::move(other)) noexcept : m_indices(std::move(other.m_indices)) {
+        index_buffer<IndexType>::index_buffer(index_buffer&& other) noexcept
+            : buffer(std::move(other)), m_indices(std::move(other.m_indices))  {
         }
 
         template<typename IndexType>

@@ -5,7 +5,7 @@
 namespace tst {
 namespace engine {
     namespace opengl {
-        buffer::buffer(std::uint32_t size) {
+        buffer::buffer(std::uint64_t size) : m_memSize(size) {
             glCreateBuffers(1, &m_buffer);
         }
 
@@ -13,7 +13,7 @@ namespace engine {
             glDeleteBuffers(1, &m_buffer);
         }
 
-        buffer(buffer&& other) noexcept : m_buffer(other.m_buffer) {
+        buffer::buffer(buffer&& other) noexcept : m_buffer(other.m_buffer) {
             other.m_buffer = 0;
         }
     }
