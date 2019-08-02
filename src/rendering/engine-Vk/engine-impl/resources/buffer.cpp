@@ -53,13 +53,13 @@ namespace engine {
             return m_buffer;
         }
 
-        void buffer::copy_data(void* data, std::uint32_t size) {
+        void buffer::copy_data(void* data, std::uint64_t size) {
             auto dataPtr = m_logicalDevice.mapMemory(m_bufferMemory, 0, m_memSize);
             std::memcpy(dataPtr, data, size);
             m_logicalDevice.unmapMemory(m_bufferMemory);
         }
 
-        void buffer::copy_buffer(vk::Buffer& dstBuffer, std::uint32_t size) const {
+        void buffer::copy_buffer(vk::Buffer& dstBuffer, std::uint64_t size) const {
             vk::CommandBufferAllocateInfo allocInfo(m_cmdPool, vk::CommandBufferLevel::ePrimary, 1);
 
             auto cmdBuffer = m_logicalDevice.allocateCommandBuffers(allocInfo);

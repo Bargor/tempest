@@ -19,7 +19,7 @@ namespace engine {
                      physicallDevice,
                      queueHandle,
                      cmdPool,
-                     static_cast<std::uint32_t>(vertices.size()) * sizeof(vertex),
+                     vertices.size() * sizeof(vertex),
                      vk::BufferUsageFlagBits::eVertexBuffer | vk::BufferUsageFlagBits::eTransferDst,
                      vk::MemoryPropertyFlagBits::eDeviceLocal)
             , m_vertices(std::move(vertices)) {
