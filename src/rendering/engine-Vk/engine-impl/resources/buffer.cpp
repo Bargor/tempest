@@ -13,7 +13,7 @@ namespace engine {
                        const vk::PhysicalDevice& physicalDevice,
                        const vk::Queue& queueHandle,
                        const vk::CommandPool& cmdPool,
-                       std::uint32_t size,
+                       std::uint64_t size,
                        vk::BufferUsageFlags usageFlags,
                        vk::MemoryPropertyFlags memoryFlags)
             : m_logicalDevice(logicalDevice)
