@@ -2,6 +2,8 @@
 // Author: Karol Kontny
 #pragma once
 
+#include "buffer.h"
+
 #include <glm/glm.hpp>
 
 namespace tst {
@@ -14,9 +16,13 @@ namespace engine {
             glm::mat4 proj;
         };
 		
-        class uniform_buffer {
+        class uniform_buffer : public buffer {
         public:
             uniform_buffer();
+            
+            uniform_buffer(uniform_buffer&& other) noexcept;
+            uniform_buffer(const uniform_buffer& other) = delete;
+
             ~uniform_buffer();
         private:
 		};

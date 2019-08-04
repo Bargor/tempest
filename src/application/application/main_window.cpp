@@ -26,7 +26,7 @@ namespace application {
                       visible_option::visible,
                       open_option::opened,
                       focus_option::focused,
-                      vsync_option::vsync_on,
+                      vsync_option::vsync_off,
                       monitor,
                       hints) {
         assert(std::this_thread::get_id() == core::main_thread::get_id());

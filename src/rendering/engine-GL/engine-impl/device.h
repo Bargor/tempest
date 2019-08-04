@@ -2,6 +2,7 @@
 // Author: Karol Kontny
 #pragma once
 
+#include "command_list.h"
 #include "resources/index_buffer.h"
 #include "resources/uniform_buffer.h"
 #include "resources/vertex_buffer.h"
@@ -31,9 +32,13 @@ namespace engine {
         uniform_buffer create_uniform_buffer() const;
 
         gpu_info& get_GPU_info() const noexcept;
+        void submit_command_list(const command_list& commandList);
+
+        bool draw();
 
         private:
             ptr<gpu_info> m_gpuInfo;
+            std::vector<command_list> m_drawCommands;
 		};
 
         template<typename IndexType>
@@ -43,6 +48,10 @@ namespace engine {
 
         TST_INLINE gpu_info& device::get_GPU_info() const noexcept {
             return *m_gpuInfo;
+        }
+
+        TST_INLINE void device::submit_command_list(const command_list& commandList) {
+            m_drawCommands.emplace_back(commandList);
         }
 	}
 }

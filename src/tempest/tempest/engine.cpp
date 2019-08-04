@@ -6,8 +6,8 @@
 #include <application/app_event.h>
 #include <application/event_processor.h>
 #include <application/input_processor.h>
-#include <application/main_window.h>
 #include <engine/engine.h>
+#include <application/main_window.h>
 #include <fmt/printf.h>
 #include <engine/resource_factory.h>
 #include <scene/scene.h>

@@ -4,10 +4,12 @@
 
 #include "vertex_format.h"
 
+#include "buffer.h"
+
 namespace tst {
 namespace engine {
     namespace opengl {
-        class vertex_buffer {
+        class vertex_buffer : public buffer {
         public:
             vertex_buffer(const vertex_format& format,
                           std::vector<vertex>&& vertices);

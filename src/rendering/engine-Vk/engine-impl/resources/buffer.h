@@ -16,7 +16,7 @@ namespace engine {
                    const vk::PhysicalDevice& physicalDevice,
 				   const vk::Queue& queueHandle,
 				   const vk::CommandPool& cmdPool,
-                   std::uint32_t size,
+                   std::uint64_t size,
                    vk::BufferUsageFlags flags,
                    vk::MemoryPropertyFlags memoryFlags);
             ~buffer();
@@ -25,15 +25,15 @@ namespace engine {
             buffer(const buffer&) = delete;
 
             vk::Buffer get_handle() const;
-            void copy_data(void* data, std::uint32_t size);
-            void copy_buffer(vk::Buffer& dstBuffer, std::uint32_t size) const;
+            void copy_data(void* data, std::uint64_t size);
+            void copy_buffer(vk::Buffer& dstBuffer, std::uint64_t size) const;
 
         protected:
             const vk::Device& m_logicalDevice;
             const vk::PhysicalDevice& m_physicalDevice;
             const vk::Queue& m_queueHandle;
             const vk::CommandPool& m_cmdPool;
-            std::uint32_t m_memSize;
+            std::uint64_t m_memSize;
             vk::Buffer m_buffer;
             vk::DeviceMemory m_bufferMemory;
 

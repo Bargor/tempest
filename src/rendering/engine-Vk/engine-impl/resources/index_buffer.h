@@ -42,7 +42,7 @@ namespace engine {
                      physicalDevice,
                      queueHandle,
                      cmdPool,
-                     static_cast<std::uint32_t>(indices.size()) * sizeof(IndexType),
+                     indices.size() * sizeof(IndexType),
                      vk::BufferUsageFlagBits::eIndexBuffer | vk::BufferUsageFlagBits::eTransferDst,
                      vk::MemoryPropertyFlagBits::eDeviceLocal)
             , m_format(format)
