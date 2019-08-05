@@ -112,6 +112,10 @@ namespace engine {
                 submit_command_buffer(commandBuffer);
             }
 
+            m_device.startFrame();
+            m_device.draw();
+            m_device.endFrame();
+
             return true;
         }
 

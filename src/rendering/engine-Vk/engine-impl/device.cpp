@@ -145,6 +145,18 @@ namespace engine {
             return shader(m_logicalDevice, type, std::move(source), name);
         }
 
+        void device::startFrame() {
+
+        }
+
+        void device::draw() {
+
+        }
+
+        void device::endFrame() {
+            
+        }
+
     } // namespace vulkan
 } // namespace engine
 } // namespace tst

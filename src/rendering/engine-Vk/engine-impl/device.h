@@ -42,6 +42,11 @@ namespace engine {
 
             gpu_info& get_GPU_info() const noexcept;
 
+        public:
+            void startFrame();
+            void draw(); 
+            void endFrame();
+
         private:
             vk::SurfaceKHR m_windowSurface;
             vk::PhysicalDevice m_physicalDevice;
