@@ -11,6 +11,9 @@
 #include <type_traits>
 
 namespace tst {
+namespace application {
+    class main_window;
+}
 namespace engine {
 
     class device final : public api::device {
@@ -18,7 +21,7 @@ namespace engine {
     public:
         using super = api::device;
 
-        device(GLFWwindow* window);
+        device(application::main_window& mainWindow);
         ~device();
 
     private:

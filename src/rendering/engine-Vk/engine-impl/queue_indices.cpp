@@ -33,9 +33,9 @@ namespace engine {
                     indices.transferIndex = i;
                 }
 
-                auto presentSupport = physicalDevice.getSurfaceSupportKHR(i, windowSurface);
+                auto presentationSupport = physicalDevice.getSurfaceSupportKHR(i, windowSurface);
 
-                if (queueFamily.queueCount > 0 && presentSupport) {
+                if (queueFamily.queueCount > 0 && presentationSupport) {
                     indices.presentationIndex = i;
                 }
                 ++i;

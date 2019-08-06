@@ -5,7 +5,7 @@
 
 namespace tst {
 namespace engine {
-    device::device(GLFWwindow* window) : api::device(window) {
+    device::device(application::main_window& mainWindow) : api::device(mainWindow) {
     }
 
     device::~device() {

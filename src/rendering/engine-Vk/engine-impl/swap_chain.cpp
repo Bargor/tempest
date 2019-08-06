@@ -116,7 +116,7 @@ namespace engine {
                 }
             }
 
-			std::vector<vk::ImageView> create_image_views(const vk::Device& logicalDevice,
+            std::vector<vk::ImageView> create_image_views(const vk::Device& logicalDevice,
                                                           const vk::SurfaceFormatKHR& surfaceFormat,
                                                           const std::vector<vk::Image>& m_images) {
                 std::vector<vk::ImageView> imageViews(m_images.size());
@@ -138,7 +138,7 @@ namespace engine {
                     }
                 }
                 return imageViews;
-			}
+            }
 
             swap_chain::support_details check_support(const vk::PhysicalDevice& physicalDevice,
                                                       const vk::SurfaceKHR& m_windowSurface) {
@@ -153,19 +153,21 @@ namespace engine {
 
         } // namespace
 
-        swap_chain::swap_chain(const device& device,
+        swap_chain::swap_chain(const vk::Device& device,
+                               const vk::PhysicalDevice& physicalDevice,
+                               const vk::SurfaceKHR& windowSurface,
+                               const queue_family_indices& indices,
                                std::uint32_t width,
                                std::uint32_t height)
-            : m_logicalDevice(device.m_logicalDevice)
-            , m_windowSurface(device.m_windowSurface)
-            , m_indices(device.m_queueIndices)
-            , m_supportDetails(check_support(device.m_physicalDevice, m_windowSurface))
+            : m_logicalDevice(device)
+            , m_windowSurface(windowSurface)
+            , m_supportDetails(check_support(physicalDevice, m_windowSurface))
             , m_surfaceFormat(choose_surface_format(m_supportDetails.formats))
             , m_presentationMode(choose_presentation_mode(m_supportDetails.presentModes))
             , m_extent(choose_extent(m_supportDetails.capabilities, width, height))
             , m_swapChain(create_swap_chain(m_windowSurface,
-                                            device.m_logicalDevice,
-                                            m_indices,
+                                            m_logicalDevice,
+                                            indices,
                                             m_supportDetails,
                                             m_surfaceFormat,
                                             m_presentationMode,
