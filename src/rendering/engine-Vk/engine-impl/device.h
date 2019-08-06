@@ -13,10 +13,14 @@
 #include <vulkan/vulkan.hpp>
 
 namespace tst {
+namespace application {
+    class main_window;
+}
 namespace engine {
     namespace vulkan {
 
         class gpu_info;
+        class swap_chain;
 
         class device {
             template<typename T>
@@ -26,17 +30,17 @@ namespace engine {
             friend class swap_chain;
 
         public:
-            device(GLFWwindow* window);
+            device(application::main_window& mainWindow);
             device(const device& device) = delete;
             ~device();
 
             vk::CommandPool& create_command_pool();
 
             template<typename IndexType>
-            index_buffer<IndexType> create_index_buffer(std::vector<IndexType>&& indices, vk::CommandPool& cmdPool) const;
+            index_buffer<IndexType> create_index_buffer(std::vector<IndexType>&& indices, const vk::CommandPool& cmdPool) const;
             vertex_buffer create_vertex_buffer(const vertex_format& format,
                                                std::vector<vertex>&& vertices,
-                                               vk::CommandPool& cmdPool) const;
+                                               const vk::CommandPool& cmdPool) const;
             uniform_buffer create_uniform_buffer(const vk::CommandPool& cmdPool) const;
             shader crate_shader(shader::shader_type type, std::vector<char>&& source, const std::string_view name) const;
 
@@ -53,6 +57,7 @@ namespace engine {
             ptr<gpu_info> m_gpuInfo;
             queue_family_indices m_queueIndices;
             vk::Device m_logicalDevice;
+            ptr<swap_chain> m_swapChain;
             vk::Queue m_graphicsQueueHandle;
             vk::Queue m_computeQueueHandle;
             vk::Queue m_presentationQueueHandle;
@@ -63,7 +68,7 @@ namespace engine {
 
         template<typename IndexType>
         index_buffer<IndexType> device::create_index_buffer(std::vector<IndexType>&& indices,
-                                                            vk::CommandPool& cmdPool) const {
+                                                            const vk::CommandPool& cmdPool) const {
             return index_buffer<std::uint16_t>(m_logicalDevice,
                                                m_physicalDevice,
                                                m_graphicsQueueHandle,

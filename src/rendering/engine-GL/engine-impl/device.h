@@ -12,6 +12,9 @@
 #include <vector>
 
 namespace tst {
+namespace application {
+    class main_window;
+}
 namespace engine {
     namespace opengl {
 
@@ -21,7 +24,7 @@ namespace engine {
             template<typename T>
             using ptr = std::unique_ptr<T>;
         public:
-            device(GLFWwindow* window);
+            device(application::main_window& mainWindow);
             device(const device& device) = delete;
             ~device();
 

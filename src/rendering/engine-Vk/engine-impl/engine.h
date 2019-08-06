@@ -69,7 +69,6 @@ namespace engine {
             static constexpr std::uint32_t m_maxConcurrentFrames = 2;
 
             device& m_device;
-            ptr<swap_chain> m_swapChain;
             ptr<shader_compiler> m_shaderCompiler;
             vk::RenderPass m_renderPass;
             vk::DescriptorSetLayout m_descriptorSetLayout;
