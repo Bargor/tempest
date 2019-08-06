@@ -5,10 +5,12 @@
 
 #include "gpu_info.h"
 #include "instance.h"
+#include "swap_chain.h"
 #include "vulkan_exception.h"
 
 #include <GLFW/glfw3.h>
 #include <algorithm/algorithm.h>
+#include <application/main_window.h>
 #include <fmt/printf.h>
 #include <set>
 
@@ -18,8 +20,8 @@ namespace engine {
 
         vk::SurfaceKHR create_window_surface(GLFWwindow* window) {
             VkSurfaceKHR surface;
-            if (glfwCreateWindowSurface(instance::get_instance().get_instance_handle(), window, nullptr, &surface) !=
-                VK_SUCCESS) {
+            if (vk::Result(glfwCreateWindowSurface(
+                    instance::get_instance().get_instance_handle(), window, nullptr, &surface)) != vk::Result::eSuccess) {
                 throw vulkan_exception("Failed to create window surface!");
             }
             return surface;
@@ -99,13 +101,15 @@ namespace engine {
             }
         }
 
-        device::device(GLFWwindow* window)
-            : m_windowSurface(create_window_surface(window))
+        device::device(application::main_window& mainWindow)
+            : m_windowSurface(create_window_surface(mainWindow.get_handle()))
             , m_physicalDevice(select_physical_device(m_windowSurface, {VK_KHR_SWAPCHAIN_EXTENSION_NAME}))
             , m_gpuInfo(std::make_unique<gpu_info>(m_physicalDevice))
             , m_queueIndices(compute_queue_indices(m_windowSurface, m_physicalDevice))
             , m_logicalDevice(create_logical_device(
                   m_physicalDevice, m_queueIndices, instance::get_validation_layers(), {VK_KHR_SWAPCHAIN_EXTENSION_NAME}))
+            , m_swapChain(std::make_unique<vulkan::swap_chain>(
+                  m_logicalDevice, m_physicalDevice, m_windowSurface, m_queueIndices, mainWindow.get_size().width, mainWindow.get_size().height))
             , m_graphicsQueueHandle(m_logicalDevice.getQueue(m_queueIndices.graphicsIndex.value(), 0))
             , m_computeQueueHandle(m_logicalDevice.getQueue(m_queueIndices.computeIndex.value(), 0))
             , m_presentationQueueHandle(m_logicalDevice.getQueue(m_queueIndices.presentationIndex.value(), 0))
@@ -132,7 +136,7 @@ namespace engine {
 
         vertex_buffer device::create_vertex_buffer(const vertex_format& format,
                                                    std::vector<vertex>&& vertices,
-                                                   vk::CommandPool& cmdPool) const {
+                                                   const vk::CommandPool& cmdPool) const {
             return vertex_buffer(
                 m_logicalDevice, m_physicalDevice, m_graphicsQueueHandle, cmdPool, format, std::move(vertices));
         }
@@ -141,7 +145,9 @@ namespace engine {
             return uniform_buffer(m_logicalDevice, m_physicalDevice, m_graphicsQueueHandle, cmdPool);
         }
 
-        shader device::crate_shader(shader::shader_type type, std::vector<char>&& source, const std::string_view name) const {
+        shader device::crate_shader(shader::shader_type type,
+                                    std::vector<char>&& source,
+                                    const std::string_view name) const {
             return shader(m_logicalDevice, type, std::move(source), name);
         }
 

@@ -3,13 +3,14 @@
 
 #include "device.h"
 
+#include "application/main_window.h"
 #include "gpu_info.h"
 
 namespace tst {
 namespace engine {
     namespace opengl {
 
-        device::device(GLFWwindow*) : m_gpuInfo(std::make_unique<gpu_info>()) {
+        device::device(application::main_window&) : m_gpuInfo(std::make_unique<gpu_info>()) {
         }
 
         device::~device() {          

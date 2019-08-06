@@ -32,19 +32,19 @@ namespace engine {
             , m_dataLoader(dataLoader)
             , m_eventProcessor(eventProcessor)
             , m_device(device)
-            , m_swapChain(std::make_unique<vulkan::swap_chain>(
-                  m_device, mainWindow.get_size().width, mainWindow.get_size().height))
             , m_shaderCompiler(std::make_unique<vulkan::shader_compiler>(m_dataLoader, m_device))
-            , m_renderPass(vulkan::create_render_pass(m_device.m_logicalDevice, m_swapChain->get_format()))
+            , m_renderPass(vulkan::create_render_pass(m_device.m_logicalDevice, m_device.m_swapChain->get_format()))
             , m_descriptorSetLayout(vulkan::create_descriptor_set_layout(m_device.m_logicalDevice))
             , m_pipelineLayout(vulkan::create_pipeline_layout(m_device.m_logicalDevice, m_descriptorSetLayout))
             , m_pipeline(vulkan::create_graphics_pipeline(m_device.m_logicalDevice,
                                                           m_pipelineLayout,
                                                           m_renderPass,
-                                                          m_swapChain->get_extent(),
+                                                          m_device.m_swapChain->get_extent(),
                                                           *m_shaderCompiler.get()))
-            , m_framebuffers(vulkan::create_framebuffers(
-                  m_device.m_logicalDevice, m_renderPass, m_swapChain->get_image_views(), m_swapChain->get_extent()))
+            , m_framebuffers(vulkan::create_framebuffers(m_device.m_logicalDevice,
+                                                         m_renderPass,
+                                                         m_device.m_swapChain->get_image_views(),
+                                                         m_device.m_swapChain->get_extent()))
             , m_commandPool(m_device.create_command_pool())
             , m_vertexBuffer(std::make_unique<vulkan::vertex_buffer>(
                   m_device.create_vertex_buffer(vertex_format(),
@@ -55,12 +55,12 @@ namespace engine {
                                                 m_commandPool)))
             , m_indexBuffer(std::make_unique<vulkan::index_buffer<std::uint16_t>>(
                   m_device.create_index_buffer(std::vector<std::uint16_t>({{0, 1, 2, 2, 3, 0}}), m_commandPool)))
-            , m_uniformBuffers(
-                  vulkan::create_uniform_buffers(m_device, m_commandPool, m_swapChain->get_image_views().size()))
-            , m_descriptorPool(
-                  vulkan::create_descriptor_pool(m_device.m_logicalDevice, m_swapChain->get_image_views().size()))
+            , m_uniformBuffers(vulkan::create_uniform_buffers(
+                  m_device, m_commandPool, m_device.m_swapChain->get_image_views().size()))
+            , m_descriptorPool(vulkan::create_descriptor_pool(m_device.m_logicalDevice,
+                                                              m_device.m_swapChain->get_image_views().size()))
             , m_descriptorSets(vulkan::create_descriptor_sets(m_device.m_logicalDevice,
-                                                              m_swapChain->get_image_views().size(),
+                                                              m_device.m_swapChain->get_image_views().size(),
                                                               m_descriptorPool,
                                                               m_descriptorSetLayout,
                                                               m_uniformBuffers))
@@ -69,7 +69,7 @@ namespace engine {
                                                               m_framebuffers,
                                                               m_renderPass,
                                                               m_pipeline,
-                                                              m_swapChain->get_extent(),
+                                                              m_device.m_swapChain->get_extent(),
                                                               *m_vertexBuffer.get(),
                                                               *m_indexBuffer.get(),
                                                               m_pipelineLayout,
@@ -107,7 +107,7 @@ namespace engine {
             for (auto& fence : m_inFlightFences) {
                 m_device.m_logicalDevice.destroyFence(fence);
             }
-            m_swapChain.reset();
+            m_device.m_swapChain.reset();
         }
 
         void rendering_engine::cleanup_swap_chain_dependancies() {
@@ -129,26 +129,33 @@ namespace engine {
 
             cleanup_swap_chain_dependancies();
 
-            m_swapChain.reset();
+            m_device.m_swapChain.reset();
 
-            auto newSwapChain = std::make_unique<vulkan::swap_chain>(m_device, width, height);
+            auto newSwapChain = std::make_unique<vulkan::swap_chain>(m_device.m_logicalDevice,
+                                                                     m_device.m_physicalDevice,
+                                                                     m_device.m_windowSurface,
+                                                                     m_device.m_queueIndices,
+                                                                     width,
+                                                                     height);
 
-            m_swapChain = std::move(newSwapChain);
-            m_renderPass = vulkan::create_render_pass(m_device.m_logicalDevice, m_swapChain->get_format());
+            m_device.m_swapChain = std::move(newSwapChain);
+            m_renderPass = vulkan::create_render_pass(m_device.m_logicalDevice, m_device.m_swapChain->get_format());
             m_pipelineLayout = vulkan::create_pipeline_layout(m_device.m_logicalDevice, m_descriptorSetLayout);
             m_pipeline = vulkan::create_graphics_pipeline(m_device.m_logicalDevice,
                                                           m_pipelineLayout,
                                                           m_renderPass,
-                                                          m_swapChain->get_extent(),
+                                                          m_device.m_swapChain->get_extent(),
                                                           *m_shaderCompiler.get());
-            m_framebuffers = vulkan::create_framebuffers(
-                m_device.m_logicalDevice, m_renderPass, m_swapChain->get_image_views(), m_swapChain->get_extent());
+            m_framebuffers = vulkan::create_framebuffers(m_device.m_logicalDevice,
+                                                         m_renderPass,
+                                                         m_device.m_swapChain->get_image_views(),
+                                                         m_device.m_swapChain->get_extent());
             m_uniformBuffers =
-                vulkan::create_uniform_buffers(m_device, m_commandPool, m_swapChain->get_image_views().size()),
+                vulkan::create_uniform_buffers(m_device, m_commandPool, m_device.m_swapChain->get_image_views().size()),
             m_descriptorPool =
-                vulkan::create_descriptor_pool(m_device.m_logicalDevice, m_swapChain->get_image_views().size());
+                vulkan::create_descriptor_pool(m_device.m_logicalDevice, m_device.m_swapChain->get_image_views().size());
             m_descriptorSets = vulkan::create_descriptor_sets(m_device.m_logicalDevice,
-                                                              m_swapChain->get_image_views().size(),
+                                                              m_device.m_swapChain->get_image_views().size(),
                                                               m_descriptorPool,
                                                               m_descriptorSetLayout,
                                                               m_uniformBuffers);
@@ -157,7 +164,7 @@ namespace engine {
                                                               m_framebuffers,
                                                               m_renderPass,
                                                               m_pipeline,
-                                                              m_swapChain->get_extent(),
+                                                              m_device.m_swapChain->get_extent(),
                                                               *m_vertexBuffer.get(),
                                                               *m_indexBuffer.get(),
                                                               m_pipelineLayout,
@@ -182,11 +189,11 @@ namespace engine {
             vulkan::uniform_buffer_object ubo;
             ubo.model = glm::rotate(glm::mat4(1.0f), time * glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
             ubo.view = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-            ubo.proj =
-                glm::perspective(glm::radians(45.0f),
-                                 m_swapChain->get_extent().width / static_cast<float>(m_swapChain->get_extent().width),
-                                 0.1f,
-                                 10.0f);
+            ubo.proj = glm::perspective(
+                glm::radians(45.0f),
+                m_device.m_swapChain->get_extent().width / static_cast<float>(m_device.m_swapChain->get_extent().width),
+                0.1f,
+                10.0f);
             ubo.proj[1][1] *= -1;
 
             buffer.update_buffer(ubo);
@@ -206,10 +213,11 @@ namespace engine {
             m_device.m_logicalDevice.waitForFences(
                 1, &m_inFlightFences[currentFrame], true, std::numeric_limits<uint64_t>::max());
 
-            auto acquireResult = m_device.m_logicalDevice.acquireNextImageKHR(m_swapChain->get_native_swapchain(),
-                                                                              std::numeric_limits<uint64_t>::max(),
-                                                                              m_imageAvailable[currentFrame],
-                                                                              vk::Fence());
+            auto acquireResult =
+                m_device.m_logicalDevice.acquireNextImageKHR(m_device.m_swapChain->get_native_swapchain(),
+                                                             std::numeric_limits<uint64_t>::max(),
+                                                             m_imageAvailable[currentFrame],
+                                                             vk::Fence());
 
             if (acquireResult.result == vk::Result::eErrorOutOfDateKHR) {
                 update_framebuffer();
@@ -233,7 +241,8 @@ namespace engine {
 
             m_device.m_graphicsQueueHandle.submit(1, &submitInfo, m_inFlightFences[currentFrame]);
 
-            vk::PresentInfoKHR presentInfo(1, signalSemaphores, 1, &m_swapChain->get_native_swapchain(), &imageIndex);
+            vk::PresentInfoKHR presentInfo(
+                1, signalSemaphores, 1, &m_device.m_swapChain->get_native_swapchain(), &imageIndex);
 
             auto presentResult = m_device.m_presentationQueueHandle.presentKHR(presentInfo);
 

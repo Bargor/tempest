@@ -22,7 +22,10 @@ namespace engine {
                 std::vector<vk::PresentModeKHR> presentModes;
             };
 
-            swap_chain(const device& m_device,
+            swap_chain(const vk::Device& device,
+                       const vk::PhysicalDevice& physicalDevice,
+                       const vk::SurfaceKHR& windowSurface,
+                       const queue_family_indices& indices,
                        std::uint32_t width,
                        std::uint32_t height);
 
@@ -36,7 +39,6 @@ namespace engine {
         private:
             const vk::Device& m_logicalDevice;
             const vk::SurfaceKHR& m_windowSurface;
-            const queue_family_indices& m_indices;
             support_details m_supportDetails;
             vk::SurfaceFormatKHR m_surfaceFormat;
             vk::PresentModeKHR m_presentationMode;
@@ -48,19 +50,19 @@ namespace engine {
             std::vector<vk::ImageView> m_imageViews;
         };
 
-        inline const vk::Extent2D& swap_chain::get_extent() const {
+        TST_INLINE const vk::Extent2D& swap_chain::get_extent() const {
             return m_extent;
         }
 
-        inline const vk::Format& swap_chain::get_format() const {
+        TST_INLINE const vk::Format& swap_chain::get_format() const {
             return m_surfaceFormat.format;
         }
 
-        inline const std::vector<vk::ImageView>& swap_chain::get_image_views() const {
+        TST_INLINE const std::vector<vk::ImageView>& swap_chain::get_image_views() const {
             return m_imageViews;
         }
 
-        inline const vk::SwapchainKHR& swap_chain::get_native_swapchain() const {
+        TST_INLINE const vk::SwapchainKHR& swap_chain::get_native_swapchain() const {
             return m_swapChain;
         }
 
