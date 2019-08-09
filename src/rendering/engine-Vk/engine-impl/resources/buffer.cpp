@@ -33,8 +33,10 @@ namespace engine {
         }
 
         buffer::~buffer() {
-            m_logicalDevice.destroyBuffer(m_buffer);
-            m_logicalDevice.freeMemory(m_bufferMemory);
+            if (m_buffer) {
+                m_logicalDevice.destroyBuffer(m_buffer);
+                m_logicalDevice.freeMemory(m_bufferMemory);
+            }
         }
 
         buffer::buffer(buffer&& other) noexcept
