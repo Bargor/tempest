@@ -142,6 +142,16 @@ namespace engine {
         }
 
         device::~device() {
+            for (auto& semaphore : m_imageAvailable) {
+                m_logicalDevice.destroySemaphore(semaphore);
+            }
+            for (auto& semaphore : m_renderFinished) {
+                m_logicalDevice.destroySemaphore(semaphore);
+            }
+            for (auto& fence : m_inFlightFences) {
+                m_logicalDevice.destroyFence(fence);
+            }
+
             instance::get_instance().m_instance.destroySurfaceKHR(m_windowSurface);
 
             for (auto& commandPool : m_commandPools) {
