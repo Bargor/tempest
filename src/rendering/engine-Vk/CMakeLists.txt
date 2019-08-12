@@ -49,13 +49,26 @@ target_include_directories(engine-impl PUBLIC ${Vulkan_INCLUDE_DIRS})
 
 target_link_libraries(engine-impl PUBLIC tst::application tst::engine-base glfw ${Vulkan_LIBRARIES})
 
-add_custom_target(
-        copy_shader_files
-        ${CMAKE_COMMAND}
-        -D SOURCE_DIR=${CMAKE_CURRENT_SOURCE_DIR}
-        -D DESTINATION_DIR=${RUNTIME_OUTPUT_PATH}/$<CONFIG>/shaders/
-        -P ${PROJECT_SOURCE_DIR}/cmake/CopyShaders.cmake
-        COMMENT "Copying Files for target: test_SphereShader" VERBATIM
-        )
+#Compiler specific options
+if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+	add_custom_target(
+		copy_shader_files
+		${CMAKE_COMMAND}
+		-D SOURCE_DIR=${CMAKE_CURRENT_SOURCE_DIR}
+		-D DESTINATION_DIR=${RUNTIME_OUTPUT_PATH}/$<CONFIG>/shaders/
+		-P ${PROJECT_SOURCE_DIR}/cmake/CopyShaders.cmake
+		COMMENT "Copying Files for target: test_SphereShader" VERBATIM
+		)
+else()
+	add_custom_target(
+		copy_shader_files
+		${CMAKE_COMMAND}
+		-D SOURCE_DIR=${CMAKE_CURRENT_SOURCE_DIR}
+		-D DESTINATION_DIR=${RUNTIME_OUTPUT_PATH}/shaders/
+		-P ${PROJECT_SOURCE_DIR}/cmake/CopyShaders.cmake
+		COMMENT "Copying Files for target: test_SphereShader" VERBATIM
+		)
+endif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+
 
 add_dependencies(engine-impl copy_shader_files)
