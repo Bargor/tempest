@@ -10,9 +10,12 @@
 
 #include <GLFW/glfw3.h>
 #include <algorithm/algorithm.h>
+#include <application/app_event.h>
+#include <application/event_processor.h>
 #include <application/main_window.h>
 #include <fmt/printf.h>
 #include <set>
+#include <util/variant.h>
 
 namespace tst {
 namespace engine {
@@ -101,19 +104,41 @@ namespace engine {
             }
         }
 
-        device::device(application::main_window& mainWindow)
-            : m_windowSurface(create_window_surface(mainWindow.get_handle()))
+        device::device(application::main_window& mainWindow,
+                       application::event_processor<application::app_event>& eventProcessor)
+            : m_frameCounter(0)
+            , m_eventProcessor(eventProcessor)
+            , m_windowSurface(create_window_surface(mainWindow.get_handle()))
             , m_physicalDevice(select_physical_device(m_windowSurface, {VK_KHR_SWAPCHAIN_EXTENSION_NAME}))
             , m_gpuInfo(std::make_unique<gpu_info>(m_physicalDevice))
             , m_queueIndices(compute_queue_indices(m_windowSurface, m_physicalDevice))
             , m_logicalDevice(create_logical_device(
                   m_physicalDevice, m_queueIndices, instance::get_validation_layers(), {VK_KHR_SWAPCHAIN_EXTENSION_NAME}))
-            , m_swapChain(std::make_unique<vulkan::swap_chain>(
-                  m_logicalDevice, m_physicalDevice, m_windowSurface, m_queueIndices, mainWindow.get_size().width, mainWindow.get_size().height))
+            , m_swapChain(std::make_unique<vulkan::swap_chain>(m_logicalDevice,
+                                                               m_physicalDevice,
+                                                               m_windowSurface,
+                                                               m_queueIndices,
+                                                               mainWindow.get_size().width,
+                                                               mainWindow.get_size().height))
             , m_graphicsQueueHandle(m_logicalDevice.getQueue(m_queueIndices.graphicsIndex.value(), 0))
             , m_computeQueueHandle(m_logicalDevice.getQueue(m_queueIndices.computeIndex.value(), 0))
             , m_presentationQueueHandle(m_logicalDevice.getQueue(m_queueIndices.presentationIndex.value(), 0))
-            , m_transferQueueHandle(m_logicalDevice.getQueue(m_queueIndices.transferIndex.value(), 0)) {
+            , m_transferQueueHandle(m_logicalDevice.getQueue(m_queueIndices.transferIndex.value(), 0))
+            , m_imageAvailable({m_logicalDevice.createSemaphore(vk::SemaphoreCreateInfo()),
+                                m_logicalDevice.createSemaphore(vk::SemaphoreCreateInfo())})
+            , m_renderFinished({m_logicalDevice.createSemaphore(vk::SemaphoreCreateInfo()),
+                                m_logicalDevice.createSemaphore(vk::SemaphoreCreateInfo())})
+            , m_inFlightFences({m_logicalDevice.createFence(vk::FenceCreateInfo(vk::FenceCreateFlagBits::eSignaled)),
+                                m_logicalDevice.createFence(vk::FenceCreateInfo(vk::FenceCreateFlagBits::eSignaled))})
+            , m_framebufferResized(false) {
+            auto framebufferResizeCallback = [&](const application::app_event::arguments&) {
+                m_framebufferResized = true;
+            };
+
+            m_eventProcessor.subscribe(
+                core::variant_index<application::app_event::arguments, application::app_event::framebuffer>(),
+                this,
+                std::move(framebufferResizeCallback));
         }
 
         device::~device() {
@@ -151,16 +176,49 @@ namespace engine {
             return shader(m_logicalDevice, type, std::move(source), name);
         }
 
-        void device::startFrame() {
+        bool device::startFrame() {
+            std::uint32_t currentSemaphore = m_frameCounter % m_maxConcurrentFrames;
 
+            m_logicalDevice.waitForFences(
+                1, &m_inFlightFences[currentSemaphore], true, std::numeric_limits<uint64_t>::max());
+
+            auto acquireResult = m_swapChain->acquire_next_image(m_logicalDevice, m_imageAvailable[currentSemaphore]);
+            if (acquireResult == swap_chain::result::resize) {
+                // recreate swap chain
+                return false;
+            } else if (acquireResult == swap_chain::result::fail) {
+                return false;
+            }
+            return true;
         }
 
-        void device::draw() {
+        bool device::draw(const std::vector<vk::CommandBuffer>& commandBuffers) {
+            std::uint32_t currentSemaphore = m_frameCounter % m_maxConcurrentFrames;
 
+            m_logicalDevice.resetFences(1, &m_inFlightFences[currentSemaphore]);
+
+            vk::Semaphore waitSemaphores[] = {m_imageAvailable[currentSemaphore]};
+            vk::Semaphore signalSemaphores[] = {m_renderFinished[currentSemaphore]};
+            vk::PipelineStageFlags waitStages[] = {vk::PipelineStageFlagBits::eColorAttachmentOutput};
+
+            vk::SubmitInfo submitInfo(1, waitSemaphores, waitStages, 1, commandBuffers.data(), 1, signalSemaphores);
+
+            m_graphicsQueueHandle.submit(1, &submitInfo, m_inFlightFences[currentSemaphore]);
+
+            return true;
         }
 
-        void device::endFrame() {
-            
+        bool device::endFrame() {
+            std::uint32_t currentSemaphore = m_frameCounter % m_maxConcurrentFrames;
+
+            auto presentResult =
+                m_swapChain->present_image(m_presentationQueueHandle, m_renderFinished[currentSemaphore]);
+            if (m_framebufferResized || presentResult == swap_chain::result::resize) {
+                return true;
+            } else if (presentResult != swap_chain::result::fail) {
+                return false;
+            }
+            return true;
         }
 
     } // namespace vulkan

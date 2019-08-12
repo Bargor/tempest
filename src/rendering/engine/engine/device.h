@@ -12,16 +12,22 @@
 
 namespace tst {
 namespace application {
+    template<typename Event>
+    class event_processor;
     class main_window;
-}
+
+    struct app_event;
+} // namespace application
 namespace engine {
 
     class device final : public api::device {
         friend class resource_factory;
+
     public:
         using super = api::device;
 
-        device(application::main_window& mainWindow);
+        device(application::main_window& mainWindow,
+               application::event_processor<application::app_event>& eventProcessor);
         ~device();
 
     private:
@@ -29,5 +35,5 @@ namespace engine {
 
     static_assert(!std::is_polymorphic_v<device>);
     static_assert(sizeof(device) == sizeof(api::device));
-}
-}
+} // namespace engine
+} // namespace tst

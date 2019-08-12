@@ -6,10 +6,10 @@
 #include <application/app_event.h>
 #include <application/event_processor.h>
 #include <application/input_processor.h>
-#include <engine/engine.h>
 #include <application/main_window.h>
-#include <fmt/printf.h>
+#include <engine/engine.h>
 #include <engine/resource_factory.h>
+#include <fmt/printf.h>
 #include <scene/scene.h>
 #include <util/variant.h>
 
@@ -26,8 +26,9 @@ namespace application {
         , m_inputProcessor(inputProcessor)
         , m_mainWindow(mainWindow)
         , m_dataLoader(dataLoader)
-        , m_renderingDevice(std::make_unique<engine::device>(m_mainWindow))
-        , m_renderingEngine(std::make_unique<engine::rendering_engine>(m_mainWindow, m_dataLoader, m_eventProcessor, *m_renderingDevice))
+        , m_renderingDevice(std::make_unique<engine::device>(m_mainWindow, m_eventProcessor))
+        , m_renderingEngine(std::make_unique<engine::rendering_engine>(
+              m_mainWindow, m_dataLoader, m_eventProcessor, *m_renderingDevice))
         , m_resourceFactory(std::make_unique<engine::resource_factory>(*m_renderingDevice))
         , m_scene(std::make_unique<scene::scene>())
         , m_frameCounter(0)

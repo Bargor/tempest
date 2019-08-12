@@ -14,8 +14,12 @@
 
 namespace tst {
 namespace application {
+    template<typename Event>
+    class event_processor;
     class main_window;
-}
+
+    struct app_event;
+} // namespace application
 namespace engine {
     namespace vulkan {
 
@@ -30,14 +34,16 @@ namespace engine {
             friend class swap_chain;
 
         public:
-            device(application::main_window& mainWindow);
+            device(application::main_window& mainWindow,
+                   application::event_processor<application::app_event>& eventProcessor);
             device(const device& device) = delete;
             ~device();
 
             vk::CommandPool& create_command_pool();
 
             template<typename IndexType>
-            index_buffer<IndexType> create_index_buffer(std::vector<IndexType>&& indices, const vk::CommandPool& cmdPool) const;
+            index_buffer<IndexType> create_index_buffer(std::vector<IndexType>&& indices,
+                                                        const vk::CommandPool& cmdPool) const;
             vertex_buffer create_vertex_buffer(const vertex_format& format,
                                                std::vector<vertex>&& vertices,
                                                const vk::CommandPool& cmdPool) const;
@@ -47,11 +53,15 @@ namespace engine {
             gpu_info& get_GPU_info() const noexcept;
 
         public:
-            void startFrame();
-            void draw(); 
-            void endFrame();
+            bool startFrame();
+            bool draw(const std::vector<vk::CommandBuffer>& commandBuffers);
+            bool endFrame();
 
         private:
+            static constexpr std::uint32_t m_maxConcurrentFrames = 2;
+
+            std::uint32_t m_frameCounter;
+            application::event_processor<application::app_event>& m_eventProcessor;
             vk::SurfaceKHR m_windowSurface;
             vk::PhysicalDevice m_physicalDevice;
             ptr<gpu_info> m_gpuInfo;
@@ -64,6 +74,12 @@ namespace engine {
             vk::Queue m_transferQueueHandle;
 
             std::vector<vk::CommandPool> m_commandPools;
+
+            std::vector<vk::Semaphore> m_imageAvailable;
+            std::vector<vk::Semaphore> m_renderFinished;
+            std::vector<vk::Fence> m_inFlightFences;
+
+            bool m_framebufferResized;
         };
 
         template<typename IndexType>

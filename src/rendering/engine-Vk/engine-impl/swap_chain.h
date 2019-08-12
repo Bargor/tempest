@@ -16,6 +16,8 @@ namespace engine {
 
         class swap_chain {
         public:
+            enum class result { success, resize, fail };
+
             struct support_details {
                 vk::SurfaceCapabilitiesKHR capabilities;
                 std::vector<vk::SurfaceFormatKHR> formats;
@@ -35,6 +37,8 @@ namespace engine {
             const vk::Format& get_format() const;
             const std::vector<vk::ImageView>& get_image_views() const;
             const vk::SwapchainKHR& get_native_swapchain() const;
+            result acquire_next_image(const vk::Device& device, const vk::Semaphore& imageAvailable);
+            result present_image(const vk::Queue& presentationQueueHandle, const vk::Semaphore& renderFinished);
 
         private:
             const vk::Device& m_logicalDevice;
@@ -48,6 +52,7 @@ namespace engine {
             vk::SwapchainKHR m_swapChain;
             std::vector<vk::Image> m_images;
             std::vector<vk::ImageView> m_imageViews;
+            std::uint32_t m_currentImage;
         };
 
         TST_INLINE const vk::Extent2D& swap_chain::get_extent() const {

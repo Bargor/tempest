@@ -2,6 +2,7 @@
 // Author: Karol Kontny
 #pragma once
 
+#include "device.h"
 #include "draw_info.h"
 #include "engine_init.h"
 #include "queue_indices.h"
@@ -23,7 +24,6 @@ namespace application {
 namespace engine {
 
     namespace vulkan {
-        class device;
         class device_queues;
         class swap_chain;
         class shader_compiler;
@@ -87,8 +87,6 @@ namespace engine {
             std::vector<vk::Fence> m_inFlightFences;
 
             bool m_framebufferResized;
-
-            std::vector<vk::CommandBuffer> m_buffersToRender;
         };
 
         template<typename Iter>
@@ -107,12 +105,8 @@ namespace engine {
         bool rendering_engine::draw_frame(Iter first, Iter last) {
             auto commandBuffers = prepare_draw(first, last);
 
-            for (auto& commandBuffer : commandBuffers) {
-                submit_command_buffer(commandBuffer);
-            }
-
             m_device.startFrame();
-            m_device.draw();
+            m_device.draw(commandBuffers);
             m_device.endFrame();
 
             return true;

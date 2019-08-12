@@ -184,6 +184,35 @@ namespace engine {
             m_logicalDevice.destroySwapchainKHR(m_swapChain);
         }
 
+        swap_chain::result swap_chain::acquire_next_image(const vk::Device& device, const vk::Semaphore& imageAvailable) {
+            auto acquireResult = device.acquireNextImageKHR(
+                m_swapChain, std::numeric_limits<uint64_t>::max(), imageAvailable, vk::Fence());
+
+            if (acquireResult.result == vk::Result::eErrorOutOfDateKHR) {
+                return result::resize;
+            } else if (acquireResult.result != vk::Result::eSuccess &&
+                       acquireResult.result != vk::Result::eSuboptimalKHR) {
+                return result::fail;
+            }
+            m_currentImage = acquireResult.value;
+
+            return result::success;
+        }
+
+        swap_chain::result swap_chain::present_image(const vk::Queue& presentationQueueHandle,
+                                                     const vk::Semaphore& renderFinished) {
+            vk::PresentInfoKHR presentInfo(1, &renderFinished, 1, &m_swapChain, &m_currentImage);
+
+            auto presentResult = presentationQueueHandle.presentKHR(presentInfo);
+
+            if (presentResult == vk::Result::eErrorOutOfDateKHR || presentResult == vk::Result::eSuboptimalKHR) {
+                return result::resize;
+            } else if (presentResult != vk::Result::eSuccess) {
+                return result::fail;
+            }
+            return result::success;
+        }
+
     } // namespace vulkan
 } // namespace engine
 } // namespace tst

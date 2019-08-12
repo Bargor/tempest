@@ -3,7 +3,6 @@
 
 #include "engine.h"
 
-#include "device.h"
 #include "instance.h"
 #include "resources/index_buffer.h"
 #include "resources/uniform_buffer.h"
@@ -151,7 +150,7 @@ namespace engine {
                                                          m_device.m_swapChain->get_image_views(),
                                                          m_device.m_swapChain->get_extent());
             m_uniformBuffers =
-                vulkan::create_uniform_buffers(m_device, m_commandPool, m_device.m_swapChain->get_image_views().size()),
+                vulkan::create_uniform_buffers(m_device, m_commandPool, m_device.m_swapChain->get_image_views().size());
             m_descriptorPool =
                 vulkan::create_descriptor_pool(m_device.m_logicalDevice, m_device.m_swapChain->get_image_views().size());
             m_descriptorSets = vulkan::create_descriptor_sets(m_device.m_logicalDevice,
@@ -203,10 +202,6 @@ namespace engine {
             return vk::CommandBuffer{};
         }
 
-        void rendering_engine::submit_command_buffer(vk::CommandBuffer& buffer) {
-            m_buffersToRender.push_back(buffer);
-        }
-
         void rendering_engine::frame(size_t frameCount) {
             std::uint32_t currentFrame = frameCount % m_maxConcurrentFrames;
 
@@ -252,8 +247,6 @@ namespace engine {
             } else if (presentResult != vk::Result::eSuccess) {
                 throw vulkan::vulkan_exception("Failed to present image");
             }
-
-            m_buffersToRender.clear();
         }
 
         void rendering_engine::start() {
