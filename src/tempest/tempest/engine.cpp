@@ -3,15 +3,17 @@
 
 #include "engine.h"
 
+// clang-format off
+#include <engine/engine.h>
 #include <application/app_event.h>
 #include <application/event_processor.h>
 #include <application/input_processor.h>
 #include <application/main_window.h>
-#include <engine/engine.h>
 #include <engine/resource_factory.h>
 #include <fmt/printf.h>
 #include <scene/scene.h>
 #include <util/variant.h>
+// clang-format on
 
 namespace tst {
 namespace application {
