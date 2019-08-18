@@ -39,6 +39,7 @@ namespace engine {
             const vk::SwapchainKHR& get_native_swapchain() const;
             result acquire_next_image(const vk::Device& device, const vk::Semaphore& imageAvailable);
             result present_image(const vk::Queue& presentationQueueHandle, const vk::Semaphore& renderFinished);
+            std::uint32_t get_image_index() const;
 
         private:
             const vk::Device& m_logicalDevice;
@@ -69,6 +70,10 @@ namespace engine {
 
         TST_INLINE const vk::SwapchainKHR& swap_chain::get_native_swapchain() const {
             return m_swapChain;
+        }
+
+        TST_INLINE std::uint32_t swap_chain::get_image_index() const {
+            return m_currentImage;
         }
 
     } // namespace vulkan

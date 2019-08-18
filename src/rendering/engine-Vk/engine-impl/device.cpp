@@ -229,6 +229,7 @@ namespace engine {
                 return false;
             }
             return true;
+
         }
 
     } // namespace vulkan

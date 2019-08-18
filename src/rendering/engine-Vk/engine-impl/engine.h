@@ -103,9 +103,10 @@ namespace engine {
 
         template<typename Iter>
         bool rendering_engine::draw_frame(Iter first, Iter last) {
+            m_device.startFrame();
             auto commandBuffers = prepare_draw(first, last);
 
-            m_device.startFrame();
+            
             m_device.draw(commandBuffers);
             m_device.endFrame();
 

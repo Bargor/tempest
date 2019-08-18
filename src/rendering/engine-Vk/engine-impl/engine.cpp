@@ -3,6 +3,7 @@
 
 #include "engine.h"
 
+#include "draw_info.h"
 #include "instance.h"
 #include "resources/index_buffer.h"
 #include "resources/uniform_buffer.h"
@@ -198,8 +199,36 @@ namespace engine {
             buffer.update_buffer(ubo);
         }
 
-        vk::CommandBuffer rendering_engine::generate_command_buffer(const draw_info&) {
-            return vk::CommandBuffer{};
+        vk::CommandBuffer rendering_engine::generate_command_buffer(const draw_info& drawInfo) {
+            vk::CommandBufferAllocateInfo bufferAllocateInfo(m_commandPool, vk::CommandBufferLevel::ePrimary, 1);
+
+            auto commandBuffers = m_device.m_logicalDevice.allocateCommandBuffers(bufferAllocateInfo);
+
+            vk::CommandBufferBeginInfo commandBufferInfo(vk::CommandBufferUsageFlagBits::eSimultaneousUse, nullptr);
+            commandBuffers[0].begin(commandBufferInfo);
+
+            vk::ClearValue clearColor = vk::ClearValue(std::array<float, 4>{0.0f, 0.0f, 0.0f, 1.0f});
+
+            vk::RenderPassBeginInfo renderPassInfo(
+                m_renderPass, m_framebuffers[m_device.m_swapChain->get_image_index()], vk::Rect2D({0, 0}, m_device.m_swapChain->get_extent()), 1, &clearColor);
+
+            commandBuffers[0].beginRenderPass(renderPassInfo, vk::SubpassContents::eInline);
+            commandBuffers[0].bindPipeline(vk::PipelineBindPoint::eGraphics, m_pipeline);
+
+            std::vector<vk::Buffer> vertexBuffers = {drawInfo.m_vertices->get_handle()};
+            std::vector<vk::DeviceSize> offsets = {0};
+            commandBuffers[0].bindVertexBuffers(0, vertexBuffers, offsets);
+            commandBuffers[0].bindIndexBuffer(drawInfo.m_indices->get_handle(), 0, vk::IndexType::eUint16);
+            commandBuffers[0].bindDescriptorSets(vk::PipelineBindPoint::eGraphics,
+                                                 m_pipelineLayout,
+                                                 0,
+                                                 m_descriptorSets[m_device.m_swapChain->get_image_index()],
+                                                 {});
+            commandBuffers[0].drawIndexed(drawInfo.m_indices->get_index_count(), 1, 0, 0, 0);
+            commandBuffers[0].endRenderPass();
+            commandBuffers[0].end();
+
+            return commandBuffers[0];
         }
 
         void rendering_engine::frame(size_t frameCount) {
