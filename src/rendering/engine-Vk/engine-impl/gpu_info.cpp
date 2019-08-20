@@ -6,31 +6,32 @@
 namespace tst {
 namespace engine {
     namespace vulkan {
-        gpu_info::gpu_info(const vk::PhysicalDevice& physicalDevice) {
+        gpu_info::gpu_info(vk::PhysicalDevice physicalDevice) {
             auto deviceProperties = physicalDevice.getProperties();
             super::versionMajor = VK_VERSION_MAJOR(deviceProperties.apiVersion);
             super::versionMinor = VK_VERSION_MINOR(deviceProperties.apiVersion);
             super::versionPatch = VK_VERSION_PATCH(deviceProperties.apiVersion);
 
             switch (deviceProperties.deviceType) {
-            case vk::PhysicalDeviceType::eDiscreteGpu: 
+            case vk::PhysicalDeviceType::eDiscreteGpu:
                 super::deviceType = device_type::discrete;
                 break;
             case vk::PhysicalDeviceType::eIntegratedGpu:
                 super::deviceType = device_type::integrated;
                 break;
-            case vk::PhysicalDeviceType::eCpu: 
+            case vk::PhysicalDeviceType::eCpu:
                 super::deviceType = device_type::cpu;
                 break;
-            default: super::deviceType = device_type::other;
+            default:
+                super::deviceType = device_type::other;
             }
             switch (deviceProperties.vendorID) {
             case 0x10DE:
                 super::deviceVendor = device_vendor::nvidia;
                 break;
-            case 0x1002: 
+            case 0x1002:
                 super::deviceVendor = device_vendor::amd;
-                break; 
+                break;
             case 0x8086:
                 super::deviceVendor = device_vendor::intel;
                 break;

@@ -44,9 +44,7 @@ namespace engine {
                                  });
         }
 
-        std::uint32_t rate_device(vk::PhysicalDevice device) {
-            auto info = gpu_info(device);
-
+        std::uint32_t rate_device(gpu_info info) {
             std::uint32_t score = 0;
 
             switch (info.deviceType) {
@@ -66,8 +64,8 @@ namespace engine {
             return score;
         }
 
-        vk::PhysicalDevice select_physical_device(vk::SurfaceKHR& surface,
-                                                  const std::vector<const char*>& requiredExtensions) {
+        ptr<physical_device> select_physical_device(vk::SurfaceKHR& surface,
+                                                    const std::vector<const char*>& requiredExtensions) {
             auto& instance = instance::get_instance();
             std::vector<vk::PhysicalDevice> devices = instance.get_instance_handle().enumeratePhysicalDevices();
 
@@ -76,19 +74,20 @@ namespace engine {
             }
 
             std::uint32_t maxScore = 0;
-            vk::PhysicalDevice bestDevice;
+            ptr<physical_device> bestDevice;
 
             for (const auto& device : devices) {
                 try {
                     if (!check_extensions_support(device, requiredExtensions)) {
                         throw vulkan_exception("Device is not supporting required extenstions");
                     }
-                    compute_queue_indices(surface, device);
+                    auto indices = compute_queue_indices(surface, device);
+                    ptr<gpu_info> info = std::make_unique<gpu_info>(device);
 
                     std::uint32_t score = rate_device(device);
 
                     if (maxScore < score) {
-                        bestDevice = device;
+                        bestDevice = std::make_unique<physical_device>(device, std::move(info), indices);
                         maxScore = score;
                     }
 
@@ -103,59 +102,25 @@ namespace engine {
             throw vulkan_exception("Failed to find a suitable GPU!");
         }
 
-        vk::Device create_logical_device(const vk::PhysicalDevice& physicalDevice,
-                                         const queue_family_indices& indices,
-                                         const std::vector<const char*>& validationLayers,
-                                         const std::vector<const char*>& extensions) {
-            std::vector<vk::DeviceQueueCreateInfo> queueCreateInfos;
-
-            std::set<std::uint32_t> uniqueQueueFamilies = {indices.graphicsIndex.value(),
-                                                           indices.presentationIndex.value(),
-                                                           indices.computeIndex.value(),
-                                                           indices.transferIndex.value()};
-
-            float queuePriority = 1.0f;
-            for (uint32_t queueFamily : uniqueQueueFamilies) {
-                vk::DeviceQueueCreateInfo queueCreateInfo(vk::DeviceQueueCreateFlags(), queueFamily, 1, &queuePriority);
-                queueCreateInfos.push_back(queueCreateInfo);
-            }
-
-            vk::DeviceCreateInfo createInfo(vk::DeviceCreateFlags(),
-                                            static_cast<uint32_t>(queueCreateInfos.size()),
-                                            queueCreateInfos.data(),
-                                            static_cast<uint32_t>(validationLayers.size()),
-                                            validationLayers.data(),
-                                            static_cast<uint32_t>(extensions.size()),
-                                            extensions.data(),
-                                            nullptr);
-
-            try {
-                return physicalDevice.createDevice(createInfo);
-            } catch (std::runtime_error&) {
-                throw vulkan_exception("Failed to create logical device!");
-            }
-        }
-
         device::device(application::main_window& mainWindow,
                        application::event_processor<application::app_event>& eventProcessor)
             : m_frameCounter(0)
             , m_eventProcessor(eventProcessor)
             , m_windowSurface(create_window_surface(mainWindow.get_handle()))
             , m_physicalDevice(select_physical_device(m_windowSurface, {VK_KHR_SWAPCHAIN_EXTENSION_NAME}))
-            , m_gpuInfo(std::make_unique<gpu_info>(m_physicalDevice))
-            , m_queueIndices(compute_queue_indices(m_windowSurface, m_physicalDevice))
-            , m_logicalDevice(create_logical_device(
-                  m_physicalDevice, m_queueIndices, instance::get_validation_layers(), {VK_KHR_SWAPCHAIN_EXTENSION_NAME}))
+            , m_logicalDevice(m_physicalDevice->create_logical_device(instance::get_validation_layers(),
+                                                                      {VK_KHR_SWAPCHAIN_EXTENSION_NAME}))
             , m_swapChain(std::make_unique<vulkan::swap_chain>(m_logicalDevice,
-                                                               m_physicalDevice,
+                                                               m_physicalDevice->get_device_handle(),
                                                                m_windowSurface,
-                                                               m_queueIndices,
+                                                               m_physicalDevice->get_graphics_index(),
+                                                               m_physicalDevice->get_presentation_index(),
                                                                mainWindow.get_size().width,
                                                                mainWindow.get_size().height))
-            , m_graphicsQueueHandle(m_logicalDevice.getQueue(m_queueIndices.graphicsIndex.value(), 0))
-            , m_computeQueueHandle(m_logicalDevice.getQueue(m_queueIndices.computeIndex.value(), 0))
-            , m_presentationQueueHandle(m_logicalDevice.getQueue(m_queueIndices.presentationIndex.value(), 0))
-            , m_transferQueueHandle(m_logicalDevice.getQueue(m_queueIndices.transferIndex.value(), 0))
+            , m_graphicsQueueHandle(m_logicalDevice.getQueue(m_physicalDevice->get_graphics_index(), 0))
+            , m_computeQueueHandle(m_logicalDevice.getQueue(m_physicalDevice->get_compute_index(), 0))
+            , m_presentationQueueHandle(m_logicalDevice.getQueue(m_physicalDevice->get_presentation_index(), 0))
+            , m_transferQueueHandle(m_logicalDevice.getQueue(m_physicalDevice->get_transfer_index(), 0))
             , m_imageAvailable({m_logicalDevice.createSemaphore(vk::SemaphoreCreateInfo()),
                                 m_logicalDevice.createSemaphore(vk::SemaphoreCreateInfo())})
             , m_renderFinished({m_logicalDevice.createSemaphore(vk::SemaphoreCreateInfo()),
@@ -194,7 +159,7 @@ namespace engine {
         }
 
         vk::CommandPool& device::create_command_pool() {
-            vk::CommandPoolCreateInfo createInfo(vk::CommandPoolCreateFlags(), m_queueIndices.graphicsIndex.value());
+            vk::CommandPoolCreateInfo createInfo(vk::CommandPoolCreateFlags(), m_physicalDevice->get_graphics_index());
 
             m_commandPools.push_back(m_logicalDevice.createCommandPool(createInfo));
 
@@ -204,12 +169,16 @@ namespace engine {
         vertex_buffer device::create_vertex_buffer(const vertex_format& format,
                                                    std::vector<vertex>&& vertices,
                                                    const vk::CommandPool& cmdPool) const {
-            return vertex_buffer(
-                m_logicalDevice, m_physicalDevice, m_graphicsQueueHandle, cmdPool, format, std::move(vertices));
+            return vertex_buffer(m_logicalDevice,
+                                 m_physicalDevice->get_device_handle(),
+                                 m_graphicsQueueHandle,
+                                 cmdPool,
+                                 format,
+                                 std::move(vertices));
         }
 
         uniform_buffer device::create_uniform_buffer(const vk::CommandPool& cmdPool) const {
-            return uniform_buffer(m_logicalDevice, m_physicalDevice, m_graphicsQueueHandle, cmdPool);
+            return uniform_buffer(m_logicalDevice, m_physicalDevice->get_device_handle(), m_graphicsQueueHandle, cmdPool);
         }
 
         shader device::crate_shader(shader::shader_type type,

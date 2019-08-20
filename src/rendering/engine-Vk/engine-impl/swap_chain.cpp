@@ -65,7 +65,8 @@ namespace engine {
 
             vk::SwapchainKHR create_swap_chain(const vk::SurfaceKHR& m_windowSurface,
                                                const vk::Device& logicalDevice,
-                                               const queue_family_indices& queueIndices,
+                                               std::uint32_t graphicsQueueIndex,
+                                               std::uint32_t presentationQueueIndex,
                                                const swap_chain::support_details& supportDetails,
                                                const vk::SurfaceFormatKHR surfaceFormat,
                                                const vk::PresentModeKHR& presentationMode,
@@ -77,13 +78,12 @@ namespace engine {
                     imageCount = supportDetails.capabilities.maxImageCount;
                 }
 
-                uint32_t queueFamilyIndices[] = {queueIndices.graphicsIndex.value(),
-                                                 queueIndices.presentationIndex.value()};
+                uint32_t queueFamilyIndices[] = {graphicsQueueIndex, presentationQueueIndex};
 
                 vk::SharingMode sharingMode;
                 std::uint32_t queueFamilyIndexCount;
 
-                if (queueIndices.graphicsIndex != queueIndices.presentationIndex) {
+                if (graphicsQueueIndex != presentationQueueIndex) {
                     sharingMode = vk::SharingMode::eConcurrent;
                     queueFamilyIndexCount = 2;
                 } else {
@@ -102,7 +102,7 @@ namespace engine {
                     vk::ImageUsageFlagBits::eColorAttachment,
                     sharingMode,
                     queueFamilyIndexCount,
-                    queueIndices.graphicsIndex != queueIndices.presentationIndex ? queueFamilyIndices : nullptr,
+                    graphicsQueueIndex != presentationQueueIndex ? queueFamilyIndices : nullptr,
                     supportDetails.capabilities.currentTransform,
                     vk::CompositeAlphaFlagBitsKHR::eOpaque,
                     presentationMode,
@@ -156,7 +156,8 @@ namespace engine {
         swap_chain::swap_chain(const vk::Device& device,
                                const vk::PhysicalDevice& physicalDevice,
                                const vk::SurfaceKHR& windowSurface,
-                               const queue_family_indices& indices,
+                               std::uint32_t graphicsQueueIndex,
+                               std::uint32_t presentationQueueIndex,
                                std::uint32_t width,
                                std::uint32_t height)
             : m_logicalDevice(device)
@@ -167,7 +168,8 @@ namespace engine {
             , m_extent(choose_extent(m_supportDetails.capabilities, width, height))
             , m_swapChain(create_swap_chain(m_windowSurface,
                                             m_logicalDevice,
-                                            indices,
+                                            graphicsQueueIndex,
+                                            presentationQueueIndex,
                                             m_supportDetails,
                                             m_surfaceFormat,
                                             m_presentationMode,

@@ -2,7 +2,8 @@
 // Author: Karol Kontny
 #pragma once
 
-#include "queue_indices.h"
+#include "api.h"
+#include "physical_device.h"
 #include "resources/index_buffer.h"
 #include "resources/shader.h"
 #include "resources/uniform_buffer.h"
@@ -27,9 +28,6 @@ namespace engine {
         class swap_chain;
 
         class device {
-            template<typename T>
-            using ptr = std::unique_ptr<T>;
-
             friend class rendering_engine;
             friend class swap_chain;
 
@@ -63,9 +61,7 @@ namespace engine {
             std::uint32_t m_frameCounter;
             application::event_processor<application::app_event>& m_eventProcessor;
             vk::SurfaceKHR m_windowSurface;
-            vk::PhysicalDevice m_physicalDevice;
-            ptr<gpu_info> m_gpuInfo;
-            queue_family_indices m_queueIndices;
+            ptr<physical_device> m_physicalDevice;
             vk::Device m_logicalDevice;
             ptr<swap_chain> m_swapChain;
             vk::Queue m_graphicsQueueHandle;
@@ -86,7 +82,7 @@ namespace engine {
         index_buffer<IndexType> device::create_index_buffer(std::vector<IndexType>&& indices,
                                                             const vk::CommandPool& cmdPool) const {
             return index_buffer<std::uint16_t>(m_logicalDevice,
-                                               m_physicalDevice,
+                                               m_physicalDevice->get_device_handle(),
                                                m_graphicsQueueHandle,
                                                cmdPool,
                                                vk::IndexType::eUint16,
@@ -94,7 +90,7 @@ namespace engine {
         }
 
         TST_INLINE gpu_info& device::get_GPU_info() const noexcept {
-            return *m_gpuInfo;
+            return m_physicalDevice->get_GPU_info();
         }
 
     } // namespace vulkan

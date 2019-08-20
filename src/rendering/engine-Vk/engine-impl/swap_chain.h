@@ -27,7 +27,8 @@ namespace engine {
             swap_chain(const vk::Device& device,
                        const vk::PhysicalDevice& physicalDevice,
                        const vk::SurfaceKHR& windowSurface,
-                       const queue_family_indices& indices,
+                       std::uint32_t graphicsQueueIndex,
+                       std::uint32_t presentationQueueIndex,
                        std::uint32_t width,
                        std::uint32_t height);
 

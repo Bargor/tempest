@@ -132,9 +132,10 @@ namespace engine {
             m_device.m_swapChain.reset();
 
             auto newSwapChain = std::make_unique<vulkan::swap_chain>(m_device.m_logicalDevice,
-                                                                     m_device.m_physicalDevice,
+                                                                     m_device.m_physicalDevice->get_device_handle(),
                                                                      m_device.m_windowSurface,
-                                                                     m_device.m_queueIndices,
+                                                                     m_device.m_physicalDevice->get_graphics_index(),
+                                                                     m_device.m_physicalDevice->get_presentation_index(),
                                                                      width,
                                                                      height);
 
@@ -209,8 +210,11 @@ namespace engine {
 
             vk::ClearValue clearColor = vk::ClearValue(std::array<float, 4>{0.0f, 0.0f, 0.0f, 1.0f});
 
-            vk::RenderPassBeginInfo renderPassInfo(
-                m_renderPass, m_framebuffers[m_device.m_swapChain->get_image_index()], vk::Rect2D({0, 0}, m_device.m_swapChain->get_extent()), 1, &clearColor);
+            vk::RenderPassBeginInfo renderPassInfo(m_renderPass,
+                                                   m_framebuffers[m_device.m_swapChain->get_image_index()],
+                                                   vk::Rect2D({0, 0}, m_device.m_swapChain->get_extent()),
+                                                   1,
+                                                   &clearColor);
 
             commandBuffers[0].beginRenderPass(renderPassInfo, vk::SubpassContents::eInline);
             commandBuffers[0].bindPipeline(vk::PipelineBindPoint::eGraphics, m_pipeline);
