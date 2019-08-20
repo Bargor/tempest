@@ -12,18 +12,24 @@ namespace engine {
 
         class gpu_info;
 
+        struct surface_support_info {
+            vk::SurfaceCapabilitiesKHR capabilities;
+            std::vector<vk::SurfaceFormatKHR> formats;
+            std::vector<vk::PresentModeKHR> presentModes;
+        };
+
         class physical_device {
         public:
             physical_device(vk::PhysicalDevice device, ptr<gpu_info> info, queue_family_indices& indices);
 
-            vk::PhysicalDevice& get_device_handle() noexcept;
             std::uint32_t get_graphics_index() const noexcept;
             std::uint32_t get_transfer_index() const noexcept;
             std::uint32_t get_compute_index() const noexcept;
             std::uint32_t get_presentation_index() const noexcept;
             gpu_info& get_GPU_info() const noexcept;
-            vk::PhysicalDeviceMemoryProperties get_memory_properties() const noexcept;
 
+            vk::PhysicalDeviceMemoryProperties get_memory_properties() const noexcept;
+            surface_support_info get_surface_support_info(vk::SurfaceKHR windowSurface) const;
             vk::Device create_logical_device(const std::vector<const char*>& validationLayers,
                                              const std::vector<const char*>& extensions);
 
@@ -32,10 +38,6 @@ namespace engine {
             ptr<gpu_info> m_gpuInfo;
             queue_family_indices m_queueIndices;
         };
-
-        TST_INLINE vk::PhysicalDevice& physical_device::get_device_handle() noexcept {
-            return m_physicalDevice;
-        }
 
         TST_INLINE std::uint32_t physical_device::get_graphics_index() const noexcept {
             return m_queueIndices.graphicsIndex.value();

@@ -131,13 +131,14 @@ namespace engine {
 
             m_device.m_swapChain.reset();
 
-            auto newSwapChain = std::make_unique<vulkan::swap_chain>(m_device.m_logicalDevice,
-                                                                     m_device.m_physicalDevice->get_device_handle(),
-                                                                     m_device.m_windowSurface,
-                                                                     m_device.m_physicalDevice->get_graphics_index(),
-                                                                     m_device.m_physicalDevice->get_presentation_index(),
-                                                                     width,
-                                                                     height);
+            auto newSwapChain = std::make_unique<swap_chain>(
+                m_device.m_logicalDevice,
+                m_device.m_windowSurface,
+                m_device.m_physicalDevice->get_surface_support_info(m_device.m_windowSurface),
+                m_device.m_physicalDevice->get_graphics_index(),
+                m_device.m_physicalDevice->get_presentation_index(),
+                width,
+                height);
 
             m_device.m_swapChain = std::move(newSwapChain);
             m_renderPass = vulkan::create_render_pass(m_device.m_logicalDevice, m_device.m_swapChain->get_format());

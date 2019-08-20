@@ -67,15 +67,14 @@ namespace engine {
                                                const vk::Device& logicalDevice,
                                                std::uint32_t graphicsQueueIndex,
                                                std::uint32_t presentationQueueIndex,
-                                               const swap_chain::support_details& supportDetails,
+                                               const surface_support_info& supportInfo,
                                                const vk::SurfaceFormatKHR surfaceFormat,
                                                const vk::PresentModeKHR& presentationMode,
                                                const vk::Extent2D& extent,
                                                std::uint32_t& imageCount) {
-                imageCount = supportDetails.capabilities.minImageCount + 1;
-                if (supportDetails.capabilities.maxImageCount > 0 &&
-                    imageCount > supportDetails.capabilities.maxImageCount) {
-                    imageCount = supportDetails.capabilities.maxImageCount;
+                imageCount = supportInfo.capabilities.minImageCount + 1;
+                if (supportInfo.capabilities.maxImageCount > 0 && imageCount > supportInfo.capabilities.maxImageCount) {
+                    imageCount = supportInfo.capabilities.maxImageCount;
                 }
 
                 uint32_t queueFamilyIndices[] = {graphicsQueueIndex, presentationQueueIndex};
@@ -103,7 +102,7 @@ namespace engine {
                     sharingMode,
                     queueFamilyIndexCount,
                     graphicsQueueIndex != presentationQueueIndex ? queueFamilyIndices : nullptr,
-                    supportDetails.capabilities.currentTransform,
+                    supportInfo.capabilities.currentTransform,
                     vk::CompositeAlphaFlagBitsKHR::eOpaque,
                     presentationMode,
                     true,
@@ -140,37 +139,26 @@ namespace engine {
                 return imageViews;
             }
 
-            swap_chain::support_details check_support(const vk::PhysicalDevice& physicalDevice,
-                                                      const vk::SurfaceKHR& m_windowSurface) {
-                swap_chain::support_details details;
-
-                details.capabilities = physicalDevice.getSurfaceCapabilitiesKHR(m_windowSurface);
-                details.formats = physicalDevice.getSurfaceFormatsKHR(m_windowSurface);
-                details.presentModes = physicalDevice.getSurfacePresentModesKHR(m_windowSurface);
-
-                return details;
-            }
-
         } // namespace
 
         swap_chain::swap_chain(const vk::Device& device,
-                               const vk::PhysicalDevice& physicalDevice,
                                const vk::SurfaceKHR& windowSurface,
+                               const surface_support_info& info,
                                std::uint32_t graphicsQueueIndex,
                                std::uint32_t presentationQueueIndex,
                                std::uint32_t width,
                                std::uint32_t height)
             : m_logicalDevice(device)
             , m_windowSurface(windowSurface)
-            , m_supportDetails(check_support(physicalDevice, m_windowSurface))
-            , m_surfaceFormat(choose_surface_format(m_supportDetails.formats))
-            , m_presentationMode(choose_presentation_mode(m_supportDetails.presentModes))
-            , m_extent(choose_extent(m_supportDetails.capabilities, width, height))
+            , m_supportInfo(info)
+            , m_surfaceFormat(choose_surface_format(m_supportInfo.formats))
+            , m_presentationMode(choose_presentation_mode(m_supportInfo.presentModes))
+            , m_extent(choose_extent(m_supportInfo.capabilities, width, height))
             , m_swapChain(create_swap_chain(m_windowSurface,
                                             m_logicalDevice,
                                             graphicsQueueIndex,
                                             presentationQueueIndex,
-                                            m_supportDetails,
+                                            m_supportInfo,
                                             m_surfaceFormat,
                                             m_presentationMode,
                                             m_extent,

@@ -15,6 +15,16 @@ namespace engine {
             : m_physicalDevice(device), m_gpuInfo(std::move(info)), m_queueIndices(indices) {
         }
 
+        surface_support_info physical_device::get_surface_support_info(vk::SurfaceKHR windowSurface) const {
+            surface_support_info info;
+
+            info.capabilities = m_physicalDevice.getSurfaceCapabilitiesKHR(windowSurface);
+            info.formats = m_physicalDevice.getSurfaceFormatsKHR(windowSurface);
+            info.presentModes = m_physicalDevice.getSurfacePresentModesKHR(windowSurface);
+
+            return info;
+        }
+
         vk::Device physical_device::create_logical_device(const std::vector<const char*>& validationLayers,
                                                           const std::vector<const char*>& extensions) {
             std::vector<vk::DeviceQueueCreateInfo> queueCreateInfos;

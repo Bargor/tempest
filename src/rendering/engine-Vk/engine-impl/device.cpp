@@ -110,13 +110,13 @@ namespace engine {
             , m_physicalDevice(select_physical_device(m_windowSurface, {VK_KHR_SWAPCHAIN_EXTENSION_NAME}))
             , m_logicalDevice(m_physicalDevice->create_logical_device(instance::get_validation_layers(),
                                                                       {VK_KHR_SWAPCHAIN_EXTENSION_NAME}))
-            , m_swapChain(std::make_unique<vulkan::swap_chain>(m_logicalDevice,
-                                                               m_physicalDevice->get_device_handle(),
-                                                               m_windowSurface,
-                                                               m_physicalDevice->get_graphics_index(),
-                                                               m_physicalDevice->get_presentation_index(),
-                                                               mainWindow.get_size().width,
-                                                               mainWindow.get_size().height))
+            , m_swapChain(std::make_unique<swap_chain>(m_logicalDevice,
+                                                       m_windowSurface,
+                                                       m_physicalDevice->get_surface_support_info(m_windowSurface),
+                                                       m_physicalDevice->get_graphics_index(),
+                                                       m_physicalDevice->get_presentation_index(),
+                                                       mainWindow.get_size().width,
+                                                       mainWindow.get_size().height))
             , m_graphicsQueueHandle(m_logicalDevice.getQueue(m_physicalDevice->get_graphics_index(), 0))
             , m_computeQueueHandle(m_logicalDevice.getQueue(m_physicalDevice->get_compute_index(), 0))
             , m_presentationQueueHandle(m_logicalDevice.getQueue(m_physicalDevice->get_presentation_index(), 0))

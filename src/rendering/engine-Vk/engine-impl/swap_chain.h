@@ -2,6 +2,8 @@
 // Author: Karol Kontny
 #pragma once
 
+#include "physical_device.h"
+
 #include <vector>
 #include <vulkan/vulkan.hpp>
 
@@ -18,15 +20,9 @@ namespace engine {
         public:
             enum class result { success, resize, fail };
 
-            struct support_details {
-                vk::SurfaceCapabilitiesKHR capabilities;
-                std::vector<vk::SurfaceFormatKHR> formats;
-                std::vector<vk::PresentModeKHR> presentModes;
-            };
-
             swap_chain(const vk::Device& device,
-                       const vk::PhysicalDevice& physicalDevice,
                        const vk::SurfaceKHR& windowSurface,
+                       const surface_support_info& info,
                        std::uint32_t graphicsQueueIndex,
                        std::uint32_t presentationQueueIndex,
                        std::uint32_t width,
@@ -45,7 +41,7 @@ namespace engine {
         private:
             const vk::Device& m_logicalDevice;
             const vk::SurfaceKHR& m_windowSurface;
-            support_details m_supportDetails;
+            surface_support_info m_supportInfo;
             vk::SurfaceFormatKHR m_surfaceFormat;
             vk::PresentModeKHR m_presentationMode;
             vk::Extent2D m_extent;
