@@ -10,15 +10,15 @@ namespace engine {
     namespace vulkan {
 
         uniform_buffer::uniform_buffer(const vk::Device& logicalDevice,
-                                       const vk::PhysicalDevice& physicalDevice,
                                        const vk::Queue queueHandle,
-                                       const vk::CommandPool& cmdPool)
+                                       const vk::CommandPool& cmdPool,
+                                       const vk::PhysicalDeviceMemoryProperties& memoryProperties)
             : buffer(logicalDevice,
-                     physicalDevice,
                      queueHandle,
                      cmdPool,
                      sizeof(uniform_buffer_object),
                      vk::BufferUsageFlagBits::eUniformBuffer,
+                     memoryProperties,
                      vk::MemoryPropertyFlagBits::eHostCoherent | vk::MemoryPropertyFlagBits::eHostVisible) {
         }
 

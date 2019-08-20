@@ -20,10 +20,9 @@ namespace engine {
         class uniform_buffer : public buffer {
         public:
             uniform_buffer(const vk::Device& logicalDevice,
-                           const vk::PhysicalDevice& m_physicallDevice,
                            const vk::Queue m_queueHandle,
-                           const vk::CommandPool& cmdPool);
-
+                           const vk::CommandPool& cmdPool,
+                           const vk::PhysicalDeviceMemoryProperties& memoryProperties);
             uniform_buffer(uniform_buffer&& other) noexcept;
             uniform_buffer(const uniform_buffer& other) = delete;
 

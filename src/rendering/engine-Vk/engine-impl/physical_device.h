@@ -22,6 +22,7 @@ namespace engine {
             std::uint32_t get_compute_index() const noexcept;
             std::uint32_t get_presentation_index() const noexcept;
             gpu_info& get_GPU_info() const noexcept;
+            vk::PhysicalDeviceMemoryProperties get_memory_properties() const noexcept;
 
             vk::Device create_logical_device(const std::vector<const char*>& validationLayers,
                                              const std::vector<const char*>& extensions);
@@ -54,6 +55,10 @@ namespace engine {
 
         TST_INLINE gpu_info& physical_device::get_GPU_info() const noexcept {
             return *m_gpuInfo;
+        }
+
+        TST_INLINE vk::PhysicalDeviceMemoryProperties physical_device::get_memory_properties() const noexcept {
+            return m_physicalDevice.getMemoryProperties();
         }
 
     } // namespace vulkan

@@ -82,9 +82,9 @@ namespace engine {
         index_buffer<IndexType> device::create_index_buffer(std::vector<IndexType>&& indices,
                                                             const vk::CommandPool& cmdPool) const {
             return index_buffer<std::uint16_t>(m_logicalDevice,
-                                               m_physicalDevice->get_device_handle(),
                                                m_graphicsQueueHandle,
                                                cmdPool,
+                                               m_physicalDevice->get_memory_properties(),
                                                vk::IndexType::eUint16,
                                                std::move(indices));
         }

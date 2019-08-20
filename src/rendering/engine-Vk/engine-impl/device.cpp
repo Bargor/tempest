@@ -170,15 +170,16 @@ namespace engine {
                                                    std::vector<vertex>&& vertices,
                                                    const vk::CommandPool& cmdPool) const {
             return vertex_buffer(m_logicalDevice,
-                                 m_physicalDevice->get_device_handle(),
                                  m_graphicsQueueHandle,
                                  cmdPool,
+                                 m_physicalDevice->get_memory_properties(),
                                  format,
                                  std::move(vertices));
         }
 
         uniform_buffer device::create_uniform_buffer(const vk::CommandPool& cmdPool) const {
-            return uniform_buffer(m_logicalDevice, m_physicalDevice->get_device_handle(), m_graphicsQueueHandle, cmdPool);
+            return uniform_buffer(
+                m_logicalDevice, m_graphicsQueueHandle, cmdPool, m_physicalDevice->get_memory_properties());
         }
 
         shader device::crate_shader(shader::shader_type type,
