@@ -55,7 +55,7 @@ namespace engine {
             void cleanup_swap_chain_dependancies();
             void recreate_swap_chain(std::uint32_t width, std::uint32_t height);
             void update_framebuffer();
-            void update_uniform_buffer(vulkan::uniform_buffer& buffer);
+            void update_uniform_buffer(uniform_buffer& buffer);
             void submit_command_buffer(vk::CommandBuffer& buffer);
 
             template<typename Iter>
@@ -106,7 +106,6 @@ namespace engine {
             m_device.startFrame();
             auto commandBuffers = prepare_draw(first, last);
 
-            
             m_device.draw(commandBuffers);
             m_device.endFrame();
 
