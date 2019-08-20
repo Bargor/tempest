@@ -44,6 +44,28 @@ namespace engine {
                                  });
         }
 
+        std::uint32_t rate_device(vk::PhysicalDevice device) {
+            auto info = gpu_info(device);
+
+            std::uint32_t score = 0;
+
+            switch (info.deviceType) {
+            case gpu_info::device_type::discrete:
+                score += 100;
+                break;
+            case gpu_info::device_type::integrated:
+                score += 10;
+                break;
+            case gpu_info::device_type::cpu:
+                score += 1;
+                break;
+            case gpu_info::device_type::other:
+                break;
+            }
+
+            return score;
+        }
+
         vk::PhysicalDevice select_physical_device(vk::SurfaceKHR& surface,
                                                   const std::vector<const char*>& requiredExtensions) {
             auto& instance = instance::get_instance();
@@ -53,19 +75,29 @@ namespace engine {
                 throw vulkan_exception("Failed to find GPUs with Vulkan support!");
             }
 
+            std::uint32_t maxScore = 0;
+            vk::PhysicalDevice bestDevice;
+
             for (const auto& device : devices) {
                 try {
                     if (!check_extensions_support(device, requiredExtensions)) {
                         throw vulkan_exception("Device is not supporting required extenstions");
                     }
-
                     compute_queue_indices(surface, device);
 
-                    return device;
+                    std::uint32_t score = rate_device(device);
+
+                    if (maxScore < score) {
+                        bestDevice = device;
+                        maxScore = score;
+                    }
 
                 } catch (vulkan_exception& ex) {
                     fmt::printf("%s\n", ex.what());
                 }
+            }
+            if (maxScore > 0) {
+                return bestDevice;
             }
 
             throw vulkan_exception("Failed to find a suitable GPU!");
@@ -229,7 +261,6 @@ namespace engine {
                 return false;
             }
             return true;
-
         }
 
     } // namespace vulkan
