@@ -90,7 +90,6 @@ namespace application {
             auto newSceneState = scene::update_scene(*m_scene, m_lastFrameDuration);
             auto drawInfo = scene::prepare_draw_info(newSceneState);
             m_renderingEngine->draw_frame(drawInfo.begin(), drawInfo.end());
-            //m_renderingEngine->frame(m_frameCounter);
             m_mainWindow.end_frame();
             m_lastSecondFrames++;
         }

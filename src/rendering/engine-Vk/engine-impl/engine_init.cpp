@@ -93,7 +93,7 @@ namespace engine {
                                                                 false,
                                                                 vk::PolygonMode::eFill,
                                                                 vk::CullModeFlagBits::eBack,
-                                                                vk::FrontFace::eCounterClockwise,
+                                                                vk::FrontFace::eClockwise,
                                                                 false,
                                                                 0.0f,
                                                                 0.0f,

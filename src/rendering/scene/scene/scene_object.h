@@ -23,13 +23,15 @@ namespace scene {
         };
 
     public:
-        scene_object(engine::resources::vertex_buffer&& vertexBuffer, engine::resources::index_buffer&& indexBuffer) noexcept;
+        scene_object(engine::resources::vertex_buffer&& vertexBuffer,
+                     engine::resources::index_buffer&& indexBuffer) noexcept;
         state& get_object_state() const;
         state update_object(std::chrono::duration<std::uint64_t, std::micro> elapsedTime) const;
 
     private:
         engine::resources::vertex_buffer m_vertices;
         engine::resources::index_buffer m_indices;
+
         state m_objectState;
     };
 

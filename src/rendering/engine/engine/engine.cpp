@@ -18,10 +18,6 @@ namespace engine {
     rendering_engine::~rendering_engine() {
     }
 
-    void rendering_engine::frame(size_t frameCount) {
-        super::frame(frameCount);
-    }
-
     void rendering_engine::start() {
         super::start();
     }

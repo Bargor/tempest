@@ -43,8 +43,6 @@ namespace engine {
                              device& device);
             rendering_engine(const rendering_engine& engine) = delete;
             ~rendering_engine();
-
-            void frame(size_t frameCount);
             void start();
             void stop();
 
@@ -55,7 +53,6 @@ namespace engine {
             void cleanup_swap_chain_dependancies();
             void recreate_swap_chain(std::uint32_t width, std::uint32_t height);
             void update_framebuffer();
-            void update_uniform_buffer(uniform_buffer& buffer);
             void submit_command_buffer(vk::CommandBuffer& buffer);
 
             template<typename Iter>
@@ -76,15 +73,9 @@ namespace engine {
             vk::Pipeline m_pipeline;
             std::vector<vk::Framebuffer> m_framebuffers;
             vk::CommandPool m_commandPool;
-            ptr<vertex_buffer> m_vertexBuffer;
-            ptr<index_buffer<std::uint16_t>> m_indexBuffer;
             std::vector<uniform_buffer> m_uniformBuffers;
             vk::DescriptorPool m_descriptorPool;
             std::vector<vk::DescriptorSet> m_descriptorSets;
-            std::vector<vk::CommandBuffer> m_commandBuffers;
-            std::vector<vk::Semaphore> m_imageAvailable;
-            std::vector<vk::Semaphore> m_renderFinished;
-            std::vector<vk::Fence> m_inFlightFences;
 
             bool m_framebufferResized;
         };
@@ -109,8 +100,10 @@ namespace engine {
             m_device.draw(commandBuffers);
             m_device.endFrame();
 
+            m_device.m_logicalDevice.freeCommandBuffers(m_commandPool, commandBuffers);
+
             return true;
-        }
+        } // namespace vulkan
 
     } // namespace vulkan
 
