@@ -73,9 +73,6 @@ namespace engine {
             vk::Pipeline m_pipeline;
             std::vector<vk::Framebuffer> m_framebuffers;
             vk::CommandPool m_commandPool;
-            std::vector<uniform_buffer> m_uniformBuffers;
-            vk::DescriptorPool m_descriptorPool;
-            std::vector<vk::DescriptorSet> m_descriptorSets;
 
             bool m_framebufferResized;
         };
@@ -100,10 +97,10 @@ namespace engine {
             m_device.draw(commandBuffers);
             m_device.endFrame();
 
-            m_device.m_logicalDevice.freeCommandBuffers(m_commandPool, commandBuffers);
+            // m_device.m_logicalDevice.freeCommandBuffers(m_commandPool, commandBuffers);
 
             return true;
-        } // namespace vulkan
+        }
 
     } // namespace vulkan
 

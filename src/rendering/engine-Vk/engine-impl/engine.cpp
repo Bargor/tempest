@@ -46,15 +46,6 @@ namespace engine {
                                                          m_device.m_swapChain->get_image_views(),
                                                          m_device.m_swapChain->get_extent()))
             , m_commandPool(m_device.create_command_pool())
-            , m_uniformBuffers(
-                  create_uniform_buffers(m_device, m_commandPool, m_device.m_swapChain->get_image_views().size()))
-            , m_descriptorPool(
-                  create_descriptor_pool(m_device.m_logicalDevice, m_device.m_swapChain->get_image_views().size()))
-            , m_descriptorSets(create_descriptor_sets(m_device.m_logicalDevice,
-                                                      m_device.m_swapChain->get_image_views().size(),
-                                                      m_descriptorPool,
-                                                      m_descriptorSetLayout,
-                                                      m_uniformBuffers))
             , m_framebufferResized(false) {
             auto framebufferResizeCallback = [&](const application::app_event::arguments&) {
                 m_framebufferResized = true;
@@ -82,8 +73,6 @@ namespace engine {
             m_device.m_logicalDevice.destroyPipeline(m_pipeline);
             m_device.m_logicalDevice.destroyPipelineLayout(m_pipelineLayout);
             m_device.m_logicalDevice.destroyRenderPass(m_renderPass);
-
-            m_device.m_logicalDevice.destroyDescriptorPool(m_descriptorPool);
         }
 
         void rendering_engine::recreate_swap_chain(std::uint32_t width, std::uint32_t height) {
@@ -114,15 +103,6 @@ namespace engine {
                                                  m_renderPass,
                                                  m_device.m_swapChain->get_image_views(),
                                                  m_device.m_swapChain->get_extent());
-            m_uniformBuffers =
-                create_uniform_buffers(m_device, m_commandPool, m_device.m_swapChain->get_image_views().size());
-            m_descriptorPool =
-                create_descriptor_pool(m_device.m_logicalDevice, m_device.m_swapChain->get_image_views().size());
-            m_descriptorSets = create_descriptor_sets(m_device.m_logicalDevice,
-                                                      m_device.m_swapChain->get_image_views().size(),
-                                                      m_descriptorPool,
-                                                      m_descriptorSetLayout,
-                                                      m_uniformBuffers);
         }
 
         void rendering_engine::update_framebuffer() {
