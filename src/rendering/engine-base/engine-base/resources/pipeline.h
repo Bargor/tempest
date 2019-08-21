@@ -47,7 +47,28 @@ namespace engine {
                 sample_count samples;
             };
 
-            struct color_blending_settings {};
+            struct color_blending_settings {
+                enum class blend_operation {
+                    add,
+                    subtract,
+                    eReverseSubtract,
+                    min,
+                    max,
+                };
+
+                enum class blend_factor {
+
+                };
+
+                bool enable;
+                blend_operation colorBlendOperation;
+                blend_factor srcColorBlendFactor;
+                blend_factor dstColorBlendFactor;
+                blend_operation alphaBlendOperation;
+                blend_factor srcAlphaBlendFactor;
+                blend_factor dstAlphaBlendFactor;
+
+            };
 
         public:
             viewport viewport;
