@@ -2,12 +2,14 @@
 # Author: Karol Kontny
 
 set(ENGINE_BASE_HDRS
-    engine-base/gpu_info.h
+	engine-base/gpu_info.h
+	engine-base/resources/pipeline.h
 	engine-base/resources/vertex_format.h
 )
 
 set(ENGINE_BASE_SRCS 
-    engine-base/gpu_info.cpp
+	engine-base/gpu_info.cpp
+	engine-base/resources/pipeline.cpp
 	engine-base/resources/vertex_format.cpp
 )
 
