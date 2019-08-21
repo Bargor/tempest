@@ -17,4 +17,4 @@ include(${PROJECT_SOURCE_DIR}/cmake/TstAddLibrary.cmake)
 
 tst_add_library(engine-base "${ENGINE_BASE_HDRS}" "${ENGINE_BASE_SRCS}")
 
-target_link_libraries(engine-base PUBLIC fmt::fmt glm)
+target_link_libraries(engine-base PUBLIC fmt::fmt glm tst::core)
