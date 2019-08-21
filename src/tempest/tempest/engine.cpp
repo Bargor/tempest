@@ -29,8 +29,7 @@ namespace application {
         , m_mainWindow(mainWindow)
         , m_dataLoader(dataLoader)
         , m_renderingDevice(std::make_unique<engine::device>(m_mainWindow, m_eventProcessor))
-        , m_renderingEngine(std::make_unique<engine::rendering_engine>(
-              m_mainWindow, m_dataLoader, m_eventProcessor, *m_renderingDevice))
+        , m_renderingEngine(std::make_unique<engine::rendering_engine>(m_dataLoader, m_eventProcessor, *m_renderingDevice))
         , m_resourceFactory(std::make_unique<engine::resource_factory>(*m_renderingDevice))
         , m_scene(std::make_unique<scene::scene>())
         , m_frameCounter(0)

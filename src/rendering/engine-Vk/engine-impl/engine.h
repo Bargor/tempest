@@ -37,8 +37,7 @@ namespace engine {
             using ptr = std::unique_ptr<T>;
 
         public:
-            rendering_engine(application::main_window& mainWindow,
-                             application::data_loader& dataLoader,
+            rendering_engine(application::data_loader& dataLoader,
                              application::event_processor<application::app_event>& eventProcessor,
                              device& device);
             rendering_engine(const rendering_engine& engine) = delete;
@@ -60,7 +59,6 @@ namespace engine {
             vk::CommandBuffer generate_command_buffer(const draw_info& drawInfo);
 
         private:
-            application::main_window& m_mainWindow;
             application::data_loader& m_dataLoader;
             application::event_processor<application::app_event>& m_eventProcessor;
             static constexpr std::uint32_t m_maxConcurrentFrames = 2;
@@ -73,8 +71,6 @@ namespace engine {
             vk::Pipeline m_pipeline;
             std::vector<vk::Framebuffer> m_framebuffers;
             vk::CommandPool m_commandPool;
-
-            bool m_framebufferResized;
         };
 
         template<typename Iter>

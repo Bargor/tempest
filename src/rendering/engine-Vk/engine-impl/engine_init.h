@@ -52,17 +52,6 @@ namespace engine {
                                                               const vk::DescriptorSetLayout& descriptorSetLayout,
                                                               const std::vector<uniform_buffer>& uniformBuffers);
 
-        std::vector<vk::CommandBuffer> create_command_buffers(const vk::Device& device,
-                                                              const vk::CommandPool& commandPool,
-                                                              const std::vector<vk::Framebuffer>& framebuffers,
-                                                              const vk::RenderPass& renderPass,
-                                                              const vk::Pipeline& pipeline,
-                                                              const vk::Extent2D& extent,
-                                                              const vertex_buffer& vertexBuffer,
-                                                              const index_buffer<std::uint16_t>& indexBuffer,
-                                                              const vk::PipelineLayout& pipelineLayout,
-                                                              const std::vector<vk::DescriptorSet>& descriptorSets);
-
     } // namespace vulkan
 } // namespace engine
 } // namespace tst

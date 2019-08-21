@@ -24,8 +24,7 @@ namespace engine {
         }
     }
 
-    rendering_engine::rendering_engine(application::main_window&,
-                                       application::data_loader& dataLoader,
+    rendering_engine::rendering_engine(application::data_loader& dataLoader,
                                        application::event_processor<application::app_event>&,
                                        device& device)
         : m_dataLoader(dataLoader)

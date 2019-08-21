@@ -105,6 +105,7 @@ namespace engine {
         device::device(application::main_window& mainWindow,
                        application::event_processor<application::app_event>& eventProcessor)
             : m_frameCounter(0)
+            , m_mainWindow(mainWindow)
             , m_eventProcessor(eventProcessor)
             , m_windowSurface(create_window_surface(mainWindow.get_handle()))
             , m_physicalDevice(select_physical_device(m_windowSurface, {VK_KHR_SWAPCHAIN_EXTENSION_NAME}))
@@ -227,10 +228,19 @@ namespace engine {
                 m_swapChain->present_image(m_presentationQueueHandle, m_renderFinished[currentSemaphore]);
             if (m_framebufferResized || presentResult == swap_chain::result::resize) {
                 return true;
-            } else if (presentResult != swap_chain::result::fail) {
+            } else if (presentResult == swap_chain::result::fail) {
                 return false;
             }
             return true;
+        }
+
+        void device::update_framebuffer() {
+            m_framebufferResized = false;
+
+            std::int32_t width, height;
+            glfwGetFramebufferSize(m_mainWindow.get_handle(), &width, &height);
+            m_mainWindow.set_size({width, height});
+            recreate_swap_chain(width, height);
         }
 
     } // namespace vulkan

@@ -206,47 +206,6 @@ namespace engine {
             return descriptorSets;
         }
 
-        std::vector<vk::CommandBuffer> create_command_buffers(const vk::Device& device,
-                                                              const vk::CommandPool& commandPool,
-                                                              const std::vector<vk::Framebuffer>& framebuffers,
-                                                              const vk::RenderPass& renderPass,
-                                                              const vk::Pipeline& pipeline,
-                                                              const vk::Extent2D& extent,
-                                                              const vertex_buffer& vertexBuffer,
-                                                              const index_buffer<std::uint16_t>& indexBuffer,
-                                                              const vk::PipelineLayout& pipelineLayout,
-                                                              const std::vector<vk::DescriptorSet>& descriptorSets) {
-            vk::CommandBufferAllocateInfo bufferAllocateInfo(
-                commandPool, vk::CommandBufferLevel::ePrimary, static_cast<std::uint32_t>(framebuffers.size()));
-
-            auto commandBuffers = device.allocateCommandBuffers(bufferAllocateInfo);
-
-            for (size_t i = 0; i < commandBuffers.size(); i++) {
-                vk::CommandBufferBeginInfo commandBufferInfo(vk::CommandBufferUsageFlagBits::eSimultaneousUse, nullptr);
-                commandBuffers[i].begin(commandBufferInfo);
-
-                vk::ClearValue clearColor = vk::ClearValue(std::array<float, 4>{0.0f, 0.0f, 0.0f, 1.0f});
-
-                vk::RenderPassBeginInfo renderPassInfo(
-                    renderPass, framebuffers[i], vk::Rect2D({0, 0}, extent), 1, &clearColor);
-
-                commandBuffers[i].beginRenderPass(renderPassInfo, vk::SubpassContents::eInline);
-                commandBuffers[i].bindPipeline(vk::PipelineBindPoint::eGraphics, pipeline);
-
-                std::vector<vk::Buffer> vertexBuffers = {vertexBuffer.get_handle()};
-                std::vector<vk::DeviceSize> offsets = {0};
-                commandBuffers[i].bindVertexBuffers(0, vertexBuffers, offsets);
-                commandBuffers[i].bindIndexBuffer(indexBuffer.get_handle(), 0, vk::IndexType::eUint16);
-                commandBuffers[i].bindDescriptorSets(
-                    vk::PipelineBindPoint::eGraphics, pipelineLayout, 0, descriptorSets[i], {});
-                commandBuffers[i].drawIndexed(indexBuffer.get_index_count(), 1, 0, 0, 0);
-                commandBuffers[i].endRenderPass();
-                commandBuffers[i].end();
-            }
-
-            return commandBuffers;
-        }
-
     } // namespace vulkan
 } // namespace engine
 } // namespace tst

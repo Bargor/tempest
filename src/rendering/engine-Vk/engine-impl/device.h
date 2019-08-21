@@ -56,9 +56,13 @@ namespace engine {
             bool endFrame();
 
         private:
+            void update_framebuffer();
+
+        private:
             static constexpr std::uint32_t m_maxConcurrentFrames = 2;
 
             std::uint32_t m_frameCounter;
+            application::main_window& m_mainWindow;
             application::event_processor<application::app_event>& m_eventProcessor;
             vk::SurfaceKHR m_windowSurface;
             ptr<physical_device> m_physicalDevice;

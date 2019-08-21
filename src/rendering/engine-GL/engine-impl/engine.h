@@ -18,8 +18,8 @@ namespace application {
 } // namespace application
 
 namespace engine {
-	
-	namespace opengl {
+
+    namespace opengl {
 
         class shader_compiler;
 
@@ -28,10 +28,9 @@ namespace engine {
             using ptr = std::unique_ptr<T>;
 
         public:
-            rendering_engine(application::main_window&,
-                            application::data_loader& dataLoader,
-                            application::event_processor<application::app_event>&,
-                            device& device);
+            rendering_engine(application::data_loader& dataLoader,
+                             application::event_processor<application::app_event>&,
+                             device& device);
             ~rendering_engine();
 
             void frame(size_t frameCount);
@@ -73,7 +72,7 @@ namespace engine {
 
             return true;
         }
-	
-	}
+
+    } // namespace opengl
 } // namespace engine
 } // namespace tst

@@ -24,12 +24,10 @@ namespace engine {
 
     namespace vulkan {
 
-        rendering_engine::rendering_engine(application::main_window& mainWindow,
-                                           application::data_loader& dataLoader,
+        rendering_engine::rendering_engine(application::data_loader& dataLoader,
                                            application::event_processor<application::app_event>& eventProcessor,
                                            device& device)
-            : m_mainWindow(mainWindow)
-            , m_dataLoader(dataLoader)
+            : m_dataLoader(dataLoader)
             , m_eventProcessor(eventProcessor)
             , m_device(device)
             , m_shaderCompiler(std::make_unique<shader_compiler>(m_dataLoader, m_device))
@@ -45,16 +43,7 @@ namespace engine {
                                                          m_renderPass,
                                                          m_device.m_swapChain->get_image_views(),
                                                          m_device.m_swapChain->get_extent()))
-            , m_commandPool(m_device.create_command_pool())
-            , m_framebufferResized(false) {
-            auto framebufferResizeCallback = [&](const application::app_event::arguments&) {
-                m_framebufferResized = true;
-            };
-
-            m_eventProcessor.subscribe(
-                core::variant_index<application::app_event::arguments, application::app_event::framebuffer>(),
-                this,
-                std::move(framebufferResizeCallback));
+            , m_commandPool(m_device.create_command_pool()) {
         }
 
         rendering_engine::~rendering_engine() {
@@ -103,15 +92,6 @@ namespace engine {
                                                  m_renderPass,
                                                  m_device.m_swapChain->get_image_views(),
                                                  m_device.m_swapChain->get_extent());
-        }
-
-        void rendering_engine::update_framebuffer() {
-            m_framebufferResized = false;
-
-            std::int32_t width, height;
-            glfwGetFramebufferSize(m_mainWindow.get_handle(), &width, &height);
-            m_mainWindow.set_size({width, height});
-            recreate_swap_chain(width, height);
         }
 
         vk::CommandBuffer rendering_engine::generate_command_buffer(const draw_info& drawInfo) {

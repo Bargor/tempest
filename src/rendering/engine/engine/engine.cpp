@@ -8,11 +8,10 @@
 namespace tst {
 namespace engine {
 
-    rendering_engine::rendering_engine(application::main_window& mainWindow,
-                                       application::data_loader& dataLoader,
+    rendering_engine::rendering_engine(application::data_loader& dataLoader,
                                        application::event_processor<application::app_event>& eventProcessor,
                                        device& device)
-        : api::rendering_engine(mainWindow, dataLoader, eventProcessor, device) {
+        : api::rendering_engine(dataLoader, eventProcessor, device) {
     }
 
     rendering_engine::~rendering_engine() {
