@@ -5,17 +5,17 @@
 
 #include "glfw_exception.h"
 
-#include <thread/main_thread.h>
-#include <device/monitor.h>
-#include <thread>
 #include <assert.h>
+#include <device/monitor.h>
+#include <thread/main_thread.h>
+#include <thread>
 
 namespace tst {
 namespace application {
 
     main_window::main_window(std::string&& name,
                              event_processor<app_event>& eventProcessor,
-                             const window_size& size,
+                             const core::extent<std::uint32_t>& size,
                              fullscreen_option windowMode,
                              const device::monitor* monitor,
                              const std::array<window_hint, 31>& hints)
@@ -33,7 +33,8 @@ namespace application {
         glfwMakeContextCurrent(m_windowHandle);
     }
 
-    main_window::~main_window() {}
+    main_window::~main_window() {
+    }
 
 } // namespace application
 } // namespace tst

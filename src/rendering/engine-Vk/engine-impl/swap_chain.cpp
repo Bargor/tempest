@@ -46,13 +46,11 @@ namespace engine {
                 return bestMode;
             }
 
-            vk::Extent2D choose_extent(const vk::SurfaceCapabilitiesKHR& capabilities,
-                                       std::uint32_t width,
-                                       std::uint32_t height) {
+            vk::Extent2D choose_extent(const vk::SurfaceCapabilitiesKHR& capabilities, const vk::Extent2D extent) {
                 if (capabilities.currentExtent.width != std::numeric_limits<uint32_t>::max()) {
                     return capabilities.currentExtent;
                 } else {
-                    vk::Extent2D actualExtent = {width, height};
+                    vk::Extent2D actualExtent = extent;
 
                     actualExtent.width = std::clamp(
                         actualExtent.width, capabilities.minImageExtent.width, capabilities.maxImageExtent.width);
@@ -146,14 +144,13 @@ namespace engine {
                                const surface_support_info& info,
                                std::uint32_t graphicsQueueIndex,
                                std::uint32_t presentationQueueIndex,
-                               std::uint32_t width,
-                               std::uint32_t height)
+                               const vk::Extent2D extent)
             : m_logicalDevice(device)
             , m_windowSurface(windowSurface)
             , m_supportInfo(info)
             , m_surfaceFormat(choose_surface_format(m_supportInfo.formats))
             , m_presentationMode(choose_presentation_mode(m_supportInfo.presentModes))
-            , m_extent(choose_extent(m_supportInfo.capabilities, width, height))
+            , m_extent(choose_extent(m_supportInfo.capabilities, extent))
             , m_swapChain(create_swap_chain(m_windowSurface,
                                             m_logicalDevice,
                                             graphicsQueueIndex,

@@ -23,7 +23,7 @@ namespace application {
         , m_mainWindow(std::make_unique<main_window>(
               std::move(name),
               *m_eventProcessor.get(),
-              main_window::window_size{m_monitor->get_width() / 2, m_monitor->get_height() / 2},
+              core::extent<std::uint32_t>{m_monitor->get_width() / 2, m_monitor->get_height() / 2},
               params.windowMode,
               m_monitor.get(),
               setup_context(m_monitor->get_refresh_rate())))

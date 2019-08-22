@@ -25,8 +25,7 @@ namespace engine {
                        const surface_support_info& info,
                        std::uint32_t graphicsQueueIndex,
                        std::uint32_t presentationQueueIndex,
-                       std::uint32_t width,
-                       std::uint32_t height);
+                       const vk::Extent2D extent);
 
             ~swap_chain();
 

@@ -21,9 +21,9 @@ namespace application {
         };
 
     public: // overrides
-        void set_size(const window_size& size) noexcept override;
-        position<std::int32_t> get_position() const noexcept override;
-        void set_position(const position<std::int32_t>& pos) noexcept override;
+        void set_size(const core::extent<std::uint32_t>& size) noexcept override;
+        core::position<std::int32_t> get_position() const noexcept override;
+        void set_position(const core::position<std::int32_t>& pos) noexcept override;
         void set_title(const std::string&) noexcept override;
         void focus() noexcept override;
         void unfocus() noexcept override;
@@ -43,7 +43,7 @@ namespace application {
     protected:
         glfw_window(std::string&& name,
                     event_processor<app_event>& eventProcessor,
-                    const window_size& size,
+                    const core::extent<std::uint32_t>& size,
                     fullscreen_option windowMode,
                     visible_option visibility,
                     open_option open,
@@ -57,8 +57,8 @@ namespace application {
         const device::monitor* m_monitor;
         GLFWwindow* m_windowHandle;
 
-	private:
-        void set_size_internal(const window_size& size, bool broadcast) noexcept;
+    private:
+        void set_size_internal(const core::extent<std::uint32_t>& size, bool broadcast) noexcept;
         void focus_internal(bool broadcast) noexcept;
         void show_internal(bool broadcast) noexcept;
         void hide_internal(bool broadcast) noexcept;
