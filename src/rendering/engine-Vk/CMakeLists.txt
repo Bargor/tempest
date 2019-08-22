@@ -11,6 +11,7 @@ set(ENGINE_HDRS
 	engine-impl/instance.h
 	engine-impl/queue_indices.h
 	engine-impl/physical_device.h
+	engine-impl/rendering_technique.h
 	engine-impl/swap_chain.h
 	engine-impl/shader_compiler.h
 	engine-impl/resource_factory.h
@@ -33,6 +34,7 @@ set(ENGINE_SRCS
 	engine-impl/instance.cpp
 	engine-impl/queue_indices.cpp
 	engine-impl/physical_device.cpp
+	engine-impl/rendering_technique.cpp
 	engine-impl/swap_chain.cpp
 	engine-impl/shader_compiler.cpp
 	engine-impl/resource_factory.cpp
