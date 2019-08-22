@@ -32,7 +32,7 @@ namespace engine {
             shader& operator=(const shader&) = delete;
 
         public:
-            vk::PipelineShaderStageCreateInfo get_create_info() const;
+            vk::PipelineShaderStageCreateInfo get_pipeline_info() const;
 
         private:
             const vk::Device& m_device;

@@ -14,15 +14,20 @@ namespace engine {
 
         vk::ShaderStageFlagBits get_native_shader_type(shader::shader_type type) {
             switch (type) {
-            case tst::engine::vulkan::shader::shader_type::vertex: return vk::ShaderStageFlagBits::eVertex;
-            case tst::engine::vulkan::shader::shader_type::fragment: return vk::ShaderStageFlagBits::eFragment;
-            case tst::engine::vulkan::shader::shader_type::geometry: return vk::ShaderStageFlagBits::eGeometry;
-            case tst::engine::vulkan::shader::shader_type::compute: return vk::ShaderStageFlagBits::eCompute;
+            case tst::engine::vulkan::shader::shader_type::vertex:
+                return vk::ShaderStageFlagBits::eVertex;
+            case tst::engine::vulkan::shader::shader_type::fragment:
+                return vk::ShaderStageFlagBits::eFragment;
+            case tst::engine::vulkan::shader::shader_type::geometry:
+                return vk::ShaderStageFlagBits::eGeometry;
+            case tst::engine::vulkan::shader::shader_type::compute:
+                return vk::ShaderStageFlagBits::eCompute;
             case tst::engine::vulkan::shader::shader_type::tessellation_control:
                 return vk::ShaderStageFlagBits::eTessellationControl;
             case tst::engine::vulkan::shader::shader_type::tessellation_evaluation:
                 return vk::ShaderStageFlagBits::eTessellationEvaluation;
-            default: break;
+            default:
+                break;
             }
             return vk::ShaderStageFlagBits::eAll;
         }
@@ -57,7 +62,7 @@ namespace engine {
             }
         }
 
-        vk::PipelineShaderStageCreateInfo shader::get_create_info() const {
+        vk::PipelineShaderStageCreateInfo shader::get_pipeline_info() const {
             return m_pipelineInfo;
         }
 
