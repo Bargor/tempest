@@ -2,7 +2,9 @@
 // Author: Karol Kontny
 #pragma once
 
+#include <array>
 #include <common/rectangle.h>
+#include <vector>
 
 namespace tst {
 namespace engine {
@@ -57,7 +59,32 @@ namespace engine {
                 };
 
                 enum class blend_factor {
+                    zero,
+                    one,
+                    src_color,
+                    one_minus_src_color,
+                    dst_color,
+                    one_minus_dst_color,
+                    src_alpha,
+                    one_minus_src_alpha,
+                    dst_alpha,
+                    one_minus_dst_alpha,
+                    constant_color,
+                    one_minus_constant_color,
+                    constant_alpha,
+                    one_minus_constant_alpha,
+                    src_alpha_saturate,
+                    src_1_color,
+                    one_minus_src_1_color,
+                    src_1_alpha,
+                    one_minus_src_1_alpha
+                };
 
+                struct color_component_flags {
+                    bool r;
+                    bool g;
+                    bool b;
+                    bool a;
                 };
 
                 bool enable;
@@ -67,15 +94,41 @@ namespace engine {
                 blend_operation alphaBlendOperation;
                 blend_factor srcAlphaBlendFactor;
                 blend_factor dstAlphaBlendFactor;
+                color_component_flags colorWriteMask;
+            };
 
+            struct global_blending_settings {
+                enum class logic_operation {
+                    clear,
+                    and_op,
+                    and_reverse,
+                    copy,
+                    and_inverted,
+                    no_op,
+                    xor_op,
+                    or_op,
+                    nor,
+                    equivalent,
+                    invert,
+                    or_reverse,
+                    copy_inverted,
+                    or_inverted,
+                    nand,
+                    set
+                };
+
+                bool enable;
+                logic_operation logicalOperation;
+                std::array<float, 4> blendConstants;
             };
 
         public:
             viewport viewport;
-            rectangle<std::int32_t, std::uint32_t> scissor;
+            core::rectangle<std::int32_t, std::uint32_t> scissor;
             rasterizer_settings rasterizer;
             multisampling_settings multisampling;
-            color_blending_settings colorBlending;
+            std::vector<color_blending_settings> framebufferColorBlending;
+            global_blending_settings globalColorBlending;
         };
 
     } // namespace base

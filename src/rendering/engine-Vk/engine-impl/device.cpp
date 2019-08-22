@@ -111,13 +111,13 @@ namespace engine {
             , m_physicalDevice(select_physical_device(m_windowSurface, {VK_KHR_SWAPCHAIN_EXTENSION_NAME}))
             , m_logicalDevice(m_physicalDevice->create_logical_device(instance::get_validation_layers(),
                                                                       {VK_KHR_SWAPCHAIN_EXTENSION_NAME}))
-            , m_swapChain(std::make_unique<swap_chain>(m_logicalDevice,
-                                                       m_windowSurface,
-                                                       m_physicalDevice->get_surface_support_info(m_windowSurface),
-                                                       m_physicalDevice->get_graphics_index(),
-                                                       m_physicalDevice->get_presentation_index(),
-                                                       mainWindow.get_size().width,
-                                                       mainWindow.get_size().height))
+            , m_swapChain(
+                  std::make_unique<swap_chain>(m_logicalDevice,
+                                               m_windowSurface,
+                                               m_physicalDevice->get_surface_support_info(m_windowSurface),
+                                               m_physicalDevice->get_graphics_index(),
+                                               m_physicalDevice->get_presentation_index(),
+                                               vk::Extent2D{mainWindow.get_size().width, mainWindow.get_size().height}))
             , m_graphicsQueueHandle(m_logicalDevice.getQueue(m_physicalDevice->get_graphics_index(), 0))
             , m_computeQueueHandle(m_logicalDevice.getQueue(m_physicalDevice->get_compute_index(), 0))
             , m_presentationQueueHandle(m_logicalDevice.getQueue(m_physicalDevice->get_presentation_index(), 0))
@@ -155,7 +155,7 @@ namespace engine {
             for (auto& commandPool : m_commandPools) {
                 m_logicalDevice.destroyCommandPool(commandPool);
             }
-
+            m_swapChain.reset();
             m_logicalDevice.destroy();
         }
 
@@ -234,13 +234,41 @@ namespace engine {
             return true;
         }
 
+        void device::cleanup_swap_chain_dependancies() {
+            /*for (auto framebuffer : m_framebuffers) {
+                m_logicalDevice.destroyFramebuffer(framebuffer);
+            }
+
+            m_logicalDevice.destroyPipeline(m_pipeline);
+            m_logicalDevice.destroyPipelineLayout(m_pipelineLayout);
+            m_logicalDevice.destroyRenderPass(m_renderPass);*/
+        }
+
         void device::update_framebuffer() {
             m_framebufferResized = false;
 
             std::int32_t width, height;
             glfwGetFramebufferSize(m_mainWindow.get_handle(), &width, &height);
-            m_mainWindow.set_size({width, height});
-            recreate_swap_chain(width, height);
+            core::extent<std::uint32_t> windowSize{static_cast<std::uint32_t>(width), static_cast<std::uint32_t>(height)};
+            m_mainWindow.set_size(windowSize);
+            recreate_swap_chain(windowSize);
+        }
+
+        void device::recreate_swap_chain(const core::extent<std::uint32_t>& extent) {
+            m_logicalDevice.waitIdle();
+
+            cleanup_swap_chain_dependancies();
+
+            m_swapChain.reset();
+
+            auto newSwapChain = std::make_unique<swap_chain>(m_logicalDevice,
+                                                             m_windowSurface,
+                                                             m_physicalDevice->get_surface_support_info(m_windowSurface),
+                                                             m_physicalDevice->get_graphics_index(),
+                                                             m_physicalDevice->get_presentation_index(),
+                                                             vk::Extent2D{extent.width, extent.height});
+
+            m_swapChain = std::move(newSwapChain);
         }
 
     } // namespace vulkan

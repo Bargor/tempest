@@ -12,7 +12,7 @@ namespace engine {
 
         class pipeline : public base::pipeline {
         public:
-            pipeline(vertex_format& format);
+            pipeline(vertex_format& format, shader_set&);
 
         private:
         };

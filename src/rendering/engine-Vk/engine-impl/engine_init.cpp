@@ -124,7 +124,7 @@ namespace engine {
             auto shaders = shaderCompiler.compile_shaders("test");
             std::vector<vk::PipelineShaderStageCreateInfo> shaderInfos;
             std::transform(shaders.cbegin(), shaders.cend(), std::back_inserter(shaderInfos), [](const shader& shader) {
-                return shader.get_create_info();
+                return shader.get_pipeline_info();
             });
 
             vk::GraphicsPipelineCreateInfo pipelineInfo(vk::PipelineCreateFlags(),

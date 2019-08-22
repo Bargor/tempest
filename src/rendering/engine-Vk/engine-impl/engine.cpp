@@ -47,40 +47,10 @@ namespace engine {
         }
 
         rendering_engine::~rendering_engine() {
-            cleanup_swap_chain_dependancies();
-
             m_device.m_logicalDevice.destroyDescriptorSetLayout(m_descriptorSetLayout);
-
-            m_device.m_swapChain.reset();
         }
 
-        void rendering_engine::cleanup_swap_chain_dependancies() {
-            for (auto framebuffer : m_framebuffers) {
-                m_device.m_logicalDevice.destroyFramebuffer(framebuffer);
-            }
-
-            m_device.m_logicalDevice.destroyPipeline(m_pipeline);
-            m_device.m_logicalDevice.destroyPipelineLayout(m_pipelineLayout);
-            m_device.m_logicalDevice.destroyRenderPass(m_renderPass);
-        }
-
-        void rendering_engine::recreate_swap_chain(std::uint32_t width, std::uint32_t height) {
-            m_device.m_logicalDevice.waitIdle();
-
-            cleanup_swap_chain_dependancies();
-
-            m_device.m_swapChain.reset();
-
-            auto newSwapChain = std::make_unique<swap_chain>(
-                m_device.m_logicalDevice,
-                m_device.m_windowSurface,
-                m_device.m_physicalDevice->get_surface_support_info(m_device.m_windowSurface),
-                m_device.m_physicalDevice->get_graphics_index(),
-                m_device.m_physicalDevice->get_presentation_index(),
-                width,
-                height);
-
-            m_device.m_swapChain = std::move(newSwapChain);
+        void rendering_engine::recreate_swap_chain(std::uint32_t, std::uint32_t) {
             m_renderPass = create_render_pass(m_device.m_logicalDevice, m_device.m_swapChain->get_format());
             m_pipelineLayout = create_pipeline_layout(m_device.m_logicalDevice, m_descriptorSetLayout);
             m_pipeline = create_graphics_pipeline(m_device.m_logicalDevice,

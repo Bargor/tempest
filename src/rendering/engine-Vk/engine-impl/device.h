@@ -10,6 +10,7 @@
 #include "resources/vertex_buffer.h"
 
 #include <GLFW/glfw3.h>
+#include <common/rectangle.h>
 #include <vector>
 #include <vulkan/vulkan.hpp>
 
@@ -56,7 +57,9 @@ namespace engine {
             bool endFrame();
 
         private:
+            void cleanup_swap_chain_dependancies();
             void update_framebuffer();
+            void recreate_swap_chain(const core::extent<std::uint32_t>& extent);
 
         private:
             static constexpr std::uint32_t m_maxConcurrentFrames = 2;

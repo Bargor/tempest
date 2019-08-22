@@ -49,7 +49,6 @@ namespace engine {
             bool draw_frame(Iter first, Iter last);
 
         private:
-            void cleanup_swap_chain_dependancies();
             void recreate_swap_chain(std::uint32_t width, std::uint32_t height);
             void update_framebuffer();
             void submit_command_buffer(vk::CommandBuffer& buffer);
