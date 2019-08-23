@@ -189,6 +189,14 @@ namespace engine {
             return shader(m_logicalDevice, type, std::move(source), name);
         }
 
+        void device::add_rendering_technique(const std::string& techniqueName) {
+            m_techniques.push_back(rendering_technique(techniqueName,
+                                                       m_logicalDevice,
+                                                       m_swapChain->get_image_views(),
+                                                       m_swapChain->get_format(),
+                                                       m_swapChain->get_extent()));
+        }
+
         bool device::startFrame() {
             std::uint32_t currentSemaphore = m_frameCounter % m_maxConcurrentFrames;
 

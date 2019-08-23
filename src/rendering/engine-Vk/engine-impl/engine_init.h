@@ -13,18 +13,9 @@ namespace tst {
 namespace engine {
     namespace vulkan {
 
-        struct queue_family_indices;
         class shader_compiler;
-        class vertex_buffer;
-        template<typename IndexType>
-        class index_buffer;
         class uniform_buffer;
         class device;
-
-        template<typename T>
-        using ptr = std::unique_ptr<T>;
-
-        vk::RenderPass create_render_pass(const vk::Device& device, const vk::Format& format);
 
         vk::PipelineLayout create_pipeline_layout(const vk::Device& device,
                                                   const vk::DescriptorSetLayout& descriptorSetLayout);
@@ -34,11 +25,6 @@ namespace engine {
                                               const vk::RenderPass& renderPass,
                                               const vk::Extent2D& extent,
                                               const vulkan::shader_compiler& m_shaderCompiler);
-
-        std::vector<vk::Framebuffer> create_framebuffers(const vk::Device& device,
-                                                         const vk::RenderPass& renderPass,
-                                                         const std::vector<vk::ImageView>& imageViews,
-                                                         const vk::Extent2D& extent);
 
         vk::DescriptorPool create_descriptor_pool(const vk::Device& device, std::size_t size);
 

@@ -4,6 +4,7 @@
 
 #include "api.h"
 #include "physical_device.h"
+#include "rendering_technique.h"
 #include "resources/index_buffer.h"
 #include "resources/shader.h"
 #include "resources/uniform_buffer.h"
@@ -48,6 +49,7 @@ namespace engine {
                                                const vk::CommandPool& cmdPool) const;
             uniform_buffer create_uniform_buffer(const vk::CommandPool& cmdPool) const;
             shader crate_shader(shader::shader_type type, std::vector<char>&& source, const std::string_view name) const;
+            void add_rendering_technique(const std::string& techniqueName);
 
             gpu_info& get_GPU_info() const noexcept;
 
@@ -71,6 +73,7 @@ namespace engine {
             ptr<physical_device> m_physicalDevice;
             vk::Device m_logicalDevice;
             ptr<swap_chain> m_swapChain;
+            std::vector<rendering_technique> m_techniques;
             vk::Queue m_graphicsQueueHandle;
             vk::Queue m_computeQueueHandle;
             vk::Queue m_presentationQueueHandle;

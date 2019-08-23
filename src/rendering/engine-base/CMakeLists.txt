@@ -3,12 +3,16 @@
 
 set(ENGINE_BASE_HDRS
 	engine-base/gpu_info.h
+	engine-base/rendering_technique.h
+	engine-base/resources/material.h
 	engine-base/resources/pipeline.h
 	engine-base/resources/vertex_format.h
 )
 
 set(ENGINE_BASE_SRCS 
 	engine-base/gpu_info.cpp
+	engine-base/rendering_technique.cpp
+	engine-base/resources/material.cpp
 	engine-base/resources/pipeline.cpp
 	engine-base/resources/vertex_format.cpp
 )

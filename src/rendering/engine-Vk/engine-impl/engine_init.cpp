@@ -19,36 +19,6 @@ namespace tst {
 namespace engine {
     namespace vulkan {
 
-        vk::RenderPass create_render_pass(const vk::Device& device, const vk::Format& format) {
-            vk::AttachmentDescription colorAttachment(vk::AttachmentDescriptionFlags(),
-                                                      format,
-                                                      vk::SampleCountFlagBits::e1,
-                                                      vk::AttachmentLoadOp::eClear,
-                                                      vk::AttachmentStoreOp::eStore,
-                                                      vk::AttachmentLoadOp::eDontCare,
-                                                      vk::AttachmentStoreOp::eDontCare,
-                                                      vk::ImageLayout::eUndefined,
-                                                      vk::ImageLayout::ePresentSrcKHR);
-
-            vk::AttachmentReference colorAttachmentRef(0, vk::ImageLayout::eColorAttachmentOptimal);
-
-            vk::SubpassDescription subpass(
-                vk::SubpassDescriptionFlags(), vk::PipelineBindPoint::eGraphics, 0, nullptr, 1, &colorAttachmentRef);
-
-            vk::SubpassDependency dependency(VK_SUBPASS_EXTERNAL,
-                                             0,
-                                             vk::PipelineStageFlagBits::eColorAttachmentOutput,
-                                             vk::PipelineStageFlagBits::eColorAttachmentOutput,
-                                             vk::AccessFlags(),
-                                             vk::AccessFlagBits::eColorAttachmentRead |
-                                                 vk::AccessFlagBits::eColorAttachmentWrite);
-
-            vk::RenderPassCreateInfo renderPassInfo(
-                vk::RenderPassCreateFlags(), 1, &colorAttachment, 1, &subpass, 1, &dependency);
-
-            return device.createRenderPass(renderPassInfo);
-        }
-
         vk::PipelineLayout create_pipeline_layout(const vk::Device& device,
                                                   const vk::DescriptorSetLayout& descriptorSetLayout) {
             vk::PipelineLayoutCreateInfo pipelineLayoutInfo(
@@ -145,24 +115,6 @@ namespace engine {
                                                         vk::Pipeline(),
                                                         0);
             return device.createGraphicsPipeline(vk::PipelineCache(), pipelineInfo);
-        }
-
-        std::vector<vk::Framebuffer> create_framebuffers(const vk::Device& device,
-                                                         const vk::RenderPass& renderPass,
-                                                         const std::vector<vk::ImageView>& imageViews,
-                                                         const vk::Extent2D& extent) {
-            std::vector<vk::Framebuffer> framebuffers(imageViews.size());
-
-            for (std::uint32_t i = 0; i < imageViews.size(); i++) {
-                vk::ImageView attachments[] = {imageViews[i]};
-
-                vk::FramebufferCreateInfo createInfo(
-                    vk::FramebufferCreateFlags(), renderPass, 1, attachments, extent.width, extent.height, 1);
-
-                framebuffers[i] = device.createFramebuffer(createInfo);
-            }
-
-            return framebuffers;
         }
 
         vk::DescriptorPool create_descriptor_pool(const vk::Device& device, std::size_t size) {

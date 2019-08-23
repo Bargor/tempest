@@ -21,17 +21,16 @@ namespace engine {
                 float maxDepth;
             };
 
-            struct depth_bias_settings {
-                bool enable;
-                float constantFactor;
-                float clamp;
-                float slopeFactor;
-            };
-
             struct rasterizer_settings {
                 enum class polygon_mode { point, line, fill };
                 enum class cull_mode { front, back, front_and_back };
                 enum class front_face { clockwise, counter_clockwise };
+                struct depth_bias_settings {
+                    bool enable;
+                    float constantFactor;
+                    float clamp;
+                    float slopeFactor;
+                };
 
                 bool depthClamp;
                 bool rasterizerDiscard;
