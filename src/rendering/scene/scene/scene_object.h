@@ -4,6 +4,7 @@
 
 #include <chrono>
 #include <engine/resources/index_buffer.h>
+#include <engine/resources/material.h>
 #include <engine/resources/uniform_buffer.h>
 #include <engine/resources/vertex_buffer.h>
 

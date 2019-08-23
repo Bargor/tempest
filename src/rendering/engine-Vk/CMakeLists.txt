@@ -17,6 +17,7 @@ set(ENGINE_HDRS
 	engine-impl/resource_factory.h
 	engine-impl/resources/buffer.h
 	engine-impl/resources/index_buffer.h
+	engine-impl/resources/material.h
 	engine-impl/resources/pipeline.h
 	engine-impl/resources/shader.h
 	engine-impl/resources/uniform_buffer.h
@@ -40,6 +41,7 @@ set(ENGINE_SRCS
 	engine-impl/resource_factory.cpp
 	engine-impl/resources/buffer.cpp
 	engine-impl/resources/index_buffer.cpp
+	engine-impl/resources/material.cpp
 	engine-impl/resources/pipeline.cpp
 	engine-impl/resources/shader.cpp
 	engine-impl/resources/uniform_buffer.cpp
