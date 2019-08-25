@@ -102,6 +102,12 @@ namespace engine {
             throw vulkan_exception("Failed to find a suitable GPU!");
         }
 
+        device::frame_resources::frame_resources(vk::Device device)
+            : imageAvailable(device.createSemaphore(vk::SemaphoreCreateInfo()))
+            , renderFinished(device.createSemaphore(vk::SemaphoreCreateInfo()))
+            , inFlightFences(device.createFence(vk::FenceCreateInfo(vk::FenceCreateFlagBits::eSignaled))) {
+        }
+
         device::device(application::main_window& mainWindow,
                        application::event_processor<application::app_event>& eventProcessor)
             : m_frameCounter(0)
@@ -122,13 +128,9 @@ namespace engine {
             , m_computeQueueHandle(m_logicalDevice.getQueue(m_physicalDevice->get_compute_index(), 0))
             , m_presentationQueueHandle(m_logicalDevice.getQueue(m_physicalDevice->get_presentation_index(), 0))
             , m_transferQueueHandle(m_logicalDevice.getQueue(m_physicalDevice->get_transfer_index(), 0))
-            , m_imageAvailable({m_logicalDevice.createSemaphore(vk::SemaphoreCreateInfo()),
-                                m_logicalDevice.createSemaphore(vk::SemaphoreCreateInfo())})
-            , m_renderFinished({m_logicalDevice.createSemaphore(vk::SemaphoreCreateInfo()),
-                                m_logicalDevice.createSemaphore(vk::SemaphoreCreateInfo())})
-            , m_inFlightFences({m_logicalDevice.createFence(vk::FenceCreateInfo(vk::FenceCreateFlagBits::eSignaled)),
-                                m_logicalDevice.createFence(vk::FenceCreateInfo(vk::FenceCreateFlagBits::eSignaled))})
+            , m_frameResources({frame_resources(m_logicalDevice), frame_resources(m_logicalDevice)})
             , m_framebufferResized(false) {
+
             auto framebufferResizeCallback = [&](const application::app_event::arguments&) {
                 m_framebufferResized = true;
             };
@@ -140,14 +142,10 @@ namespace engine {
         }
 
         device::~device() {
-            for (auto& semaphore : m_imageAvailable) {
-                m_logicalDevice.destroySemaphore(semaphore);
-            }
-            for (auto& semaphore : m_renderFinished) {
-                m_logicalDevice.destroySemaphore(semaphore);
-            }
-            for (auto& fence : m_inFlightFences) {
-                m_logicalDevice.destroyFence(fence);
+            for (auto& resource : m_frameResources) {
+                m_logicalDevice.destroySemaphore(resource.imageAvailable);
+                m_logicalDevice.destroySemaphore(resource.renderFinished);
+                m_logicalDevice.destroyFence(resource.inFlightFences);
             }
 
             instance::get_instance().m_instance.destroySurfaceKHR(m_windowSurface);
@@ -201,9 +199,10 @@ namespace engine {
             std::uint32_t currentSemaphore = m_frameCounter % m_maxConcurrentFrames;
 
             m_logicalDevice.waitForFences(
-                1, &m_inFlightFences[currentSemaphore], true, std::numeric_limits<uint64_t>::max());
+                1, &m_frameResources[currentSemaphore].inFlightFences, true, std::numeric_limits<uint64_t>::max());
 
-            auto acquireResult = m_swapChain->acquire_next_image(m_logicalDevice, m_imageAvailable[currentSemaphore]);
+            auto acquireResult =
+                m_swapChain->acquire_next_image(m_logicalDevice, m_frameResources[currentSemaphore].imageAvailable);
             if (acquireResult == swap_chain::result::resize) {
                 // recreate swap chain
                 return false;
@@ -216,15 +215,15 @@ namespace engine {
         bool device::draw(const std::vector<vk::CommandBuffer>& commandBuffers) {
             std::uint32_t currentSemaphore = m_frameCounter % m_maxConcurrentFrames;
 
-            m_logicalDevice.resetFences(1, &m_inFlightFences[currentSemaphore]);
+            m_logicalDevice.resetFences(1, &m_frameResources[currentSemaphore].inFlightFences);
 
-            vk::Semaphore waitSemaphores[] = {m_imageAvailable[currentSemaphore]};
-            vk::Semaphore signalSemaphores[] = {m_renderFinished[currentSemaphore]};
+            vk::Semaphore waitSemaphores[] = {m_frameResources[currentSemaphore].imageAvailable};
+            vk::Semaphore signalSemaphores[] = {m_frameResources[currentSemaphore].renderFinished};
             vk::PipelineStageFlags waitStages[] = {vk::PipelineStageFlagBits::eColorAttachmentOutput};
 
             vk::SubmitInfo submitInfo(1, waitSemaphores, waitStages, 1, commandBuffers.data(), 1, signalSemaphores);
 
-            m_graphicsQueueHandle.submit(1, &submitInfo, m_inFlightFences[currentSemaphore]);
+            m_graphicsQueueHandle.submit(1, &submitInfo, m_frameResources[currentSemaphore].inFlightFences);
 
             return true;
         }
@@ -233,7 +232,7 @@ namespace engine {
             std::uint32_t currentSemaphore = m_frameCounter % m_maxConcurrentFrames;
 
             auto presentResult =
-                m_swapChain->present_image(m_presentationQueueHandle, m_renderFinished[currentSemaphore]);
+                m_swapChain->present_image(m_presentationQueueHandle, m_frameResources[currentSemaphore].renderFinished);
             if (m_framebufferResized || presentResult == swap_chain::result::resize) {
                 return true;
             } else if (presentResult == swap_chain::result::fail) {
@@ -243,13 +242,8 @@ namespace engine {
         }
 
         void device::cleanup_swap_chain_dependancies() {
-            /*for (auto framebuffer : m_framebuffers) {
-                m_logicalDevice.destroyFramebuffer(framebuffer);
-            }
-
-            m_logicalDevice.destroyPipeline(m_pipeline);
-            m_logicalDevice.destroyPipelineLayout(m_pipelineLayout);
-            m_logicalDevice.destroyRenderPass(m_renderPass);*/
+            /*m_logicalDevice.destroyPipeline(m_pipeline);
+            m_logicalDevice.destroyPipelineLayout(m_pipelineLayout);*/
         }
 
         void device::update_framebuffer() {

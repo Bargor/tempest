@@ -5,7 +5,6 @@
 #include <engine-impl/api.h>
 #include <engine-impl/engine.h>
 #include <engine/device.h>
-#include <engine/draw_info.h>
 
 namespace tst {
 namespace engine {

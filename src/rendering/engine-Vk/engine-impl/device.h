@@ -34,6 +34,15 @@ namespace engine {
             friend class swap_chain;
 
         public:
+            struct frame_resources {
+                frame_resources(vk::Device device);
+
+                vk::Semaphore imageAvailable;
+                vk::Semaphore renderFinished;
+                vk::Fence inFlightFences;
+            };
+
+        public:
             device(application::main_window& mainWindow,
                    application::event_processor<application::app_event>& eventProcessor);
             device(const device& device) = delete;
@@ -80,10 +89,7 @@ namespace engine {
             vk::Queue m_transferQueueHandle;
 
             std::vector<vk::CommandPool> m_commandPools;
-
-            std::vector<vk::Semaphore> m_imageAvailable;
-            std::vector<vk::Semaphore> m_renderFinished;
-            std::vector<vk::Fence> m_inFlightFences;
+            std::vector<frame_resources> m_frameResources;
 
             bool m_framebufferResized;
         };

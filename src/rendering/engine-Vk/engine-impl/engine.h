@@ -64,12 +64,10 @@ namespace engine {
 
             device& m_device;
             ptr<shader_compiler> m_shaderCompiler;
-            vk::RenderPass m_renderPass;
             vk::DescriptorSetLayout m_descriptorSetLayout;
             vk::PipelineLayout m_pipelineLayout;
             vk::Pipeline m_pipeline;
-            std::vector<vk::Framebuffer> m_framebuffers;
-            vk::CommandPool m_commandPool;
+            std::vector<vk::CommandPool> m_commandPools;
         };
 
         template<typename Iter>
