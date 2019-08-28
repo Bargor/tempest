@@ -2,6 +2,7 @@
 // Author: Karol Kontny
 #pragma once
 
+#include <core.h>
 #include <string>
 
 namespace tst {
@@ -12,9 +13,15 @@ namespace engine {
         public:
             rendering_technique(const std::string& techniqueName);
 
+            const std::string& get_name() const;
+
         private:
             std::string m_techniqueName;
         };
+
+        TST_INLINE const std::string& rendering_technique::get_name() const {
+            return m_techniqueName;
+        }
     } // namespace base
 } // namespace engine
 } // namespace tst

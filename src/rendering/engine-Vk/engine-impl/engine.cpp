@@ -5,6 +5,7 @@
 
 #include "draw_info.h"
 #include "instance.h"
+#include "rendering_technique.h"
 #include "resources/index_buffer.h"
 #include "resources/uniform_buffer.h"
 #include "resources/vertex_buffer.h"
@@ -55,20 +56,19 @@ namespace engine {
         }
 
         vk::CommandBuffer rendering_engine::generate_command_buffer(const draw_info& drawInfo) {
-            vk::CommandBufferAllocateInfo bufferAllocateInfo(m_commandPool, vk::CommandBufferLevel::ePrimary, 1);
+            vk::CommandBufferAllocateInfo bufferAllocateInfo(
+                m_commandPools[m_device.get_resource_index()], vk::CommandBufferLevel::ePrimary, 1);
 
             auto commandBuffers = m_device.m_logicalDevice.allocateCommandBuffers(bufferAllocateInfo);
 
             vk::CommandBufferBeginInfo commandBufferInfo(vk::CommandBufferUsageFlagBits::eSimultaneousUse, nullptr);
             commandBuffers[0].begin(commandBufferInfo);
 
-            vk::ClearValue clearColor = vk::ClearValue(std::array<float, 4>{0.0f, 0.0f, 0.0f, 1.0f});
+            auto technique = m_techniqueCache.find(drawInfo.techniqueName);
 
-            vk::RenderPassBeginInfo renderPassInfo(m_renderPass,
-                                                   m_framebuffers[m_device.m_swapChain->get_image_index()],
-                                                   vk::Rect2D({0, 0}, m_device.m_swapChain->get_extent()),
-                                                   1,
-                                                   &clearColor);
+            if (technique) {
+                technique.value().
+            }
 
             commandBuffers[0].beginRenderPass(renderPassInfo, vk::SubpassContents::eInline);
             commandBuffers[0].bindPipeline(vk::PipelineBindPoint::eGraphics, m_pipeline);

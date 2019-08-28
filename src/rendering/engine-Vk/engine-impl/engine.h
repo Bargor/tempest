@@ -25,11 +25,12 @@ namespace engine {
 
     namespace vulkan {
         class device_queues;
-        class swap_chain;
-        class shader_compiler;
-        class vertex_buffer;
         template<typename IndexType>
         class index_buffer;
+        class swap_chain;
+        class shader_compiler;
+        class technique_cache;
+        class vertex_buffer;
         class uniform_buffer;
 
         class rendering_engine {
@@ -58,11 +59,14 @@ namespace engine {
             vk::CommandBuffer generate_command_buffer(const draw_info& drawInfo);
 
         private:
-            application::data_loader& m_dataLoader;
-            application::event_processor<application::app_event>& m_eventProcessor;
             static constexpr std::uint32_t m_maxConcurrentFrames = 2;
 
+            application::data_loader& m_dataLoader;
+            application::event_processor<application::app_event>& m_eventProcessor;
+
             device& m_device;
+            technique_cache& m_techniqueCache;
+
             ptr<shader_compiler> m_shaderCompiler;
             vk::DescriptorSetLayout m_descriptorSetLayout;
             vk::PipelineLayout m_pipelineLayout;

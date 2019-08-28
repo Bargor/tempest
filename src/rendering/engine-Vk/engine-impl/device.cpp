@@ -5,6 +5,7 @@
 
 #include "gpu_info.h"
 #include "instance.h"
+#include "rendering_technique.h"
 #include "swap_chain.h"
 #include "vulkan_exception.h"
 
@@ -124,13 +125,13 @@ namespace engine {
                                                m_physicalDevice->get_graphics_index(),
                                                m_physicalDevice->get_presentation_index(),
                                                vk::Extent2D{mainWindow.get_size().width, mainWindow.get_size().height}))
+            , m_techniques(std::make_unique<technique_cache>())
             , m_graphicsQueueHandle(m_logicalDevice.getQueue(m_physicalDevice->get_graphics_index(), 0))
             , m_computeQueueHandle(m_logicalDevice.getQueue(m_physicalDevice->get_compute_index(), 0))
             , m_presentationQueueHandle(m_logicalDevice.getQueue(m_physicalDevice->get_presentation_index(), 0))
             , m_transferQueueHandle(m_logicalDevice.getQueue(m_physicalDevice->get_transfer_index(), 0))
             , m_frameResources({frame_resources(m_logicalDevice), frame_resources(m_logicalDevice)})
             , m_framebufferResized(false) {
-
             auto framebufferResizeCallback = [&](const application::app_event::arguments&) {
                 m_framebufferResized = true;
             };
@@ -188,7 +189,7 @@ namespace engine {
         }
 
         void device::add_rendering_technique(const std::string& techniqueName) {
-            m_techniques.push_back(rendering_technique(techniqueName,
+            m_techniques.add_rendering_technique(techniqueName,
                                                        m_logicalDevice,
                                                        m_swapChain->get_image_views(),
                                                        m_swapChain->get_format(),
@@ -196,13 +197,13 @@ namespace engine {
         }
 
         bool device::startFrame() {
-            std::uint32_t currentSemaphore = m_frameCounter % m_maxConcurrentFrames;
+            m_resourceIndex = m_frameCounter % m_maxConcurrentFrames;
 
             m_logicalDevice.waitForFences(
-                1, &m_frameResources[currentSemaphore].inFlightFences, true, std::numeric_limits<uint64_t>::max());
+                1, &m_frameResources[m_resourceIndex].inFlightFences, true, std::numeric_limits<uint64_t>::max());
 
             auto acquireResult =
-                m_swapChain->acquire_next_image(m_logicalDevice, m_frameResources[currentSemaphore].imageAvailable);
+                m_swapChain->acquire_next_image(m_logicalDevice, m_frameResources[m_resourceIndex].imageAvailable);
             if (acquireResult == swap_chain::result::resize) {
                 // recreate swap chain
                 return false;
@@ -213,26 +214,25 @@ namespace engine {
         }
 
         bool device::draw(const std::vector<vk::CommandBuffer>& commandBuffers) {
-            std::uint32_t currentSemaphore = m_frameCounter % m_maxConcurrentFrames;
+            std::uint32_t currentFrame = get_resource_index();
+            m_logicalDevice.resetFences(1, &m_frameResources[currentFrame].inFlightFences);
 
-            m_logicalDevice.resetFences(1, &m_frameResources[currentSemaphore].inFlightFences);
-
-            vk::Semaphore waitSemaphores[] = {m_frameResources[currentSemaphore].imageAvailable};
-            vk::Semaphore signalSemaphores[] = {m_frameResources[currentSemaphore].renderFinished};
+            vk::Semaphore waitSemaphores[] = {m_frameResources[currentFrame].imageAvailable};
+            vk::Semaphore signalSemaphores[] = {m_frameResources[currentFrame].renderFinished};
             vk::PipelineStageFlags waitStages[] = {vk::PipelineStageFlagBits::eColorAttachmentOutput};
 
             vk::SubmitInfo submitInfo(1, waitSemaphores, waitStages, 1, commandBuffers.data(), 1, signalSemaphores);
 
-            m_graphicsQueueHandle.submit(1, &submitInfo, m_frameResources[currentSemaphore].inFlightFences);
+            m_graphicsQueueHandle.submit(1, &submitInfo, m_frameResources[currentFrame].inFlightFences);
 
             return true;
         }
 
         bool device::endFrame() {
-            std::uint32_t currentSemaphore = m_frameCounter % m_maxConcurrentFrames;
+            std::uint32_t currentFrame = get_resource_index();
 
             auto presentResult =
-                m_swapChain->present_image(m_presentationQueueHandle, m_frameResources[currentSemaphore].renderFinished);
+                m_swapChain->present_image(m_presentationQueueHandle, m_frameResources[currentFrame].renderFinished);
             if (m_framebufferResized || presentResult == swap_chain::result::resize) {
                 return true;
             } else if (presentResult == swap_chain::result::fail) {

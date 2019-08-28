@@ -3,6 +3,8 @@
 
 #include "rendering_technique.h"
 
+#include "swap_chain.h"
+
 namespace tst {
 namespace engine {
     namespace vulkan {
@@ -55,15 +57,23 @@ namespace engine {
             return framebuffers;
         }
 
-        rendering_technique::rendering_technique(const std::string& name,
-                                                 vk::Device& device,
-                                                 const std::vector<vk::ImageView>& imageViews,
-                                                 vk::Format format,
-                                                 vk::Extent2D extent)
+        rendering_technique::rendering_technique(const std::string& name, vk::Device& device, swap_chain& swapChain)
             : base::rendering_technique(name)
             , m_device(device)
-            , m_renderPass(create_render_pass(device, format))
-            , m_framebuffers(create_framebuffers(device, m_renderPass, imageViews, extent)) {
+            , m_swapChain(swapChain)
+            , m_extent(swapChain.get_extent())
+            , m_renderPass(create_render_pass(device, swapChain.get_format()))
+            , m_framebuffers(
+                  create_framebuffers(device, m_renderPass, m_swapChain.get_image_views(), swapChain.get_extent())) {
+        }
+
+        rendering_technique::rendering_technique(rendering_technique&& technique)
+            : base::rendering_technique(std::move(technique))
+            , m_device(technique.m_device)
+            , m_swapChain(technique.m_swapChain)
+            , m_renderPass(technique.m_renderPass)
+            , m_framebuffers(std::move(technique.m_framebuffers)) {
+            m_renderPass = vk::RenderPass();
         }
 
         rendering_technique::~rendering_technique() {
@@ -72,6 +82,38 @@ namespace engine {
             }
 
             m_device.destroyRenderPass(m_renderPass);
+        }
+
+        vk::RenderPassBeginInfo rendering_technique::generate_render_pass_info() const {
+            vk::ClearValue clearColor = vk::ClearValue(std::array<float, 4>{0.0f, 0.0f, 0.0f, 1.0f});
+
+            vk::RenderPassBeginInfo renderPassInfo(
+                m_renderPass, m_framebuffers[m_swapChain.get_image_index()], vk::Rect2D({0, 0}, m_extent), 1, &clearColor);
+
+            return renderPassInfo;
+        }
+
+        technique_cache::technique_cache(vk::Device& device, swap_chain& swapChain)
+            : m_device(device), m_swapChain(swapChain) {
+        }
+
+        void technique_cache::add_rendering_technique(const std::string& techniqueName) {
+            m_techniques.emplace_back(rendering_technique(techniqueName, m_device, m_swapChain));
+        }
+
+        std::optional<const rendering_technique&> technique_cache::find_technique(const std::string& techniqueName) {
+            auto technique =
+                std::find_if(m_techniques.begin(), m_techniques.end(), [&](const rendering_technique& technique) {
+                    if (technique.get_name() == techniqueName) {
+                        return true;
+                    }
+                    return false;
+                });
+
+            if (technique != m_techniques.end()) {
+                return *technique;
+            }
+            return std::nullopt;
         }
 
     } // namespace vulkan

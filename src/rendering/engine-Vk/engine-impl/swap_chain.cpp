@@ -173,7 +173,7 @@ namespace engine {
 
         swap_chain::result swap_chain::acquire_next_image(const vk::Device& device, const vk::Semaphore& imageAvailable) {
             auto acquireResult = device.acquireNextImageKHR(
-                m_swapChain, std::numeric_limits<uint64_t>::max(), imageAvailable, vk::Fence());
+                m_swapChain, std::numeric_limits<std::uint64_t>::max(), imageAvailable, vk::Fence());
 
             if (acquireResult.result == vk::Result::eErrorOutOfDateKHR) {
                 return result::resize;

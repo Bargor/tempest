@@ -4,7 +4,6 @@
 
 #include "api.h"
 #include "physical_device.h"
-#include "rendering_technique.h"
 #include "resources/index_buffer.h"
 #include "resources/shader.h"
 #include "resources/uniform_buffer.h"
@@ -28,10 +27,10 @@ namespace engine {
 
         class gpu_info;
         class swap_chain;
+        class technique_cache;
 
         class device {
             friend class rendering_engine;
-            friend class swap_chain;
 
         public:
             struct frame_resources {
@@ -48,8 +47,7 @@ namespace engine {
             device(const device& device) = delete;
             ~device();
 
-            vk::CommandPool& create_command_pool();
-
+        public: // public engine interface
             template<typename IndexType>
             index_buffer<IndexType> create_index_buffer(std::vector<IndexType>&& indices,
                                                         const vk::CommandPool& cmdPool) const;
@@ -58,14 +56,17 @@ namespace engine {
                                                const vk::CommandPool& cmdPool) const;
             uniform_buffer create_uniform_buffer(const vk::CommandPool& cmdPool) const;
             shader crate_shader(shader::shader_type type, std::vector<char>&& source, const std::string_view name) const;
-            void add_rendering_technique(const std::string& techniqueName);
-
             gpu_info& get_GPU_info() const noexcept;
 
-        public:
+        public: // public Vulkan interface
+            void add_rendering_technique(const std::string& techniqueName);
+            vk::CommandPool& create_command_pool();
+
             bool startFrame();
             bool draw(const std::vector<vk::CommandBuffer>& commandBuffers);
             bool endFrame();
+
+            std::uint32_t get_resource_index() const noexcept;
 
         private:
             void cleanup_swap_chain_dependancies();
@@ -82,7 +83,7 @@ namespace engine {
             ptr<physical_device> m_physicalDevice;
             vk::Device m_logicalDevice;
             ptr<swap_chain> m_swapChain;
-            std::vector<rendering_technique> m_techniques;
+            ptr<technique_cache> m_techniques;
             vk::Queue m_graphicsQueueHandle;
             vk::Queue m_computeQueueHandle;
             vk::Queue m_presentationQueueHandle;
@@ -92,6 +93,7 @@ namespace engine {
             std::vector<frame_resources> m_frameResources;
 
             bool m_framebufferResized;
+            std::uint32_t m_resourceIndex;
         };
 
         template<typename IndexType>
@@ -107,6 +109,10 @@ namespace engine {
 
         TST_INLINE gpu_info& device::get_GPU_info() const noexcept {
             return m_physicalDevice->get_GPU_info();
+        }
+
+        TST_INLINE std::uint32_t device::get_resource_index() const noexcept {
+            return m_resourceIndex;
         }
 
     } // namespace vulkan
