@@ -4,7 +4,6 @@
 set(ENGINE_HDRS
     engine/device.h
 	engine/draw_info.h
-	engine/engine.h
 	engine/gpu_info.h
 	engine/resource_factory.h
     	engine/resources/index_buffer.h
@@ -17,7 +16,6 @@ set(ENGINE_HDRS
 set(ENGINE_SRCS 
     	engine/device.cpp
 	engine/draw_info.cpp
-	engine/engine.cpp
 	engine/gpu_info.cpp
 	engine/resource_factory.cpp
 	engine/resources/index_buffer.cpp
