@@ -2,6 +2,7 @@
 // Author: Karol Kontny
 #pragma once
 
+#include "shader.h"
 #include "vertex_format.h"
 
 #include <engine-base/resources/pipeline.h>
@@ -12,7 +13,7 @@ namespace engine {
 
         class pipeline : public base::pipeline {
         public:
-            pipeline(vertex_format& format, shader_set&);
+            pipeline(vertex_format& format, shader_set& shaders);
 
         private:
         };

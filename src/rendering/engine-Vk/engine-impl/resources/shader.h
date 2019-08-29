@@ -42,6 +42,8 @@ namespace engine {
             vk::ShaderModule m_shader;
             vk::PipelineShaderStageCreateInfo m_pipelineInfo;
         };
+
+        using shader_set = std::vector<shader>;
     } // namespace vulkan
 } // namespace engine
 } // namespace tst
