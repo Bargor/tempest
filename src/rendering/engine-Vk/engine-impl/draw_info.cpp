@@ -9,7 +9,7 @@ namespace engine {
         draw_info::draw_info(const uniform_buffer_object& transformation,
                              const vertex_buffer* vertices,
                              const index_buffer<std::uint16_t>* indices)
-            : m_transformation(transformation), m_vertices(vertices), m_indices(indices) {
+            : transformation(transformation), vertices(vertices), indices(indices) {
         }
     } // namespace vulkan
 } // namespace engine

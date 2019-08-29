@@ -12,6 +12,7 @@
 #include <GLFW/glfw3.h>
 #include <algorithm/algorithm.h>
 #include <application/app_event.h>
+#include <application/data_loader.h>
 #include <application/event_processor.h>
 #include <application/main_window.h>
 #include <fmt/printf.h>
@@ -110,9 +111,11 @@ namespace engine {
         }
 
         device::device(application::main_window& mainWindow,
+                       application::data_loader& dataLoader,
                        application::event_processor<application::app_event>& eventProcessor)
             : m_frameCounter(0)
             , m_mainWindow(mainWindow)
+            , m_dataLoader(dataLoader)
             , m_eventProcessor(eventProcessor)
             , m_windowSurface(create_window_surface(mainWindow.get_handle()))
             , m_physicalDevice(select_physical_device(m_windowSurface, {VK_KHR_SWAPCHAIN_EXTENSION_NAME}))
@@ -125,12 +128,13 @@ namespace engine {
                                                m_physicalDevice->get_graphics_index(),
                                                m_physicalDevice->get_presentation_index(),
                                                vk::Extent2D{mainWindow.get_size().width, mainWindow.get_size().height}))
-            , m_techniques(std::make_unique<technique_cache>())
+            , m_techniques(std::make_unique<technique_cache>(m_logicalDevice, *m_swapChain))
             , m_graphicsQueueHandle(m_logicalDevice.getQueue(m_physicalDevice->get_graphics_index(), 0))
             , m_computeQueueHandle(m_logicalDevice.getQueue(m_physicalDevice->get_compute_index(), 0))
             , m_presentationQueueHandle(m_logicalDevice.getQueue(m_physicalDevice->get_presentation_index(), 0))
             , m_transferQueueHandle(m_logicalDevice.getQueue(m_physicalDevice->get_transfer_index(), 0))
             , m_frameResources({frame_resources(m_logicalDevice), frame_resources(m_logicalDevice)})
+            , m_engineFrontend(std::make_unique<engine_frontend>(m_eventProcessor, *this, *m_techniques))
             , m_framebufferResized(false) {
             auto framebufferResizeCallback = [&](const application::app_event::arguments&) {
                 m_framebufferResized = true;
@@ -188,12 +192,15 @@ namespace engine {
             return shader(m_logicalDevice, type, std::move(source), name);
         }
 
+        void device::start() {
+        }
+
+        void device::stop() {
+            m_logicalDevice.waitIdle();
+        }
+
         void device::add_rendering_technique(const std::string& techniqueName) {
-            m_techniques.add_rendering_technique(techniqueName,
-                                                       m_logicalDevice,
-                                                       m_swapChain->get_image_views(),
-                                                       m_swapChain->get_format(),
-                                                       m_swapChain->get_extent()));
+            m_techniques->add_rendering_technique(techniqueName);
         }
 
         bool device::startFrame() {

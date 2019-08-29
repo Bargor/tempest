@@ -11,7 +11,7 @@ namespace engine {
         class device;
         class draw_command;
         class gpu_info;
-        class rendering_engine;
+        class engine_frontend;
         class vertex_format;
 
         template<typename T>

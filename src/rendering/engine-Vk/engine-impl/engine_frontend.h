@@ -2,7 +2,6 @@
 // Author: Karol Kontny
 #pragma once
 
-#include "device.h"
 #include "draw_info.h"
 #include "engine_init.h"
 #include "queue_indices.h"
@@ -28,54 +27,40 @@ namespace engine {
         template<typename IndexType>
         class index_buffer;
         class swap_chain;
-        class shader_compiler;
         class technique_cache;
         class vertex_buffer;
         class uniform_buffer;
 
-        class rendering_engine {
+        class engine_frontend {
             template<typename T>
             using ptr = std::unique_ptr<T>;
 
         public:
-            rendering_engine(application::data_loader& dataLoader,
-                             application::event_processor<application::app_event>& eventProcessor,
-                             device& device);
-            rendering_engine(const rendering_engine& engine) = delete;
-            ~rendering_engine();
-            void start();
-            void stop();
-
-            template<typename Iter>
-            bool draw_frame(Iter first, Iter last);
-
-        private:
-            void recreate_swap_chain(std::uint32_t width, std::uint32_t height);
-            void update_framebuffer();
-            void submit_command_buffer(vk::CommandBuffer& buffer);
+            engine_frontend(application::event_processor<application::app_event>& eventProcessor,
+                            device& device,
+                            technique_cache& techniqueCache);
+            engine_frontend(const engine_frontend& engine) = delete;
+            ~engine_frontend();
 
             template<typename Iter>
             std::vector<vk::CommandBuffer> prepare_draw(Iter first, Iter last);
+
+        private:
             vk::CommandBuffer generate_command_buffer(const draw_info& drawInfo);
 
         private:
             static constexpr std::uint32_t m_maxConcurrentFrames = 2;
 
-            application::data_loader& m_dataLoader;
             application::event_processor<application::app_event>& m_eventProcessor;
 
             device& m_device;
             technique_cache& m_techniqueCache;
 
-            ptr<shader_compiler> m_shaderCompiler;
-            vk::DescriptorSetLayout m_descriptorSetLayout;
-            vk::PipelineLayout m_pipelineLayout;
-            vk::Pipeline m_pipeline;
             std::vector<vk::CommandPool> m_commandPools;
         };
 
         template<typename Iter>
-        std::vector<vk::CommandBuffer> rendering_engine::prepare_draw(Iter first, Iter last) {
+        std::vector<vk::CommandBuffer> engine_frontend::prepare_draw(Iter first, Iter last) {
             std::vector<vk::CommandBuffer> buffers;
 
             for (; first != last; ++first) {
@@ -84,19 +69,6 @@ namespace engine {
             }
 
             return buffers;
-        }
-
-        template<typename Iter>
-        bool rendering_engine::draw_frame(Iter first, Iter last) {
-            m_device.startFrame();
-            auto commandBuffers = prepare_draw(first, last);
-
-            m_device.draw(commandBuffers);
-            m_device.endFrame();
-
-            // m_device.m_logicalDevice.freeCommandBuffers(m_commandPool, commandBuffers);
-
-            return true;
         }
 
     } // namespace vulkan

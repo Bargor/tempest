@@ -6,22 +6,24 @@
 #include "resources/uniform_buffer.h"
 #include "resources/vertex_buffer.h"
 
+#include <engine-base/draw_info.h>
 #include <vulkan/vulkan.hpp>
 
 namespace tst {
 namespace engine {
     namespace vulkan {
-        class draw_info {
+        struct draw_info : public base::draw_info {
         public:
             draw_info(const uniform_buffer_object& transformation,
                       const vertex_buffer* vertices,
                       const index_buffer<std::uint16_t>* indices);
 
             ~draw_info() = default;
+
         public:
-            const uniform_buffer_object& m_transformation;
-            const vertex_buffer* m_vertices;
-            const index_buffer<std::uint16_t>* m_indices;
+            const uniform_buffer_object& transformation;
+            const vertex_buffer* vertices;
+            const index_buffer<std::uint16_t>* indices;
         };
     } // namespace vulkan
 } // namespace engine

@@ -12,6 +12,7 @@
 
 namespace tst {
 namespace application {
+    class data_loader;
     template<typename Event>
     class event_processor;
     class main_window;
@@ -27,6 +28,7 @@ namespace engine {
         using super = api::device;
 
         device(application::main_window& mainWindow,
+               application::data_loader& dataLoader,
                application::event_processor<application::app_event>& eventProcessor);
         ~device();
 

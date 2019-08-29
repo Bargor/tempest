@@ -4,11 +4,11 @@
 #include "engine.h"
 
 // clang-format off
-#include <engine/engine.h>
 #include <application/app_event.h>
 #include <application/event_processor.h>
 #include <application/input_processor.h>
 #include <application/main_window.h>
+#include <engine/device.h>
 #include <engine/resource_factory.h>
 #include <fmt/printf.h>
 #include <scene/scene.h>
@@ -28,8 +28,7 @@ namespace application {
         , m_inputProcessor(inputProcessor)
         , m_mainWindow(mainWindow)
         , m_dataLoader(dataLoader)
-        , m_renderingDevice(std::make_unique<engine::device>(m_mainWindow, m_eventProcessor))
-        , m_renderingEngine(std::make_unique<engine::rendering_engine>(m_dataLoader, m_eventProcessor, *m_renderingDevice))
+        , m_renderingDevice(std::make_unique<engine::device>(m_mainWindow, m_dataLoader, m_eventProcessor))
         , m_resourceFactory(std::make_unique<engine::resource_factory>(*m_renderingDevice))
         , m_scene(std::make_unique<scene::scene>())
         , m_frameCounter(0)
@@ -78,7 +77,6 @@ namespace application {
             main_loop();
             m_frameCounter++;
         }
-        m_renderingEngine->stop();
     }
 
     void simulation_engine::main_loop() {
@@ -88,7 +86,7 @@ namespace application {
         if (!m_windowMinimized) {
             auto newSceneState = scene::update_scene(*m_scene, m_lastFrameDuration);
             auto drawInfo = scene::prepare_draw_info(newSceneState);
-            m_renderingEngine->draw_frame(drawInfo.begin(), drawInfo.end());
+            m_renderingDevice->draw_frame(drawInfo.begin(), drawInfo.end());
             m_mainWindow.end_frame();
             m_lastSecondFrames++;
         }

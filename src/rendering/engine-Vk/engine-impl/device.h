@@ -3,6 +3,7 @@
 #pragma once
 
 #include "api.h"
+#include "engine_frontend.h"
 #include "physical_device.h"
 #include "resources/index_buffer.h"
 #include "resources/shader.h"
@@ -16,6 +17,7 @@
 
 namespace tst {
 namespace application {
+    class data_loader;
     template<typename Event>
     class event_processor;
     class main_window;
@@ -30,7 +32,7 @@ namespace engine {
         class technique_cache;
 
         class device {
-            friend class rendering_engine;
+            friend class engine_frontend;
 
         public:
             struct frame_resources {
@@ -43,6 +45,7 @@ namespace engine {
 
         public:
             device(application::main_window& mainWindow,
+                   application::data_loader& dataLoader,
                    application::event_processor<application::app_event>& eventProcessor);
             device(const device& device) = delete;
             ~device();
@@ -57,6 +60,12 @@ namespace engine {
             uniform_buffer create_uniform_buffer(const vk::CommandPool& cmdPool) const;
             shader crate_shader(shader::shader_type type, std::vector<char>&& source, const std::string_view name) const;
             gpu_info& get_GPU_info() const noexcept;
+
+            template<typename Iter>
+            bool draw_frame(Iter first, Iter last);
+
+            void start();
+            void stop();
 
         public: // public Vulkan interface
             void add_rendering_technique(const std::string& techniqueName);
@@ -78,6 +87,7 @@ namespace engine {
 
             std::uint32_t m_frameCounter;
             application::main_window& m_mainWindow;
+            application::data_loader& m_dataLoader;
             application::event_processor<application::app_event>& m_eventProcessor;
             vk::SurfaceKHR m_windowSurface;
             ptr<physical_device> m_physicalDevice;
@@ -92,9 +102,24 @@ namespace engine {
             std::vector<vk::CommandPool> m_commandPools;
             std::vector<frame_resources> m_frameResources;
 
+            ptr<engine_frontend> m_engineFrontend;
+
             bool m_framebufferResized;
             std::uint32_t m_resourceIndex;
         };
+
+        template<typename Iter>
+        bool device::draw_frame(Iter first, Iter last) {
+            startFrame();
+            auto commandBuffers = m_engineFrontend->prepare_draw(first, last);
+
+            draw(commandBuffers);
+            endFrame();
+
+            // m_device.m_logicalDevice.freeCommandBuffers(m_commandPool, commandBuffers);
+
+            return true;
+        }
 
         template<typename IndexType>
         index_buffer<IndexType> device::create_index_buffer(std::vector<IndexType>&& indices,

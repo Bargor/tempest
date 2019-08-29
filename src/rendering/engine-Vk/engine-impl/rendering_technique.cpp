@@ -101,7 +101,8 @@ namespace engine {
             m_techniques.emplace_back(rendering_technique(techniqueName, m_device, m_swapChain));
         }
 
-        std::optional<const rendering_technique&> technique_cache::find_technique(const std::string& techniqueName) {
+        std::optional<std::reference_wrapper<rendering_technique>>
+        technique_cache::find_technique(const std::string& techniqueName) {
             auto technique =
                 std::find_if(m_techniques.begin(), m_techniques.end(), [&](const rendering_technique& technique) {
                     if (technique.get_name() == techniqueName) {
@@ -111,7 +112,7 @@ namespace engine {
                 });
 
             if (technique != m_techniques.end()) {
-                return *technique;
+                return std::ref(*technique);
             }
             return std::nullopt;
         }

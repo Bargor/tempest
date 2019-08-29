@@ -36,7 +36,7 @@ namespace engine {
 
             void add_rendering_technique(const std::string& techniqueName);
 
-            std::optional<const rendering_technique&> find_technique(const std::string& techniqueName);
+            std::optional<std::reference_wrapper<rendering_technique>> find_technique(const std::string& techniqueName);
 
         private:
             vk::Device& m_device;

@@ -9,9 +9,8 @@ namespace tst {
 
 namespace engine {
     class device;
-    class rendering_engine;
     class resource_factory;
-}
+} // namespace engine
 
 namespace scene {
     class scene;
@@ -52,7 +51,6 @@ namespace application {
         main_window& m_mainWindow;
         data_loader& m_dataLoader;
         ptr<engine::device> m_renderingDevice;
-        ptr<engine::rendering_engine> m_renderingEngine;
         ptr<engine::resource_factory> m_resourceFactory;
         ptr<scene::scene> m_scene;
         std::size_t m_frameCounter;

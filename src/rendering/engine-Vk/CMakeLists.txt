@@ -5,7 +5,7 @@ set(ENGINE_HDRS
     engine-impl/api.h
 	engine-impl/device.h
 	engine-impl/draw_info.h
-	engine-impl/engine.h
+	engine-impl/engine_frontend.h
 	engine-impl/engine_init.h
 	engine-impl/gpu_info.h
 	engine-impl/instance.h
@@ -29,7 +29,7 @@ set(ENGINE_HDRS
 
 set(ENGINE_SRCS 
 	engine-impl/device.cpp
-	engine-impl/engine.cpp
+	engine-impl/engine_frontend.cpp
 	engine-impl/draw_info.cpp
 	engine-impl/engine_init.cpp
 	engine-impl/gpu_info.cpp
