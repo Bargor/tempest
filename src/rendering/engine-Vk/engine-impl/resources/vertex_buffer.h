@@ -13,6 +13,8 @@ namespace engine {
 
         class vertex_buffer : public buffer {
         public:
+            using super = buffer;
+
             vertex_buffer(const vk::Device& logicalDevice,
                           const vk::Queue m_queueHandle,
                           const vk::CommandPool& cmdPool,

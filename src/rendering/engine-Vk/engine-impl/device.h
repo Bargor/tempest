@@ -28,6 +28,7 @@ namespace engine {
     namespace vulkan {
 
         class gpu_info;
+        class pipeline_cache;
         class swap_chain;
         class technique_cache;
 
@@ -94,6 +95,7 @@ namespace engine {
             vk::Device m_logicalDevice;
             ptr<swap_chain> m_swapChain;
             ptr<technique_cache> m_techniques;
+            ptr<pipeline_cache> m_pipelines;
             vk::Queue m_graphicsQueueHandle;
             vk::Queue m_computeQueueHandle;
             vk::Queue m_presentationQueueHandle;

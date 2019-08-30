@@ -3,6 +3,7 @@
 #pragma once
 
 #include "resources/index_buffer.h"
+#include "resources/pipeline.h"
 #include "resources/uniform_buffer.h"
 #include "resources/vertex_buffer.h"
 #include "resources/vertex_format.h"
@@ -15,21 +16,23 @@ namespace engine {
 
     class device;
 
-        class resource_factory final : api::resource_factory {
-            using super = api::resource_factory;
-        public:
-            resource_factory(device& device);
-            ~resource_factory();
+    class resource_factory final : api::resource_factory {
+        using super = api::resource_factory;
 
-        public:
-            resources::index_buffer create_index_buffer(std::vector<std::uint16_t>&& indices);
-            resources::vertex_buffer create_vertex_buffer(const engine::vertex_format& format,
-                                                          std::vector<vertex>&& vertices);
-            resources::uniform_buffer create_uniform_buffer();
+    public:
+        resource_factory(device& device);
+        ~resource_factory();
 
-        private:
-        };
+    public:
+        resources::index_buffer create_index_buffer(std::vector<std::uint16_t>&& indices);
+        resources::pipeline create_pipeline();
+        resources::vertex_buffer create_vertex_buffer(const engine::vertex_format& format,
+                                                      std::vector<vertex>&& vertices);
+        resources::uniform_buffer create_uniform_buffer();
 
-        static_assert(!std::is_polymorphic_v<resource_factory>);
+    private:
+    };
+
+    static_assert(!std::is_polymorphic_v<resource_factory>);
 } // namespace engine
 } // namespace tst

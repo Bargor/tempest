@@ -4,6 +4,14 @@
 
 namespace tst {
 namespace engine {
-    namespace vulkan {} // namespace vulkan
+    namespace vulkan {
+
+        pipeline::pipeline(const vertex_format& format, const shader_set& shaders) {
+        }
+
+        pipeline::~pipeline() {
+        }
+
+    } // namespace vulkan
 } // namespace engine
 } // namespace tst

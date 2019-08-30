@@ -26,6 +26,7 @@ namespace engine {
         class device_queues;
         template<typename IndexType>
         class index_buffer;
+        class pipeline_cache;
         class swap_chain;
         class technique_cache;
         class vertex_buffer;
@@ -38,7 +39,8 @@ namespace engine {
         public:
             engine_frontend(application::event_processor<application::app_event>& eventProcessor,
                             device& device,
-                            technique_cache& techniqueCache);
+                            technique_cache& techniqueCache,
+                            pipeline_cache& pipelineCache);
             engine_frontend(const engine_frontend& engine) = delete;
             ~engine_frontend();
 
@@ -55,6 +57,7 @@ namespace engine {
 
             device& m_device;
             technique_cache& m_techniqueCache;
+            pipeline_cache& m_pipelineCache;
 
             std::vector<vk::CommandPool> m_commandPools;
         };

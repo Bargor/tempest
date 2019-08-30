@@ -12,12 +12,15 @@ namespace engine {
 
         class pipeline_cache {
         public:
-            pipeline_cache();
+            pipeline_cache(vk::Device& device);
+            pipeline_cache(const pipeline_cache&) = delete;
             ~pipeline_cache();
 
-            void add_pipeline();
+            void add_pipeline(pipeline& pipeline);
 
         private:
+            vk::Device& m_device;
+
             std::unordered_set<pipeline> m_pipelines;
         };
 

@@ -1,18 +1,13 @@
 // This file is part of Tempest-engine project
 // Author: Karol Kontny
 
-#include <string>
+#include "draw_info.h"
 
 namespace tst {
 namespace engine {
     namespace base {
-
-        struct draw_info {
-            draw_info(const std::string& name);
-
-            std::string techniqueName;
-        };
-
+        draw_info::draw_info(const std::string& name) : techniqueName(name) {
+        }
     } // namespace base
 } // namespace engine
 } // namespace tst

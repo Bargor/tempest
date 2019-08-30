@@ -5,6 +5,7 @@
 
 #include "gpu_info.h"
 #include "instance.h"
+#include "pipeline_cache.h"
 #include "rendering_technique.h"
 #include "swap_chain.h"
 #include "vulkan_exception.h"
@@ -129,12 +130,13 @@ namespace engine {
                                                m_physicalDevice->get_presentation_index(),
                                                vk::Extent2D{mainWindow.get_size().width, mainWindow.get_size().height}))
             , m_techniques(std::make_unique<technique_cache>(m_logicalDevice, *m_swapChain))
+            , m_pipelines(std::make_unique<pipeline_cache>(m_logicalDevice))
             , m_graphicsQueueHandle(m_logicalDevice.getQueue(m_physicalDevice->get_graphics_index(), 0))
             , m_computeQueueHandle(m_logicalDevice.getQueue(m_physicalDevice->get_compute_index(), 0))
             , m_presentationQueueHandle(m_logicalDevice.getQueue(m_physicalDevice->get_presentation_index(), 0))
             , m_transferQueueHandle(m_logicalDevice.getQueue(m_physicalDevice->get_transfer_index(), 0))
             , m_frameResources({frame_resources(m_logicalDevice), frame_resources(m_logicalDevice)})
-            , m_engineFrontend(std::make_unique<engine_frontend>(m_eventProcessor, *this, *m_techniques))
+            , m_engineFrontend(std::make_unique<engine_frontend>(m_eventProcessor, *this, *m_techniques, *m_pipelines))
             , m_framebufferResized(false) {
             auto framebufferResizeCallback = [&](const application::app_event::arguments&) {
                 m_framebufferResized = true;

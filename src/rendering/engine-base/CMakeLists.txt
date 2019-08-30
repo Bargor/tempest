@@ -10,7 +10,8 @@ set(ENGINE_BASE_HDRS
 	engine-base/resources/vertex_format.h
 )
 
-set(ENGINE_BASE_SRCS 
+set(ENGINE_BASE_SRCS
+	engine-base/draw_info.cpp 
 	engine-base/gpu_info.cpp
 	engine-base/rendering_technique.cpp
 	engine-base/resources/material.cpp

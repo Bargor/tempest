@@ -19,6 +19,8 @@ namespace engine {
 
         class uniform_buffer : public buffer {
         public:
+            using super = buffer;
+
             uniform_buffer(const vk::Device& logicalDevice,
                            const vk::Queue m_queueHandle,
                            const vk::CommandPool& cmdPool,

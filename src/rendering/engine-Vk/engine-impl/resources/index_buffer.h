@@ -14,6 +14,8 @@ namespace engine {
         template<typename IndexType>
         class index_buffer : public buffer {
         public:
+            using super = buffer;
+
             index_buffer(const vk::Device& logicalDevice,
                          const vk::Queue& queueHandle,
                          const vk::CommandPool& cmdPool,

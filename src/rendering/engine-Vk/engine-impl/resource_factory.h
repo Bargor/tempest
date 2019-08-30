@@ -4,6 +4,7 @@
 
 #include "device.h"
 #include "resources/index_buffer.h"
+#include "resources/pipeline.h"
 #include "resources/uniform_buffer.h"
 #include "resources/vertex_buffer.h"
 #include "resources/vertex_format.h"
@@ -23,6 +24,7 @@ namespace engine {
         public:
             template<typename IndexType>
             index_buffer<IndexType> create_index_buffer(std::vector<std::uint16_t>&& indices);
+            pipeline create_pipeline(const vertex_format& format);
             vertex_buffer create_vertex_buffer(const vertex_format& format, std::vector<vertex>&& vertices);
             uniform_buffer create_uniform_buffer();
 

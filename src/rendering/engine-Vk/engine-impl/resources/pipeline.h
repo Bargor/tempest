@@ -13,11 +13,26 @@ namespace engine {
 
         class pipeline : public base::pipeline {
         public:
-            pipeline(vertex_format& format, shader_set& shaders);
+            using super = base::pipeline;
+
+            pipeline(const vertex_format& format, const shader_set& shaders);
+            ~pipeline();
 
         private:
+            vk::Pipeline m_pipeline;
         };
 
     } // namespace vulkan
 } // namespace engine
 } // namespace tst
+
+namespace std {
+
+template<>
+struct hash<tst::engine::vulkan::pipeline> {
+    std::size_t operator()(const tst::engine::vulkan::pipeline& pipeline) {
+        return std::hash<tst::engine::base::pipeline>{}(pipeline);
+    }
+};
+
+} // namespace std
