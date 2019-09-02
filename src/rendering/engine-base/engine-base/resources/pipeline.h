@@ -213,7 +213,8 @@ struct hash<tst::engine::base::pipeline::multisampling_settings> {
 template<>
 struct hash<tst::engine::base::pipeline::color_blending_settings::color_component_flags> {
     std::size_t operator()(const tst::engine::base::pipeline::color_blending_settings::color_component_flags& settings) {
-        size_t hash = settings.r << 24 | settings.g << 16 | settings.b << 8 | settings.a;
+        std::size_t hash = static_cast<std::int32_t>(settings.r) << 24 | static_cast<std::int32_t>(settings.g) << 16 |
+            static_cast<std::int32_t>(settings.b) << 8 | static_cast<std::int32_t>(settings.a);
 
         return hash;
     }
