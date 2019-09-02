@@ -13,8 +13,9 @@ set(ENGINE_HDRS
 	engine-impl/physical_device.h
 	engine-impl/pipeline_cache.h
 	engine-impl/rendering_technique.h
-	engine-impl/swap_chain.h
+	engine-impl/shader_cache.h
 	engine-impl/shader_compiler.h
+	engine-impl/swap_chain.h
 	engine-impl/resource_factory.h
 	engine-impl/resources/buffer.h
 	engine-impl/resources/index_buffer.h
@@ -38,8 +39,9 @@ set(ENGINE_SRCS
 	engine-impl/physical_device.cpp
 	engine-impl/pipeline_cache.cpp
 	engine-impl/rendering_technique.cpp
-	engine-impl/swap_chain.cpp
+	engine-impl/shader_cache.cpp
 	engine-impl/shader_compiler.cpp
+	engine-impl/swap_chain.cpp
 	engine-impl/resource_factory.cpp
 	engine-impl/resources/buffer.cpp
 	engine-impl/resources/index_buffer.cpp

@@ -15,7 +15,7 @@ namespace engine {
         public:
             using super = base::pipeline;
 
-            pipeline(const vertex_format& format, const shader_set& shaders);
+            pipeline(base::pipeline&& base, const vertex_format& format, const shader_set& shaders);
             ~pipeline();
 
         private:
@@ -30,7 +30,7 @@ namespace std {
 
 template<>
 struct hash<tst::engine::vulkan::pipeline> {
-    std::size_t operator()(const tst::engine::vulkan::pipeline& pipeline) {
+    std::size_t operator()(const tst::engine::vulkan::pipeline& pipeline) const {
         return std::hash<tst::engine::base::pipeline>{}(pipeline);
     }
 };

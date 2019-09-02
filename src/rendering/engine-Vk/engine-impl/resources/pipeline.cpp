@@ -6,7 +6,8 @@ namespace tst {
 namespace engine {
     namespace vulkan {
 
-        pipeline::pipeline(const vertex_format& format, const shader_set& shaders) {
+        pipeline::pipeline(base::pipeline&& base, const vertex_format& format, const shader_set& shaders)
+            : super(std::move(base)) {
         }
 
         pipeline::~pipeline() {

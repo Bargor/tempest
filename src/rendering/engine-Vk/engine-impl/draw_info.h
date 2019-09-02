@@ -19,7 +19,8 @@ namespace engine {
             draw_info(const std::string techniqueName,
                       const uniform_buffer_object& transformation,
                       const vertex_buffer* vertices,
-                      const index_buffer<std::uint16_t>* indices);
+                      const index_buffer<std::uint16_t>* indices,
+                      std::size_t pipelineHash);
 
             ~draw_info() = default;
 
@@ -27,6 +28,7 @@ namespace engine {
             const uniform_buffer_object& transformation;
             const vertex_buffer* vertices;
             const index_buffer<std::uint16_t>* indices;
+            std::size_t pipelineHash;
         };
     } // namespace vulkan
 } // namespace engine
