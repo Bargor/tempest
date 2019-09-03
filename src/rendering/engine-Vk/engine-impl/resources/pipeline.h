@@ -3,7 +3,6 @@
 #pragma once
 
 #include "shader.h"
-#include "vertex_format.h"
 
 #include <engine-base/resources/pipeline.h>
 
@@ -11,11 +10,17 @@ namespace tst {
 namespace engine {
     namespace vulkan {
 
+        class vertex_format;
+        class rendering_technique;
+
         class pipeline : public base::pipeline {
         public:
             using super = base::pipeline;
 
-            pipeline(base::pipeline&& base, const vertex_format& format, const shader_set& shaders);
+            pipeline(base::pipeline&& base,
+                     const vertex_format& format,
+                     const shader_set& shaders,
+                     const rendering_technique& technique);
             ~pipeline();
 
         private:

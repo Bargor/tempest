@@ -2,11 +2,16 @@
 // Author: Karol Kontny
 #include "pipeline.h"
 
+#include "vertex_format.h"
+
 namespace tst {
 namespace engine {
     namespace vulkan {
 
-        pipeline::pipeline(base::pipeline&& base, const vertex_format& format, const shader_set& shaders)
+        pipeline::pipeline(base::pipeline&& base,
+                           const vertex_format& format,
+                           const shader_set& shaders,
+                           const rendering_technique& technique)
             : super(std::move(base)) {
         }
 

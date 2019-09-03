@@ -18,10 +18,10 @@ namespace engine {
 
         ~draw_info() = default;
 
-        draw_info(const std::string techniqueName,
-                  const api::uniform_buffer_object& transformation,
+        draw_info(const api::uniform_buffer_object& transformation,
                   const resources::vertex_buffer* vertices,
-                  const resources::index_buffer* indices);
+                  const resources::index_buffer* indices,
+                  std::size_t pipelineHash);
 
         draw_info(api::draw_info&& impl);
         draw_info(draw_info&& other) noexcept;
