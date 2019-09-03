@@ -4,6 +4,7 @@
 
 #include "resources/index_buffer.h"
 #include "resources/pipeline.h"
+#include "resources/shader.h"
 #include "resources/uniform_buffer.h"
 #include "resources/vertex_buffer.h"
 #include "resources/vertex_format.h"
@@ -25,14 +26,17 @@ namespace engine {
 
     public:
         resources::index_buffer create_index_buffer(std::vector<std::uint16_t>&& indices);
-        resources::pipeline create_pipeline();
-        resources::vertex_buffer create_vertex_buffer(const engine::vertex_format& format,
-                                                      std::vector<vertex>&& vertices);
+        resources::pipeline create_pipeline(base::pipeline&& pipeline,
+                                            const std::string_view& techniqueName,
+                                            const std::string_view& shadersName,
+                                            const vertex_format& format);
+        resources::vertex_buffer create_vertex_buffer(const vertex_format& format, std::vector<vertex>&& vertices);
         resources::uniform_buffer create_uniform_buffer();
 
     private:
     };
 
     static_assert(!std::is_polymorphic_v<resource_factory>);
+    static_assert(sizeof(resource_factory) == sizeof(api::resource_factory));
 } // namespace engine
 } // namespace tst

@@ -2,7 +2,7 @@
 # Author: Karol Kontny
 
 set(ENGINE_HDRS
-    engine-impl/api.h
+    	engine-impl/api.h
 	engine-impl/device.h
 	engine-impl/draw_info.h
 	engine-impl/engine_frontend.h
@@ -11,19 +11,19 @@ set(ENGINE_HDRS
 	engine-impl/instance.h
 	engine-impl/queue_indices.h
 	engine-impl/physical_device.h
-	engine-impl/pipeline_cache.h
-	engine-impl/rendering_technique.h
-	engine-impl/swap_chain.h
-	engine-impl/shader_compiler.h
+	engine-impl/resource_cache.h
 	engine-impl/resource_factory.h
 	engine-impl/resources/buffer.h
 	engine-impl/resources/index_buffer.h
 	engine-impl/resources/material.h
 	engine-impl/resources/pipeline.h
+	engine-impl/resources/rendering_technique.h
 	engine-impl/resources/shader.h
 	engine-impl/resources/uniform_buffer.h
 	engine-impl/resources/vertex_buffer.h
 	engine-impl/resources/vertex_format.h
+	engine-impl/shader_compiler.h
+	engine-impl/swap_chain.h
 	engine-impl/vulkan_exception.h
 )
 
@@ -36,19 +36,19 @@ set(ENGINE_SRCS
 	engine-impl/instance.cpp
 	engine-impl/queue_indices.cpp
 	engine-impl/physical_device.cpp
-	engine-impl/pipeline_cache.cpp
-	engine-impl/rendering_technique.cpp
-	engine-impl/swap_chain.cpp
-	engine-impl/shader_compiler.cpp
+	engine-impl/resource_cache.cpp
 	engine-impl/resource_factory.cpp
 	engine-impl/resources/buffer.cpp
 	engine-impl/resources/index_buffer.cpp
 	engine-impl/resources/material.cpp
 	engine-impl/resources/pipeline.cpp
+	engine-impl/resources/rendering_technique.h
 	engine-impl/resources/shader.cpp
 	engine-impl/resources/uniform_buffer.cpp
 	engine-impl/resources/vertex_buffer.cpp
 	engine-impl/resources/vertex_format.cpp
+	engine-impl/shader_compiler.cpp
+	engine-impl/swap_chain.cpp
 )
 
 include(${PROJECT_SOURCE_DIR}/cmake/TstAddLibrary.cmake)

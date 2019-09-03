@@ -2,7 +2,6 @@
 # Author: Karol Kontny
 
 set(ENGINE_BASE_HDRS
-	engine-base/draw_info.h
 	engine-base/gpu_info.h
 	engine-base/rendering_technique.h
 	engine-base/resources/material.h
@@ -11,7 +10,6 @@ set(ENGINE_BASE_HDRS
 )
 
 set(ENGINE_BASE_SRCS
-	engine-base/draw_info.cpp 
 	engine-base/gpu_info.cpp
 	engine-base/rendering_technique.cpp
 	engine-base/resources/material.cpp

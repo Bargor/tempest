@@ -136,15 +136,24 @@ namespace engine {
                 bool operator==(const global_blending_settings& other) const noexcept;
             };
 
+            friend struct std::hash<pipeline>;
+
+            pipeline(const viewport_settings& viewportSettings,
+                     const core::rectangle<std::int32_t, std::uint32_t>& scissor,
+                     const rasterizer_settings& rasterizerSettings,
+                     const multisampling_settings& multisamplingSettings,
+                     const std::initializer_list<color_blending_settings> blendingSettings,
+                     const global_blending_settings& globalBlendingSettings);
+
             bool operator==(const pipeline& other) const noexcept;
 
-        public:
-            viewport_settings viewport;
-            core::rectangle<std::int32_t, std::uint32_t> scissor;
-            rasterizer_settings rasterizer;
-            multisampling_settings multisampling;
-            std::vector<color_blending_settings> framebufferColorBlending;
-            global_blending_settings globalColorBlending;
+        private:
+            viewport_settings m_viewport;
+            core::rectangle<std::int32_t, std::uint32_t> m_scissor;
+            rasterizer_settings m_rasterizer;
+            multisampling_settings m_multisampling;
+            std::vector<color_blending_settings> m_framebufferColorBlending;
+            global_blending_settings m_globalColorBlending;
         };
 
     } // namespace base
@@ -155,7 +164,7 @@ namespace std {
 
 template<>
 struct hash<tst::engine::base::pipeline::viewport_settings> {
-    std::size_t operator()(const tst::engine::base::pipeline::viewport_settings& settings) {
+    std::size_t operator()(const tst::engine::base::pipeline::viewport_settings& settings) const {
         size_t seed = 0;
         hash<std::int32_t> hasher;
         tst::hash_combine(seed, hasher(settings.x));
@@ -170,7 +179,7 @@ struct hash<tst::engine::base::pipeline::viewport_settings> {
 
 template<>
 struct hash<tst::engine::base::pipeline::rasterizer_settings::depth_bias_settings> {
-    std::size_t operator()(const tst::engine::base::pipeline::rasterizer_settings::depth_bias_settings& settings) {
+    std::size_t operator()(const tst::engine::base::pipeline::rasterizer_settings::depth_bias_settings& settings) const {
         size_t seed = 0;
         hash<std::int32_t> hasher;
         tst::hash_combine(seed, hasher(settings.enable));
@@ -184,7 +193,7 @@ struct hash<tst::engine::base::pipeline::rasterizer_settings::depth_bias_setting
 
 template<>
 struct hash<tst::engine::base::pipeline::rasterizer_settings> {
-    std::size_t operator()(const tst::engine::base::pipeline::rasterizer_settings& settings) {
+    std::size_t operator()(const tst::engine::base::pipeline::rasterizer_settings& settings) const {
         size_t seed = 0;
         hash<std::int32_t> hasher;
         tst::hash_combine(seed, hasher(settings.depthClamp));
@@ -201,7 +210,7 @@ struct hash<tst::engine::base::pipeline::rasterizer_settings> {
 
 template<>
 struct hash<tst::engine::base::pipeline::multisampling_settings> {
-    std::size_t operator()(const tst::engine::base::pipeline::multisampling_settings& settings) {
+    std::size_t operator()(const tst::engine::base::pipeline::multisampling_settings& settings) const {
         size_t seed = 0;
         hash<std::int32_t> hasher;
         tst::hash_combine(seed, hasher(settings.enable));
@@ -222,7 +231,7 @@ struct hash<tst::engine::base::pipeline::color_blending_settings::color_componen
 
 template<>
 struct hash<tst::engine::base::pipeline::color_blending_settings> {
-    std::size_t operator()(const tst::engine::base::pipeline::color_blending_settings& settings) {
+    std::size_t operator()(const tst::engine::base::pipeline::color_blending_settings& settings) const {
         size_t seed = 0;
         hash<std::int32_t> hasher;
         tst::hash_combine(seed, hasher(settings.enable));
@@ -241,7 +250,7 @@ struct hash<tst::engine::base::pipeline::color_blending_settings> {
 
 template<>
 struct hash<tst::engine::base::pipeline::global_blending_settings> {
-    std::size_t operator()(const tst::engine::base::pipeline::global_blending_settings& settings) {
+    std::size_t operator()(const tst::engine::base::pipeline::global_blending_settings& settings) const {
         size_t seed = 0;
         hash<std::int32_t> hasher;
         tst::hash_combine(seed, hasher(settings.enable));
@@ -257,18 +266,19 @@ struct hash<tst::engine::base::pipeline::global_blending_settings> {
 
 template<>
 struct hash<tst::engine::base::pipeline> {
-    std::size_t operator()(const tst::engine::base::pipeline& pipeline) {
+    std::size_t operator()(const tst::engine::base::pipeline& pipeline) const {
         size_t seed = 0;
 
-        tst::hash_combine(seed, std::hash<tst::engine::base::pipeline::viewport_settings>{}(pipeline.viewport));
-        tst::hash_combine(seed, std::hash<tst::core::rectangle<std::int32_t, std::uint32_t>>{}(pipeline.scissor));
-        tst::hash_combine(seed, std::hash<tst::engine::base::pipeline::rasterizer_settings>{}(pipeline.rasterizer));
-        tst::hash_combine(seed, std::hash<tst::engine::base::pipeline::multisampling_settings>{}(pipeline.multisampling));
-        for (auto& colorBlending : pipeline.framebufferColorBlending) {
+        tst::hash_combine(seed, std::hash<tst::engine::base::pipeline::viewport_settings>{}(pipeline.m_viewport));
+        tst::hash_combine(seed, std::hash<tst::core::rectangle<std::int32_t, std::uint32_t>>{}(pipeline.m_scissor));
+        tst::hash_combine(seed, std::hash<tst::engine::base::pipeline::rasterizer_settings>{}(pipeline.m_rasterizer));
+        tst::hash_combine(seed,
+                          std::hash<tst::engine::base::pipeline::multisampling_settings>{}(pipeline.m_multisampling));
+        for (auto& colorBlending : pipeline.m_framebufferColorBlending) {
             tst::hash_combine(seed, std::hash<tst::engine::base::pipeline::color_blending_settings>{}(colorBlending));
         }
         tst::hash_combine(
-            seed, std::hash<tst::engine::base::pipeline::global_blending_settings>{}(pipeline.globalColorBlending));
+            seed, std::hash<tst::engine::base::pipeline::global_blending_settings>{}(pipeline.m_globalColorBlending));
 
         return seed;
     }

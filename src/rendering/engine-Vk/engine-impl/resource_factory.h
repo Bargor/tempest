@@ -8,8 +8,14 @@
 #include "resources/uniform_buffer.h"
 #include "resources/vertex_buffer.h"
 #include "resources/vertex_format.h"
+#include "shader_cache.h"
 
 namespace tst {
+
+namespace application {
+    class data_loader;
+}
+
 namespace engine {
 
     namespace vulkan {
@@ -18,18 +24,23 @@ namespace engine {
 
         class resource_factory {
         public:
-            resource_factory(device& device);
+            resource_factory(device& device, application::data_loader& dataLoader);
             ~resource_factory();
 
         public:
             template<typename IndexType>
             index_buffer<IndexType> create_index_buffer(std::vector<std::uint16_t>&& indices);
-            pipeline create_pipeline(const vertex_format& format);
+            pipeline create_pipeline(base::pipeline&& pipeline,
+                                     const std::string& techniqueName,
+                                     const std::string& shadersName,
+                                     const vertex_format& format);
             vertex_buffer create_vertex_buffer(const vertex_format& format, std::vector<vertex>&& vertices);
             uniform_buffer create_uniform_buffer();
 
         private:
             device& m_device;
+            application::data_loader& m_dataLoader;
+            shader_cache& m_shaderCache;
             vk::CommandPool m_commandPool;
         };
 

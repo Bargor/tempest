@@ -28,11 +28,9 @@ namespace engine {
 
         engine_frontend::engine_frontend(application::event_processor<application::app_event>& eventProcessor,
                                          device& device,
-                                         technique_cache& techniqueCache,
                                          pipeline_cache& pipelineCache)
             : m_eventProcessor(eventProcessor)
             , m_device(device)
-            , m_techniqueCache(techniqueCache)
             , m_pipelineCache(pipelineCache)
             , m_commandPools({m_device.create_command_pool(), m_device.create_command_pool()}) {
         }
@@ -48,11 +46,6 @@ namespace engine {
 
             vk::CommandBufferBeginInfo commandBufferInfo(vk::CommandBufferUsageFlagBits::eSimultaneousUse, nullptr);
             commandBuffers[0].begin(commandBufferInfo);
-
-            auto technique = m_techniqueCache.find_technique(drawInfo.techniqueName);
-
-            if (!technique) {
-            }
 
             commandBuffers[0].beginRenderPass(technique.value().get().generate_render_pass_info(),
                                               vk::SubpassContents::eInline);

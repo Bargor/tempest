@@ -18,8 +18,11 @@ namespace engine {
         return super::create_index_buffer<std::uint16_t>(std::move(indices));
     }
 
-    resources::pipeline resource_factory::create_pipeline() {
-        return super::create_pipeline();
+    resources::pipeline resource_factory::create_pipeline(base::pipeline&& pipeline,
+                                                          const std::string_view& techniqueName,
+                                                          const std::string_view& shadersName,
+                                                          const vertex_format& format) {
+        return super::create_pipeline(std::move(pipeline), techniqueName, shadersName, format);
     }
 
     resources::vertex_buffer resource_factory::create_vertex_buffer(const engine::vertex_format& format,
