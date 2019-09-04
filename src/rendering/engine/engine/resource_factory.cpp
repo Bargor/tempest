@@ -19,8 +19,8 @@ namespace engine {
     }
 
     resources::pipeline resource_factory::create_pipeline(base::pipeline&& pipeline,
-                                                          const std::string_view& techniqueName,
-                                                          const std::string_view& shadersName,
+                                                          const std::string& techniqueName,
+                                                          const std::string& shadersName,
                                                           const vertex_format& format) {
         return super::create_pipeline(std::move(pipeline), techniqueName, shadersName, format);
     }

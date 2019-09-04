@@ -28,9 +28,8 @@ namespace engine {
     namespace vulkan {
 
         class gpu_info;
-        class pipeline_cache;
+        class resource_cache;
         class swap_chain;
-        class technique_cache;
 
         class device {
             friend class engine_frontend;
@@ -61,6 +60,7 @@ namespace engine {
             uniform_buffer create_uniform_buffer(const vk::CommandPool& cmdPool) const;
             shader crate_shader(shader::shader_type type, std::vector<char>&& source, const std::string_view name) const;
             gpu_info& get_GPU_info() const noexcept;
+            resource_cache& get_resource_cache() noexcept;
 
             template<typename Iter>
             bool draw_frame(Iter first, Iter last);
@@ -69,7 +69,6 @@ namespace engine {
             void stop();
 
         public: // public Vulkan interface
-            void add_rendering_technique(const std::string& techniqueName);
             vk::CommandPool& create_command_pool();
 
             bool startFrame();
@@ -94,8 +93,7 @@ namespace engine {
             ptr<physical_device> m_physicalDevice;
             vk::Device m_logicalDevice;
             ptr<swap_chain> m_swapChain;
-            ptr<technique_cache> m_techniques;
-            ptr<pipeline_cache> m_pipelines;
+            ptr<resource_cache> m_resourceCache;
             vk::Queue m_graphicsQueueHandle;
             vk::Queue m_computeQueueHandle;
             vk::Queue m_presentationQueueHandle;

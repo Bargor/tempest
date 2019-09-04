@@ -13,7 +13,11 @@ namespace engine {
             m_pipelines.insert(pipeline);
         }
 
-        shader_set* resource_cache::find_shaders(const std::string& name) const {
+        void resource_cache::add_shaders(std::string& name, shader_set&& shaders) {
+            m_shaders.insert(std::make_pair(name, std::move(shaders)));
+        }
+
+        const shader_set* resource_cache::find_shaders(const std::string& name) const {
             auto shaders = m_shaders.find(name);
             if (shaders == m_shaders.end()) {
                 return &(shaders->second);
@@ -21,7 +25,7 @@ namespace engine {
             return nullptr;
         }
 
-        rendering_technique* resource_cache::find_technique(const std::string& techniqueName) const {
+        const rendering_technique* resource_cache::find_technique(const std::string& techniqueName) const {
             auto technique =
                 std::find_if(m_techniques.begin(), m_techniques.end(), [&](const rendering_technique& technique) {
                     if (technique.get_name() == techniqueName) {
@@ -31,13 +35,9 @@ namespace engine {
                 });
 
             if (technique != m_techniques.end()) {
-                return technique;
+                return &(*technique);
             }
             return nullptr;
-        }
-
-        void resource_cache::add_shaders(std::string& name, shader_set&& shaders) {
-            m_shaders.insert(std::make_pair(name, std::move(shaders)));
         }
 
     } // namespace vulkan

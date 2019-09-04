@@ -3,12 +3,17 @@
 
 #include "resource_factory.h"
 
+#include "resource_cache.h"
+
 namespace tst {
 namespace engine {
     namespace vulkan {
 
         resource_factory::resource_factory(device& device, application::data_loader& dataLoader)
-            : m_device(device), m_dataLoader(dataLoader), m_commandPool(m_device.create_command_pool()) {
+            : m_device(device)
+            , m_dataLoader(dataLoader)
+            , m_resourceCache(m_device.get_resource_cache())
+            , m_commandPool(m_device.create_command_pool()) {
         }
 
         resource_factory::~resource_factory() {
@@ -18,7 +23,8 @@ namespace engine {
                                                    const std::string& techniqueName,
                                                    const std::string& shadersName,
                                                    const vertex_format& format) {
-            m_shaderCache.find_shaders(shadersName);
+            auto shaders = m_resourceCache.find_shaders(shadersName);
+            auto technique = m_resourceCache.find_technique(techniqueName);
         }
 
         vertex_buffer resource_factory::create_vertex_buffer(const vertex_format& format, std::vector<vertex>&& vertices) {

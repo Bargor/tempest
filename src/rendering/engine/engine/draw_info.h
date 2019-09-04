@@ -18,7 +18,7 @@ namespace engine {
 
         ~draw_info() = default;
 
-        draw_info(const api::uniform_buffer_object& transformation,
+        draw_info(const api::uniform_buffer_object& transform,
                   const resources::vertex_buffer* vertices,
                   const resources::index_buffer* indices,
                   std::size_t pipelineHash);

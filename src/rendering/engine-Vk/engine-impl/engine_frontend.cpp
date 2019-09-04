@@ -6,8 +6,9 @@
 #include "device.h"
 #include "draw_info.h"
 #include "instance.h"
-#include "rendering_technique.h"
+#include "resource_cache.h"
 #include "resources/index_buffer.h"
+#include "resources/rendering_technique.h"
 #include "resources/uniform_buffer.h"
 #include "resources/vertex_buffer.h"
 #include "shader_compiler.h"
@@ -28,10 +29,10 @@ namespace engine {
 
         engine_frontend::engine_frontend(application::event_processor<application::app_event>& eventProcessor,
                                          device& device,
-                                         pipeline_cache& pipelineCache)
+                                         resource_cache& resourceCache)
             : m_eventProcessor(eventProcessor)
             , m_device(device)
-            , m_pipelineCache(pipelineCache)
+            , m_resourceCache(resourceCache)
             , m_commandPools({m_device.create_command_pool(), m_device.create_command_pool()}) {
         }
 

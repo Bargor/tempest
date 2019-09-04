@@ -8,7 +8,6 @@
 #include "resources/uniform_buffer.h"
 #include "resources/vertex_buffer.h"
 #include "resources/vertex_format.h"
-#include "shader_cache.h"
 
 namespace tst {
 
@@ -21,6 +20,7 @@ namespace engine {
     namespace vulkan {
 
         class device;
+        class resource_cache;
 
         class resource_factory {
         public:
@@ -40,7 +40,7 @@ namespace engine {
         private:
             device& m_device;
             application::data_loader& m_dataLoader;
-            shader_cache& m_shaderCache;
+            resource_cache& m_resourceCache;
             vk::CommandPool m_commandPool;
         };
 
