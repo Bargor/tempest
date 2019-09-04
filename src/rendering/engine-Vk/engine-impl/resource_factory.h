@@ -30,7 +30,7 @@ namespace engine {
         public:
             template<typename IndexType>
             index_buffer<IndexType> create_index_buffer(std::vector<std::uint16_t>&& indices);
-            pipeline create_pipeline(base::pipeline&& pipeline,
+            pipeline create_pipeline(base::pipeline&& basePipeline,
                                      const std::string& techniqueName,
                                      const std::string& shadersName,
                                      const vertex_format& format);
