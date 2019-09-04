@@ -111,11 +111,9 @@ namespace engine {
         }
 
         device::device(application::main_window& mainWindow,
-                       application::data_loader& dataLoader,
                        application::event_processor<application::app_event>& eventProcessor)
             : m_frameCounter(0)
             , m_mainWindow(mainWindow)
-            , m_dataLoader(dataLoader)
             , m_eventProcessor(eventProcessor)
             , m_windowSurface(create_window_surface(mainWindow.get_handle()))
             , m_physicalDevice(select_physical_device(m_windowSurface, {VK_KHR_SWAPCHAIN_EXTENSION_NAME}))
@@ -192,8 +190,15 @@ namespace engine {
             return shader(m_logicalDevice, type, std::move(source), name);
         }
 
+        pipeline device::create_pipeline(base::pipeline&& basePipeline,
+                                         const vertex_format& format,
+                                         const shader_set& shaders,
+                                         const rendering_technique& technique) {
+            return pipeline(m_logicalDevice, std::move(basePipeline), format, shaders, technique);
+        }
+
         resource_cache& device::get_resource_cache() noexcept {
-            return *m_resourceCache;        
+            return *m_resourceCache;
         }
 
         void device::start() {

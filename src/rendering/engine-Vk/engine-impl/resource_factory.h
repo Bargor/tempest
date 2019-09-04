@@ -21,13 +21,14 @@ namespace engine {
 
         class device;
         class resource_cache;
+        class shader_compiler;
 
         class resource_factory {
         public:
             resource_factory(device& device, application::data_loader& dataLoader);
             ~resource_factory();
 
-        public:
+        public: // public resource factory interface
             template<typename IndexType>
             index_buffer<IndexType> create_index_buffer(std::vector<std::uint16_t>&& indices);
             pipeline create_pipeline(base::pipeline&& basePipeline,
@@ -37,10 +38,14 @@ namespace engine {
             vertex_buffer create_vertex_buffer(const vertex_format& format, std::vector<vertex>&& vertices);
             uniform_buffer create_uniform_buffer();
 
+        public: // vulkan internal
+            shader_set* load_shaders(const std::string& shadersName);
+
         private:
             device& m_device;
             application::data_loader& m_dataLoader;
             resource_cache& m_resourceCache;
+            ptr<shader_compiler> m_shaderCompiler;
             vk::CommandPool m_commandPool;
         };
 

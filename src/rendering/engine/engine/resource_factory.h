@@ -21,7 +21,7 @@ namespace engine {
         using super = api::resource_factory;
 
     public:
-        resource_factory(device& device);
+        resource_factory(device& device, application::data_loader& dataLoader);
         ~resource_factory();
 
     public:

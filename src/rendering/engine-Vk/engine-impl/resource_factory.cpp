@@ -4,6 +4,7 @@
 #include "resource_factory.h"
 
 #include "resource_cache.h"
+#include "shader_compiler.h"
 
 namespace tst {
 namespace engine {
@@ -13,6 +14,7 @@ namespace engine {
             : m_device(device)
             , m_dataLoader(dataLoader)
             , m_resourceCache(m_device.get_resource_cache())
+            , m_shaderCompiler(std::make_unique<shader_compiler>(m_device, m_dataLoader))
             , m_commandPool(m_device.create_command_pool()) {
         }
 
@@ -26,13 +28,18 @@ namespace engine {
             auto shaders = m_resourceCache.find_shaders(shadersName);
             auto technique = m_resourceCache.find_technique(techniqueName);
 
-            if (shaders && technique) {
-                pipeline pipeline(std::move(basePipeline), format, *shaders, *technique);
-
-                m_resourceCache.add_pipeline(pipeline);
-
-                return pipeline;
+            if (!shaders) {
+                shaders = load_shaders(shadersName);
             }
+
+            if (shaders && technique) {
+                auto pipeline = m_device.create_pipeline(std::move(basePipeline), format, *shaders, *technique);
+
+                m_resourceCache.add_pipeline(std::move(pipeline));
+
+                return m_resourceCache.find_pipeline();
+            }
+            return nullptr;
         }
 
         vertex_buffer resource_factory::create_vertex_buffer(const vertex_format& format, std::vector<vertex>&& vertices) {
@@ -41,6 +48,13 @@ namespace engine {
 
         uniform_buffer resource_factory::create_uniform_buffer() {
             return m_device.create_uniform_buffer(m_commandPool);
+        }
+
+        shader_set* resource_factory::load_shaders(const std::string& shadersName) {
+            auto shaders = m_shaderCompiler->compile_shaders(shadersName);
+            m_resourceCache.add_shaders(shadersName, std::move(shaders));
+
+            return m_resourceCache.find_shaders(shadersName);
         }
     } // namespace vulkan
 } // namespace engine

@@ -7,8 +7,9 @@ namespace tst {
 namespace engine {
     draw_info::draw_info(const api::uniform_buffer_object& transform,
                          const resources::vertex_buffer* vertices,
-                         const resources::index_buffer* indices)
-        : api::draw_info(transform, vertices, indices) {
+                         const resources::index_buffer* indices,
+                         std::size_t pipelineHash)
+        : api::draw_info(transform, vertices, indices, pipelineHash) {
     }
 
     draw_info::draw_info(api::draw_info&& impl) : api::draw_info(std::move(impl)) {

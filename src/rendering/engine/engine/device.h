@@ -28,7 +28,6 @@ namespace engine {
         using super = api::device;
 
         device(application::main_window& mainWindow,
-               application::data_loader& dataLoader,
                application::event_processor<application::app_event>& eventProcessor);
         ~device();
 

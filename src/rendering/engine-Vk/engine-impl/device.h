@@ -6,6 +6,7 @@
 #include "engine_frontend.h"
 #include "physical_device.h"
 #include "resources/index_buffer.h"
+#include "resources/pipeline.h"
 #include "resources/shader.h"
 #include "resources/uniform_buffer.h"
 #include "resources/vertex_buffer.h"
@@ -45,7 +46,6 @@ namespace engine {
 
         public:
             device(application::main_window& mainWindow,
-                   application::data_loader& dataLoader,
                    application::event_processor<application::app_event>& eventProcessor);
             device(const device& device) = delete;
             ~device();
@@ -59,6 +59,10 @@ namespace engine {
                                                const vk::CommandPool& cmdPool) const;
             uniform_buffer create_uniform_buffer(const vk::CommandPool& cmdPool) const;
             shader crate_shader(shader::shader_type type, std::vector<char>&& source, const std::string_view name) const;
+            pipeline create_pipeline(base::pipeline&& basePipeline,
+                                     const vertex_format& format,
+                                     const shader_set& shaders,
+                                     const rendering_technique& technique);
             gpu_info& get_GPU_info() const noexcept;
             resource_cache& get_resource_cache() noexcept;
 
@@ -87,7 +91,6 @@ namespace engine {
 
             std::uint32_t m_frameCounter;
             application::main_window& m_mainWindow;
-            application::data_loader& m_dataLoader;
             application::event_processor<application::app_event>& m_eventProcessor;
             vk::SurfaceKHR m_windowSurface;
             ptr<physical_device> m_physicalDevice;

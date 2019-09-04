@@ -8,7 +8,8 @@
 namespace tst {
 namespace engine {
 
-    resource_factory::resource_factory(device& device) : api::resource_factory(device) {
+    resource_factory::resource_factory(device& device, application::data_loader& dataLoader)
+        : api::resource_factory(device, dataLoader) {
     }
 
     resource_factory::~resource_factory() {
