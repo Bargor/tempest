@@ -39,7 +39,7 @@ namespace engine {
             uniform_buffer create_uniform_buffer();
 
         public: // vulkan internal
-            shader_set* load_shaders(const std::string& shadersName);
+            const shader_set* load_shaders(const std::string& shadersName);
 
         private:
             device& m_device;

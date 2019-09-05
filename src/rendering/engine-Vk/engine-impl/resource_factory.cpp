@@ -14,7 +14,7 @@ namespace engine {
             : m_device(device)
             , m_dataLoader(dataLoader)
             , m_resourceCache(m_device.get_resource_cache())
-            , m_shaderCompiler(std::make_unique<shader_compiler>(m_device, m_dataLoader))
+            , m_shaderCompiler(std::make_unique<shader_compiler>(m_dataLoader, m_device))
             , m_commandPool(m_device.create_command_pool()) {
         }
 
@@ -50,7 +50,7 @@ namespace engine {
             return m_device.create_uniform_buffer(m_commandPool);
         }
 
-        shader_set* resource_factory::load_shaders(const std::string& shadersName) {
+        const shader_set* resource_factory::load_shaders(const std::string& shadersName) {
             auto shaders = m_shaderCompiler->compile_shaders(shadersName);
             m_resourceCache.add_shaders(shadersName, std::move(shaders));
 
