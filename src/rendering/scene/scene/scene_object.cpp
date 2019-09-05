@@ -10,8 +10,14 @@ namespace tst {
 namespace scene {
 
     scene_object::scene_object(engine::resources::vertex_buffer&& vertexBuffer,
-                               engine::resources::index_buffer&& indexBuffer) noexcept
-        : m_vertices(std::move(vertexBuffer)), m_indices(std::move(indexBuffer)), m_objectState(state{engine::api::uniform_buffer_object{glm::mat4(), glm::mat4(), glm::mat4()}, &vertexBuffer, &indexBuffer, *this}) {
+                               engine::resources::index_buffer&& indexBuffer,
+                               engine::resources::material& material) noexcept
+        : m_vertices(std::move(vertexBuffer))
+        , m_indices(std::move(indexBuffer))
+        , m_objectState(state{engine::api::uniform_buffer_object{glm::mat4(), glm::mat4(), glm::mat4()},
+                              &vertexBuffer,
+                              &indexBuffer,
+                              *this}) {
     }
 
     scene_object::state scene_object::update_object(std::chrono::duration<std::uint64_t, std::micro> elapsedTime) const {

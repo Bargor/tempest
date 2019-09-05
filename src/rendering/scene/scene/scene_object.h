@@ -5,6 +5,7 @@
 #include <chrono>
 #include <engine/resources/index_buffer.h>
 #include <engine/resources/material.h>
+#include <engine/resources/pipeline.h>
 #include <engine/resources/uniform_buffer.h>
 #include <engine/resources/vertex_buffer.h>
 
@@ -20,6 +21,7 @@ namespace scene {
             engine::api::uniform_buffer_object transformation;
             const engine::resources::vertex_buffer* vertices;
             const engine::resources::index_buffer* indices;
+            const engine::resources::pipeline* pipeline;
             const scene_object& object;
         };
 
