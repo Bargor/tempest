@@ -17,14 +17,14 @@ namespace engine {
         public:
             using super = base::pipeline;
 
-            pipeline(const vk::Device& logicalDevice,
+            pipeline(const vk::Device logicalDevice,
                      base::pipeline&& base,
                      const vertex_format& format,
                      const shader_set& shaders,
                      const rendering_technique& technique);
             ~pipeline();
 
-            void bind_command_bufffer(vk::CommandBuffer& buffer, vk::PipelineBindPoint& bindPoint);
+            void bind_command_buffer(vk::CommandBuffer& buffer, vk::PipelineBindPoint& bindPoint);
 
         private:
             vk::Pipeline m_pipeline;

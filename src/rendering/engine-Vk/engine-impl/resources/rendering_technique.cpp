@@ -9,7 +9,7 @@ namespace tst {
 namespace engine {
     namespace vulkan {
 
-        vk::RenderPass create_render_pass(const vk::Device& device, vk::Format format) {
+        vk::RenderPass create_render_pass(vk::Device device, vk::Format format) {
             vk::AttachmentDescription colorAttachment(vk::AttachmentDescriptionFlags(),
                                                       format,
                                                       vk::SampleCountFlagBits::e1,
@@ -57,7 +57,7 @@ namespace engine {
             return framebuffers;
         }
 
-        rendering_technique::rendering_technique(const std::string& name, vk::Device& device, swap_chain& swapChain)
+        rendering_technique::rendering_technique(const std::string& name, vk::Device device, swap_chain& swapChain)
             : base::rendering_technique(name)
             , m_device(device)
             , m_swapChain(swapChain)

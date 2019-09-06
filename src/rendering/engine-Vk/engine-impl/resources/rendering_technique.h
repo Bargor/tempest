@@ -14,7 +14,7 @@ namespace engine {
 
         class rendering_technique : public base::rendering_technique {
         public:
-            rendering_technique(const std::string& name, vk::Device& device, swap_chain& swapChain);
+            rendering_technique(const std::string& name, vk::Device device, swap_chain& swapChain);
 
             rendering_technique(const rendering_technique& technique) = delete;
             rendering_technique(rendering_technique&& technique);

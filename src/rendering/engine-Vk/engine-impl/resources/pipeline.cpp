@@ -8,7 +8,7 @@ namespace tst {
 namespace engine {
     namespace vulkan {
 
-        pipeline::pipeline(const vk::Device& logicalDevice,
+        pipeline::pipeline(const vk::Device logicalDevice,
                            base::pipeline&& base,
                            const vertex_format& format,
                            const shader_set& shaders,
@@ -19,7 +19,7 @@ namespace engine {
         pipeline::~pipeline() {
         }
 
-        void pipeline::bind_command_bufffer(vk::CommandBuffer& buffer, vk::PipelineBindPoint& bindPoint) {
+        void pipeline::bind_command_buffer(vk::CommandBuffer& buffer, vk::PipelineBindPoint& bindPoint) {
             buffer.bindPipeline(bindPoint, m_pipeline);
         }
 

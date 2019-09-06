@@ -4,17 +4,19 @@
 set(ENGINE_BASE_HDRS
 	engine-base/gpu_info.h
 	engine-base/rendering_technique.h
-	engine-base/resources/material.h
-	engine-base/resources/pipeline.h
-	engine-base/resources/vertex_format.h
+	engine-base/material.h
+	engine-base/pipeline.h
+	engine-base/vertex_format.h
+	engine-base/settings.h
 )
 
 set(ENGINE_BASE_SRCS
 	engine-base/gpu_info.cpp
 	engine-base/rendering_technique.cpp
-	engine-base/resources/material.cpp
-	engine-base/resources/pipeline.cpp
-	engine-base/resources/vertex_format.cpp
+	engine-base/material.cpp
+	engine-base/pipeline.cpp
+	engine-base/vertex_format.cpp
+	engine-base/settings.cpp
 )
 
 include(${PROJECT_SOURCE_DIR}/cmake/TstAddLibrary.cmake)
