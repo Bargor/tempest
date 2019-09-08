@@ -2,7 +2,7 @@
 // Author: Karol Kontny
 #pragma once
 
-#include <engine-base/resources/material.h>
+#include <engine-base/material.h>
 
 namespace tst {
 namespace engine {

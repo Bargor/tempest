@@ -4,7 +4,7 @@
 
 #include "shader.h"
 
-#include <engine-base/resources/pipeline.h>
+#include <engine-base/pipeline.h>
 
 namespace tst {
 namespace engine {

@@ -127,3 +127,67 @@ namespace engine {
     } // namespace base
 } // namespace engine
 } // namespace tst
+
+namespace std {
+
+template<>
+struct hash<tst::engine::base::viewport_settings> {
+    std::size_t operator()(const tst::engine::base::viewport_settings& settings) const {
+        size_t seed = 0;
+        hash<std::int32_t> hasher;
+        tst::hash_combine(seed, hasher(settings.x));
+        tst::hash_combine(seed, hasher(settings.y));
+        tst::hash_combine(seed, hasher(settings.width));
+        tst::hash_combine(seed, hasher(settings.height));
+        tst::hash_combine(seed, std::hash<float>{}(settings.minDepth));
+        tst::hash_combine(seed, std::hash<float>{}(settings.maxDepth));
+        return seed;
+    }
+};
+
+template<>
+struct hash<tst::engine::base::color_blending_settings::color_component_flags> {
+    std::size_t operator()(const tst::engine::base::color_blending_settings::color_component_flags& settings) {
+        std::size_t hash = static_cast<std::uint64_t>(settings.r) << 24 | static_cast<std::uint64_t>(settings.g) << 16 |
+            static_cast<std::uint64_t>(settings.b) << 8 | static_cast<std::uint64_t>(settings.a);
+
+        return hash;
+    }
+};
+
+template<>
+struct hash<tst::engine::base::color_blending_settings> {
+    std::size_t operator()(const tst::engine::base::color_blending_settings& settings) const {
+        size_t seed = 0;
+        hash<std::int32_t> hasher;
+        tst::hash_combine(seed, hasher(settings.enable));
+        tst::hash_combine(seed, hasher(static_cast<std::int32_t>(settings.colorBlendOperation)));
+        tst::hash_combine(seed, hasher(static_cast<std::int32_t>(settings.srcColorBlendFactor)));
+        tst::hash_combine(seed, hasher(static_cast<std::int32_t>(settings.dstColorBlendFactor)));
+        tst::hash_combine(seed, hasher(static_cast<std::int32_t>(settings.alphaBlendOperation)));
+        tst::hash_combine(seed, hasher(static_cast<std::int32_t>(settings.srcAlphaBlendFactor)));
+        tst::hash_combine(seed, hasher(static_cast<std::int32_t>(settings.dstAlphaBlendFactor)));
+        tst::hash_combine(
+            seed,
+            std::hash<tst::engine::base::color_blending_settings::color_component_flags>{}(settings.colorWriteMask));
+        return seed;
+    }
+};
+
+template<>
+struct hash<tst::engine::base::global_blending_settings> {
+    std::size_t operator()(const tst::engine::base::global_blending_settings& settings) const {
+        size_t seed = 0;
+        hash<std::int32_t> hasher;
+        tst::hash_combine(seed, hasher(settings.enable));
+        tst::hash_combine(seed, hasher(static_cast<std::int32_t>(settings.logicalOperation)));
+        tst::hash_combine(seed, std::hash<float>{}(settings.blendConstants[0]));
+        tst::hash_combine(seed, std::hash<float>{}(settings.blendConstants[1]));
+        tst::hash_combine(seed, std::hash<float>{}(settings.blendConstants[2]));
+        tst::hash_combine(seed, std::hash<float>{}(settings.blendConstants[3]));
+
+        return seed;
+    }
+};
+
+} // namespace std
