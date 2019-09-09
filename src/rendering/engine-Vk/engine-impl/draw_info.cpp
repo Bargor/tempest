@@ -6,11 +6,10 @@
 namespace tst {
 namespace engine {
     namespace vulkan {
-        draw_info::draw_info(const uniform_buffer_object& transformation,
-                             const vertex_buffer* vertices,
+        draw_info::draw_info(const vertex_buffer* vertices,
                              const index_buffer<std::uint16_t>* indices,
-                             std::size_t pipelineHash)
-            : transformation(transformation), vertices(vertices), indices(indices), pipelineHash(pipelineHash) {
+                             const pipeline* pipelineState)
+            : vertices(vertices), indices(indices), pipelineState(pipelineState) {
         }
     } // namespace vulkan
 } // namespace engine

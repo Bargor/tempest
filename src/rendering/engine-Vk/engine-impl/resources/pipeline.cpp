@@ -12,7 +12,8 @@ namespace engine {
                            base::pipeline&& base,
                            const vertex_format& format,
                            const shader_set& shaders,
-                           const rendering_technique& technique)
+                           const rendering_technique& technique,
+                           const settings& settings)
             : super(std::move(base)) {
         }
 

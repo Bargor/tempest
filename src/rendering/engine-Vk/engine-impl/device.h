@@ -10,6 +10,7 @@
 #include "resources/shader.h"
 #include "resources/uniform_buffer.h"
 #include "resources/vertex_buffer.h"
+#include "settings.h"
 
 #include <GLFW/glfw3.h>
 #include <common/rectangle.h>
@@ -46,7 +47,8 @@ namespace engine {
 
         public:
             device(application::main_window& mainWindow,
-                   application::event_processor<application::app_event>& eventProcessor);
+                   application::event_processor<application::app_event>& eventProcessor,
+                   settings&& engineSettings);
             device(const device& device) = delete;
             ~device();
 
@@ -92,6 +94,7 @@ namespace engine {
             std::uint32_t m_frameCounter;
             application::main_window& m_mainWindow;
             application::event_processor<application::app_event>& m_eventProcessor;
+            settings m_engineSettings;
             vk::SurfaceKHR m_windowSurface;
             ptr<physical_device> m_physicalDevice;
             vk::Device m_logicalDevice;

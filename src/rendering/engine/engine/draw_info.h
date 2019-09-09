@@ -3,6 +3,7 @@
 #pragma once
 
 #include "resources/index_buffer.h"
+#include "resources/pipeline.h"
 #include "resources/uniform_buffer.h"
 #include "resources/vertex_buffer.h"
 
@@ -18,10 +19,9 @@ namespace engine {
 
         ~draw_info() = default;
 
-        draw_info(const api::uniform_buffer_object& transform,
-                  const resources::vertex_buffer* vertices,
+        draw_info(const resources::vertex_buffer* vertices,
                   const resources::index_buffer* indices,
-                  std::size_t pipelineHash);
+                  const resources::pipeline* pipelineState);
 
         draw_info(api::draw_info&& impl);
         draw_info(draw_info&& other) noexcept;

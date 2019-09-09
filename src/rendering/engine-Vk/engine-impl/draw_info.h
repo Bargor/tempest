@@ -3,6 +3,7 @@
 #pragma once
 
 #include "resources/index_buffer.h"
+#include "resources/pipeline.h"
 #include "resources/uniform_buffer.h"
 #include "resources/vertex_buffer.h"
 
@@ -13,18 +14,16 @@ namespace engine {
     namespace vulkan {
         struct draw_info {
         public:
-            draw_info(const uniform_buffer_object& transformation,
-                      const vertex_buffer* vertices,
+            draw_info(const vertex_buffer* vertices,
                       const index_buffer<std::uint16_t>* indices,
-                      std::size_t pipelineHash);
+                      const pipeline* pipelineState);
 
             ~draw_info() = default;
 
         public:
-            const uniform_buffer_object& transformation;
             const vertex_buffer* vertices;
             const index_buffer<std::uint16_t>* indices;
-            std::size_t pipelineHash;
+            const pipeline* pipelineState;
         };
     } // namespace vulkan
 } // namespace engine

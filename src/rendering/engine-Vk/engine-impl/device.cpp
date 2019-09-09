@@ -111,10 +111,12 @@ namespace engine {
         }
 
         device::device(application::main_window& mainWindow,
-                       application::event_processor<application::app_event>& eventProcessor)
+                       application::event_processor<application::app_event>& eventProcessor,
+                       settings&& engineSettings)
             : m_frameCounter(0)
             , m_mainWindow(mainWindow)
             , m_eventProcessor(eventProcessor)
+            , m_engineSettings(std::move(engineSettings))
             , m_windowSurface(create_window_surface(mainWindow.get_handle()))
             , m_physicalDevice(select_physical_device(m_windowSurface, {VK_KHR_SWAPCHAIN_EXTENSION_NAME}))
             , m_logicalDevice(m_physicalDevice->create_logical_device(instance::get_validation_layers(),

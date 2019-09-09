@@ -12,6 +12,7 @@ namespace engine {
 
         class vertex_format;
         class rendering_technique;
+        class settings;
 
         class pipeline : public base::pipeline {
         public:
@@ -21,7 +22,8 @@ namespace engine {
                      base::pipeline&& base,
                      const vertex_format& format,
                      const shader_set& shaders,
-                     const rendering_technique& technique);
+                     const rendering_technique& technique,
+                     const settings& settings);
             ~pipeline();
 
             void bind_command_buffer(vk::CommandBuffer& buffer, vk::PipelineBindPoint& bindPoint);

@@ -2,10 +2,6 @@
 // Author: Karol Kontny
 #pragma once
 
-#include "resources/index_buffer.h"
-#include "resources/uniform_buffer.h"
-#include "resources/vertex_buffer.h"
-
 #include <engine-impl/api.h>
 #include <engine-impl/device.h>
 #include <type_traits>
@@ -28,7 +24,8 @@ namespace engine {
         using super = api::device;
 
         device(application::main_window& mainWindow,
-               application::event_processor<application::app_event>& eventProcessor);
+               application::event_processor<application::app_event>& eventProcessor,
+               api::settings&& settings);
         ~device();
 
     private:
