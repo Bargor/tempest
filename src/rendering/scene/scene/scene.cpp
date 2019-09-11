@@ -1,5 +1,7 @@
 #include "scene.h"
 
+#include "scene_controller.h"
+
 namespace tst {
 namespace scene {
     std::vector<scene_object::state> update_scene(const scene& scene,
@@ -23,7 +25,7 @@ namespace scene {
         return drawInfos;
     }
 
-    scene::scene() {
+    scene::scene(std::string&& sceneName) : m_sceneName(std::move(sceneName)) {
     }
 
     scene::~scene() {

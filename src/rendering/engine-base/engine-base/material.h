@@ -12,7 +12,7 @@ namespace engine {
         class material {
         public:
         private:
-            std::string m_shaderName;
+            std::string m_materialName;
         };
     } // namespace base
 } // namespace engine
