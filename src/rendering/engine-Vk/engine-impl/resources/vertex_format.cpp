@@ -13,14 +13,6 @@ namespace engine {
                                         {1, 0, vk::Format::eR32G32B32Sfloat, offsetof(vertex, color)}}}) {
         }
 
-        const vk::VertexInputBindingDescription& vertex_format::get_binding_description() const {
-            return m_bindingDescription;
-        }
-
-        const std::array<vk::VertexInputAttributeDescription, 2>& vertex_format::get_attribute_descriptions() const {
-            return m_attributeDescriptions;
-        }
-
     } // namespace vulkan
 } // namespace engine
 } // namespace tst

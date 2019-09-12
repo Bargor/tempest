@@ -1,6 +1,7 @@
 #include "scene.h"
 
-#include "scene_controller.h"
+#include "engine/resource_factory.h"
+#include "object_controller.h"
 
 namespace tst {
 namespace scene {
@@ -18,14 +19,19 @@ namespace scene {
         drawInfos.reserve(sceneState.size());
 
         for (auto& state : sceneState) {
-            engine::draw_info info(state.transformation, &(state.vertices[0]), &(state.indices[0]));
+            engine::draw_info info(state.vertices, state.indices, state.pipeline);
             drawInfos.emplace_back(std::move(info));
         }
 
         return drawInfos;
     }
 
-    scene::scene(std::string&& sceneName) : m_sceneName(std::move(sceneName)) {
+    scene::scene(std::string&& sceneName,
+                 application::data_loader& dataLoader,
+                 application::event_processor<application::app_event>& eventProcessor,
+                 engine::resource_factory& resourceFactory)
+        : m_sceneName(std::move(sceneName))
+        , m_sceneObjectController(std::make_unique<object_controller>(*this, dataLoader, eventProcessor, resourceFactory)) {
     }
 
     scene::~scene() {

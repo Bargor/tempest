@@ -27,9 +27,7 @@ namespace scene {
         ubo.proj = glm::perspective(glm::radians(45.0f), 1.0f, 0.1f, 10.0f);
         ubo.proj[1][1] *= -1;
 
-        state newState{ubo, &m_vertices, &m_indices, *this};
-
-        newState.transformation = ubo;
+        state newState{&m_vertices, &m_indices, *this};
 
         return newState;
     }

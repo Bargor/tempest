@@ -13,10 +13,22 @@ using ptr = std::unique_ptr<T>;
 
 namespace tst {
 
+namespace application {
+    class data_loader;
+    template<typename Event>
+    class event_processor;
+
+    struct app_event;
+} // namespace application
+
+namespace engine {
+    class resource_factory;
+}
+
 namespace scene {
 
     class scene;
-    class scene_controller;
+    class object_controller;
 
     std::vector<scene_object::state> update_scene(const scene& scene,
                                                   std::chrono::duration<std::uint64_t, std::micro> elapsedTime);
@@ -28,14 +40,17 @@ namespace scene {
                                                              std::chrono::duration<std::uint64_t, std::micro> elapsedTime);
 
     public:
-        scene(std::string&& sceneName);
+        scene(std::string&& sceneName,
+              application::data_loader& dataLoader,
+              application::event_processor<application::app_event>& eventProcessor,
+              engine::resource_factory& resourceFactory);
         ~scene();
 
         void add_object(scene_object&& object);
 
     private:
         std::string m_sceneName;
-        ptr<scene_controller> m_sceneController;
+        ptr<object_controller> m_sceneObjectController;
         std::vector<scene_object> m_objects;
     };
 

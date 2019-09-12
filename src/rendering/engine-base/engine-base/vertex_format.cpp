@@ -5,23 +5,21 @@
 
 namespace tst {
 namespace engine {
-	
-	namespace base {
 
-    vertex_format::vertex_format() {
-    }
+    namespace base {
 
-    void vertex_format::add_attribute(
-        location location, format format, std::uint32_t offset, std::uint32_t stride, std::uint32_t divisor) {
+        vertex_format::vertex_format(primitive_topology topology) : m_topology(topology) {
+        }
 
-        m_attributes.emplace_back(attribute_descriptor{location, format, offset, stride, divisor});
+        void vertex_format::add_attribute(
+            location location, format format, std::uint32_t offset, std::uint32_t stride, std::uint32_t divisor) {
+            m_attributes.emplace_back(attribute_descriptor{location, format, offset, stride, divisor});
+        }
 
-    }
-
-    const std::vector<vertex_format::attribute_descriptor>& vertex_format::get_atttibutes() const noexcept {
-        return m_attributes;
-    }
-	}
+        const std::vector<vertex_format::attribute_descriptor>& vertex_format::get_atttibutes() const noexcept {
+            return m_attributes;
+        }
+    } // namespace base
 
 } // namespace engine
 } // namespace tst

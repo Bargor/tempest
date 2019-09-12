@@ -30,7 +30,7 @@ namespace application {
         , m_dataLoader(dataLoader)
         , m_renderingDevice(std::make_unique<engine::device>(m_mainWindow, m_eventProcessor))
         , m_resourceFactory(std::make_unique<engine::resource_factory>(*m_renderingDevice, m_dataLoader))
-        , m_scene(std::make_unique<scene::scene>("world"))
+        , m_scene(std::make_unique<scene::scene>("world", dataLoader, eventProcessor, m_resourceFactory))
         , m_frameCounter(0)
         , m_lastSecondFrames(0)
         , m_shouldClose(false)
@@ -53,17 +53,6 @@ namespace application {
                                    this,
                                    std::move(time_callback),
                                    std::chrono::seconds(1));
-
-        auto vertexBuffer =
-            m_resourceFactory->create_vertex_buffer(engine::vertex_format{},
-                                                    std::vector<engine::vertex>({{{-0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}},
-                                                                                 {{0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}},
-                                                                                 {{0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}},
-                                                                                 {{-0.5f, 0.5f}, {1.0f, 1.0f, 1.0f}}}));
-        auto indexBuffer = m_resourceFactory->create_index_buffer(std::vector<std::uint16_t>({{0, 1, 2, 2, 3, 0}}));
-
-        scene::scene_object object(std::move(vertexBuffer), std::move(indexBuffer));
-        m_scene->add_object(std::move(object));
     }
 
     simulation_engine::~simulation_engine() {
