@@ -35,7 +35,7 @@ namespace engine {
         };
 
         struct multisampling_settings {
-            enum class sample_count { samples_1, samples_2, samples_4, samples_8, samples_16 };
+            enum class sample_count { samples_1 = 1, samples_2 = 2, samples_4 = 4, samples_8 = 8, samples_16 = 16 };
 
             bool enable;
             sample_count samples;
