@@ -55,7 +55,7 @@ namespace engine {
             };
 
         public:
-            vertex_format(primitive_topology topology);
+            vertex_format();
 
             void add_attribute(
                 location location, format format, std::uint32_t offset, std::uint32_t stride, std::uint32_t divisor);

@@ -8,7 +8,7 @@ namespace engine {
 
     namespace base {
 
-        vertex_format::vertex_format(primitive_topology topology) : m_topology(topology) {
+        vertex_format::vertex_format() {
         }
 
         void vertex_format::add_attribute(

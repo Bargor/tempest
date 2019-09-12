@@ -14,6 +14,13 @@ namespace engine {
         class rendering_technique;
         class settings;
 
+        vk::Pipeline compile_pipeline(const vk::Device logicalDevice,
+                                      const base::pipeline& base,
+                                      const vertex_format& format,
+                                      const shader_set& shaders,
+                                      const rendering_technique& technique,
+                                      const settings& settings);
+
         class pipeline : public base::pipeline {
         public:
             friend vk::Pipeline compile_pipeline(const vk::Device logicalDevice,

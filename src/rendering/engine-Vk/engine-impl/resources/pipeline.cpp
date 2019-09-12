@@ -28,8 +28,8 @@ namespace engine {
 
         vk::PipelineViewportStateCreateInfo create_viewport_info(
             base::viewport_settings& settings, core::rectangle<std::int32_t, std::uint32_t>& scissorSettings) {
-            vk::Viewport viewport(settings.x,
-                                  settings.y,
+            vk::Viewport viewport(static_cast<float>(settings.x),
+                                  static_cast<float>(settings.y),
                                   static_cast<float>(settings.width),
                                   static_cast<float>(settings.height),
                                   settings.minDepth,
@@ -44,10 +44,26 @@ namespace engine {
         }
 
         vk::PipelineRasterizationStateCreateInfo create_rasterization_info(const base::rasterizer_settings& settings) {
+            vk::PolygonMode polygonMode;
+
+            switch (settings.polygonMode) {
+            case base::rasterizer_settings::polygon_mode::point:
+                polygonMode = vk::PolygonMode::ePoint;
+                break;
+            case base::rasterizer_settings::polygon_mode::line:
+                polygonMode = vk::PolygonMode::eLine;
+                break;
+            case base::rasterizer_settings::polygon_mode::fill:
+                polygonMode = vk::PolygonMode::eFill;
+                break;
+            default:
+                break;
+            }
+
             vk::PipelineRasterizationStateCreateInfo rasterizer(vk::PipelineRasterizationStateCreateFlags(),
                                                                 settings.depthClamp,
                                                                 settings.rasterizerDiscard,
-                                                                vk::PolygonMode::eFill,
+                                                                polygonMode,
                                                                 vk::CullModeFlagBits::eBack,
                                                                 vk::FrontFace::eClockwise,
                                                                 settings.depthBias.enable,

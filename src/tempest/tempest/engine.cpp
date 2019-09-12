@@ -30,7 +30,7 @@ namespace application {
         , m_dataLoader(dataLoader)
         , m_renderingDevice(std::make_unique<engine::device>(m_mainWindow, m_eventProcessor))
         , m_resourceFactory(std::make_unique<engine::resource_factory>(*m_renderingDevice, m_dataLoader))
-        , m_scene(std::make_unique<scene::scene>("world", dataLoader, eventProcessor, m_resourceFactory))
+        , m_scene(std::make_unique<scene::scene>("world", dataLoader, eventProcessor, *m_resourceFactory))
         , m_frameCounter(0)
         , m_lastSecondFrames(0)
         , m_shouldClose(false)
