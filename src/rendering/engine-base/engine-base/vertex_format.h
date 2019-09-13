@@ -61,7 +61,7 @@ namespace engine {
                 location location, format format, std::uint32_t offset, std::uint32_t stride, std::uint32_t divisor);
             const std::vector<attribute_descriptor>& get_atttibutes() const noexcept;
 
-        private:
+        protected:
             std::vector<attribute_descriptor> m_attributes;
         };
 

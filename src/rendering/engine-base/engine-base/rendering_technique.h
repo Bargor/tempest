@@ -85,13 +85,13 @@ namespace engine {
                 no_op,
                 xor_op,
                 or_op,
-                nor,
+                nor_op,
                 equivalent,
                 invert,
                 or_reverse,
                 copy_inverted,
                 or_inverted,
-                nand,
+                nand_op,
                 set
             };
 

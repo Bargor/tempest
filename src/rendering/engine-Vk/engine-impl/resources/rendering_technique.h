@@ -13,6 +13,8 @@ namespace engine {
         class swap_chain;
 
         class rendering_technique : public base::rendering_technique {
+            friend class pipeline;
+
         public:
             rendering_technique(const std::string& name, vk::Device device, swap_chain& swapChain);
 
