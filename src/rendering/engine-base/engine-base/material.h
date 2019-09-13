@@ -2,8 +2,6 @@
 // Author: Karol Kontny
 #pragma once
 
-#include "pipeline.h"
-
 #include <string>
 
 namespace tst {

@@ -13,20 +13,20 @@ namespace tst {
 namespace engine {
     namespace base {
 
-        class pipeline {
+        struct pipeline_state {
         public:
-            friend struct std::hash<pipeline>;
+            friend struct std::hash<pipeline_state>;
 
-            pipeline(const viewport_settings& viewportSettings,
-                     const core::rectangle<std::int32_t, std::uint32_t>& scissor,
-                     const rasterizer_settings& rasterizerSettings,
-                     const multisampling_settings& multisamplingSettings,
-                     const std::initializer_list<color_blending_settings> blendingSettings,
-                     const global_blending_settings& globalBlendingSettings);
+            pipeline_state(const viewport_settings& viewportSettings,
+                           const core::rectangle<std::int32_t, std::uint32_t>& scissor,
+                           const rasterizer_settings& rasterizerSettings,
+                           const multisampling_settings& multisamplingSettings,
+                           const std::initializer_list<color_blending_settings> blendingSettings,
+                           const global_blending_settings& globalBlendingSettings);
 
-            bool operator==(const pipeline& other) const noexcept;
+            bool operator==(const pipeline_state& other) const noexcept;
 
-        protected:
+        public:
             viewport_settings m_viewport;
             core::rectangle<std::int32_t, std::uint32_t> m_scissor;
             rasterizer_settings m_rasterizer;
@@ -42,8 +42,8 @@ namespace engine {
 namespace std {
 
 template<>
-struct hash<tst::engine::base::pipeline> {
-    std::size_t operator()(const tst::engine::base::pipeline& pipeline) const {
+struct hash<tst::engine::base::pipeline_state> {
+    std::size_t operator()(const tst::engine::base::pipeline_state& pipeline) const {
         size_t seed = 0;
 
         tst::hash_combine(seed, std::hash<tst::engine::base::viewport_settings>{}(pipeline.m_viewport));

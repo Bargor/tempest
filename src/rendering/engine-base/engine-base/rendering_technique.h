@@ -111,7 +111,6 @@ namespace engine {
                                 const global_blending_settings& globalBlending);
 
             const std::string& get_name() const;
-            const viewport_settings& get_viewport_settings() const;
 
         private:
             std::string m_techniqueName;

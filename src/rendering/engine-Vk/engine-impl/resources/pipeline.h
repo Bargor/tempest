@@ -4,7 +4,7 @@
 
 #include "shader.h"
 
-#include <engine-base/pipeline.h>
+#include <engine-base/pipeline_state.h>
 
 namespace tst {
 namespace engine {
@@ -14,12 +14,12 @@ namespace engine {
         class rendering_technique;
         class settings;
 
-        class pipeline : public base::pipeline {
-        public:
-            using super = base::pipeline;
+        class pipeline {
+            friend std::hash<tst::engine::vulkan::pipeline>;
 
+        public:
             pipeline(const vk::Device logicalDevice,
-                     base::pipeline&& base,
+                     const base::pipeline_state& pipelineState,
                      const vertex_format& format,
                      const shader_set& shaders,
                      const rendering_technique& technique);
@@ -31,6 +31,7 @@ namespace engine {
 
         private:
             vk::Pipeline m_pipeline;
+            const base::pipeline_state& m_pipelineState;
             const rendering_technique& m_technique;
         };
 
@@ -43,7 +44,7 @@ namespace std {
 template<>
 struct hash<tst::engine::vulkan::pipeline> {
     std::size_t operator()(const tst::engine::vulkan::pipeline& pipeline) const {
-        return std::hash<tst::engine::base::pipeline>{}(pipeline);
+        return std::hash<tst::engine::base::pipeline_state>{}(pipeline.m_pipelineState);
     }
 };
 

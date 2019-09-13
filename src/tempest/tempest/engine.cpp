@@ -38,7 +38,7 @@ namespace application {
         auto close_callback = [&](const app_event::arguments&) { m_shouldClose = true; };
         auto iconify_callback = [&](const app_event::arguments& args) {
             assert(std::holds_alternative<application::app_event::iconify>(args));
-            wrz m_windowMinimized =
+            m_windowMinimized =
                 std::get<application::app_event::iconify>(args).open == window::open_option::iconified ? true : false;
         };
         auto time_callback = [&](const app_event::arguments&) {

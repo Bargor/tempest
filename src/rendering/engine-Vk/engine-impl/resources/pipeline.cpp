@@ -266,21 +266,17 @@ namespace engine {
 
         vk::Pipeline compile_pipeline(const vk::Device logicalDevice,
                                       const vk::RenderPass renderPass,
-                                      const base::viewport_settings& viewportSettings,
-                                      const core::rectangle<std::int32_t, std::uint32_t>& scissorSettings,
-                                      const base::rasterizer_settings& rasterizerSettings,
-                                      const base::multisampling_settings& multisamplingSettings,
-                                      const std::vector<base::color_blending_settings> colorBlendingSettings,
-                                      const base::global_blending_settings globalBlendingSettings,
+                                      const base::pipeline_state& pipelineState,
                                       const vertex_format& format,
                                       const shader_set& shaders) {
             auto pipelineLayout = create_pipeline_layout(logicalDevice);
             auto vertexInfo = create_vertex_input_info(format);
             auto assemblyInfo = create_assembly_info(format);
-            auto viewportInfo = create_viewport_info(viewportSettings, scissorSettings);
-            auto rasterizationInfo = create_rasterization_info(rasterizerSettings);
-            auto multisamplingInfo = create_multisampling_info(multisamplingSettings);
-            auto blendingInfo = create_color_blending_info(colorBlendingSettings, globalBlendingSettings);
+            auto viewportInfo = create_viewport_info(pipelineState.m_viewport, pipelineState.m_scissor);
+            auto rasterizationInfo = create_rasterization_info(pipelineState.m_rasterizer);
+            auto multisamplingInfo = create_multisampling_info(pipelineState.m_multisampling);
+            auto blendingInfo = create_color_blending_info(pipelineState.m_framebufferColorBlending,
+                                                           pipelineState.m_globalColorBlending);
 
             std::vector<vk::PipelineShaderStageCreateInfo> shaderInfos;
             std::transform(shaders.cbegin(), shaders.cend(), std::back_inserter(shaderInfos), [](const shader& shader) {
@@ -308,21 +304,12 @@ namespace engine {
         }
 
         pipeline::pipeline(const vk::Device logicalDevice,
-                           base::pipeline&& base,
+                           const base::pipeline_state& pipelineState,
                            const vertex_format& format,
                            const shader_set& shaders,
                            const rendering_technique& technique)
-            : super(std::move(base))
-            , m_pipeline(compile_pipeline(logicalDevice,
-                                          technique.m_renderPass,
-                                          m_viewport,
-                                          m_scissor,
-                                          m_rasterizer,
-                                          m_multisampling,
-                                          m_framebufferColorBlending,
-                                          m_globalColorBlending,
-                                          format,
-                                          shaders))
+            : m_pipeline(compile_pipeline(logicalDevice, technique.m_renderPass, pipelineState, format, shaders))
+            , m_pipelineState(pipelineState)
             , m_technique(technique) {
         }
 
