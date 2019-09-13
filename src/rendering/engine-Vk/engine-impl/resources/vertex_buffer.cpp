@@ -9,10 +9,10 @@ namespace tst {
 namespace engine {
     namespace vulkan {
 
-        vertex_buffer::vertex_buffer(const vk::Device& logicalDevice,
+        vertex_buffer::vertex_buffer(const vk::Device logicalDevice,
                                      const vk::Queue queueHandle,
-                                     const vk::CommandPool& cmdPool,
-                                     const vk::PhysicalDeviceMemoryProperties& memoryProperties,
+                                     const vk::CommandPool cmdPool,
+                                     const vk::PhysicalDeviceMemoryProperties memoryProperties,
                                      const vertex_format&,
                                      std::vector<vertex>&& vertices)
             : buffer(logicalDevice,

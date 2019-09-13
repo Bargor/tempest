@@ -15,10 +15,10 @@ namespace engine {
         public:
             using super = buffer;
 
-            vertex_buffer(const vk::Device& logicalDevice,
+            vertex_buffer(const vk::Device logicalDevice,
                           const vk::Queue m_queueHandle,
-                          const vk::CommandPool& cmdPool,
-                          const vk::PhysicalDeviceMemoryProperties& memoryProperties,
+                          const vk::CommandPool cmdPool,
+                          const vk::PhysicalDeviceMemoryProperties memoryProperties,
                           const vertex_format& format,
                           std::vector<vertex>&& vertices);
             ~vertex_buffer();

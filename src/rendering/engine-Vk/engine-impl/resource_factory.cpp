@@ -21,10 +21,10 @@ namespace engine {
         resource_factory::~resource_factory() {
         }
 
-        pipeline* resource_factory::create_pipeline(base::pipeline&& basePipeline,
-                                                    const std::string& techniqueName,
-                                                    const std::string& shadersName,
-                                                    const vertex_format& format) {
+        const pipeline* resource_factory::create_pipeline(base::pipeline&& basePipeline,
+                                                          const std::string& techniqueName,
+                                                          const std::string& shadersName,
+                                                          const vertex_format& format) {
             auto shaders = m_resourceCache.find_shaders(shadersName);
             auto technique = m_resourceCache.find_technique(techniqueName);
 

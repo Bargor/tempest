@@ -7,8 +7,7 @@ namespace tst {
 namespace engine {
     namespace base {
 
-        bool rasterizer_settings::depth_bias_settings::operator==(const depth_bias_settings& other) const
-            noexcept {
+        bool rasterizer_settings::depth_bias_settings::operator==(const depth_bias_settings& other) const noexcept {
             if (enable == other.enable && constantFactor == other.constantFactor && clamp == other.clamp &&
                 slopeFactor == other.slopeFactor) {
                 return true;
@@ -30,6 +29,11 @@ namespace engine {
                 return true;
             }
             return false;
+        }
+
+        settings::settings(const rasterizer_settings& rasterizerSettings,
+                           const multisampling_settings& multisamplingSettings)
+            : m_rasterizer(rasterizerSettings), m_multisampling(multisamplingSettings) {
         }
 
     } // namespace base

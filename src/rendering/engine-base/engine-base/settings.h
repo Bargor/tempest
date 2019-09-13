@@ -45,7 +45,7 @@ namespace engine {
 
         class settings {
         public:
-            settings();
+            settings(const rasterizer_settings& rasterizerSettings, const multisampling_settings& multisamplingSettings);
             ~settings();
 
         private:

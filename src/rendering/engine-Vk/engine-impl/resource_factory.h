@@ -31,10 +31,10 @@ namespace engine {
         public: // public resource factory interface
             template<typename IndexType>
             index_buffer<IndexType> create_index_buffer(std::vector<std::uint16_t>&& indices);
-            pipeline* create_pipeline(base::pipeline&& basePipeline,
-                                      const std::string& techniqueName,
-                                      const std::string& shadersName,
-                                      const vertex_format& format);
+            const pipeline* create_pipeline(base::pipeline&& basePipeline,
+                                            const std::string& techniqueName,
+                                            const std::string& shadersName,
+                                            const vertex_format& format);
             vertex_buffer create_vertex_buffer(const vertex_format& format, std::vector<vertex>&& vertices);
             uniform_buffer create_uniform_buffer();
 

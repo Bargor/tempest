@@ -196,7 +196,7 @@ namespace engine {
                                          const vertex_format& format,
                                          const shader_set& shaders,
                                          const rendering_technique& technique) {
-            return pipeline(m_logicalDevice, std::move(basePipeline), format, shaders, technique, m_engineSettings);
+            return pipeline(m_logicalDevice, std::move(basePipeline), format, shaders, technique);
         }
 
         resource_cache& device::get_resource_cache() noexcept {
