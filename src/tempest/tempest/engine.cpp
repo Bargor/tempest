@@ -10,6 +10,7 @@
 #include <application/main_window.h>
 #include <engine/device.h>
 #include <engine/resource_factory.h>
+#include <engine/settings.h>
 #include <fmt/printf.h>
 #include <scene/scene.h>
 #include <util/variant.h>
@@ -17,6 +18,19 @@
 
 namespace tst {
 namespace application {
+
+    engine::api::settings create_engine_settings() {
+        engine::api::settings engineSettings;
+        engineSettings.m_rasterizer.depthClamp = false;
+        engineSettings.m_rasterizer.rasterizerDiscard = false;
+        engineSettings.m_rasterizer.polygonMode = engine::base::rasterizer_settings::polygon_mode::fill;
+        engineSettings.m_rasterizer.cullMode = engine::base::rasterizer_settings::cull_mode::back;
+        engineSettings.m_rasterizer.frontFace = engine::base::rasterizer_settings::front_face::clockwise;
+        engineSettings.m_rasterizer.lineWidth = 1.0f;
+        engineSettings.m_rasterizer.depthBias = {false, 0.0f, 0.0f, 0.0f};
+
+        return engineSettings;
+    }
 
     simulation_engine::simulation_engine(time_source& timeSource,
                                          event_processor<app_event>& eventProcessor,
@@ -28,7 +42,7 @@ namespace application {
         , m_inputProcessor(inputProcessor)
         , m_mainWindow(mainWindow)
         , m_dataLoader(dataLoader)
-        , m_renderingDevice(std::make_unique<engine::device>(m_mainWindow, m_eventProcessor))
+        , m_renderingDevice(std::make_unique<engine::device>(m_mainWindow, m_eventProcessor, create_engine_settings()))
         , m_resourceFactory(std::make_unique<engine::resource_factory>(*m_renderingDevice, m_dataLoader))
         , m_scene(std::make_unique<scene::scene>("world", dataLoader, eventProcessor, *m_resourceFactory))
         , m_frameCounter(0)

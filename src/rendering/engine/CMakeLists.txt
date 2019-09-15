@@ -6,17 +6,18 @@ set(ENGINE_HDRS
 	engine/draw_info.h
 	engine/gpu_info.h
 	engine/resource_factory.h
-    	engine/resources/index_buffer.h
+    engine/resources/index_buffer.h
 	engine/resources/material.h
 	engine/resources/pipeline.h
 	engine/resources/shader.h
 	engine/resources/uniform_buffer.h
 	engine/resources/vertex_buffer.h
 	engine/resources/vertex_format.h
+	engine/settings.h
 )
 
 set(ENGINE_SRCS 
-    	engine/device.cpp
+    engine/device.cpp
 	engine/draw_info.cpp
 	engine/gpu_info.cpp
 	engine/resource_factory.cpp
@@ -27,6 +28,7 @@ set(ENGINE_SRCS
 	engine/resources/uniform_buffer.cpp
 	engine/resources/vertex_buffer.cpp
 	engine/resources/vertex_format.cpp
+	engine/settings.cpp
 )
 
 include(${PROJECT_SOURCE_DIR}/cmake/TstAddLibrary.cmake)

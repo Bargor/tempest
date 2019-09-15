@@ -48,7 +48,7 @@ namespace engine {
             settings(const rasterizer_settings& rasterizerSettings, const multisampling_settings& multisamplingSettings);
             ~settings();
 
-        private:
+        public:
             rasterizer_settings m_rasterizer;
             multisampling_settings m_multisampling;
         };
