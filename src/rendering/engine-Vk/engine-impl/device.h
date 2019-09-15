@@ -61,7 +61,7 @@ namespace engine {
                                                const vk::CommandPool& cmdPool) const;
             uniform_buffer create_uniform_buffer(const vk::CommandPool& cmdPool) const;
             shader crate_shader(shader::shader_type type, std::vector<char>&& source, const std::string_view name) const;
-            pipeline create_pipeline(base::pipeline_state&& pipelineState,
+            pipeline create_pipeline(base::pipeline_settings&& pipelineSettings,
                                      const vertex_format& format,
                                      const shader_set& shaders,
                                      const rendering_technique& technique);

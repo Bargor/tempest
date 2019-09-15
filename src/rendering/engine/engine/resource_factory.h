@@ -26,7 +26,7 @@ namespace engine {
 
     public:
         resources::index_buffer create_index_buffer(std::vector<std::uint16_t>&& indices);
-        resources::pipeline* create_pipeline(base::pipeline&& basePipeline,
+        resources::pipeline* create_pipeline(base::pipeline_settings&& pipelineSettings,
                                              const std::string& techniqueName,
                                              const std::string& shadersName,
                                              const vertex_format& format);

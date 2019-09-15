@@ -7,24 +7,14 @@
 #include <vector>
 #include <vulkan/vulkan.hpp>
 
-struct GLFWwindow;
-
 namespace tst {
 namespace engine {
     namespace vulkan {
 
-        class shader_compiler;
         class uniform_buffer;
         class device;
 
-        vk::PipelineLayout create_pipeline_layout(const vk::Device& device,
-                                                  const vk::DescriptorSetLayout& descriptorSetLayout);
         vk::DescriptorSetLayout create_descriptor_set_layout(const vk::Device& device);
-        vk::Pipeline create_graphics_pipeline(const vk::Device& device,
-                                              const vk::PipelineLayout& pipelineLayout,
-                                              const vk::RenderPass& renderPass,
-                                              const vk::Extent2D& extent,
-                                              const vulkan::shader_compiler& m_shaderCompiler);
 
         vk::DescriptorPool create_descriptor_pool(const vk::Device& device, std::size_t size);
 

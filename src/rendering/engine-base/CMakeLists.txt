@@ -5,7 +5,7 @@ set(ENGINE_BASE_HDRS
 	engine-base/gpu_info.h
 	engine-base/rendering_technique.h
 	engine-base/material.h
-	engine-base/pipeline_state.h
+	engine-base/pipeline_settings.h
 	engine-base/vertex_format.h
 	engine-base/settings.h
 )
@@ -14,7 +14,7 @@ set(ENGINE_BASE_SRCS
 	engine-base/gpu_info.cpp
 	engine-base/rendering_technique.cpp
 	engine-base/material.cpp
-	engine-base/pipeline_state.cpp
+	engine-base/pipeline_settings.cpp
 	engine-base/vertex_format.cpp
 	engine-base/settings.cpp
 )

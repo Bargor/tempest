@@ -266,17 +266,17 @@ namespace engine {
 
         vk::Pipeline compile_pipeline(const vk::Device logicalDevice,
                                       const vk::RenderPass renderPass,
-                                      const base::pipeline_state& pipelineState,
+                                      const base::pipeline_settings& pipelineSettings,
                                       const vertex_format& format,
                                       const shader_set& shaders) {
             auto pipelineLayout = create_pipeline_layout(logicalDevice);
             auto vertexInfo = create_vertex_input_info(format);
             auto assemblyInfo = create_assembly_info(format);
-            auto viewportInfo = create_viewport_info(pipelineState.m_viewport, pipelineState.m_scissor);
-            auto rasterizationInfo = create_rasterization_info(pipelineState.m_rasterizer);
-            auto multisamplingInfo = create_multisampling_info(pipelineState.m_multisampling);
-            auto blendingInfo = create_color_blending_info(pipelineState.m_framebufferColorBlending,
-                                                           pipelineState.m_globalColorBlending);
+            auto viewportInfo = create_viewport_info(pipelineSettings.m_viewport, pipelineSettings.m_scissor);
+            auto rasterizationInfo = create_rasterization_info(pipelineSettings.m_rasterizer);
+            auto multisamplingInfo = create_multisampling_info(pipelineSettings.m_multisampling);
+            auto blendingInfo = create_color_blending_info(pipelineSettings.m_framebufferColorBlending,
+                                                           pipelineSettings.m_globalColorBlending);
 
             std::vector<vk::PipelineShaderStageCreateInfo> shaderInfos;
             std::transform(shaders.cbegin(), shaders.cend(), std::back_inserter(shaderInfos), [](const shader& shader) {
@@ -304,12 +304,12 @@ namespace engine {
         }
 
         pipeline::pipeline(const vk::Device logicalDevice,
-                           const base::pipeline_state& pipelineState,
+                           const base::pipeline_settings& pipelineSettings,
                            const vertex_format& format,
                            const shader_set& shaders,
                            const rendering_technique& technique)
-            : m_pipeline(compile_pipeline(logicalDevice, technique.m_renderPass, pipelineState, format, shaders))
-            , m_pipelineState(pipelineState)
+            : m_pipeline(compile_pipeline(logicalDevice, technique.m_renderPass, pipelineSettings, format, shaders))
+            , m_pipelineSettings(pipelineSettings)
             , m_technique(technique) {
         }
 
