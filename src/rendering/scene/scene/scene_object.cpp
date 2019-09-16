@@ -11,11 +11,13 @@ namespace scene {
 
     scene_object::scene_object(engine::resources::vertex_buffer&& vertexBuffer,
                                engine::resources::index_buffer&& indexBuffer,
-                               engine::resources::material&& material) noexcept
+                               engine::resources::material&& material,
+                               const engine::resources::pipeline* pipeline) noexcept
         : m_vertices(std::move(vertexBuffer))
         , m_indices(std::move(indexBuffer))
         , m_material(std::move(material))
-        , m_objectState(&vertexBuffer, &indexBuffer, *this) {
+        , m_pipeline(pipeline)
+        , m_objectState({&vertexBuffer, &indexBuffer, pipeline, *this}) {
     }
 
     scene_object::state scene_object::update_object(std::chrono::duration<std::uint64_t, std::micro> elapsedTime) const {
@@ -27,7 +29,7 @@ namespace scene {
         ubo.proj = glm::perspective(glm::radians(45.0f), 1.0f, 0.1f, 10.0f);
         ubo.proj[1][1] *= -1;
 
-        state newState{&m_vertices, &m_indices, *this};
+        state newState{&m_vertices, &m_indices, m_pipeline, *this};
 
         return newState;
     }

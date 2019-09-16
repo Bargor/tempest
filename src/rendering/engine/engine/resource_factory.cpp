@@ -19,10 +19,14 @@ namespace engine {
         return super::create_index_buffer<std::uint16_t>(std::move(indices));
     }
 
-    resources::pipeline* resource_factory::create_pipeline(base::pipeline_settings&& pipelineSettings,
-                                                           const std::string& techniqueName,
-                                                           const std::string& shadersName,
-                                                           const vertex_format& format) {
+    resources::material resource_factory::create_material() {
+        return resources::material{};
+    }
+
+    const resources::pipeline* resource_factory::create_pipeline(base::pipeline_settings&& pipelineSettings,
+                                                                 const std::string& techniqueName,
+                                                                 const std::string& shadersName,
+                                                                 const vertex_format& format) {
         return super::create_pipeline(std::move(pipelineSettings), techniqueName, shadersName, format);
     }
 

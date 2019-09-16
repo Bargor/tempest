@@ -25,14 +25,16 @@ namespace engine {
 
             vertex_buffer(vertex_buffer&& other) noexcept;
 
-            std::uint32_t get_vertex_count() const;
+            std::uint32_t get_vertex_count() const noexcept;
+
+            const vertex_format& get_vertex_format() const noexcept;
 
         private:
             vertex_format m_format;
             std::vector<vertex> m_vertices;
         };
 
-        inline std::uint32_t vertex_buffer::get_vertex_count() const {
+        inline std::uint32_t vertex_buffer::get_vertex_count() const noexcept {
             return static_cast<std::uint32_t>(m_vertices.size());
         }
 
