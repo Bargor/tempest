@@ -112,7 +112,7 @@ namespace engine {
 
             const std::string& get_name() const;
 
-        private:
+        protected:
             std::string m_techniqueName;
             viewport_settings m_viewportSettings;
             core::rectangle<std::int32_t, std::uint32_t> m_scissor;

@@ -18,11 +18,11 @@ set(ENGINE_HDRS
 	engine-impl/resources/material.h
 	engine-impl/resources/pipeline.h
 	engine-impl/resources/rendering_technique.h
+	engine-impl/resources/settings.h
 	engine-impl/resources/shader.h
 	engine-impl/resources/uniform_buffer.h
 	engine-impl/resources/vertex_buffer.h
 	engine-impl/resources/vertex_format.h
-	engine-impl/settings.h
 	engine-impl/shader_compiler.h
 	engine-impl/swap_chain.h
 	engine-impl/vulkan_exception.h
@@ -43,12 +43,12 @@ set(ENGINE_SRCS
 	engine-impl/resources/index_buffer.cpp
 	engine-impl/resources/material.cpp
 	engine-impl/resources/pipeline.cpp
-	engine-impl/resources/rendering_technique.h
+	engine-impl/resources/rendering_technique.cpp
+	engine-impl/resources/settings.cpp
 	engine-impl/resources/shader.cpp
 	engine-impl/resources/uniform_buffer.cpp
 	engine-impl/resources/vertex_buffer.cpp
 	engine-impl/resources/vertex_format.cpp
-	engine-impl/settings.cpp
 	engine-impl/shader_compiler.cpp
 	engine-impl/swap_chain.cpp
 )

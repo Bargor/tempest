@@ -192,11 +192,10 @@ namespace engine {
             return shader(m_logicalDevice, type, std::move(source), name);
         }
 
-        pipeline device::create_pipeline(base::pipeline_settings&& pipelineSettings,
-                                         const vertex_format& format,
+        pipeline device::create_pipeline(const vertex_format& format,
                                          const shader_set& shaders,
                                          const rendering_technique& technique) {
-            return pipeline(m_logicalDevice, std::move(pipelineSettings), format, shaders, technique);
+            return pipeline(m_logicalDevice, m_engineSettings, format, shaders, technique);
         }
 
         resource_cache& device::get_resource_cache() noexcept {

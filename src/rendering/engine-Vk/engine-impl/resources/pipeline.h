@@ -19,7 +19,7 @@ namespace engine {
 
         public:
             pipeline(const vk::Device logicalDevice,
-                     const base::pipeline_settings& pipelineSettings,
+                     const settings& engineSettings,
                      const vertex_format& format,
                      const shader_set& shaders,
                      const rendering_technique& technique);
