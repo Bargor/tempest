@@ -21,8 +21,7 @@ namespace engine {
         resource_factory::~resource_factory() {
         }
 
-        const pipeline* resource_factory::create_pipeline(base::pipeline_settings&& pipelineSettings,
-                                                          const std::string& techniqueName,
+        const pipeline* resource_factory::create_pipeline(const std::string& techniqueName,
                                                           const std::string& shadersName,
                                                           const vertex_format& format) {
             auto shaders = m_resourceCache.find_shaders(shadersName);
@@ -33,7 +32,7 @@ namespace engine {
             }
 
             if (shaders && technique) {
-                auto pipeline = m_device.create_pipeline(std::move(pipelineSettings), format, *shaders, *technique);
+                auto pipeline = m_device.create_pipeline(format, *shaders, *technique);
 
                 m_resourceCache.add_pipeline(std::move(pipeline));
 

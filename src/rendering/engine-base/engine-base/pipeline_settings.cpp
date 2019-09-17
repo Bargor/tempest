@@ -7,11 +7,11 @@ namespace engine {
     namespace base {
 
         pipeline_settings::pipeline_settings(const viewport_settings& viewportSettings,
-                                       const core::rectangle<std::int32_t, std::uint32_t>& scissor,
-                                       const rasterizer_settings& rasterizerSettings,
-                                       const multisampling_settings& multisamplingSettings,
-                                       const std::initializer_list<color_blending_settings> blendingSettings,
-                                       const global_blending_settings& globalBlendingSettings)
+                                             const core::rectangle<std::int32_t, std::uint32_t>& scissor,
+                                             const rasterizer_settings& rasterizerSettings,
+                                             const multisampling_settings& multisamplingSettings,
+                                             const std::vector<color_blending_settings>& blendingSettings,
+                                             const global_blending_settings& globalBlendingSettings)
             : m_viewport(viewportSettings)
             , m_scissor(scissor)
             , m_rasterizer(rasterizerSettings)

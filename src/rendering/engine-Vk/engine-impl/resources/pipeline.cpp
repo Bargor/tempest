@@ -278,8 +278,8 @@ namespace engine {
             auto vertexInfo = create_vertex_input_info(format);
             auto assemblyInfo = create_assembly_info(format);
             auto viewportInfo = create_viewport_info(viewportSettings, scissor);
-            auto rasterizationInfo = create_rasterization_info(engineSettings.m_);
-            auto multisamplingInfo = create_multisampling_info(engineSettings.m_multisamplingSettings);
+            auto rasterizationInfo = create_rasterization_info(engineSettings.m_rasterizer);
+            auto multisamplingInfo = create_multisampling_info(engineSettings.m_multisampling);
             auto blendingInfo = create_color_blending_info(framebufferBlendingSettings, globalBlendingSettings);
 
             std::vector<vk::PipelineShaderStageCreateInfo> shaderInfos;
@@ -321,7 +321,12 @@ namespace engine {
                                           engineSettings,
                                           format,
                                           shaders))
-            , m_pipelineSettings(engineSettings)
+            , m_pipelineSettings(technique.m_viewportSettings,
+                                 technique.m_scissor,
+                                 engineSettings.m_rasterizer,
+                                 engineSettings.m_multisampling,
+                                 technique.m_framebufferColorBlending,
+                                 technique.m_globalColorBlending)
             , m_technique(technique) {
         }
 

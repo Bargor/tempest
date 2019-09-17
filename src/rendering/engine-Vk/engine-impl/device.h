@@ -7,10 +7,10 @@
 #include "physical_device.h"
 #include "resources/index_buffer.h"
 #include "resources/pipeline.h"
+#include "resources/settings.h"
 #include "resources/shader.h"
 #include "resources/uniform_buffer.h"
 #include "resources/vertex_buffer.h"
-#include "settings.h"
 
 #include <GLFW/glfw3.h>
 #include <common/rectangle.h>
@@ -61,8 +61,7 @@ namespace engine {
                                                const vk::CommandPool& cmdPool) const;
             uniform_buffer create_uniform_buffer(const vk::CommandPool& cmdPool) const;
             shader crate_shader(shader::shader_type type, std::vector<char>&& source, const std::string_view name) const;
-            pipeline create_pipeline(base::pipeline_settings&& pipelineSettings,
-                                     const vertex_format& format,
+            pipeline create_pipeline(const vertex_format& format,
                                      const shader_set& shaders,
                                      const rendering_technique& technique);
             gpu_info& get_GPU_info() const noexcept;

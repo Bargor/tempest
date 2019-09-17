@@ -31,7 +31,7 @@ namespace engine {
 
         private:
             vk::Pipeline m_pipeline;
-            const base::pipeline_settings& m_pipelineSettings;
+            base::pipeline_settings m_pipelineSettings;
             const rendering_technique& m_technique;
         };
 

@@ -3,7 +3,7 @@
 
 #include "rendering_technique.h"
 
-#include "swap_chain.h"
+#include "../swap_chain.h"
 
 namespace tst {
 namespace engine {
@@ -57,8 +57,14 @@ namespace engine {
             return framebuffers;
         }
 
-        rendering_technique::rendering_technique(const std::string& name, vk::Device device, swap_chain& swapChain)
-            : base::rendering_technique(name)
+        rendering_technique::rendering_technique(const std::string& name,
+                                                 vk::Device device,
+                                                 swap_chain& swapChain,
+                                                 const base::viewport_settings& viewport,
+                                                 const core::rectangle<std::int32_t, std::uint32_t> scissor,
+                                                 std::initializer_list<base::color_blending_settings> framebufferBlending,
+                                                 const base::global_blending_settings& globalBlending)
+            : base::rendering_technique(name, viewport, scissor, framebufferBlending, globalBlending)
             , m_device(device)
             , m_swapChain(swapChain)
             , m_extent(swapChain.get_extent())
@@ -91,30 +97,6 @@ namespace engine {
                 m_renderPass, m_framebuffers[m_swapChain.get_image_index()], vk::Rect2D({0, 0}, m_extent), 1, &clearColor);
 
             return renderPassInfo;
-        }
-
-        technique_cache::technique_cache(vk::Device& device, swap_chain& swapChain)
-            : m_device(device), m_swapChain(swapChain) {
-        }
-
-        void technique_cache::add_rendering_technique(const std::string& techniqueName) {
-            m_techniques.emplace_back(rendering_technique(techniqueName, m_device, m_swapChain));
-        }
-
-        std::optional<std::reference_wrapper<rendering_technique>>
-        technique_cache::find_technique(const std::string& techniqueName) {
-            auto technique =
-                std::find_if(m_techniques.begin(), m_techniques.end(), [&](const rendering_technique& technique) {
-                    if (technique.get_name() == techniqueName) {
-                        return true;
-                    }
-                    return false;
-                });
-
-            if (technique != m_techniques.end()) {
-                return std::ref(*technique);
-            }
-            return std::nullopt;
         }
 
     } // namespace vulkan
