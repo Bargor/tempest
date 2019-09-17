@@ -13,8 +13,8 @@ namespace tst {
 namespace engine {
     namespace base {
 
-        struct rendering_technique;
-        struct settings;
+        class rendering_technique;
+        class settings;
 
         struct pipeline_settings {
         public:
