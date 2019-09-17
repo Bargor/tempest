@@ -12,7 +12,7 @@ namespace scene {
     scene_object::scene_object(engine::resources::vertex_buffer&& vertexBuffer,
                                engine::resources::index_buffer&& indexBuffer,
                                engine::resources::material&& material,
-                               const engine::resources::pipeline* pipeline) noexcept
+                               const engine::resources::pipeline& pipeline) noexcept
         : m_vertices(std::move(vertexBuffer))
         , m_indices(std::move(indexBuffer))
         , m_material(std::move(material))

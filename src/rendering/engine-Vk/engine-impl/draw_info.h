@@ -14,16 +14,14 @@ namespace engine {
     namespace vulkan {
         struct draw_info {
         public:
-            draw_info(const vertex_buffer* vertices,
-                      const index_buffer<std::uint16_t>* indices,
-                      const pipeline* pipelineState);
+            draw_info(const vertex_buffer* vertices, const index_buffer<std::uint16_t>* indices, const pipeline& pipeline);
 
             ~draw_info() = default;
 
         public:
             const vertex_buffer* vertices;
             const index_buffer<std::uint16_t>* indices;
-            const pipeline* pipelineState;
+            const pipeline& pipelineState;
         };
     } // namespace vulkan
 } // namespace engine

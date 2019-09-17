@@ -23,9 +23,9 @@ namespace engine {
         return resources::material{};
     }
 
-    const resources::pipeline* resource_factory::create_pipeline(const std::string& techniqueName,
-                                                                 const std::string& shadersName,
-                                                                 const vertex_format& format) {
+    resources::pipeline& resource_factory::create_pipeline(const std::string& techniqueName,
+                                                           const std::string& shadersName,
+                                                           const vertex_format& format) {
         return super::create_pipeline(techniqueName, shadersName, format);
     }
 

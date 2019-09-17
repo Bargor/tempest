@@ -17,7 +17,7 @@ namespace scene {
         struct state {
             const engine::resources::vertex_buffer* vertices;
             const engine::resources::index_buffer* indices;
-            const engine::resources::pipeline* pipeline;
+            const engine::resources::pipeline& pipeline;
             const scene_object& object;
         };
 
@@ -25,7 +25,7 @@ namespace scene {
         scene_object(engine::resources::vertex_buffer&& vertexBuffer,
                      engine::resources::index_buffer&& indexBuffer,
                      engine::resources::material&& material,
-                     const engine::resources::pipeline* pipeline) noexcept;
+                     const engine::resources::pipeline& pipeline) noexcept;
         state& get_object_state() const;
         state update_object(std::chrono::duration<std::uint64_t, std::micro> elapsedTime) const;
 
@@ -33,7 +33,7 @@ namespace scene {
         engine::resources::vertex_buffer m_vertices;
         engine::resources::index_buffer m_indices;
         engine::resources::material m_material;
-        const engine::resources::pipeline* m_pipeline;
+        const engine::resources::pipeline& m_pipeline;
 
         state m_objectState;
     };

@@ -19,7 +19,7 @@ namespace engine {
             void add_rendering_technique(rendering_technique&& technique);
             void add_shaders(const std::string& name, shader_set&& shaders);
 
-            const pipeline* find_pipeline() const;
+            pipeline* find_pipeline() const;
             const rendering_technique* find_technique(const std::string& name) const;
             const shader_set* find_shaders(const std::string& name) const;
 

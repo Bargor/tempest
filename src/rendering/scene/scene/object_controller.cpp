@@ -64,7 +64,7 @@ namespace scene {
 
         auto material = m_resourceFactory.create_material();
 
-        auto pipeline = m_resourceFactory.create_pipeline("test", "test", vertexFormat);
+        const auto& pipeline = m_resourceFactory.create_pipeline("test", "test", vertexFormat);
 
         scene_object object(std::move(vertexBuffer), std::move(indexBuffer), std::move(material), pipeline);
         m_scene.add_object(std::move(object));

@@ -15,6 +15,7 @@ namespace engine {
 
             pipeline(api::pipeline&& pipelineImpl);
             ~pipeline();
+
         private:
         };
 
