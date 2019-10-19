@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include <engine-base/resources/vertex_format.h>
+#include <engine-base/vertex_format.h>
 
 namespace tst {
 namespace engine {

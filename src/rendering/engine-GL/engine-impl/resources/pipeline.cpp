@@ -1,10 +1,12 @@
 // This file is part of Tempest-engine project
 // Author: Karol Kontny
 
-#include "material.h"
+#include "pipeline.h"
 
 namespace tst {
 namespace engine {
-    namespace vulkan {} // namespace vulkan
+    namespace opengl {
+        
+    } // namespace opengl
 } // namespace engine
 } // namespace tst

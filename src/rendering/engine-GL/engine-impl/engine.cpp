@@ -24,16 +24,15 @@ namespace engine {
         }
     }
 
-    engine_frontend::rendering_engine(application::data_loader& dataLoader,
+    engine_frontend::engine_frontend(application::data_loader& dataLoader,
                                        application::event_processor<application::app_event>&,
                                        device& device)
         : m_dataLoader(dataLoader)
-        , m_device(device)
-        , m_shaderCompiler(std::make_unique<shader_compiler>(m_dataLoader)) {
+        , m_device(device) {
         init_OpenGL();
     }
 
-    engine_frontend::~rendering_engine() {
+    engine_frontend::~engine_frontend() {
     }
 
     void engine_frontend::frame(size_t) {
