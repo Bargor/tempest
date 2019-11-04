@@ -10,7 +10,7 @@ namespace engine {
 
         class settings : public base::settings {
         public:
-            settings();
+            settings(base::settings&& settings);
             ~settings();
 
         private:

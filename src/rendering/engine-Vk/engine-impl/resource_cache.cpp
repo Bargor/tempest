@@ -9,12 +9,19 @@ namespace tst {
 namespace engine {
     namespace vulkan {
 
-        void resource_cache::add_pipeline(pipeline&& newPipeline) {
-            m_pipelines.insert(std::make_pair(std::hash<pipeline>{}(newPipeline), std::move(newPipeline)));
+        std::size_t resource_cache::add_pipeline(pipeline&& newPipeline) {
+            auto hash = std::hash<pipeline>{}(newPipeline);
+            m_pipelines.insert(std::make_pair(hash, std::move(newPipeline)));
+            return hash;
         }
 
         void resource_cache::add_shaders(const std::string& name, shader_set&& shaders) {
             m_shaders.insert(std::make_pair(name, std::move(shaders)));
+        }
+
+        const pipeline* resource_cache::find_pipeline(std::size_t pipelineHash) const {
+            const auto& it = m_pipelines.find(pipelineHash);
+            return (it != m_pipelines.end()) ? &(it->second) : nullptr;
         }
 
         const shader_set* resource_cache::find_shaders(const std::string& name) const {

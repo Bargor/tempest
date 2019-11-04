@@ -20,14 +20,18 @@ namespace tst {
 namespace application {
 
     engine::api::settings create_engine_settings() {
-        engine::api::settings engineSettings;
-        engineSettings.m_rasterizer.depthClamp = false;
-        engineSettings.m_rasterizer.rasterizerDiscard = false;
-        engineSettings.m_rasterizer.polygonMode = engine::base::rasterizer_settings::polygon_mode::fill;
-        engineSettings.m_rasterizer.cullMode = engine::base::rasterizer_settings::cull_mode::back;
-        engineSettings.m_rasterizer.frontFace = engine::base::rasterizer_settings::front_face::clockwise;
-        engineSettings.m_rasterizer.lineWidth = 1.0f;
-        engineSettings.m_rasterizer.depthBias = {false, 0.0f, 0.0f, 0.0f};
+        engine::base::rasterizer_settings rasterizerSettings;
+
+        rasterizerSettings.depthClamp = false;
+        rasterizerSettings.rasterizerDiscard = false;
+        rasterizerSettings.polygonMode = engine::base::rasterizer_settings::polygon_mode::fill;
+        rasterizerSettings.cullMode = engine::base::rasterizer_settings::cull_mode::back;
+        rasterizerSettings.frontFace = engine::base::rasterizer_settings::front_face::clockwise;
+        rasterizerSettings.lineWidth = 1.0f;
+        rasterizerSettings.depthBias = {false, 0.0f, 0.0f, 0.0f};
+
+        engine::base::multisampling_settings multisamplingSettings;
+        engine::api::settings engineSettings(engine::base::settings(rasterizerSettings, multisamplingSettings));
 
         return engineSettings;
     }

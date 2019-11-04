@@ -21,9 +21,9 @@ namespace engine {
         resource_factory::~resource_factory() {
         }
 
-        pipeline& resource_factory::create_pipeline(const std::string& techniqueName,
-                                                    const std::string& shadersName,
-                                                    const vertex_format& format) {
+        const pipeline& resource_factory::create_pipeline(const std::string& techniqueName,
+                                                          const std::string& shadersName,
+                                                          const vertex_format& format) {
             auto shaders = m_resourceCache.find_shaders(shadersName);
             auto technique = m_resourceCache.find_technique(techniqueName);
 
@@ -34,9 +34,9 @@ namespace engine {
             if (shaders && technique) {
                 auto pipeline = m_device.create_pipeline(format, *shaders, *technique);
 
-                m_resourceCache.add_pipeline(std::move(pipeline));
+                auto hash = m_resourceCache.add_pipeline(std::move(pipeline));
 
-                return *m_resourceCache.find_pipeline();
+                return *m_resourceCache.find_pipeline(hash);
             }
             throw std::runtime_error("Can't find pipeline");
         }

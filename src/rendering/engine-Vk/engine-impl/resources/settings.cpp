@@ -5,6 +5,13 @@
 
 namespace tst {
 namespace engine {
-    namespace vulkan {}
+    namespace vulkan {
+
+        settings::settings(base::settings&& settings) : base::settings(settings) {
+        }
+
+        settings::~settings() {
+        }
+    }
 } // namespace engine
 } // namespace tst

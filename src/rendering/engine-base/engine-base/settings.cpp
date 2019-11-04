@@ -36,6 +36,9 @@ namespace engine {
             : m_rasterizer(rasterizerSettings), m_multisampling(multisamplingSettings) {
         }
 
+        settings::~settings() {
+        }
+
     } // namespace base
 } // namespace engine
 } // namespace tst

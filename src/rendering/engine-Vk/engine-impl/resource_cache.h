@@ -15,11 +15,11 @@ namespace engine {
 
         class resource_cache {
         public:
-            void add_pipeline(pipeline&& newPipeline);
+            std::size_t add_pipeline(pipeline&& newPipeline);
             void add_rendering_technique(rendering_technique&& technique);
             void add_shaders(const std::string& name, shader_set&& shaders);
 
-            pipeline* find_pipeline() const;
+            const pipeline* find_pipeline(std::size_t pipelineHash) const;
             const rendering_technique* find_technique(const std::string& name) const;
             const shader_set* find_shaders(const std::string& name) const;
 
