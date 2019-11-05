@@ -6,22 +6,6 @@
 #include <algorithm>
 #include <platform.h>
 
-// Workaround for GCC
-
-#if TST_COMPILER & TST_COMPILER_GCC
-
-namespace std {
-template<class InputIt, class Size, class UnaryFunction>
-InputIt for_each_n(InputIt first, Size n, UnaryFunction f) {
-    for (Size i = 0; i < n; ++first, (void)++i) {
-        f(*first);
-    }
-    return first;
-}
-} // namespace std
-
-#endif
-
 namespace tst {
 
 template<typename InputIt1, typename InputIt2, typename Pred>
