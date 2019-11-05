@@ -115,9 +115,10 @@ namespace engine {
 
         template<typename Iter>
         bool device::draw_frame(Iter first, Iter last) {
-            startFrame();
             auto commandBuffers = m_engineFrontend->prepare_draw(first, last);
+            if (commandBuffers.size() == 0) return true;
 
+            startFrame();
             draw(commandBuffers);
             endFrame();
 

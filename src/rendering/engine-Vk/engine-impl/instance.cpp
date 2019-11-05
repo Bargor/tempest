@@ -136,7 +136,7 @@ namespace engine {
             try {
                 return vk::createInstance(createInfo);
             } catch (std::runtime_error& ex) {
-                ex.what();
+                fmt::printf("%s\n", ex.what());
                 fmt::printf("Can't initialize Vulkan!\n");
                 std::exit(EXIT_FAILURE);
             }
