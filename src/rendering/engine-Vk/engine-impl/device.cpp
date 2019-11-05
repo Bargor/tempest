@@ -227,6 +227,8 @@ namespace engine {
         }
 
         bool device::draw(const std::vector<vk::CommandBuffer>& commandBuffers) {
+            if (commandBuffers.size() == 0) return true;
+
             std::uint32_t currentFrame = get_resource_index();
             m_logicalDevice.resetFences(1, &m_frameResources[currentFrame].inFlightFences);
 
