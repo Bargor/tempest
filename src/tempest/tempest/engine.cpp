@@ -13,6 +13,7 @@
 #include <engine/settings.h>
 #include <fmt/printf.h>
 #include <scene/scene.h>
+#include <scene/object_controller.h>
 #include <util/variant.h>
 // clang-format on
 
@@ -53,7 +54,7 @@ namespace application {
         , m_lastSecondFrames(0)
         , m_shouldClose(false)
         , m_windowMinimized(false)
-        , m_lastFrameDuration(0){
+        , m_lastFrameDuration(0) {
         auto close_callback = [&](const app_event::arguments&) { m_shouldClose = true; };
         auto iconify_callback = [&](const app_event::arguments& args) {
             assert(std::holds_alternative<application::app_event::iconify>(args));
@@ -72,6 +73,7 @@ namespace application {
                                    this,
                                    std::move(time_callback),
                                    std::chrono::seconds(1));
+        m_scene->get_object_controller().load_object("");
     }
 
     simulation_engine::~simulation_engine() {

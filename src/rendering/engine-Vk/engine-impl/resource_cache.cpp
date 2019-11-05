@@ -26,7 +26,7 @@ namespace engine {
 
         const shader_set* resource_cache::find_shaders(const std::string& name) const {
             auto shaders = m_shaders.find(name);
-            if (shaders == m_shaders.end()) {
+            if (shaders != m_shaders.end()) {
                 return &(shaders->second);
             }
             return nullptr;

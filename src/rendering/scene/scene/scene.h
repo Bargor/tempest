@@ -47,6 +47,7 @@ namespace scene {
         ~scene();
 
         void add_object(scene_object&& object);
+        object_controller& get_object_controller() const noexcept;
 
     private:
         std::string m_sceneName;

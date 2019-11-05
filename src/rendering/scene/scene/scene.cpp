@@ -40,5 +40,9 @@ namespace scene {
     void scene::add_object(scene_object&& object) {
         m_objects.emplace_back(std::move(object));
     }
+
+    object_controller& scene::get_object_controller() const noexcept {
+        return *m_sceneObjectController;
+    }
 } // namespace scene
 } // namespace tst
