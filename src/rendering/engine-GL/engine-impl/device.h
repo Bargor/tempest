@@ -4,6 +4,7 @@
 
 #include "command_list.h"
 #include "resources/index_buffer.h"
+#include "resources/settings.h"
 #include "resources/uniform_buffer.h"
 #include "resources/vertex_buffer.h"
 
@@ -31,7 +32,8 @@ namespace engine {
 
         public:
             device(application::main_window& mainWindow,
-                   application::event_processor<application::app_event>& eventProcessor);
+                   application::event_processor<application::app_event>& eventProcessor,
+                   settings&& engineSettings);
             device(const device& device) = delete;
             ~device();
 

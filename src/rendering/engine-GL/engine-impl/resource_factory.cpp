@@ -6,8 +6,8 @@
 namespace tst {
 namespace engine {
     namespace opengl {
-        resource_factory::resource_factory(device& device)
-            : m_device(device) {
+        resource_factory::resource_factory(device& device, application::data_loader& dataLoader)
+            : m_device(device), m_dataLoader(dataLoader) {
         }
 
         resource_factory::~resource_factory() {

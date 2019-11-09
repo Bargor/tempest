@@ -13,7 +13,9 @@ namespace tst {
 namespace engine {
     namespace opengl {
 
-        device::device(application::main_window&, application::event_processor<application::app_event>&)
+        device::device(application::main_window&,
+                       application::event_processor<application::app_event>&,
+                       settings&&)
             : m_gpuInfo(std::make_unique<gpu_info>()) {
         }
 

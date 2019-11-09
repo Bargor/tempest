@@ -2,16 +2,20 @@
 // Author: Karol Kontny
 #pragma once
 
-#include <engine-base/pipeline_settings.h>
+#include <engine-base/settings.h>
 
 namespace tst {
 namespace engine {
     namespace opengl {
-        class pipeline {
+
+        class settings : public base::settings {
         public:
+            settings(base::settings&& settings);
+            ~settings();
 
         private:
         };
+
     } // namespace opengl
 } // namespace engine
 } // namespace tst

@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include "shader.h"
+#include "resources/shader.h"
 
 #include <optional>
 

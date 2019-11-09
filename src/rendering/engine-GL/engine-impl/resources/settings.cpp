@@ -1,17 +1,17 @@
 // This file is part of Tempest-engine project
 // Author: Karol Kontny
-#pragma once
 
-#include <engine-base/pipeline_settings.h>
+#include "settings.h"
 
 namespace tst {
 namespace engine {
     namespace opengl {
-        class pipeline {
-        public:
 
-        private:
-        };
+        settings::settings(base::settings&& settings) : base::settings(settings) {
+        }
+
+        settings::~settings() {
+        }
     } // namespace opengl
 } // namespace engine
 } // namespace tst
