@@ -102,13 +102,21 @@ namespace engine {
             bool operator==(const global_blending_settings& other) const noexcept;
         };
 
+        struct technique_settings {
+            viewport_settings viewport;
+            core::rectangle<std::int32_t, std::uint32_t> scissor;
+            std::vector<color_blending_settings> framebufferColorBlending;
+            global_blending_settings globalColorBlending;
+        };
+
         class rendering_technique {
         public:
-            rendering_technique(const std::string& techniqueName,
+            rendering_technique(std::string&& techniqueName,
                                 const viewport_settings& viewport,
                                 const core::rectangle<std::int32_t, std::uint32_t> scissor,
-                                std::initializer_list<color_blending_settings> framebufferBlending,
+                                std::vector<color_blending_settings> framebufferBlending,
                                 const global_blending_settings& globalBlending);
+            rendering_technique(std::string&& techniqueName, technique_settings&& techniqueSettings);
 
             const std::string& get_name() const;
 

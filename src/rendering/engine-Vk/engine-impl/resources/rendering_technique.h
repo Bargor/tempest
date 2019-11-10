@@ -16,16 +16,21 @@ namespace engine {
             friend class pipeline;
 
         public:
-            rendering_technique(const std::string& name,
-                                vk::Device device,
-                                swap_chain& swapChain,
+            rendering_technique(std::string&& name,
                                 const base::viewport_settings& viewport,
                                 const core::rectangle<std::int32_t, std::uint32_t> scissor,
-                                std::initializer_list<base::color_blending_settings> framebufferBlending,
-                                const base::global_blending_settings& globalBlending);
+                                std::vector<base::color_blending_settings> framebufferBlending,
+                                const base::global_blending_settings& globalBlending,
+                                vk::Device device,
+                                const swap_chain& swapChain);
+
+            rendering_technique(std::string&& techniqueName,
+                                base::technique_settings&& techniqueSettings,
+                                vk::Device device,
+                                const swap_chain& swapChain);
 
             rendering_technique(const rendering_technique& technique) = delete;
-            rendering_technique(rendering_technique&& technique);
+            rendering_technique(rendering_technique&& technique) noexcept;
 
             ~rendering_technique();
 
@@ -33,7 +38,7 @@ namespace engine {
 
         private:
             vk::Device m_device;
-            swap_chain& m_swapChain;
+            const swap_chain& m_swapChain;
             vk::Extent2D m_extent;
             vk::RenderPass m_renderPass;
             std::vector<vk::Framebuffer> m_framebuffers;

@@ -135,7 +135,8 @@ namespace engine {
             , m_transferQueueHandle(m_logicalDevice.getQueue(m_physicalDevice->get_transfer_index(), 0))
             , m_frameResources({frame_resources(m_logicalDevice), frame_resources(m_logicalDevice)})
             , m_engineFrontend(std::make_unique<engine_frontend>(m_eventProcessor, *this, *m_resourceCache))
-            , m_framebufferResized(false) {
+            , m_framebufferResized(false)
+            , m_resourceIndex(0) {
             auto framebufferResizeCallback = [&](const application::app_event::arguments&) {
                 m_framebufferResized = true;
             };
@@ -168,6 +169,11 @@ namespace engine {
             m_commandPools.push_back(m_logicalDevice.createCommandPool(createInfo));
 
             return m_commandPools.back();
+        }
+
+        rendering_technique device::create_technique(std::string&& name,
+                                                     base::technique_settings&& settings) const {
+            return rendering_technique(std::move(name), std::move(settings), m_logicalDevice, *m_swapChain.get());
         }
 
         vertex_buffer device::create_vertex_buffer(const vertex_format& format,
@@ -227,7 +233,6 @@ namespace engine {
         }
 
         bool device::draw(const std::vector<vk::CommandBuffer>& commandBuffers) {
-
             std::uint32_t currentFrame = get_resource_index();
             m_logicalDevice.resetFences(1, &m_frameResources[currentFrame].inFlightFences);
 

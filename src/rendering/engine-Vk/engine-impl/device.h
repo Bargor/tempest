@@ -7,6 +7,7 @@
 #include "physical_device.h"
 #include "resources/index_buffer.h"
 #include "resources/pipeline.h"
+#include "resources/rendering_technique.h"
 #include "resources/settings.h"
 #include "resources/shader.h"
 #include "resources/uniform_buffer.h"
@@ -56,14 +57,16 @@ namespace engine {
             template<typename IndexType>
             index_buffer<IndexType> create_index_buffer(std::vector<IndexType>&& indices,
                                                         const vk::CommandPool& cmdPool) const;
-            vertex_buffer create_vertex_buffer(const vertex_format& format,
-                                               std::vector<vertex>&& vertices,
-                                               const vk::CommandPool& cmdPool) const;
-            uniform_buffer create_uniform_buffer(const vk::CommandPool& cmdPool) const;
+            rendering_technique create_technique(std::string&& name,
+                                                 base::technique_settings&& settings) const;
             shader crate_shader(shader::shader_type type, std::vector<char>&& source, const std::string_view name) const;
             pipeline create_pipeline(const vertex_format& format,
                                      const shader_set& shaders,
                                      const rendering_technique& technique);
+            vertex_buffer create_vertex_buffer(const vertex_format& format,
+                                               std::vector<vertex>&& vertices,
+                                               const vk::CommandPool& cmdPool) const;
+            uniform_buffer create_uniform_buffer(const vk::CommandPool& cmdPool) const;
             gpu_info& get_GPU_info() const noexcept;
             resource_cache& get_resource_cache() noexcept;
 

@@ -41,6 +41,15 @@ namespace engine {
             throw std::runtime_error("Can't find pipeline");
         }
 
+        void resource_factory::create_technique(std::string&& name, base::technique_settings&& settings) {
+            if (m_resourceCache.find_technique(name) != nullptr) {
+                return;
+            }
+            auto technique = m_device.create_technique(std::move(name), std::move(settings));
+
+            m_resourceCache.add_rendering_technique(std::move(technique));
+        }
+
         vertex_buffer resource_factory::create_vertex_buffer(const vertex_format& format, std::vector<vertex>&& vertices) {
             return m_device.create_vertex_buffer(format, std::move(vertices), m_commandPool);
         }

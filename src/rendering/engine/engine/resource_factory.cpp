@@ -29,6 +29,10 @@ namespace engine {
         return static_cast<const resources::pipeline&>(super::create_pipeline(techniqueName, shadersName, format));
     }
 
+    void resource_factory::create_technique(std::string&& name, base::technique_settings&& settings) {
+        super::create_technique(std::move(name), std::move(settings));
+    }
+
     resources::vertex_buffer resource_factory::create_vertex_buffer(const engine::vertex_format& format,
                                                                     std::vector<vertex>&& vertices) {
         return super::create_vertex_buffer(format, std::move(vertices));

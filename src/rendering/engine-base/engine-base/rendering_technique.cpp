@@ -41,16 +41,24 @@ namespace engine {
             return true;
         }
 
-        rendering_technique::rendering_technique(const std::string& techniqueName,
+        rendering_technique::rendering_technique(std::string&& techniqueName,
                                                  const viewport_settings& viewport,
                                                  const core::rectangle<std::int32_t, std::uint32_t> scissor,
-                                                 std::initializer_list<color_blending_settings> framebufferBlending,
+                                                 std::vector<color_blending_settings> framebufferBlending,
                                                  const global_blending_settings& globalBlending)
-            : m_techniqueName(techniqueName)
+            : m_techniqueName(std::move(techniqueName))
             , m_viewportSettings(viewport)
             , m_scissor(scissor)
             , m_framebufferColorBlending(framebufferBlending)
             , m_globalColorBlending(globalBlending) {
+        }
+
+        rendering_technique::rendering_technique(std::string&& techniqueName, technique_settings&& techniqueSettings)
+            : m_techniqueName(std::move(techniqueName))
+            , m_viewportSettings(std::move(techniqueSettings.viewport))
+            , m_scissor(std::move(techniqueSettings.scissor))
+            , m_framebufferColorBlending(std::move(techniqueSettings.framebufferColorBlending))
+            , m_globalColorBlending(std::move(techniqueSettings.globalColorBlending)) {
         }
     } // namespace base
 } // namespace engine
