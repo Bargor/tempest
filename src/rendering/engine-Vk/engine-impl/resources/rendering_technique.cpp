@@ -92,7 +92,7 @@ namespace engine {
             , m_swapChain(technique.m_swapChain)
             , m_renderPass(technique.m_renderPass)
             , m_framebuffers(std::move(technique.m_framebuffers)) {
-            m_renderPass = vk::RenderPass();
+            technique.m_renderPass = vk::RenderPass();
         }
 
         rendering_technique::~rendering_technique() {
