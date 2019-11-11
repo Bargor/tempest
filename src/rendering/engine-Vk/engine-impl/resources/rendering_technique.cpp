@@ -57,14 +57,11 @@ namespace engine {
             return framebuffers;
         }
 
-        rendering_technique::rendering_technique(std::string&& name,
-                                                 const base::viewport_settings& viewport,
-                                                 const core::rectangle<std::int32_t, std::uint32_t> scissor,
-                                                 std::vector<base::color_blending_settings> framebufferBlending,
-                                                 const base::global_blending_settings& globalBlending,
+        rendering_technique::rendering_technique(std::string&& techniqueName,
+                                                 base::technique_settings&& techniqueSettings,
                                                  vk::Device device,
                                                  const swap_chain& swapChain)
-            : base::rendering_technique(std::move(name), viewport, scissor, framebufferBlending, globalBlending)
+            : base::rendering_technique(std::move(techniqueName), std::move(techniqueSettings))
             , m_device(device)
             , m_swapChain(swapChain)
             , m_extent(swapChain.get_extent())
@@ -74,14 +71,19 @@ namespace engine {
         }
 
         rendering_technique::rendering_technique(std::string&& techniqueName,
-                                                 base::technique_settings&& techniqueSettings,
+                                                 const base::viewport_settings& viewport,
+                                                 const core::rectangle<std::int32_t, std::uint32_t> scissor,
+                                                 std::vector<base::color_blending_settings> framebufferBlending,
+                                                 const base::global_blending_settings& globalBlending,
                                                  vk::Device device,
                                                  const swap_chain& swapChain)
-            : rendering_technique(std::move(techniqueName),
-                                  techniqueSettings.viewport,
-                                  techniqueSettings.scissor,
-                                  techniqueSettings.framebufferColorBlending,
-                                  techniqueSettings.globalColorBlending, device, swapChain) {
+            : base::rendering_technique(std::move(techniqueName), viewport, scissor, framebufferBlending, globalBlending)
+            , m_device(device)
+            , m_swapChain(swapChain)
+            , m_extent(swapChain.get_extent())
+            , m_renderPass(create_render_pass(device, swapChain.get_format()))
+            , m_framebuffers(
+                  create_framebuffers(device, m_renderPass, m_swapChain.get_image_views(), swapChain.get_extent())) {
         }
 
         rendering_technique::rendering_technique(rendering_technique&& technique) noexcept

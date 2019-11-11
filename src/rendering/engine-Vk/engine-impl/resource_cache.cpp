@@ -15,6 +15,10 @@ namespace engine {
             return hash;
         }
 
+        void resource_cache::add_rendering_technique(rendering_technique&& technique) {
+            m_techniques.emplace_back(std::move(technique));
+        }
+
         void resource_cache::add_shaders(const std::string& name, shader_set&& shaders) {
             m_shaders.insert(std::make_pair(name, std::move(shaders)));
         }

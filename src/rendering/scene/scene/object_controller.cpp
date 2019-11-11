@@ -12,7 +12,7 @@
 namespace tst {
 namespace scene {
 
-    engine::base::pipeline_settings create_pipeline_settings() {
+    engine::base::technique_settings create_technique_settings() {
         engine::base::viewport_settings viewportSettings{0, 0, 640, 525, 0.0f, 1.0f};
         core::rectangle<std::int32_t, std::uint32_t> scissorSettings{{0, 0}, {640, 525}};
         engine::base::rasterizer_settings rasterizerSettings{false,
@@ -36,12 +36,10 @@ namespace scene {
         engine::base::global_blending_settings globalBlendingSettings{
             false, engine::base::global_blending_settings::logic_operation::copy, {0.0f, 0.0f, 0.0f, 0.0f}};
 
-        return engine::base::pipeline_settings(viewportSettings,
-                                               scissorSettings,
-                                               rasterizerSettings,
-                                               multisamplingSettings,
-                                               {blendingSettings},
-                                               globalBlendingSettings);
+        return engine::base::technique_settings{viewportSettings,
+                                                scissorSettings,
+                                                std::vector<engine::base::color_blending_settings>{blendingSettings},
+                                                globalBlendingSettings};
     }
 
     object_controller::object_controller(scene& scene,
@@ -64,6 +62,7 @@ namespace scene {
 
         auto material = m_resourceFactory.create_material();
 
+        m_resourceFactory.create_technique("test", create_technique_settings());
         const auto& pipeline = m_resourceFactory.create_pipeline("test", "test", vertexFormat);
 
         scene_object object(std::move(vertexBuffer), std::move(indexBuffer), std::move(material), pipeline);

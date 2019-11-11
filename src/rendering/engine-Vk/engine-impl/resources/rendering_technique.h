@@ -16,16 +16,16 @@ namespace engine {
             friend class pipeline;
 
         public:
-            rendering_technique(std::string&& name,
-                                const base::viewport_settings& viewport,
-                                const core::rectangle<std::int32_t, std::uint32_t> scissor,
-                                std::vector<base::color_blending_settings> framebufferBlending,
-                                const base::global_blending_settings& globalBlending,
+            rendering_technique(std::string&& techniqueName,
+                                base::technique_settings&& techniqueSettings,
                                 vk::Device device,
                                 const swap_chain& swapChain);
 
             rendering_technique(std::string&& techniqueName,
-                                base::technique_settings&& techniqueSettings,
+                                const base::viewport_settings& viewport,
+                                const core::rectangle<std::int32_t, std::uint32_t> scissor,
+                                std::vector<base::color_blending_settings> framebufferBlending,
+                                const base::global_blending_settings& globalBlending,
                                 vk::Device device,
                                 const swap_chain& swapChain);
 
