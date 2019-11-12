@@ -191,18 +191,7 @@ namespace engine {
             return assemblyInfo;
         }
 
-        vk::PipelineViewportStateCreateInfo
-        create_viewport_info(const base::viewport_settings& settings,
-                             const core::rectangle<std::int32_t, std::uint32_t>& scissorSettings) {
-            vk::Viewport viewport(static_cast<float>(settings.x),
-                                  static_cast<float>(settings.y),
-                                  static_cast<float>(settings.width),
-                                  static_cast<float>(settings.height),
-                                  settings.minDepth,
-                                  settings.maxDepth);
-            vk::Rect2D scissor({scissorSettings.offset.x, scissorSettings.offset.y},
-                               {scissorSettings.dimensions.width, scissorSettings.dimensions.height});
-
+        vk::PipelineViewportStateCreateInfo create_viewport_info(const vk::Viewport& viewport, const vk::Rect2D& scissor) {
             vk::PipelineViewportStateCreateInfo viewportState(
                 vk::PipelineViewportStateCreateFlags(), 1, &viewport, 1, &scissor);
 
@@ -233,14 +222,13 @@ namespace engine {
             return multisampling;
         }
 
-        vk::PipelineColorBlendStateCreateInfo
-        create_color_blending_info(std::vector<base::color_blending_settings> framebufferColorBlending,
-                                   base::global_blending_settings globalBlending) {
+        std::vector<vk::PipelineColorBlendAttachmentState>
+        create_color_blend_attachment(std::vector<base::color_blending_settings> framebufferColorBlending) {
             std::vector<vk::PipelineColorBlendAttachmentState> colorBlendAttachments;
-            colorBlendAttachments.resize(framebufferColorBlending.size());
+            colorBlendAttachments.reserve(framebufferColorBlending.size());
 
             for (auto& attachment : framebufferColorBlending) {
-                vk::PipelineColorBlendAttachmentState vkAttachment(
+                vk::PipelineColorBlendAttachmentState colorBlendAttachment(
                     attachment.enable,
                     translate_blend_factor(attachment.srcColorBlendFactor),
                     translate_blend_factor(attachment.dstColorBlendFactor),
@@ -249,8 +237,13 @@ namespace engine {
                     translate_blend_factor(attachment.dstAlphaBlendFactor),
                     translate_blend_operation(attachment.alphaBlendOperation),
                     translate_color_component(attachment.colorWriteMask));
+                colorBlendAttachments.emplace_back(colorBlendAttachment);
             }
+            return colorBlendAttachments;
+        }
 
+        vk::PipelineColorBlendStateCreateInfo create_color_blending_info(base::global_blending_settings globalBlending,
+                                   const std::vector<vk::PipelineColorBlendAttachmentState>& colorBlendAttachments) {
             vk::PipelineColorBlendStateCreateInfo colorBlending(
                 vk::PipelineColorBlendStateCreateFlags(),
                 globalBlending.enable,
@@ -268,19 +261,28 @@ namespace engine {
         vk::Pipeline compile_pipeline(const vk::Device logicalDevice,
                                       const vk::RenderPass renderPass,
                                       const base::viewport_settings viewportSettings,
-                                      const core::rectangle<std::int32_t, std::uint32_t> scissor,
+                                      const core::rectangle<std::int32_t, std::uint32_t> scissorSettings,
                                       const std::vector<base::color_blending_settings> framebufferBlendingSettings,
                                       const base::global_blending_settings globalBlendingSettings,
                                       const settings& engineSettings,
                                       const vertex_format& format,
                                       const shader_set& shaders) {
+            vk::Viewport viewport(static_cast<float>(viewportSettings.x),
+                                  static_cast<float>(viewportSettings.y),
+                                  static_cast<float>(viewportSettings.width),
+                                  static_cast<float>(viewportSettings.height),
+                                  viewportSettings.minDepth,
+                                  viewportSettings.maxDepth);
+            vk::Rect2D scissor({scissorSettings.offset.x, scissorSettings.offset.y},
+                               {scissorSettings.dimensions.width, scissorSettings.dimensions.height});
             auto pipelineLayout = create_pipeline_layout(logicalDevice);
             auto vertexInfo = create_vertex_input_info(format);
             auto assemblyInfo = create_assembly_info(format);
-            auto viewportInfo = create_viewport_info(viewportSettings, scissor);
+            auto viewportInfo = create_viewport_info(viewport, scissor);
             auto rasterizationInfo = create_rasterization_info(engineSettings.m_rasterizer);
             auto multisamplingInfo = create_multisampling_info(engineSettings.m_multisampling);
-            auto blendingInfo = create_color_blending_info(framebufferBlendingSettings, globalBlendingSettings);
+            auto colorBlendAttachment = create_color_blend_attachment(framebufferBlendingSettings);
+            auto blendingInfo = create_color_blending_info(globalBlendingSettings, colorBlendAttachment);
 
             std::vector<vk::PipelineShaderStageCreateInfo> shaderInfos;
             std::transform(shaders.cbegin(), shaders.cend(), std::back_inserter(shaderInfos), [](const shader& shader) {

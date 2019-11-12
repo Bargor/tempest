@@ -32,6 +32,8 @@ namespace application {
         rasterizerSettings.depthBias = {false, 0.0f, 0.0f, 0.0f};
 
         engine::base::multisampling_settings multisamplingSettings;
+        multisamplingSettings.enable = false;
+        multisamplingSettings.samples = engine::base::multisampling_settings::sample_count::samples_1;
         engine::api::settings engineSettings(engine::base::settings(rasterizerSettings, multisamplingSettings));
 
         return engineSettings;
