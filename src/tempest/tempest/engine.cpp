@@ -82,10 +82,12 @@ namespace application {
     }
 
     void simulation_engine::run() {
+        m_renderingDevice->start();
         while (!m_shouldClose) {
             main_loop();
             m_frameCounter++;
         }
+        m_renderingDevice->stop();
     }
 
     void simulation_engine::main_loop() {

@@ -159,7 +159,8 @@ namespace engine {
                                             m_surfaceFormat,
                                             m_presentationMode,
                                             m_extent,
-                                            m_imagesCount)) {
+                                            m_imagesCount))
+            , m_currentImage(0) {
             m_images = m_logicalDevice.getSwapchainImagesKHR(m_swapChain);
             m_imageViews = create_image_views(m_logicalDevice, m_surfaceFormat, m_images);
         }

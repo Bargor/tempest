@@ -118,14 +118,18 @@ namespace engine {
 
         template<typename Iter>
         bool device::draw_frame(Iter first, Iter last) {
-            auto commandBuffers = m_engineFrontend->prepare_draw(first, last);
-            if (commandBuffers.size() == 0) return true;
+            if (std::distance(first, last) == 0) {
+                return false;
+            }
 
             startFrame();
+
+            auto commandBuffers = m_engineFrontend->prepare_draw(first, last);
+
             draw(commandBuffers);
             endFrame();
 
-            // m_device.m_logicalDevice.freeCommandBuffers(m_commandPool, commandBuffers);
+            //m_logicalDevice.freeCommandBuffers(m_commandPool, commandBuffers);
 
             return true;
         }
