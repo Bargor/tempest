@@ -242,7 +242,8 @@ namespace engine {
             return colorBlendAttachments;
         }
 
-        vk::PipelineColorBlendStateCreateInfo create_color_blending_info(base::global_blending_settings globalBlending,
+        vk::PipelineColorBlendStateCreateInfo
+        create_color_blending_info(base::global_blending_settings globalBlending,
                                    const std::vector<vk::PipelineColorBlendAttachmentState>& colorBlendAttachments) {
             vk::PipelineColorBlendStateCreateInfo colorBlending(
                 vk::PipelineColorBlendStateCreateFlags(),
@@ -259,6 +260,7 @@ namespace engine {
         }
 
         vk::Pipeline compile_pipeline(const vk::Device logicalDevice,
+                                      const vk::PipelineLayout pipelineLayout,
                                       const vk::RenderPass renderPass,
                                       const base::viewport_settings viewportSettings,
                                       const core::rectangle<std::int32_t, std::uint32_t> scissorSettings,
@@ -275,7 +277,6 @@ namespace engine {
                                   viewportSettings.maxDepth);
             vk::Rect2D scissor({scissorSettings.offset.x, scissorSettings.offset.y},
                                {scissorSettings.dimensions.width, scissorSettings.dimensions.height});
-            auto pipelineLayout = create_pipeline_layout(logicalDevice);
             auto vertexInfo = create_vertex_input_info(format);
             auto assemblyInfo = create_assembly_info(format);
             auto viewportInfo = create_viewport_info(viewport, scissor);
@@ -314,7 +315,9 @@ namespace engine {
                            const vertex_format& format,
                            const shader_set& shaders,
                            const rendering_technique& technique)
-            : m_pipeline(compile_pipeline(logicalDevice,
+            : m_pipelineLayout(create_pipeline_layout(logicalDevice))
+            , m_pipeline(compile_pipeline(logicalDevice,
+                                          m_pipelineLayout,
                                           technique.m_renderPass,
                                           technique.m_viewportSettings,
                                           technique.m_scissor,
@@ -329,10 +332,25 @@ namespace engine {
                                  engineSettings.m_multisampling,
                                  technique.m_framebufferColorBlending,
                                  technique.m_globalColorBlending)
-            , m_technique(technique) {
+            , m_technique(technique)
+            , m_logicalDevice(logicalDevice) {
+        }
+
+        pipeline::pipeline(pipeline&& pipeline)
+            : m_pipelineLayout(pipeline.m_pipelineLayout)
+            , m_pipeline(pipeline.m_pipeline)
+            , m_pipelineSettings(std::move(pipeline.m_pipelineSettings))
+            , m_technique(std::move(pipeline.m_technique))
+            , m_logicalDevice(pipeline.m_logicalDevice) {
+            pipeline.m_pipeline = vk::Pipeline();
+            pipeline.m_pipelineLayout = vk::PipelineLayout();
         }
 
         pipeline::~pipeline() {
+            if (m_pipeline) {
+                m_logicalDevice.destroyPipeline(m_pipeline);
+                m_logicalDevice.destroyPipelineLayout(m_pipelineLayout);
+            }
         }
 
         void pipeline::bind_command_buffer(vk::CommandBuffer& buffer, vk::PipelineBindPoint bindPoint) const {

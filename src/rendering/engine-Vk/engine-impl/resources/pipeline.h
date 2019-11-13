@@ -23,16 +23,22 @@ namespace engine {
                      const vertex_format& format,
                      const shader_set& shaders,
                      const rendering_technique& technique);
+            pipeline(const pipeline&) = delete;
+            pipeline(pipeline&& pipeline);
+
             ~pipeline();
+
 
             void bind_command_buffer(vk::CommandBuffer& buffer, vk::PipelineBindPoint bindPoint) const;
 
             const rendering_technique& get_technique() const noexcept;
 
         private:
+            vk::PipelineLayout m_pipelineLayout;
             vk::Pipeline m_pipeline;
             base::pipeline_settings m_pipelineSettings;
             const rendering_technique& m_technique;
+            const vk::Device m_logicalDevice;
         };
 
     } // namespace vulkan

@@ -15,15 +15,6 @@ namespace scene {
     engine::base::technique_settings create_technique_settings() {
         engine::base::viewport_settings viewportSettings{0, 0, 640, 525, 0.0f, 1.0f};
         core::rectangle<std::int32_t, std::uint32_t> scissorSettings{{0, 0}, {640, 525}};
-        engine::base::rasterizer_settings rasterizerSettings{false,
-                                                             false,
-                                                             engine::base::rasterizer_settings::polygon_mode::fill,
-                                                             engine::base::rasterizer_settings::cull_mode::back,
-                                                             engine::base::rasterizer_settings::front_face::clockwise,
-                                                             1.0f,
-                                                             {false, 0.0f, 0.0f, 0.0f}};
-        engine::base::multisampling_settings multisamplingSettings{
-            false, engine::base::multisampling_settings::sample_count::samples_1};
         engine::base::color_blending_settings blendingSettings{
             false,
             engine::base::color_blending_settings::blend_operation::add,
@@ -49,8 +40,11 @@ namespace scene {
         : m_scene(scene), m_dataLoader(dataLoader), m_eventProcessor(eventProcessor), m_resourceFactory(resourceFactory) {
     }
 
-    scene_object object_controller::load_object(const std::string&) {
+    void object_controller::load_object(const std::string&) {
         auto vertexFormat = engine::vertex_format{};
+
+        m_resourceFactory.create_technique(std::move("test"), create_technique_settings());
+        const auto& pipeline = m_resourceFactory.create_pipeline("test", "test", vertexFormat);
 
         auto vertexBuffer =
             m_resourceFactory.create_vertex_buffer(vertexFormat,
@@ -62,13 +56,8 @@ namespace scene {
 
         auto material = m_resourceFactory.create_material();
 
-        m_resourceFactory.create_technique("test", create_technique_settings());
-        const auto& pipeline = m_resourceFactory.create_pipeline("test", "test", vertexFormat);
-
         scene_object object(std::move(vertexBuffer), std::move(indexBuffer), std::move(material), pipeline);
         m_scene.add_object(std::move(object));
-
-        return object;
     }
 
 } // namespace scene
