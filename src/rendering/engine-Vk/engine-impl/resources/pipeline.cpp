@@ -223,7 +223,7 @@ namespace engine {
         }
 
         std::vector<vk::PipelineColorBlendAttachmentState>
-        create_color_blend_attachment(std::vector<base::color_blending_settings> framebufferColorBlending) {
+        create_color_blend_attachment(const std::vector<base::color_blending_settings>& framebufferColorBlending) {
             std::vector<vk::PipelineColorBlendAttachmentState> colorBlendAttachments;
             colorBlendAttachments.reserve(framebufferColorBlending.size());
 
@@ -290,7 +290,7 @@ namespace engine {
             });
 
             vk::GraphicsPipelineCreateInfo pipelineInfo(vk::PipelineCreateFlags(),
-                                                        2,
+                                                        static_cast<std::uint32_t>(shaderInfos.size()),
                                                         shaderInfos.data(),
                                                         &vertexInfo,
                                                         &assemblyInfo,
