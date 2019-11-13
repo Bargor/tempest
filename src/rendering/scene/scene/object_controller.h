@@ -30,7 +30,7 @@ namespace scene {
                           application::event_processor<application::app_event>& eventProcessor,
                           engine::resource_factory& resourceFactory);
 
-        scene_object load_object(const std::string& shaderName);
+        void load_object(const std::string& shaderName);
 
     private:
         scene& m_scene;
