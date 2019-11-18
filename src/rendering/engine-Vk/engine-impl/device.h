@@ -129,8 +129,6 @@ namespace engine {
             draw(commandBuffers);
             endFrame();
 
-            //m_logicalDevice.freeCommandBuffers(m_commandPool, commandBuffers);
-
             return true;
         }
 

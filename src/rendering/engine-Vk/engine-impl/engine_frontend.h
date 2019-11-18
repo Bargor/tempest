@@ -57,6 +57,7 @@ namespace engine {
             resource_cache& m_resourceCache;
 
             std::vector<vk::CommandPool> m_commandPools;
+            std::vector<std::vector<vk::CommandBuffer>> m_bufferCache;
         };
 
         template<typename Iter>

@@ -153,7 +153,7 @@ namespace engine {
                 m_logicalDevice.destroySemaphore(resource.renderFinished);
                 m_logicalDevice.destroyFence(resource.inFlightFences);
             }
-
+            m_engineFrontend.reset();
             for (auto& commandPool : m_commandPools) {
                 m_logicalDevice.destroyCommandPool(commandPool);
             }
@@ -249,6 +249,7 @@ namespace engine {
 
         bool device::endFrame() {
             std::uint32_t currentFrame = get_resource_index();
+            ++m_frameCounter;
 
             auto presentResult =
                 m_swapChain->present_image(m_presentationQueueHandle, m_frameResources[currentFrame].renderFinished);
