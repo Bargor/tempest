@@ -16,7 +16,7 @@ namespace engine {
         using super = api::vertex_format;
 
     public:
-        vertex_format();
+        vertex_format(base::vertex_format::primitive_topology topology);
         ~vertex_format();
     private:
     };

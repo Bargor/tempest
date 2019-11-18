@@ -16,16 +16,14 @@ namespace engine {
         public:
             using super = base::vertex_format;
 
-            vertex_format();
+            vertex_format(base::vertex_format::primitive_topology topology);
 
             const vk::VertexInputBindingDescription& get_binding_description() const noexcept;
             const std::array<vk::VertexInputAttributeDescription, 2>& get_attribute_descriptions() const noexcept;
-            vk::PrimitiveTopology get_topology() const noexcept;
 
         private:
             vk::VertexInputBindingDescription m_bindingDescription;
             std::array<vk::VertexInputAttributeDescription, 2> m_attributeDescriptions;
-            vk::PrimitiveTopology m_topology;
         };
 
         TST_INLINE const vk::VertexInputBindingDescription& vertex_format::get_binding_description() const noexcept {
@@ -35,10 +33,6 @@ namespace engine {
         TST_INLINE const std::array<vk::VertexInputAttributeDescription, 2>& vertex_format::get_attribute_descriptions() const
             noexcept {
             return m_attributeDescriptions;
-        }
-
-        TST_INLINE vk::PrimitiveTopology vertex_format::get_topology() const noexcept {
-            return m_topology;
         }
 
     } // namespace vulkan

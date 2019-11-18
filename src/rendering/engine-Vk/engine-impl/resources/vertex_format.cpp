@@ -7,8 +7,9 @@ namespace tst {
 namespace engine {
     namespace vulkan {
 
-        vertex_format::vertex_format()
-            : m_bindingDescription(vk::VertexInputBindingDescription(0, sizeof(vertex), vk::VertexInputRate::eVertex))
+        vertex_format::vertex_format(base::vertex_format::primitive_topology topology)
+            : base::vertex_format(topology)
+            , m_bindingDescription(vk::VertexInputBindingDescription(0, sizeof(vertex), vk::VertexInputRate::eVertex))
             , m_attributeDescriptions({{{0, 0, vk::Format::eR32G32Sfloat, offsetof(vertex, pos)},
                                         {1, 0, vk::Format::eR32G32B32Sfloat, offsetof(vertex, color)}}}) {
         }

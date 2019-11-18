@@ -168,6 +168,25 @@ namespace engine {
             return flags;
         }
 
+        vk::PrimitiveTopology translate_primitive_topology(base::vertex_format::primitive_topology topology) {
+            switch (topology) {
+            case base::vertex_format::primitive_topology::line_list:
+                return vk::PrimitiveTopology::eLineList;
+            case base::vertex_format::primitive_topology::line_strip:
+                return vk::PrimitiveTopology::eLineStrip;
+            case base::vertex_format::primitive_topology::point_list:
+                return vk::PrimitiveTopology::ePointList;
+            case base::vertex_format::primitive_topology::triangle_fan:
+                return vk::PrimitiveTopology::eTriangleFan;
+            case base::vertex_format::primitive_topology::triangle_list:
+                return vk::PrimitiveTopology::eTriangleList;
+            case base::vertex_format::primitive_topology::triangle_strip:
+                return vk::PrimitiveTopology::eTriangleStrip;
+            }
+            assert(false);
+            return vk::PrimitiveTopology::eTriangleList;
+        }
+
         vk::PipelineLayout create_pipeline_layout(const vk::Device logicalDevice) {
             vk::PipelineLayoutCreateInfo pipelineLayoutInfo(vk::PipelineLayoutCreateFlags(), 0, nullptr, 0, nullptr);
             return logicalDevice.createPipelineLayout(pipelineLayoutInfo);
@@ -186,7 +205,7 @@ namespace engine {
 
         vk::PipelineInputAssemblyStateCreateInfo create_assembly_info(const vertex_format& format) {
             vk::PipelineInputAssemblyStateCreateInfo assemblyInfo(
-                vk::PipelineInputAssemblyStateCreateFlags(), format.get_topology(), false);
+                vk::PipelineInputAssemblyStateCreateFlags(), translate_primitive_topology(format.get_topology()), false);
 
             return assemblyInfo;
         }

@@ -41,9 +41,9 @@ namespace scene {
     }
 
     void object_controller::load_object(const std::string&) {
-        auto vertexFormat = engine::vertex_format{};
+        auto vertexFormat = engine::vertex_format(engine::base::vertex_format::primitive_topology::triangle_list);
 
-        m_resourceFactory.create_technique(std::move("test"), create_technique_settings());
+        m_resourceFactory.create_technique("test", create_technique_settings());
         const auto& pipeline = m_resourceFactory.create_pipeline("test", "test", vertexFormat);
 
         auto vertexBuffer =

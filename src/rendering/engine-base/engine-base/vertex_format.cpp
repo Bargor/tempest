@@ -8,7 +8,7 @@ namespace engine {
 
     namespace base {
 
-        vertex_format::vertex_format() {
+        vertex_format::vertex_format(primitive_topology topology) : m_topology(topology) {
         }
 
         void vertex_format::add_attribute(
@@ -16,9 +16,14 @@ namespace engine {
             m_attributes.emplace_back(attribute_descriptor{location, format, offset, stride, divisor});
         }
 
-        const std::vector<vertex_format::attribute_descriptor>& vertex_format::get_atttibutes() const noexcept {
+        const std::vector<vertex_format::attribute_descriptor>& vertex_format::get_attibutes_descriptors() const noexcept {
             return m_attributes;
         }
+
+        vertex_format::primitive_topology vertex_format::get_topology() const noexcept {
+            return m_topology;
+        }
+
     } // namespace base
 
 } // namespace engine
