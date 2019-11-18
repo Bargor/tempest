@@ -23,7 +23,7 @@ namespace engine {
             };
 
         public:
-            shader(vk::Device device, shader_type type, std::vector<char>&& source, const std::string_view name);
+            shader(vk::Device device, shader_type type, std::vector<char>&& source, const std::string& name);
             shader(const shader&) = delete;
             shader(shader&& shader);
             ~shader();
@@ -37,7 +37,7 @@ namespace engine {
         private:
             vk::Device m_device;
             std::vector<char> m_source;
-            std::string_view m_name;
+            std::string m_name;
 
             vk::ShaderModule m_shader;
             vk::PipelineShaderStageCreateInfo m_pipelineInfo;

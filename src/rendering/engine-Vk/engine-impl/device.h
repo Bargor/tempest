@@ -59,7 +59,7 @@ namespace engine {
                                                         const vk::CommandPool& cmdPool) const;
             rendering_technique create_technique(std::string&& name,
                                                  base::technique_settings&& settings) const;
-            shader crate_shader(shader::shader_type type, std::vector<char>&& source, const std::string_view name) const;
+            shader crate_shader(shader::shader_type type, std::vector<char>&& source, const std::string& name) const;
             pipeline create_pipeline(const vertex_format& format,
                                      const shader_set& shaders,
                                      const rendering_technique& technique);

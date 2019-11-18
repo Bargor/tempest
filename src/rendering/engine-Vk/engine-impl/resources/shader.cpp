@@ -32,8 +32,8 @@ namespace engine {
             return vk::ShaderStageFlagBits::eAll;
         }
 
-        shader::shader(vk::Device device, shader_type type, std::vector<char>&& source, const std::string_view name)
-            : m_device(device), m_source(source), m_name(name) {
+        shader::shader(vk::Device device, shader_type type, std::vector<char>&& source, const std::string& name)
+            : m_device(device), m_source(source), m_name(std::move(name)) {
             vk::ShaderModuleCreateInfo createInfo(
                 vk::ShaderModuleCreateFlags(), source.size(), reinterpret_cast<const uint32_t*>(source.data()));
 
