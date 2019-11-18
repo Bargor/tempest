@@ -16,9 +16,9 @@ namespace engine {
         public:
             using super = buffer;
 
-            index_buffer(const vk::Device& logicalDevice,
-                         const vk::Queue& queueHandle,
-                         const vk::CommandPool& cmdPool,
+            index_buffer(vk::Device logicalDevice,
+                         vk::Queue queueHandle,
+                         vk::CommandPool cmdPool,
                          const vk::PhysicalDeviceMemoryProperties& memoryProperties,
                          vk::IndexType format,
                          std::vector<IndexType>&& indices);
@@ -34,9 +34,9 @@ namespace engine {
         };
 
         template<typename IndexType>
-        index_buffer<IndexType>::index_buffer(const vk::Device& logicalDevice,
-                                              const vk::Queue& queueHandle,
-                                              const vk::CommandPool& cmdPool,
+        index_buffer<IndexType>::index_buffer(vk::Device logicalDevice,
+                                              vk::Queue queueHandle,
+                                              vk::CommandPool cmdPool,
                                               const vk::PhysicalDeviceMemoryProperties& memoryProperties,
                                               vk::IndexType format,
                                               std::vector<IndexType>&& indices)

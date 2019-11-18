@@ -21,9 +21,9 @@ namespace engine {
         public:
             using super = buffer;
 
-            uniform_buffer(const vk::Device& logicalDevice,
-                           const vk::Queue m_queueHandle,
-                           const vk::CommandPool& cmdPool,
+            uniform_buffer(vk::Device logicalDevice,
+                           vk::Queue m_queueHandle,
+                           vk::CommandPool cmdPool,
                            const vk::PhysicalDeviceMemoryProperties& memoryProperties);
             uniform_buffer(uniform_buffer&& other) noexcept;
             uniform_buffer(const uniform_buffer& other) = delete;

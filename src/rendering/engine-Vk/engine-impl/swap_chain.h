@@ -20,8 +20,8 @@ namespace engine {
         public:
             enum class result { success, resize, fail };
 
-            swap_chain(const vk::Device& device,
-                       const vk::SurfaceKHR& windowSurface,
+            swap_chain(vk::Device device,
+                       vk::SurfaceKHR windowSurface,
                        const surface_support_info& info,
                        std::uint32_t graphicsQueueIndex,
                        std::uint32_t presentationQueueIndex,
@@ -33,13 +33,13 @@ namespace engine {
             const vk::Format& get_format() const;
             const std::vector<vk::ImageView>& get_image_views() const;
             const vk::SwapchainKHR& get_native_swapchain() const;
-            result acquire_next_image(const vk::Device& device, const vk::Semaphore& imageAvailable);
-            result present_image(const vk::Queue& presentationQueueHandle, const vk::Semaphore& renderFinished);
+            result acquire_next_image(vk::Device device, const vk::Semaphore& imageAvailable);
+            result present_image(vk::Queue presentationQueueHandle, const vk::Semaphore& renderFinished);
             std::uint32_t get_image_index() const;
 
         private:
-            const vk::Device& m_logicalDevice;
-            const vk::SurfaceKHR& m_windowSurface;
+            vk::Device m_logicalDevice;
+            vk::SurfaceKHR m_windowSurface;
             surface_support_info m_supportInfo;
             vk::SurfaceFormatKHR m_surfaceFormat;
             vk::PresentModeKHR m_presentationMode;

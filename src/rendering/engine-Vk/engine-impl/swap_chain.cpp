@@ -139,8 +139,8 @@ namespace engine {
 
         } // namespace
 
-        swap_chain::swap_chain(const vk::Device& device,
-                               const vk::SurfaceKHR& windowSurface,
+        swap_chain::swap_chain(vk::Device device,
+                               vk::SurfaceKHR windowSurface,
                                const surface_support_info& info,
                                std::uint32_t graphicsQueueIndex,
                                std::uint32_t presentationQueueIndex,
@@ -172,7 +172,7 @@ namespace engine {
             m_logicalDevice.destroySwapchainKHR(m_swapChain);
         }
 
-        swap_chain::result swap_chain::acquire_next_image(const vk::Device& device, const vk::Semaphore& imageAvailable) {
+        swap_chain::result swap_chain::acquire_next_image(vk::Device device, const vk::Semaphore& imageAvailable) {
             auto acquireResult = device.acquireNextImageKHR(
                 m_swapChain, std::numeric_limits<std::uint64_t>::max(), imageAvailable, vk::Fence());
 
@@ -187,7 +187,7 @@ namespace engine {
             return result::success;
         }
 
-        swap_chain::result swap_chain::present_image(const vk::Queue& presentationQueueHandle,
+        swap_chain::result swap_chain::present_image(vk::Queue presentationQueueHandle,
                                                      const vk::Semaphore& renderFinished) {
             vk::PresentInfoKHR presentInfo(1, &renderFinished, 1, &m_swapChain, &m_currentImage);
 

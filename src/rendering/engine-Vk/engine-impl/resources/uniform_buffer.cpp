@@ -9,9 +9,9 @@ namespace tst {
 namespace engine {
     namespace vulkan {
 
-        uniform_buffer::uniform_buffer(const vk::Device& logicalDevice,
-                                       const vk::Queue queueHandle,
-                                       const vk::CommandPool& cmdPool,
+        uniform_buffer::uniform_buffer(vk::Device logicalDevice,
+                                       vk::Queue queueHandle,
+                                       vk::CommandPool cmdPool,
                                        const vk::PhysicalDeviceMemoryProperties& memoryProperties)
             : buffer(logicalDevice,
                      queueHandle,
