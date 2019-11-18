@@ -11,9 +11,9 @@ namespace engine {
 
         class physical_device;
 
-        buffer::buffer(const vk::Device& logicalDevice,
-                       const vk::Queue& queueHandle,
-                       const vk::CommandPool& cmdPool,
+        buffer::buffer(vk::Device logicalDevice,
+                       vk::Queue queueHandle,
+                       vk::CommandPool cmdPool,
                        std::uint64_t size,
                        vk::BufferUsageFlags usageFlags,
                        const vk::PhysicalDeviceMemoryProperties& memoryProperties,

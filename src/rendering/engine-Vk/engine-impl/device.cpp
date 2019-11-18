@@ -154,12 +154,12 @@ namespace engine {
                 m_logicalDevice.destroyFence(resource.inFlightFences);
             }
 
-            instance::get_instance().m_instance.destroySurfaceKHR(m_windowSurface);
-
             for (auto& commandPool : m_commandPools) {
                 m_logicalDevice.destroyCommandPool(commandPool);
             }
+            m_resourceCache->clear();
             m_swapChain.reset();
+            instance::get_instance().m_instance.destroySurfaceKHR(m_windowSurface);
             m_logicalDevice.destroy();
         }
 

@@ -23,6 +23,8 @@ namespace engine {
             const rendering_technique* find_technique(const std::string& name) const;
             const shader_set* find_shaders(const std::string& name) const;
 
+            void clear();
+
         private:
             std::unordered_map<std::size_t, pipeline> m_pipelines;
             std::vector<rendering_technique> m_techniques;

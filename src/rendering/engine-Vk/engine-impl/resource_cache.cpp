@@ -51,6 +51,12 @@ namespace engine {
             return nullptr;
         }
 
+        void resource_cache::clear() {
+            m_pipelines.clear();
+            m_techniques.clear();
+            m_shaders.clear();
+        }
+
     } // namespace vulkan
 } // namespace engine
 } // namespace tst

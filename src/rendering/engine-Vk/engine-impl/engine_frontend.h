@@ -51,11 +51,9 @@ namespace engine {
         private:
             static constexpr std::uint32_t m_maxConcurrentFrames = 2;
 
-            [[maybe_unused]]
             application::event_processor<application::app_event>& m_eventProcessor;
 
             device& m_device;
-            [[maybe_unused]]
             resource_cache& m_resourceCache;
 
             std::vector<vk::CommandPool> m_commandPools;
