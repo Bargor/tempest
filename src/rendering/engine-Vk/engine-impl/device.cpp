@@ -127,13 +127,15 @@ namespace engine {
                                                m_physicalDevice->get_surface_support_info(m_windowSurface),
                                                m_physicalDevice->get_graphics_index(),
                                                m_physicalDevice->get_presentation_index(),
-                                               vk::Extent2D{mainWindow.get_size().width, mainWindow.get_size().height}))
+                                               vk::Extent2D{mainWindow.get_size().width, mainWindow.get_size().height},
+                                               m_engineSettings.m_buffering))
             , m_resourceCache(std::make_unique<resource_cache>())
             , m_graphicsQueueHandle(m_logicalDevice.getQueue(m_physicalDevice->get_graphics_index(), 0))
             , m_computeQueueHandle(m_logicalDevice.getQueue(m_physicalDevice->get_compute_index(), 0))
             , m_presentationQueueHandle(m_logicalDevice.getQueue(m_physicalDevice->get_presentation_index(), 0))
             , m_transferQueueHandle(m_logicalDevice.getQueue(m_physicalDevice->get_transfer_index(), 0))
-            , m_frameResources({frame_resources(m_logicalDevice), frame_resources(m_logicalDevice)})
+            , m_frameResources(
+                  {frame_resources(m_logicalDevice), frame_resources(m_logicalDevice), frame_resources(m_logicalDevice)})
             , m_engineFrontend(std::make_unique<engine_frontend>(m_eventProcessor, *this, *m_resourceCache))
             , m_framebufferResized(false)
             , m_resourceIndex(0) {
@@ -171,8 +173,7 @@ namespace engine {
             return m_commandPools.back();
         }
 
-        rendering_technique device::create_technique(std::string&& name,
-                                                     base::technique_settings&& settings) const {
+        rendering_technique device::create_technique(std::string&& name, base::technique_settings&& settings) const {
             return rendering_technique(std::move(name), std::move(settings), m_logicalDevice, *m_swapChain.get());
         }
 
@@ -192,9 +193,7 @@ namespace engine {
                 m_logicalDevice, m_graphicsQueueHandle, cmdPool, m_physicalDevice->get_memory_properties());
         }
 
-        shader device::crate_shader(shader::shader_type type,
-                                    std::vector<char>&& source,
-                                    const std::string& name) const {
+        shader device::crate_shader(shader::shader_type type, std::vector<char>&& source, const std::string& name) const {
             return shader(m_logicalDevice, type, std::move(source), std::move(name));
         }
 
@@ -216,7 +215,7 @@ namespace engine {
         }
 
         bool device::startFrame() {
-            m_resourceIndex = m_frameCounter % m_maxConcurrentFrames;
+            m_resourceIndex = m_frameCounter % m_inFlightFrames;
 
             m_logicalDevice.waitForFences(
                 1, &m_frameResources[m_resourceIndex].inFlightFences, true, std::numeric_limits<uint64_t>::max());
@@ -288,7 +287,8 @@ namespace engine {
                                                              m_physicalDevice->get_surface_support_info(m_windowSurface),
                                                              m_physicalDevice->get_graphics_index(),
                                                              m_physicalDevice->get_presentation_index(),
-                                                             vk::Extent2D{extent.width, extent.height});
+                                                             vk::Extent2D{extent.width, extent.height},
+                                                             m_engineSettings.m_buffering);
 
             m_swapChain = std::move(newSwapChain);
         }

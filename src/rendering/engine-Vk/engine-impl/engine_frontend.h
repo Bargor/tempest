@@ -49,15 +49,14 @@ namespace engine {
             vk::CommandBuffer generate_command_buffer(const draw_info& drawInfo);
 
         private:
-            static constexpr std::uint32_t m_maxConcurrentFrames = 2;
 
             application::event_processor<application::app_event>& m_eventProcessor;
 
             device& m_device;
             resource_cache& m_resourceCache;
 
-            std::vector<vk::CommandPool> m_commandPools;
-            std::vector<std::vector<vk::CommandBuffer>> m_bufferCache;
+            std::array<vk::CommandPool, 3> m_commandPools;
+            std::array<std::vector<vk::CommandBuffer>, 3> m_bufferCache;
         };
 
         template<typename Iter>

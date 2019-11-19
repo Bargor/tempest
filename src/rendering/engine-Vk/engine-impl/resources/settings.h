@@ -10,8 +10,14 @@ namespace engine {
 
         class settings : public base::settings {
         public:
-            settings(base::settings&& settings);
+            enum class buffering { double_buf = 2, triple_buf = 3 };
+
+        public:
+            settings(base::settings&& settings, buffering buffers);
             ~settings();
+
+        public:
+            buffering m_buffering;
 
         private:
         };

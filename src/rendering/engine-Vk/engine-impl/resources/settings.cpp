@@ -7,11 +7,12 @@ namespace tst {
 namespace engine {
     namespace vulkan {
 
-        settings::settings(base::settings&& settings) : base::settings(settings) {
+        settings::settings(base::settings&& settings, buffering buffers)
+            : base::settings(settings), m_buffering(buffers) {
         }
 
         settings::~settings() {
         }
-    }
+    } // namespace vulkan
 } // namespace engine
 } // namespace tst

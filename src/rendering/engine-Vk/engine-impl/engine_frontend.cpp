@@ -33,8 +33,8 @@ namespace engine {
             : m_eventProcessor(eventProcessor)
             , m_device(device)
             , m_resourceCache(resourceCache)
-            , m_commandPools({m_device.create_command_pool(), m_device.create_command_pool()})
-            , m_bufferCache(m_commandPools.size()) {
+            , m_commandPools(
+                  {m_device.create_command_pool(), m_device.create_command_pool(), m_device.create_command_pool()}) {
         }
 
         engine_frontend::~engine_frontend() {
@@ -46,15 +46,12 @@ namespace engine {
 
         vk::CommandBuffer engine_frontend::generate_command_buffer(const draw_info& drawInfo) {
             auto idx = m_device.get_resource_index();
-            vk::CommandBufferAllocateInfo bufferAllocateInfo(
-                m_commandPools[idx], vk::CommandBufferLevel::ePrimary, 1);
+            vk::CommandBufferAllocateInfo bufferAllocateInfo(m_commandPools[idx], vk::CommandBufferLevel::ePrimary, 1);
 
-            m_device.m_logicalDevice.resetCommandPool(m_commandPools[idx],
-                                                      vk::CommandPoolResetFlags());
+            m_device.m_logicalDevice.resetCommandPool(m_commandPools[idx], vk::CommandPoolResetFlags());
 
             if (m_bufferCache[idx].size() == 0) {
-                m_bufferCache[idx].emplace_back(
-                    m_device.m_logicalDevice.allocateCommandBuffers(bufferAllocateInfo)[0]);
+                m_bufferCache[idx].emplace_back(m_device.m_logicalDevice.allocateCommandBuffers(bufferAllocateInfo)[0]);
             }
 
             auto commandBuffer = m_bufferCache[m_device.get_resource_index()][0];

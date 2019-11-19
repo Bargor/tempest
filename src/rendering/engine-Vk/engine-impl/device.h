@@ -57,8 +57,7 @@ namespace engine {
             template<typename IndexType>
             index_buffer<IndexType> create_index_buffer(std::vector<IndexType>&& indices,
                                                         const vk::CommandPool& cmdPool) const;
-            rendering_technique create_technique(std::string&& name,
-                                                 base::technique_settings&& settings) const;
+            rendering_technique create_technique(std::string&& name, base::technique_settings&& settings) const;
             shader crate_shader(shader::shader_type type, std::vector<char>&& source, const std::string& name) const;
             pipeline create_pipeline(const vertex_format& format,
                                      const shader_set& shaders,
@@ -85,13 +84,15 @@ namespace engine {
 
             std::uint32_t get_resource_index() const noexcept;
 
+            static constexpr std::uint32_t get_in_flight_frames() noexcept;
+
         private:
             void cleanup_swap_chain_dependancies();
             void update_framebuffer();
             void recreate_swap_chain(const core::extent<std::uint32_t>& extent);
 
         private:
-            static constexpr std::uint32_t m_maxConcurrentFrames = 2;
+            static constexpr std::uint32_t m_inFlightFrames = 3;
 
             std::uint32_t m_frameCounter;
             application::main_window& m_mainWindow;
@@ -108,7 +109,7 @@ namespace engine {
             vk::Queue m_transferQueueHandle;
 
             std::vector<vk::CommandPool> m_commandPools;
-            std::vector<frame_resources> m_frameResources;
+            std::array<frame_resources, m_inFlightFrames> m_frameResources;
 
             ptr<engine_frontend> m_engineFrontend;
 
@@ -149,6 +150,10 @@ namespace engine {
 
         TST_INLINE std::uint32_t device::get_resource_index() const noexcept {
             return m_resourceIndex;
+        }
+
+        constexpr std::uint32_t device::get_in_flight_frames() noexcept {
+            return device::m_inFlightFrames;
         }
 
     } // namespace vulkan

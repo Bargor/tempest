@@ -69,10 +69,11 @@ namespace engine {
                                                const vk::SurfaceFormatKHR surfaceFormat,
                                                const vk::PresentModeKHR& presentationMode,
                                                const vk::Extent2D& extent,
-                                               std::uint32_t& imageCount) {
-                imageCount = supportInfo.capabilities.minImageCount + 1;
-                if (supportInfo.capabilities.maxImageCount > 0 && imageCount > supportInfo.capabilities.maxImageCount) {
-                    imageCount = supportInfo.capabilities.maxImageCount;
+                                               settings::buffering buffers) {
+                auto buffersCount = static_cast<std::uint32_t>(buffers);
+                if (supportInfo.capabilities.maxImageCount < buffersCount ||
+                    buffersCount < supportInfo.capabilities.minImageCount) {
+                    throw vulkan_exception("Requested not supported count of swap chain images");
                 }
 
                 uint32_t queueFamilyIndices[] = {graphicsQueueIndex, presentationQueueIndex};
@@ -91,7 +92,7 @@ namespace engine {
                 vk::SwapchainCreateInfoKHR createInfo(
                     vk::SwapchainCreateFlagsKHR(),
                     m_windowSurface,
-                    imageCount,
+                    buffersCount,
                     surfaceFormat.format,
                     surfaceFormat.colorSpace,
                     extent,
@@ -144,13 +145,15 @@ namespace engine {
                                const surface_support_info& info,
                                std::uint32_t graphicsQueueIndex,
                                std::uint32_t presentationQueueIndex,
-                               const vk::Extent2D extent)
+                               const vk::Extent2D extent,
+                               settings::buffering buffers)
             : m_logicalDevice(device)
             , m_windowSurface(windowSurface)
             , m_supportInfo(info)
             , m_surfaceFormat(choose_surface_format(m_supportInfo.formats))
             , m_presentationMode(choose_presentation_mode(m_supportInfo.presentModes))
             , m_extent(choose_extent(m_supportInfo.capabilities, extent))
+            , m_buffering(buffers)
             , m_swapChain(create_swap_chain(m_windowSurface,
                                             m_logicalDevice,
                                             graphicsQueueIndex,
@@ -159,7 +162,7 @@ namespace engine {
                                             m_surfaceFormat,
                                             m_presentationMode,
                                             m_extent,
-                                            m_imagesCount))
+                                            buffers))
             , m_currentImage(0) {
             m_images = m_logicalDevice.getSwapchainImagesKHR(m_swapChain);
             m_imageViews = create_image_views(m_logicalDevice, m_surfaceFormat, m_images);
