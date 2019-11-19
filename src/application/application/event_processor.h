@@ -23,6 +23,7 @@ namespace application {
 
     private:
         using hr_clock = std::chrono::high_resolution_clock;
+        using event_id = std::size_t;
 
         friend class input_processor;
 
@@ -32,7 +33,7 @@ namespace application {
 
         void create_event(Event&& event) noexcept;
 
-        void subscribe(const std::size_t type,
+        void subscribe(const event_id type,
                        objectId id,
                        std::function<void(const typename Event::arguments&)>&& callback,
                        std::chrono::duration<std::uint64_t, std::micro> updateFrequency =
@@ -74,7 +75,7 @@ namespace application {
     }
 
     template<typename Event>
-    void event_processor<Event>::subscribe(const std::size_t type,
+    void event_processor<Event>::subscribe(const event_id type,
                                            objectId id,
                                            std::function<void(const typename Event::arguments&)>&& callback,
                                            std::chrono::duration<std::uint64_t, std::micro> updateFrequency) noexcept {
