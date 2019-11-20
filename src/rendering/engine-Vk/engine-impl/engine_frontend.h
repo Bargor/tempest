@@ -5,6 +5,7 @@
 #include "draw_info.h"
 #include "engine_init.h"
 #include "queue_indices.h"
+#include "resources/settings.h"
 
 #include <memory>
 #include <vector>
@@ -32,8 +33,6 @@ namespace engine {
         class uniform_buffer;
 
         class engine_frontend {
-            template<typename T>
-            using ptr = std::unique_ptr<T>;
 
         public:
             engine_frontend(application::event_processor<application::app_event>& eventProcessor,
@@ -49,14 +48,14 @@ namespace engine {
             vk::CommandBuffer generate_command_buffer(const draw_info& drawInfo);
 
         private:
-
             application::event_processor<application::app_event>& m_eventProcessor;
 
             device& m_device;
             resource_cache& m_resourceCache;
 
-            std::array<vk::CommandPool, 3> m_commandPools;
+            std::array<vk::CommandPool, settings::m_inFlightFrames> m_commandPools;
             std::array<std::vector<vk::CommandBuffer>, 3> m_bufferCache;
+            vk::DescriptorPool m_descriptorPool;
         };
 
         template<typename Iter>

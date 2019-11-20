@@ -34,6 +34,7 @@ namespace engine {
             const rendering_technique& get_technique() const noexcept;
 
         private:
+            vk::DescriptorSetLayout m_descriptorLayout;
             vk::PipelineLayout m_pipelineLayout;
             vk::Pipeline m_pipeline;
             base::pipeline_settings m_pipelineSettings;

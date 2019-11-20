@@ -27,6 +27,15 @@ namespace engine {
 
     namespace vulkan {
 
+        vk::DescriptorPool create_descriptor_pool(const vk::Device& device, std::uint32_t size) {
+            vk::DescriptorPoolSize poolSize(vk::DescriptorType::eUniformBuffer, size);
+
+            vk::DescriptorPoolCreateInfo poolCreateInfo(
+                vk::DescriptorPoolCreateFlags(), size, 1, &poolSize);
+
+            return device.createDescriptorPool(poolCreateInfo);
+        }
+
         engine_frontend::engine_frontend(application::event_processor<application::app_event>& eventProcessor,
                                          device& device,
                                          resource_cache& resourceCache)
@@ -34,7 +43,8 @@ namespace engine {
             , m_device(device)
             , m_resourceCache(resourceCache)
             , m_commandPools(
-                  {m_device.create_command_pool(), m_device.create_command_pool(), m_device.create_command_pool()}) {
+                  {m_device.create_command_pool(), m_device.create_command_pool(), m_device.create_command_pool()})
+            , m_descriptorPool(create_descriptor_pool(device.m_logicalDevice, settings::m_inFlightFrames)) {
         }
 
         engine_frontend::~engine_frontend() {
@@ -42,6 +52,7 @@ namespace engine {
                 m_device.m_logicalDevice.freeCommandBuffers(
                     m_commandPools[i], static_cast<std::uint32_t>(m_bufferCache[i].size()), m_bufferCache[i].data());
             }
+            m_device.m_logicalDevice.destroyDescriptorPool(m_descriptorPool);
         }
 
         vk::CommandBuffer engine_frontend::generate_command_buffer(const draw_info& drawInfo) {

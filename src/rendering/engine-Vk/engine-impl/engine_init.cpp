@@ -19,34 +19,6 @@ namespace tst {
 namespace engine {
     namespace vulkan {
 
-        vk::DescriptorSetLayout create_descriptor_set_layout(const vk::Device& device) {
-            vk::DescriptorSetLayoutBinding descriptorBinding(
-                0, vk::DescriptorType::eUniformBuffer, 1, vk::ShaderStageFlagBits::eVertex, nullptr);
-
-            vk::DescriptorSetLayoutCreateInfo setLayoutInfo(vk::DescriptorSetLayoutCreateFlags(), 1, &descriptorBinding);
-
-            return device.createDescriptorSetLayout(setLayoutInfo, nullptr);
-        }
-
-        vk::DescriptorPool create_descriptor_pool(const vk::Device& device, std::size_t size) {
-            vk::DescriptorPoolSize poolSize(vk::DescriptorType::eUniformBuffer, static_cast<std::uint32_t>(size));
-
-            vk::DescriptorPoolCreateInfo poolCreateInfo(
-                vk::DescriptorPoolCreateFlags(), static_cast<std::uint32_t>(size), 1, &poolSize);
-
-            return device.createDescriptorPool(poolCreateInfo);
-        }
-
-        std::vector<uniform_buffer> create_uniform_buffers(const device& device,
-                                                           const vk::CommandPool& cmdPool,
-                                                           std::size_t size) {
-            std::vector<uniform_buffer> buffers;
-            while (size--) {
-                buffers.emplace_back(device.create_uniform_buffer(cmdPool));
-            }
-            return buffers;
-        }
-
         std::vector<vk::DescriptorSet> create_descriptor_sets(const vk::Device& device,
                                                               std::size_t size,
                                                               const vk::DescriptorPool& descriptorPool,
