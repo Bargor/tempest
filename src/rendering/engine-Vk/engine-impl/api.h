@@ -4,6 +4,9 @@
 
 #include <memory>
 
+template<typename T>
+using ptr = std::unique_ptr<T>;
+
 namespace tst {
 namespace engine {
 
@@ -13,9 +16,6 @@ namespace engine {
         class gpu_info;
         class engine_frontend;
         class vertex_format;
-
-        template<typename T>
-        using ptr = std::unique_ptr<T>;
     } // namespace vulkan
 
     namespace api = vulkan;

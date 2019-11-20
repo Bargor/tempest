@@ -8,8 +8,11 @@
 namespace tst {
 namespace engine {
     namespace resources {
+        class uniform_buffer;
+
         class material : api::material {
         public:
+            using super = api::material;
         private:
         };
 
