@@ -17,6 +17,7 @@ namespace engine {
             ~settings();
 
         public:
+            static constexpr std::uint32_t m_inFlightFrames = 3;
             buffering m_buffering;
 
         private:

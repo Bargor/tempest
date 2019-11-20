@@ -189,8 +189,11 @@ namespace engine {
         }
 
         uniform_buffer device::create_uniform_buffer(const vk::CommandPool& cmdPool) const {
-            return uniform_buffer(
-                m_logicalDevice, m_graphicsQueueHandle, cmdPool, m_physicalDevice->get_memory_properties());
+            return uniform_buffer(m_logicalDevice,
+                                  m_graphicsQueueHandle,
+                                  cmdPool,
+                                  m_physicalDevice->get_memory_properties(),
+                                  m_resourceIndex);
         }
 
         shader device::crate_shader(shader::shader_type type, std::vector<char>&& source, const std::string& name) const {
@@ -215,7 +218,7 @@ namespace engine {
         }
 
         bool device::startFrame() {
-            m_resourceIndex = m_frameCounter % m_inFlightFrames;
+            m_resourceIndex = m_frameCounter % settings::m_inFlightFrames;
 
             m_logicalDevice.waitForFences(
                 1, &m_frameResources[m_resourceIndex].inFlightFences, true, std::numeric_limits<uint64_t>::max());

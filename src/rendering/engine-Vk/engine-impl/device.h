@@ -84,15 +84,12 @@ namespace engine {
 
             std::uint32_t get_resource_index() const noexcept;
 
-            static constexpr std::uint32_t get_in_flight_frames() noexcept;
-
         private:
             void cleanup_swap_chain_dependancies();
             void update_framebuffer();
             void recreate_swap_chain(const core::extent<std::uint32_t>& extent);
 
         private:
-            static constexpr std::uint32_t m_inFlightFrames = 3;
 
             std::uint32_t m_frameCounter;
             application::main_window& m_mainWindow;
@@ -109,7 +106,7 @@ namespace engine {
             vk::Queue m_transferQueueHandle;
 
             std::vector<vk::CommandPool> m_commandPools;
-            std::array<frame_resources, m_inFlightFrames> m_frameResources;
+            std::array<frame_resources, settings::m_inFlightFrames> m_frameResources;
 
             ptr<engine_frontend> m_engineFrontend;
 
@@ -150,10 +147,6 @@ namespace engine {
 
         TST_INLINE std::uint32_t device::get_resource_index() const noexcept {
             return m_resourceIndex;
-        }
-
-        constexpr std::uint32_t device::get_in_flight_frames() noexcept {
-            return device::m_inFlightFrames;
         }
 
     } // namespace vulkan

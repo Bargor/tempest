@@ -24,7 +24,8 @@ namespace engine {
             uniform_buffer(vk::Device logicalDevice,
                            vk::Queue m_queueHandle,
                            vk::CommandPool cmdPool,
-                           const vk::PhysicalDeviceMemoryProperties& memoryProperties);
+                           const vk::PhysicalDeviceMemoryProperties& memoryProperties,
+                           const std::uint32_t& resourceIndex);
             uniform_buffer(uniform_buffer&& other) noexcept;
             uniform_buffer(const uniform_buffer& other) = delete;
 
@@ -34,6 +35,7 @@ namespace engine {
 
         private:
             uniform_buffer_object m_data;
+            const std::uint32_t& m_resourceIndex;
         };
 
     } // namespace vulkan
