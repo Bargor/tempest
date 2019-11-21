@@ -24,7 +24,7 @@ namespace engine {
                           const vk::Queue m_queueHandle,
                           const vk::CommandPool cmdPool,
                           const vk::PhysicalDeviceMemoryProperties memoryProperties,
-                          const vertex_format& format,
+                          base::vertex_format&& format,
                           std::vector<vertex>&& vertices);
             ~vertex_buffer();
 

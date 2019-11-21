@@ -29,7 +29,7 @@ namespace engine {
                 int2,
                 int3,
                 int4,
-                uint,
+                uint1,
                 uint2,
                 uint3,
                 uint4
@@ -54,22 +54,17 @@ namespace engine {
                 std::uint32_t divisor;
             };
 
-            struct binding_descriptor {
-
-            };
-
         public:
             vertex_format(primitive_topology topology);
 
             void add_attribute(
                 location location, format format, std::uint32_t offset, std::uint32_t stride, std::uint32_t divisor);
-            const std::vector<attribute_descriptor>& get_attibutes_descriptors() const noexcept;
+            const std::vector<attribute_descriptor>& get_attibute_descriptors() const noexcept;
             primitive_topology get_topology() const noexcept;
 
 
         protected:
             std::vector<attribute_descriptor> m_attributes;
-            binding_descriptor m_bindingDescriptor;
             primitive_topology m_topology;
         };
 

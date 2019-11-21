@@ -200,8 +200,8 @@ namespace engine {
         vk::PipelineVertexInputStateCreateInfo create_vertex_input_info(const vertex_format& format) {
             vk::PipelineVertexInputStateCreateInfo vertexInfo(
                 vk::PipelineVertexInputStateCreateFlags(),
-                1,
-                &format.get_binding_description(),
+                static_cast<std::uint32_t>(format.get_binding_descriptions().size()),
+                format.get_binding_descriptions().data(),
                 static_cast<std::uint32_t>(format.get_attribute_descriptions().size()),
                 format.get_attribute_descriptions().data());
 

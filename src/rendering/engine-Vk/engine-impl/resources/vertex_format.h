@@ -16,21 +16,22 @@ namespace engine {
         public:
             using super = base::vertex_format;
 
-            vertex_format(base::vertex_format::primitive_topology topology);
+            vertex_format(const base::vertex_format& vertex_format);
 
-            const vk::VertexInputBindingDescription& get_binding_description() const noexcept;
-            const std::array<vk::VertexInputAttributeDescription, 2>& get_attribute_descriptions() const noexcept;
+            const std::vector<vk::VertexInputBindingDescription>& get_binding_descriptions() const noexcept;
+            const std::vector<vk::VertexInputAttributeDescription>& get_attribute_descriptions() const noexcept;
 
         private:
-            vk::VertexInputBindingDescription m_bindingDescription;
-            std::array<vk::VertexInputAttributeDescription, 2> m_attributeDescriptions;
+            std::vector<vk::VertexInputBindingDescription> m_bindingDescriptions;
+            std::vector<vk::VertexInputAttributeDescription> m_attributeDescriptions;
         };
 
-        TST_INLINE const vk::VertexInputBindingDescription& vertex_format::get_binding_description() const noexcept {
-            return m_bindingDescription;
+        TST_INLINE const std::vector<vk::VertexInputBindingDescription>& vertex_format::get_binding_descriptions() const
+            noexcept {
+            return m_bindingDescriptions;
         }
 
-        TST_INLINE const std::array<vk::VertexInputAttributeDescription, 2>& vertex_format::get_attribute_descriptions() const
+        TST_INLINE const std::vector<vk::VertexInputAttributeDescription>& vertex_format::get_attribute_descriptions() const
             noexcept {
             return m_attributeDescriptions;
         }

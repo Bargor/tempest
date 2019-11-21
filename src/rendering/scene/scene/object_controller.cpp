@@ -16,7 +16,7 @@ namespace scene {
 
     engine::base::technique_settings create_technique_settings() {
         engine::base::viewport_settings viewportSettings{0, 0, 840, 525, 0.0f, 1.0f};
-        core::rectangle<std::int32_t, std::uint32_t> scissorSettings{{0, 0}, {640, 525}};
+        core::rectangle<std::int32_t, std::uint32_t> scissorSettings{{0, 0}, {840, 525}};
         engine::base::color_blending_settings blendingSettings{
             false,
             engine::base::color_blending_settings::blend_operation::add,
@@ -51,7 +51,7 @@ namespace scene {
     }
 
     void object_controller::load_object(const std::string&) {
-        auto vertexFormat = engine::vertex_format(engine::base::vertex_format::primitive_topology::triangle_list);
+        auto vertexFormat = engine::base::vertex_format(engine::base::vertex_format::primitive_topology::triangle_list);
 
         m_resourceFactory.create_technique("test", create_technique_settings());
         const auto& pipeline = m_resourceFactory.create_pipeline("test", "test", vertexFormat);

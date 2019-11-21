@@ -205,7 +205,7 @@ namespace engine {
             return rendering_technique(std::move(name), std::move(settings), m_logicalDevice, *m_swapChain.get());
         }
 
-        vertex_buffer device::create_vertex_buffer(const vertex_format& format,
+        vertex_buffer device::create_vertex_buffer(const base::vertex_format& format,
                                                    std::vector<vertex>&& vertices,
                                                    const vk::CommandPool& cmdPool) const {
             return vertex_buffer(m_logicalDevice,

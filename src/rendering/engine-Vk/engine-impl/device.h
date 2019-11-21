@@ -63,7 +63,7 @@ namespace engine {
                                      const shader_set& shaders,
                                      const rendering_technique& technique,
                                      const std::vector<vk::DescriptorSetLayout>& descriptorLayouts);
-            vertex_buffer create_vertex_buffer(const vertex_format& format,
+            vertex_buffer create_vertex_buffer(const base::vertex_format& format,
                                                std::vector<vertex>&& vertices,
                                                const vk::CommandPool& cmdPool) const;
             uniform_buffer create_uniform_buffer(const vk::CommandPool& cmdPool) const;

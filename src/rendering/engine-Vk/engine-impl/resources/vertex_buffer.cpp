@@ -13,7 +13,7 @@ namespace engine {
                                      const vk::Queue queueHandle,
                                      const vk::CommandPool cmdPool,
                                      const vk::PhysicalDeviceMemoryProperties memoryProperties,
-                                     const vertex_format& format,
+                                     base::vertex_format&& format,
                                      std::vector<vertex>&& vertices)
             : buffer(logicalDevice,
                      queueHandle,
@@ -22,7 +22,7 @@ namespace engine {
                      vk::BufferUsageFlagBits::eVertexBuffer | vk::BufferUsageFlagBits::eTransferDst,
                      memoryProperties,
                      vk::MemoryPropertyFlagBits::eDeviceLocal)
-            , m_format(format)
+            , m_format(std::move(format))
             , m_vertices(std::move(vertices)) {
             buffer stagingBuffer(logicalDevice,
                                  queueHandle,
