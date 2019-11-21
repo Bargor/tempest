@@ -61,7 +61,8 @@ namespace engine {
             shader crate_shader(shader::shader_type type, std::vector<char>&& source, const std::string& name) const;
             pipeline create_pipeline(const vertex_format& format,
                                      const shader_set& shaders,
-                                     const rendering_technique& technique);
+                                     const rendering_technique& technique,
+                                     const std::vector<vk::DescriptorSetLayout>& descriptorLayouts);
             vertex_buffer create_vertex_buffer(const vertex_format& format,
                                                std::vector<vertex>&& vertices,
                                                const vk::CommandPool& cmdPool) const;
@@ -77,6 +78,8 @@ namespace engine {
 
         public: // public Vulkan interface
             vk::CommandPool& create_command_pool();
+            vk::DescriptorPool device::create_descriptor_pool(std::uint32_t size);
+            vk::DescriptorSetLayout create_descriptor_set_layout();
 
             bool startFrame();
             bool draw(const std::vector<vk::CommandBuffer>& commandBuffers);
@@ -106,6 +109,8 @@ namespace engine {
             vk::Queue m_transferQueueHandle;
 
             std::vector<vk::CommandPool> m_commandPools;
+            std::vector<vk::DescriptorPool> m_descriptorPools;
+            std::vector<vk::DescriptorSetLayout> m_descriptorLayouts;
             std::array<frame_resources, settings::m_inFlightFrames> m_frameResources;
 
             ptr<engine_frontend> m_engineFrontend;

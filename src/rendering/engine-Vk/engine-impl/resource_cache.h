@@ -4,6 +4,7 @@
 
 #include "resources/pipeline.h"
 #include "resources/rendering_technique.h"
+#include "resources/settings.h"
 #include "resources/shader.h"
 
 #include <unordered_map>
@@ -15,6 +16,9 @@ namespace engine {
 
         class resource_cache {
         public:
+            resource_cache();
+            resource_cache(const resource_cache&) = delete;
+
             std::size_t add_pipeline(pipeline&& newPipeline);
             void add_rendering_technique(rendering_technique&& technique);
             void add_shaders(const std::string& name, shader_set&& shaders);
@@ -29,6 +33,8 @@ namespace engine {
             std::unordered_map<std::size_t, pipeline> m_pipelines;
             std::vector<rendering_technique> m_techniques;
             std::unordered_map<std::string, shader_set> m_shaders;
+            std::array<vk::DescriptorPool, settings::m_inFlightFrames> m_descriptorPools;
+            std::vector<vk::DescriptorSetLayout> m_descriptorLayouts;
         };
 
     } // namespace vulkan

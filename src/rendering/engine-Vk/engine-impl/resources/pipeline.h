@@ -22,19 +22,18 @@ namespace engine {
                      const settings& engineSettings,
                      const vertex_format& format,
                      const shader_set& shaders,
-                     const rendering_technique& technique);
+                     const rendering_technique& technique,
+                     const std::vector<vk::DescriptorSetLayout>& descriptorLayouts);
             pipeline(const pipeline&) = delete;
             pipeline(pipeline&& pipeline);
 
             ~pipeline();
-
 
             void bind_command_buffer(vk::CommandBuffer& buffer, vk::PipelineBindPoint bindPoint) const;
 
             const rendering_technique& get_technique() const noexcept;
 
         private:
-            vk::DescriptorSetLayout m_descriptorLayout;
             vk::PipelineLayout m_pipelineLayout;
             vk::Pipeline m_pipeline;
             base::pipeline_settings m_pipelineSettings;

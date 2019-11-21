@@ -159,6 +159,13 @@ namespace engine {
             for (auto& commandPool : m_commandPools) {
                 m_logicalDevice.destroyCommandPool(commandPool);
             }
+            for (auto& descriptorPool : m_descriptorPools) {
+                m_logicalDevice.destroyDescriptorPool(descriptorPool);
+            }
+            for (auto& descriptorLayout : m_descriptorLayouts) {
+                m_logicalDevice.destroyDescriptorSetLayout(descriptorLayout);
+            }
+
             m_resourceCache->clear();
             m_swapChain.reset();
             instance::get_instance().m_instance.destroySurfaceKHR(m_windowSurface);
@@ -168,9 +175,30 @@ namespace engine {
         vk::CommandPool& device::create_command_pool() {
             vk::CommandPoolCreateInfo createInfo(vk::CommandPoolCreateFlags(), m_physicalDevice->get_graphics_index());
 
-            m_commandPools.push_back(m_logicalDevice.createCommandPool(createInfo));
+            m_commandPools.emplace_back(m_logicalDevice.createCommandPool(createInfo));
 
             return m_commandPools.back();
+        }
+
+        vk::DescriptorPool device::create_descriptor_pool(std::uint32_t size) {
+            vk::DescriptorPoolSize poolSize(vk::DescriptorType::eUniformBuffer, size);
+
+            vk::DescriptorPoolCreateInfo poolCreateInfo(vk::DescriptorPoolCreateFlags(), size, 1, &poolSize);
+
+            m_descriptorPools.emplace_back(m_logicalDevice.createDescriptorPool(poolCreateInfo));
+
+            return m_descriptorPools.back();
+        }
+
+        vk::DescriptorSetLayout device::create_descriptor_set_layout() {
+            vk::DescriptorSetLayoutBinding descriptorBinding(
+                0, vk::DescriptorType::eUniformBuffer, 1, vk::ShaderStageFlagBits::eVertex, nullptr);
+
+            vk::DescriptorSetLayoutCreateInfo setLayoutInfo(vk::DescriptorSetLayoutCreateFlags(), 1, &descriptorBinding);
+
+            m_descriptorLayouts.emplace_back(m_logicalDevice.createDescriptorSetLayout(setLayoutInfo, nullptr));
+
+            return m_descriptorLayouts.back();
         }
 
         rendering_technique device::create_technique(std::string&& name, base::technique_settings&& settings) const {
@@ -202,8 +230,9 @@ namespace engine {
 
         pipeline device::create_pipeline(const vertex_format& format,
                                          const shader_set& shaders,
-                                         const rendering_technique& technique) {
-            return pipeline(m_logicalDevice, m_engineSettings, format, shaders, technique);
+                                         const rendering_technique& technique,
+                                         const std::vector<vk::DescriptorSetLayout>& descriptorLayouts) {
+            return pipeline(m_logicalDevice, m_engineSettings, format, shaders, technique, descriptorLayouts);
         }
 
         resource_cache& device::get_resource_cache() noexcept {
@@ -264,8 +293,6 @@ namespace engine {
         }
 
         void device::cleanup_swap_chain_dependancies() {
-            /*m_logicalDevice.destroyPipeline(m_pipeline);
-            m_logicalDevice.destroyPipelineLayout(m_pipelineLayout);*/
         }
 
         void device::update_framebuffer() {

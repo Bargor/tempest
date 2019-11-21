@@ -187,17 +187,13 @@ namespace engine {
             return vk::PrimitiveTopology::eTriangleList;
         }
 
-        vk::DescriptorSetLayout create_descriptor_set_layout(const vk::Device& device) {
-            vk::DescriptorSetLayoutBinding descriptorBinding(
-                0, vk::DescriptorType::eUniformBuffer, 1, vk::ShaderStageFlagBits::eVertex, nullptr);
-
-            vk::DescriptorSetLayoutCreateInfo setLayoutInfo(vk::DescriptorSetLayoutCreateFlags(), 1, &descriptorBinding);
-
-            return device.createDescriptorSetLayout(setLayoutInfo, nullptr);
-        }
-
-        vk::PipelineLayout create_pipeline_layout(const vk::Device logicalDevice, vk::DescriptorSetLayout descriptorLayout) {
-            vk::PipelineLayoutCreateInfo pipelineLayoutInfo(vk::PipelineLayoutCreateFlags(), 1, &descriptorLayout, 0, nullptr);
+        vk::PipelineLayout create_pipeline_layout(const vk::Device logicalDevice,
+                                                  const std::vector<vk::DescriptorSetLayout>& descriptorLayout) {
+            vk::PipelineLayoutCreateInfo pipelineLayoutInfo(vk::PipelineLayoutCreateFlags(),
+                                                            static_cast<std::uint32_t>(descriptorLayout.size()),
+                                                            descriptorLayout.data(),
+                                                            0,
+                                                            nullptr);
             return logicalDevice.createPipelineLayout(pipelineLayoutInfo);
         }
 
@@ -342,9 +338,9 @@ namespace engine {
                            const settings& engineSettings,
                            const vertex_format& format,
                            const shader_set& shaders,
-                           const rendering_technique& technique)
-            : m_descriptorLayout(create_descriptor_set_layout(logicalDevice))
-            , m_pipelineLayout(create_pipeline_layout(logicalDevice, m_descriptorLayout))
+                           const rendering_technique& technique,
+                           const std::vector<vk::DescriptorSetLayout>& descriptorLayouts)
+            : m_pipelineLayout(create_pipeline_layout(logicalDevice, descriptorLayouts))
             , m_pipeline(compile_pipeline(logicalDevice,
                                           m_pipelineLayout,
                                           technique.m_renderPass,
@@ -370,18 +366,15 @@ namespace engine {
             , m_pipeline(pipeline.m_pipeline)
             , m_pipelineSettings(std::move(pipeline.m_pipelineSettings))
             , m_technique(std::move(pipeline.m_technique))
-            , m_logicalDevice(pipeline.m_logicalDevice)
-            , m_descriptorLayout(pipeline.m_descriptorLayout){
+            , m_logicalDevice(pipeline.m_logicalDevice) {
             pipeline.m_pipeline = vk::Pipeline();
             pipeline.m_pipelineLayout = vk::PipelineLayout();
-            pipeline.m_descriptorLayout = vk::DescriptorSetLayout();
         }
 
         pipeline::~pipeline() {
             if (m_pipeline) {
                 m_logicalDevice.destroyPipeline(m_pipeline);
                 m_logicalDevice.destroyPipelineLayout(m_pipelineLayout);
-                m_logicalDevice.destroyDescriptorSetLayout(m_descriptorLayout);
             }
         }
 

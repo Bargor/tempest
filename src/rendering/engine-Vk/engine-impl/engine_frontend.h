@@ -33,7 +33,6 @@ namespace engine {
         class uniform_buffer;
 
         class engine_frontend {
-
         public:
             engine_frontend(application::event_processor<application::app_event>& eventProcessor,
                             device& device,
@@ -54,8 +53,7 @@ namespace engine {
             resource_cache& m_resourceCache;
 
             std::array<vk::CommandPool, settings::m_inFlightFrames> m_commandPools;
-            std::array<std::vector<vk::CommandBuffer>, 3> m_bufferCache;
-            vk::DescriptorPool m_descriptorPool;
+            std::array<std::vector<vk::CommandBuffer>, settings::m_inFlightFrames> m_bufferCache;
         };
 
         template<typename Iter>

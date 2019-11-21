@@ -62,6 +62,8 @@ namespace engine {
             auto shaders = m_shaderCompiler->compile_shaders(shadersName);
             m_resourceCache.add_shaders(shadersName, std::move(shaders));
 
+            m_resourceCache.add_descriptor_layout(m_device.create_descriptor_set_layout());
+
             return m_resourceCache.find_shaders(shadersName);
         }
     } // namespace vulkan
