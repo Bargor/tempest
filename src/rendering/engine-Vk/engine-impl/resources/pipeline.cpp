@@ -197,13 +197,14 @@ namespace engine {
             return logicalDevice.createPipelineLayout(pipelineLayoutInfo);
         }
 
-        vk::PipelineVertexInputStateCreateInfo create_vertex_input_info(const vertex_format& format) {
-            vk::PipelineVertexInputStateCreateInfo vertexInfo(
-                vk::PipelineVertexInputStateCreateFlags(),
-                static_cast<std::uint32_t>(format.get_binding_descriptions().size()),
-                format.get_binding_descriptions().data(),
-                static_cast<std::uint32_t>(format.get_attribute_descriptions().size()),
-                format.get_attribute_descriptions().data());
+        vk::PipelineVertexInputStateCreateInfo
+        create_vertex_input_info(const vk::VertexInputBindingDescription& bindingDesc,
+                                 const std::vector<vk::VertexInputAttributeDescription>& attributeDesc) {
+            vk::PipelineVertexInputStateCreateInfo vertexInfo(vk::PipelineVertexInputStateCreateFlags(),
+                                                              1,
+                                                              &bindingDesc,
+                                                              static_cast<std::uint32_t>(attributeDesc.size()),
+                                                              attributeDesc.data());
 
             return vertexInfo;
         }
@@ -302,9 +303,9 @@ namespace engine {
             vk::Rect2D scissor({scissorSettings.offset.x, scissorSettings.offset.y},
                                {scissorSettings.dimensions.width, scissorSettings.dimensions.height});
 
-            auto bindingDesc = format.get_binding_descriptions();
+            auto bindingDesc = format.get_binding_description();
             auto attributeDesc = format.get_attribute_descriptions();
-            auto vertexInfo = create_vertex_input_info(format);
+            auto vertexInfo = create_vertex_input_info(bindingDesc, attributeDesc);
             auto assemblyInfo = create_assembly_info(format);
             auto viewportInfo = create_viewport_info(viewport, scissor);
             auto rasterizationInfo = create_rasterization_info(engineSettings.m_rasterizer);

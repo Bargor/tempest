@@ -40,41 +40,31 @@ namespace engine {
             return vk::Format::eUndefined;
         }
 
-        std::vector<vk::VertexInputBindingDescription>
-        translate_binding_descriptions(const std::vector<base::vertex_format::attribute_descriptor>& attributes) {
-            std::vector<vk::VertexInputBindingDescription> descriptions(attributes.size());
-
-            for (std::uint32_t i = 0; i < attributes.size(); ++i) {
-                descriptions[i] = vk::VertexInputBindingDescription{
-                    i,
-                    attributes[i].stride,
-                    attributes[i].divisor == 0 ? vk::VertexInputRate::eVertex : vk::VertexInputRate::eInstance};
-            }
-            return descriptions;
+        vk::VertexInputBindingDescription
+        translate_binding_description(const std::vector<base::vertex_format::attribute_descriptor>& attributes) {
+            return vk::VertexInputBindingDescription{0,
+                                                     attributes[0].stride,
+                                                     attributes[0].divisor == 0 ? vk::VertexInputRate::eVertex :
+                                                                                  vk::VertexInputRate::eInstance};
         }
 
         std::vector<vk::VertexInputAttributeDescription>
         translate_attribute_descriptions(const std::vector<base::vertex_format::attribute_descriptor>& attributes) {
-            std::vector<vk::VertexInputAttributeDescription> descriptions(attributes.size());
+            std::vector<vk::VertexInputAttributeDescription> descriptions;
+            descriptions.reserve(attributes.size());
 
-            for (std::uint32_t i = 0; i < attributes.size(); ++i) {
-                descriptions[i] = 
-                    vk::VertexInputAttributeDescription{static_cast<std::uint32_t>(attributes[i].location),
-                                                        i,
-                                                        translate_format(attributes[i].format),
-                                                        attributes[i].offset};
+            for (auto& attribute : attributes) {
+                descriptions.emplace_back(vk::VertexInputAttributeDescription{
+                    static_cast<std::uint32_t>(attribute.location), 0, translate_format(attribute.format), attribute.offset});
             }
             return descriptions;
         }
 
-        vertex_format::vertex_format(base::vertex_format::primitive_topology topology)
-            : base::vertex_format(topology)
-            , m_bindingDescriptions(translate_binding_descriptions(m_attributes))
-            , m_attributeDescriptions(translate_attribute_descriptions(m_attributes)) {
+        vertex_format::vertex_format(base::vertex_format::primitive_topology topology) : base::vertex_format(topology) {
         }
 
-        std::vector<vk::VertexInputBindingDescription> vertex_format::get_binding_descriptions() const noexcept {
-            return translate_binding_descriptions(m_attributes);
+        vk::VertexInputBindingDescription vertex_format::get_binding_description() const noexcept {
+            return translate_binding_description(m_attributes);
         }
 
         std::vector<vk::VertexInputAttributeDescription> vertex_format::get_attribute_descriptions() const noexcept {

@@ -18,12 +18,10 @@ namespace engine {
 
             vertex_format(base::vertex_format::primitive_topology topology);
 
-            std::vector<vk::VertexInputBindingDescription> get_binding_descriptions() const noexcept;
+            vk::VertexInputBindingDescription get_binding_description() const noexcept;
             std::vector<vk::VertexInputAttributeDescription> get_attribute_descriptions() const noexcept;
 
         private:
-            std::vector<vk::VertexInputBindingDescription> m_bindingDescriptions;
-            std::vector<vk::VertexInputAttributeDescription> m_attributeDescriptions;
         };
 
     } // namespace vulkan
