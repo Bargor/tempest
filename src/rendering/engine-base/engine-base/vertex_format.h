@@ -59,7 +59,7 @@ namespace engine {
 
             void add_attribute(
                 location location, format format, std::uint32_t offset, std::uint32_t stride, std::uint32_t divisor);
-            const std::vector<attribute_descriptor>& get_attibute_descriptors() const noexcept;
+            const std::vector<attribute_descriptor>& get_attribute_descriptors() const noexcept;
             primitive_topology get_topology() const noexcept;
 
 
