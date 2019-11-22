@@ -13,7 +13,7 @@ namespace engine {
                                      const vk::Queue queueHandle,
                                      const vk::CommandPool cmdPool,
                                      const vk::PhysicalDeviceMemoryProperties memoryProperties,
-                                     base::vertex_format&& format,
+                                     const vertex_format& format,
                                      std::vector<vertex>&& vertices)
             : buffer(logicalDevice,
                      queueHandle,

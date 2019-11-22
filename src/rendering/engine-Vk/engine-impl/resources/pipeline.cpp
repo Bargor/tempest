@@ -301,6 +301,9 @@ namespace engine {
                                   viewportSettings.maxDepth);
             vk::Rect2D scissor({scissorSettings.offset.x, scissorSettings.offset.y},
                                {scissorSettings.dimensions.width, scissorSettings.dimensions.height});
+
+            auto bindingDesc = format.get_binding_descriptions();
+            auto attributeDesc = format.get_attribute_descriptions();
             auto vertexInfo = create_vertex_input_info(format);
             auto assemblyInfo = create_assembly_info(format);
             auto viewportInfo = create_viewport_info(viewport, scissor);
@@ -310,9 +313,10 @@ namespace engine {
             auto blendingInfo = create_color_blending_info(globalBlendingSettings, colorBlendAttachment);
 
             std::vector<vk::PipelineShaderStageCreateInfo> shaderInfos;
-            std::transform(shaders.cbegin(), shaders.cend(), std::back_inserter(shaderInfos), [](const shader& shader) {
-                return shader.get_pipeline_info();
-            });
+            std::transform(shaders.shaders.cbegin(),
+                           shaders.shaders.cend(),
+                           std::back_inserter(shaderInfos),
+                           [](const shader& shader) { return shader.get_pipeline_info(); });
 
             vk::GraphicsPipelineCreateInfo pipelineInfo(vk::PipelineCreateFlags(),
                                                         static_cast<std::uint32_t>(shaderInfos.size()),
@@ -338,9 +342,8 @@ namespace engine {
                            const settings& engineSettings,
                            const vertex_format& format,
                            const shader_set& shaders,
-                           const rendering_technique& technique,
-                           const std::vector<vk::DescriptorSetLayout>& descriptorLayouts)
-            : m_pipelineLayout(create_pipeline_layout(logicalDevice, descriptorLayouts))
+                           const rendering_technique& technique)
+            : m_pipelineLayout(create_pipeline_layout(logicalDevice, shaders.layouts))
             , m_pipeline(compile_pipeline(logicalDevice,
                                           m_pipelineLayout,
                                           technique.m_renderPass,

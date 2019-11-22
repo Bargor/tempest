@@ -60,9 +60,8 @@ namespace engine {
 
         const shader_set* resource_factory::load_shaders(const std::string& shadersName) {
             auto shaders = m_shaderCompiler->compile_shaders(shadersName);
-            m_resourceCache.add_shaders(shadersName, std::move(shaders));
 
-            m_resourceCache.add_descriptor_layout(m_device.create_descriptor_set_layout());
+            m_resourceCache.add_shaders(shadersName, std::move(shaders));
 
             return m_resourceCache.find_shaders(shadersName);
         }

@@ -162,9 +162,6 @@ namespace engine {
             for (auto& descriptorPool : m_descriptorPools) {
                 m_logicalDevice.destroyDescriptorPool(descriptorPool);
             }
-            for (auto& descriptorLayout : m_descriptorLayouts) {
-                m_logicalDevice.destroyDescriptorSetLayout(descriptorLayout);
-            }
 
             m_resourceCache->clear();
             m_swapChain.reset();
@@ -190,22 +187,20 @@ namespace engine {
             return m_descriptorPools.back();
         }
 
-        vk::DescriptorSetLayout device::create_descriptor_set_layout() {
+        vk::DescriptorSetLayout device::create_descriptor_set_layout() const {
             vk::DescriptorSetLayoutBinding descriptorBinding(
                 0, vk::DescriptorType::eUniformBuffer, 1, vk::ShaderStageFlagBits::eVertex, nullptr);
 
             vk::DescriptorSetLayoutCreateInfo setLayoutInfo(vk::DescriptorSetLayoutCreateFlags(), 1, &descriptorBinding);
 
-            m_descriptorLayouts.emplace_back(m_logicalDevice.createDescriptorSetLayout(setLayoutInfo, nullptr));
-
-            return m_descriptorLayouts.back();
+            return m_logicalDevice.createDescriptorSetLayout(setLayoutInfo, nullptr);
         }
 
         rendering_technique device::create_technique(std::string&& name, base::technique_settings&& settings) const {
             return rendering_technique(std::move(name), std::move(settings), m_logicalDevice, *m_swapChain.get());
         }
 
-        vertex_buffer device::create_vertex_buffer(const base::vertex_format& format,
+        vertex_buffer device::create_vertex_buffer(const vertex_format& format,
                                                    std::vector<vertex>&& vertices,
                                                    const vk::CommandPool& cmdPool) const {
             return vertex_buffer(m_logicalDevice,
@@ -230,9 +225,8 @@ namespace engine {
 
         pipeline device::create_pipeline(const vertex_format& format,
                                          const shader_set& shaders,
-                                         const rendering_technique& technique,
-                                         const std::vector<vk::DescriptorSetLayout>& descriptorLayouts) {
-            return pipeline(m_logicalDevice, m_engineSettings, format, shaders, technique, descriptorLayouts);
+                                         const rendering_technique& technique) {
+            return pipeline(m_logicalDevice, m_engineSettings, format, shaders, technique);
         }
 
         resource_cache& device::get_resource_cache() noexcept {

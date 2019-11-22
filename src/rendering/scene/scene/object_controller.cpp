@@ -51,7 +51,17 @@ namespace scene {
     }
 
     void object_controller::load_object(const std::string&) {
-        auto vertexFormat = engine::base::vertex_format(engine::base::vertex_format::primitive_topology::triangle_list);
+        auto vertexFormat = engine::vertex_format(engine::base::vertex_format::primitive_topology::triangle_list);
+        vertexFormat.add_attribute(engine::base::vertex_format::location::position,
+                                   engine::base::vertex_format::format::float2,
+                                   offsetof(engine::vertex, pos),
+                                   sizeof(engine::vertex),
+                                   0);
+        vertexFormat.add_attribute(engine::base::vertex_format::location::normal,
+                                   engine::base::vertex_format::format::float3,
+                                   offsetof(engine::vertex, color),
+                                   sizeof(engine::vertex),
+                                   0);
 
         m_resourceFactory.create_technique("test", create_technique_settings());
         const auto& pipeline = m_resourceFactory.create_pipeline("test", "test", vertexFormat);

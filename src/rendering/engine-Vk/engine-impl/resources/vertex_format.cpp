@@ -45,10 +45,10 @@ namespace engine {
             std::vector<vk::VertexInputBindingDescription> descriptions(attributes.size());
 
             for (std::uint32_t i = 0; i < attributes.size(); ++i) {
-                descriptions.emplace_back(vk::VertexInputBindingDescription{
+                descriptions[i] = vk::VertexInputBindingDescription{
                     i,
                     attributes[i].stride,
-                    attributes[i].divisor == 0 ? vk::VertexInputRate::eVertex : vk::VertexInputRate::eInstance});
+                    attributes[i].divisor == 0 ? vk::VertexInputRate::eVertex : vk::VertexInputRate::eInstance};
             }
             return descriptions;
         }
@@ -58,16 +58,27 @@ namespace engine {
             std::vector<vk::VertexInputAttributeDescription> descriptions(attributes.size());
 
             for (std::uint32_t i = 0; i < attributes.size(); ++i) {
-                descriptions.emplace_back(vk::VertexInputAttributeDescription{
-                    attributes[i].location, i, translate_format(attributes[i].format), attributes[i].offset});
+                descriptions[i] = 
+                    vk::VertexInputAttributeDescription{static_cast<std::uint32_t>(attributes[i].location),
+                                                        i,
+                                                        translate_format(attributes[i].format),
+                                                        attributes[i].offset};
             }
             return descriptions;
         }
 
-        vertex_format::vertex_format(const base::vertex_format& vertex_format)
-            : base::vertex_format(vertex_format)
+        vertex_format::vertex_format(base::vertex_format::primitive_topology topology)
+            : base::vertex_format(topology)
             , m_bindingDescriptions(translate_binding_descriptions(m_attributes))
             , m_attributeDescriptions(translate_attribute_descriptions(m_attributes)) {
+        }
+
+        std::vector<vk::VertexInputBindingDescription> vertex_format::get_binding_descriptions() const noexcept {
+            return translate_binding_descriptions(m_attributes);
+        }
+
+        std::vector<vk::VertexInputAttributeDescription> vertex_format::get_attribute_descriptions() const noexcept {
+            return translate_attribute_descriptions(m_attributes);
         }
 
     } // namespace vulkan

@@ -22,8 +22,7 @@ namespace engine {
                      const settings& engineSettings,
                      const vertex_format& format,
                      const shader_set& shaders,
-                     const rendering_technique& technique,
-                     const std::vector<vk::DescriptorSetLayout>& descriptorLayouts);
+                     const rendering_technique& technique);
             pipeline(const pipeline&) = delete;
             pipeline(pipeline&& pipeline);
 

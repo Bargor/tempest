@@ -43,7 +43,10 @@ namespace engine {
             vk::PipelineShaderStageCreateInfo m_pipelineInfo;
         };
 
-        using shader_set = std::vector<shader>;
+        struct shader_set {
+            std::vector<shader> shaders;
+            std::vector<vk::DescriptorSetLayout> layouts;
+        };
     } // namespace vulkan
 } // namespace engine
 } // namespace tst

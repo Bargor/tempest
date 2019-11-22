@@ -16,8 +16,7 @@ namespace engine {
 
         class resource_cache {
         public:
-            resource_cache();
-            resource_cache(const resource_cache&) = delete;
+            //resource_cache(const resource_cache&) = delete;
 
             std::size_t add_pipeline(pipeline&& newPipeline);
             void add_rendering_technique(rendering_technique&& technique);
