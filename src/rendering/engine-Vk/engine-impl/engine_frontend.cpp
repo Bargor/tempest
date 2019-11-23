@@ -38,7 +38,7 @@ namespace engine {
         }
 
         engine_frontend::~engine_frontend() {
-            for (int i = 0; i < m_commandPools.size(); i++) {
+            for (std::uint32_t i = 0; i < static_cast<std::uint32_t>(m_commandPools.size()); i++) {
                 m_device.m_logicalDevice.freeCommandBuffers(
                     m_commandPools[i], static_cast<std::uint32_t>(m_bufferCache[i].size()), m_bufferCache[i].data());
             }

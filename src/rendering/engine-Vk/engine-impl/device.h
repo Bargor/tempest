@@ -77,7 +77,7 @@ namespace engine {
 
         public: // public Vulkan interface
             vk::CommandPool& create_command_pool();
-            vk::DescriptorPool device::create_descriptor_pool(std::uint32_t size);
+            vk::DescriptorPool create_descriptor_pool(std::uint32_t size);
             vk::DescriptorSetLayout create_descriptor_set_layout() const;
 
             bool startFrame();
