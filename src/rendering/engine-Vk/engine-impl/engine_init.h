@@ -12,15 +12,6 @@ namespace engine {
     namespace vulkan {
 
         class uniform_buffer;
-        class device;
-
-        vk::DescriptorSetLayout create_descriptor_set_layout(const vk::Device& device);
-
-        vk::DescriptorPool create_descriptor_pool(const vk::Device& device, std::size_t size);
-
-        std::vector<uniform_buffer> create_uniform_buffers(const device& device,
-                                                           const vk::CommandPool& cmdPool,
-                                                           std::size_t size);
 
         std::vector<vk::DescriptorSet> create_descriptor_sets(const vk::Device& device,
                                                               std::size_t size,

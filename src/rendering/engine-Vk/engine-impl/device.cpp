@@ -137,10 +137,12 @@ namespace engine {
             , m_frameResources(
                   {frame_resources(m_logicalDevice), frame_resources(m_logicalDevice), frame_resources(m_logicalDevice)})
             , m_engineFrontend(std::make_unique<engine_frontend>(m_eventProcessor, *this, *m_resourceCache))
-            , m_framebufferResized(false)
+            , m_framebufferResizeInfo({false, 0, 0})
             , m_resourceIndex(0) {
-            auto framebufferResizeCallback = [&](const application::app_event::arguments&) {
-                m_framebufferResized = true;
+            auto framebufferResizeCallback = [&](const application::app_event::arguments& args) {
+                assert(std::holds_alternative<application::app_event::framebuffer>(args));
+                m_framebufferResizeInfo =
+                    {true, std::get<application::app_event::framebuffer>(args).size};
             };
 
             m_eventProcessor.subscribe(
@@ -249,7 +251,7 @@ namespace engine {
             auto acquireResult =
                 m_swapChain->acquire_next_image(m_logicalDevice, m_frameResources[m_resourceIndex].imageAvailable);
             if (acquireResult == swap_chain::result::resize) {
-                // recreate swap chain
+                update_framebuffer();
                 return false;
             } else if (acquireResult == swap_chain::result::fail) {
                 return false;
@@ -278,7 +280,8 @@ namespace engine {
 
             auto presentResult =
                 m_swapChain->present_image(m_presentationQueueHandle, m_frameResources[currentFrame].renderFinished);
-            if (m_framebufferResized || presentResult == swap_chain::result::resize) {
+            if (m_framebufferResizeInfo.shouldResize || presentResult == swap_chain::result::resize) {
+                update_framebuffer();
                 return true;
             } else if (presentResult == swap_chain::result::fail) {
                 return false;
@@ -287,16 +290,13 @@ namespace engine {
         }
 
         void device::cleanup_swap_chain_dependancies() {
+            //m_resourceCache.
         }
 
         void device::update_framebuffer() {
-            m_framebufferResized = false;
-
-            std::int32_t width, height;
-            glfwGetFramebufferSize(m_mainWindow.get_handle(), &width, &height);
-            core::extent<std::uint32_t> windowSize{static_cast<std::uint32_t>(width), static_cast<std::uint32_t>(height)};
-            m_mainWindow.set_size(windowSize);
-            recreate_swap_chain(windowSize);
+            m_framebufferResizeInfo.shouldResize = false;
+            m_mainWindow.set_size(m_framebufferResizeInfo.size);
+            recreate_swap_chain(m_framebufferResizeInfo.size);
         }
 
         void device::recreate_swap_chain(const core::extent<std::uint32_t>& extent) {

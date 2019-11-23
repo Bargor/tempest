@@ -92,6 +92,10 @@ namespace engine {
             void recreate_swap_chain(const core::extent<std::uint32_t>& extent);
 
         private:
+            struct framebuffer_resize {
+                bool shouldResize;
+                core::extent<std::uint32_t> size;
+            };
 
             std::uint32_t m_frameCounter;
             application::main_window& m_mainWindow;
@@ -113,7 +117,7 @@ namespace engine {
 
             ptr<engine_frontend> m_engineFrontend;
 
-            bool m_framebufferResized;
+            framebuffer_resize m_framebufferResizeInfo;
             std::uint32_t m_resourceIndex;
         };
 
