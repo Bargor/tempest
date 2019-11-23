@@ -64,10 +64,10 @@ namespace engine {
             : base::rendering_technique(std::move(techniqueName), std::move(techniqueSettings))
             , m_device(device)
             , m_swapChain(swapChain)
-            , m_extent(swapChain.get_extent())
-            , m_renderPass(create_render_pass(device, swapChain.get_format()))
-            , m_framebuffers(
-                  create_framebuffers(device, m_renderPass, m_swapChain.get().get_image_views(), swapChain.get_extent())) {
+            , m_extent(m_swapChain.get().get_extent())
+            , m_renderPass(create_render_pass(device, m_swapChain.get().get_format()))
+            , m_framebuffers(create_framebuffers(
+                  device, m_renderPass, m_swapChain.get().get_image_views(), m_swapChain.get().get_extent())) {
         }
 
         rendering_technique::rendering_technique(std::string&& techniqueName,
@@ -80,10 +80,10 @@ namespace engine {
             : base::rendering_technique(std::move(techniqueName), viewport, scissor, framebufferBlending, globalBlending)
             , m_device(device)
             , m_swapChain(swapChain)
-            , m_extent(swapChain.get_extent())
-            , m_renderPass(create_render_pass(device, swapChain.get_format()))
-            , m_framebuffers(
-                  create_framebuffers(device, m_renderPass, m_swapChain.get().get_image_views(), swapChain.get_extent())) {
+            , m_extent(m_swapChain.get().get_extent())
+            , m_renderPass(create_render_pass(device, m_swapChain.get().get_format()))
+            , m_framebuffers(create_framebuffers(
+                  device, m_renderPass, m_swapChain.get().get_image_views(), m_swapChain.get().get_extent())) {
         }
 
         rendering_technique::rendering_technique(rendering_technique&& technique) noexcept
@@ -107,13 +107,19 @@ namespace engine {
             m_renderPass = create_render_pass(m_device, m_swapChain.get().get_format());
             m_framebuffers = create_framebuffers(
                 m_device, m_renderPass, m_swapChain.get().get_image_views(), m_swapChain.get().get_extent());
+            m_extent = m_swapChain.get().get_extent();
         }
 
-        vk::RenderPassBeginInfo rendering_technique::generate_render_pass_info() const {
+        vk::RenderPassBeginInfo rendering_technique::generate_render_pass_info(vk::CommandBuffer buffer, vk::SubpassContents contents) const {
             vk::ClearValue clearColor = vk::ClearValue(std::array<float, 4>{0.0f, 0.0f, 0.0f, 1.0f});
 
-            vk::RenderPassBeginInfo renderPassInfo(
-                m_renderPass, m_framebuffers[m_swapChain.get().get_image_index()], vk::Rect2D({0, 0}, m_extent), 1, &clearColor);
+            vk::RenderPassBeginInfo renderPassInfo(m_renderPass,
+                                                   m_framebuffers[m_swapChain.get().get_image_index()],
+                                                   vk::Rect2D({0, 0}, m_extent),
+                                                   1,
+                                                   &clearColor);
+
+            buffer.beginRenderPass(renderPassInfo, contents);
 
             return renderPassInfo;
         }
@@ -122,8 +128,9 @@ namespace engine {
             for (auto framebuffer : m_framebuffers) {
                 m_device.destroyFramebuffer(framebuffer);
             }
-
-            m_device.destroyRenderPass(m_renderPass);
+            if (m_renderPass) {
+                m_device.destroyRenderPass(m_renderPass);
+            }
         }
 
     } // namespace vulkan

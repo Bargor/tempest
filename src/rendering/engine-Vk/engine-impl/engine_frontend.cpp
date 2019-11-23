@@ -58,8 +58,7 @@ namespace engine {
 
             vk::CommandBufferBeginInfo commandBufferInfo(vk::CommandBufferUsageFlagBits::eSimultaneousUse, nullptr);
             commandBuffer.begin(commandBufferInfo);
-            commandBuffer.beginRenderPass(drawInfo.pipelineState.get_technique().generate_render_pass_info(),
-                                          vk::SubpassContents::eInline);
+            drawInfo.pipelineState.get_technique().generate_render_pass_info(commandBuffer, vk::SubpassContents::eInline);
 
             drawInfo.pipelineState.bind_command_buffer(commandBuffer, vk::PipelineBindPoint::eGraphics);
 

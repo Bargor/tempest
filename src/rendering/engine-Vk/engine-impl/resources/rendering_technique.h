@@ -37,7 +37,7 @@ namespace engine {
 
             void recreate_technique(const swap_chain& newSwapChain);
 
-            vk::RenderPassBeginInfo generate_render_pass_info() const;
+            vk::RenderPassBeginInfo generate_render_pass_info(vk::CommandBuffer buffer, vk::SubpassContents contents) const;
 
         private:
             void destroy();
