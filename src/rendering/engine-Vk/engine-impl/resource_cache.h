@@ -14,6 +14,8 @@ namespace tst {
 namespace engine {
     namespace vulkan {
 
+        class swap_chain;
+
         class resource_cache {
         public:
             //resource_cache(const resource_cache&) = delete;
@@ -27,6 +29,7 @@ namespace engine {
             const shader_set* find_shaders(const std::string& name) const;
 
             void clear();
+            void rebuild_techniques(const swap_chain& newSwapChain);
 
         private:
             std::unordered_map<std::size_t, pipeline> m_pipelines;

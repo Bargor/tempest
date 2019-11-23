@@ -137,7 +137,7 @@ namespace engine {
             , m_frameResources(
                   {frame_resources(m_logicalDevice), frame_resources(m_logicalDevice), frame_resources(m_logicalDevice)})
             , m_engineFrontend(std::make_unique<engine_frontend>(m_eventProcessor, *this, *m_resourceCache))
-            , m_framebufferResizeInfo({false, 0, 0})
+            , m_framebufferResizeInfo({false, {0, 0}})
             , m_resourceIndex(0) {
             auto framebufferResizeCallback = [&](const application::app_event::arguments& args) {
                 assert(std::holds_alternative<application::app_event::framebuffer>(args));
@@ -315,6 +315,8 @@ namespace engine {
                                                              m_engineSettings.m_buffering);
 
             m_swapChain = std::move(newSwapChain);
+
+            m_resourceCache->rebuild_techniques(*m_swapChain.get());
         }
 
     } // namespace vulkan

@@ -41,7 +41,7 @@ namespace scene {
                                          engine::resource_factory& resourceFactory)
         : m_scene(scene), m_dataLoader(dataLoader), m_eventProcessor(eventProcessor), m_resourceFactory(resourceFactory) {
         auto framebuffer_callback = [](const application::app_event::arguments& args) {
-            assert(std::holds_alternative<application::app_event::iconify>(args));
+            assert(std::holds_alternative<application::app_event::framebuffer>(args));
         };
 
         m_eventProcessor.subscribe(

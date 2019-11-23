@@ -2,8 +2,7 @@
 // Author: Karol Kontny
 
 #include "resource_cache.h"
-
-#include "resources/pipeline.h"
+#include "swap_chain.h"
 
 namespace tst {
 namespace engine {
@@ -55,6 +54,12 @@ namespace engine {
             m_pipelines.clear();
             m_techniques.clear();
             m_shaders.clear();
+        }
+
+        void resource_cache::rebuild_techniques(const swap_chain& newSwapChain) {
+            for (auto& technique : m_techniques) {
+                technique.recreate_technique(newSwapChain);
+            }
         }
 
     } // namespace vulkan

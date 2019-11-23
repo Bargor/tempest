@@ -3,6 +3,7 @@
 #pragma once
 
 #include <engine-base/rendering_technique.h>
+#include <functional>
 #include <optional>
 #include <vulkan/vulkan.hpp>
 
@@ -34,11 +35,16 @@ namespace engine {
 
             ~rendering_technique();
 
+            void recreate_technique(const swap_chain& newSwapChain);
+
             vk::RenderPassBeginInfo generate_render_pass_info() const;
 
         private:
+            void destroy();
+
+        private:
             vk::Device m_device;
-            const swap_chain& m_swapChain;
+            std::reference_wrapper<const swap_chain> m_swapChain;
             vk::Extent2D m_extent;
             vk::RenderPass m_renderPass;
             std::vector<vk::Framebuffer> m_framebuffers;

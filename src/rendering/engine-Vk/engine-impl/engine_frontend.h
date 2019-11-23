@@ -24,7 +24,7 @@ namespace application {
 namespace engine {
 
     namespace vulkan {
-        class device_queues;
+        class device;
         template<typename IndexType>
         class index_buffer;
         class resource_cache;
