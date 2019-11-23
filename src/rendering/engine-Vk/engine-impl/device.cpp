@@ -220,7 +220,7 @@ namespace engine {
         }
 
         shader device::crate_shader(shader::shader_type type, std::vector<char>&& source, const std::string& name) const {
-            return shader(m_logicalDevice, type, std::move(source), std::move(name));
+            return shader(m_logicalDevice, type, std::move(source), name);
         }
 
         pipeline device::create_pipeline(const vertex_format& format,

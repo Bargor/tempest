@@ -62,7 +62,6 @@ namespace engine {
             const std::vector<attribute_descriptor>& get_attribute_descriptors() const noexcept;
             primitive_topology get_topology() const noexcept;
 
-
         protected:
             std::vector<attribute_descriptor> m_attributes;
             primitive_topology m_topology;
