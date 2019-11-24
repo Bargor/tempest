@@ -136,7 +136,7 @@ namespace engine {
             , m_transferQueueHandle(m_logicalDevice.getQueue(m_physicalDevice->get_transfer_index(), 0))
             , m_frameResources(
                   {frame_resources(m_logicalDevice), frame_resources(m_logicalDevice), frame_resources(m_logicalDevice)})
-            , m_engineFrontend(std::make_unique<engine_frontend>(m_eventProcessor, *this, *m_resourceCache))
+            , m_engineFrontend(std::make_unique<engine_frontend>(*this))
             , m_framebufferResizeInfo({false, {0, 0}})
             , m_resourceIndex(0) {
             auto framebufferResizeCallback = [&](const application::app_event::arguments& args) {
