@@ -62,6 +62,12 @@ namespace engine {
             }
         }
 
+        void resource_cache::rebuild_pipelines() {
+            for (auto& pipeline : m_pipelines) {
+                pipeline.second.recreate();
+            }
+        }
+
     } // namespace vulkan
 } // namespace engine
 } // namespace tst

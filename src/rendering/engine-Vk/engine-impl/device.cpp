@@ -317,6 +317,7 @@ namespace engine {
             m_swapChain = std::move(newSwapChain);
 
             m_resourceCache->rebuild_techniques(*m_swapChain.get());
+            m_resourceCache->rebuild_pipelines();
         }
 
     } // namespace vulkan

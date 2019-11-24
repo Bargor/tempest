@@ -108,6 +108,8 @@ namespace engine {
             m_framebuffers = create_framebuffers(
                 m_device, m_renderPass, m_swapChain.get().get_image_views(), m_swapChain.get().get_extent());
             m_extent = m_swapChain.get().get_extent();
+            m_viewportSettings.width = m_extent.width;
+            m_viewportSettings.height = m_extent.height;
         }
 
         vk::RenderPassBeginInfo rendering_technique::generate_render_pass_info(vk::CommandBuffer buffer, vk::SubpassContents contents) const {

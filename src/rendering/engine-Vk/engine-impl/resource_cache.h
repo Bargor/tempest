@@ -30,6 +30,7 @@ namespace engine {
 
             void clear();
             void rebuild_techniques(const swap_chain& newSwapChain);
+            void rebuild_pipelines();
 
         private:
             std::unordered_map<std::size_t, pipeline> m_pipelines;

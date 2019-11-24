@@ -289,9 +289,10 @@ namespace engine {
                                       const vk::RenderPass renderPass,
                                       const base::viewport_settings viewportSettings,
                                       const core::rectangle<std::int32_t, std::uint32_t> scissorSettings,
-                                      const std::vector<base::color_blending_settings> framebufferBlendingSettings,
-                                      const base::global_blending_settings globalBlendingSettings,
-                                      const settings& engineSettings,
+                                      const std::vector<base::color_blending_settings>& framebufferBlendingSettings,
+                                      const base::global_blending_settings& globalBlendingSettings,
+                                      const base::rasterizer_settings& rasterizerSettings,
+                                      const base::multisampling_settings& multisamplingSettings,
                                       const vertex_format& format,
                                       const shader_set& shaders) {
             vk::Viewport viewport(static_cast<float>(viewportSettings.x),
@@ -308,8 +309,8 @@ namespace engine {
             auto vertexInfo = create_vertex_input_info(bindingDesc, attributeDesc);
             auto assemblyInfo = create_assembly_info(format);
             auto viewportInfo = create_viewport_info(viewport, scissor);
-            auto rasterizationInfo = create_rasterization_info(engineSettings.m_rasterizer);
-            auto multisamplingInfo = create_multisampling_info(engineSettings.m_multisampling);
+            auto rasterizationInfo = create_rasterization_info(rasterizerSettings);
+            auto multisamplingInfo = create_multisampling_info(multisamplingSettings);
             auto colorBlendAttachment = create_color_blend_attachment(framebufferBlendingSettings);
             auto blendingInfo = create_color_blending_info(globalBlendingSettings, colorBlendAttachment);
 
@@ -352,7 +353,8 @@ namespace engine {
                                           technique.m_scissor,
                                           technique.m_framebufferColorBlending,
                                           technique.m_globalColorBlending,
-                                          engineSettings,
+                                          engineSettings.m_rasterizer,
+                                          engineSettings.m_multisampling,
                                           format,
                                           shaders))
             , m_pipelineSettings(technique.m_viewportSettings,
@@ -362,24 +364,25 @@ namespace engine {
                                  technique.m_framebufferColorBlending,
                                  technique.m_globalColorBlending)
             , m_technique(technique)
+            , m_shaders(shaders)
+            , m_vertexFormat(format)
             , m_logicalDevice(logicalDevice) {
         }
 
-        pipeline::pipeline(pipeline&& pipeline)
+        pipeline::pipeline(pipeline&& pipeline) noexcept
             : m_pipelineLayout(pipeline.m_pipelineLayout)
             , m_pipeline(pipeline.m_pipeline)
             , m_pipelineSettings(std::move(pipeline.m_pipelineSettings))
-            , m_technique(std::move(pipeline.m_technique))
+            , m_technique(pipeline.m_technique)
+            , m_shaders(pipeline.m_shaders)
+            , m_vertexFormat(pipeline.m_vertexFormat)
             , m_logicalDevice(pipeline.m_logicalDevice) {
             pipeline.m_pipeline = vk::Pipeline();
             pipeline.m_pipelineLayout = vk::PipelineLayout();
         }
 
         pipeline::~pipeline() {
-            if (m_pipeline) {
-                m_logicalDevice.destroyPipeline(m_pipeline);
-                m_logicalDevice.destroyPipelineLayout(m_pipelineLayout);
-            }
+            destroy();
         }
 
         void pipeline::bind_command_buffer(vk::CommandBuffer& buffer, vk::PipelineBindPoint bindPoint) const {
@@ -388,6 +391,32 @@ namespace engine {
 
         const rendering_technique& pipeline::get_technique() const noexcept {
             return m_technique;
+        }
+
+        void pipeline::recreate() {
+            destroy();
+            m_pipelineLayout = create_pipeline_layout(m_logicalDevice, m_shaders.layouts);
+            m_pipelineSettings.m_viewport.width = m_technique.m_viewportSettings.width;
+            m_pipelineSettings.m_viewport.height = m_technique.m_viewportSettings.height;
+
+            m_pipeline = compile_pipeline(m_logicalDevice,
+                                          m_pipelineLayout,
+                                          m_technique.m_renderPass,
+                                          m_pipelineSettings.m_viewport,
+                                          m_pipelineSettings.m_scissor,
+                                          m_pipelineSettings.m_framebufferColorBlending,
+                                          m_pipelineSettings.m_globalColorBlending,
+                                          m_pipelineSettings.m_rasterizer,
+                                          m_pipelineSettings.m_multisampling,
+                                          m_vertexFormat,
+                                          m_shaders);
+        }
+
+        void pipeline::destroy() {
+            if (m_pipeline) {
+                m_logicalDevice.destroyPipeline(m_pipeline);
+                m_logicalDevice.destroyPipelineLayout(m_pipelineLayout);
+            }
         }
 
     } // namespace vulkan
