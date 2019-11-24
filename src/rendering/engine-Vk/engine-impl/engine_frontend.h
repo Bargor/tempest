@@ -34,9 +34,7 @@ namespace engine {
 
         class engine_frontend {
         public:
-            engine_frontend(application::event_processor<application::app_event>& eventProcessor,
-                            device& device,
-                            resource_cache& resourceCache);
+            engine_frontend(device& device);
             engine_frontend(const engine_frontend& engine) = delete;
             ~engine_frontend();
 
@@ -47,10 +45,7 @@ namespace engine {
             vk::CommandBuffer generate_command_buffer(const draw_info& drawInfo);
 
         private:
-            application::event_processor<application::app_event>& m_eventProcessor;
-
             device& m_device;
-            resource_cache& m_resourceCache;
 
             std::array<vk::CommandPool, settings::m_inFlightFrames> m_commandPools;
             std::array<std::vector<vk::CommandBuffer>, settings::m_inFlightFrames> m_bufferCache;

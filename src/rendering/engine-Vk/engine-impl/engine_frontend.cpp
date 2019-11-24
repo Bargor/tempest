@@ -27,12 +27,8 @@ namespace engine {
 
     namespace vulkan {
 
-        engine_frontend::engine_frontend(application::event_processor<application::app_event>& eventProcessor,
-                                         device& device,
-                                         resource_cache& resourceCache)
-            : m_eventProcessor(eventProcessor)
-            , m_device(device)
-            , m_resourceCache(resourceCache)
+        engine_frontend::engine_frontend(device& device)
+            : m_device(device)
             , m_commandPools(
                   {m_device.create_command_pool(), m_device.create_command_pool(), m_device.create_command_pool()}) {
         }

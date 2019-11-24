@@ -2,7 +2,7 @@
 // Author: Karol Kontny
 
 #include <engine-impl/opengl_exception.h>
-#include <engine-impl/shader.h>
+#include <engine-impl/resources/shader.h>
 
 #include <gtest/gtest.h>
 
