@@ -57,7 +57,7 @@ namespace engine {
         };
 
         template<typename Iter>
-        bool device::draw_frame(Iter first, Iter last) {
+        bool device::draw_frame(Iter, Iter) {
             return true;
         }
 
