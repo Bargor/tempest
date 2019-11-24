@@ -10,10 +10,13 @@ namespace engine {
 
         class settings : public base::settings {
         public:
-            settings(base::settings&& settings);
+            enum class buffering { double_buf = 2, triple_buf = 3 };
+
+            settings(base::settings&& settings, buffering buffers);
             ~settings();
 
         private:
+            buffering m_buffering;
         };
 
     } // namespace opengl

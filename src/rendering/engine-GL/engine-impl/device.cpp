@@ -22,16 +22,18 @@ namespace engine {
         device::~device() {
         }
 
+        void device::start() {
+        }
+
+        void device::stop() {
+        }
+
         vertex_buffer device::create_vertex_buffer(const vertex_format& format, std::vector<vertex>&& vertices) const {
             return vertex_buffer(format, std::move(vertices));
         }
 
         uniform_buffer device::create_uniform_buffer() const {
             return uniform_buffer();
-        }
-
-        bool device::draw() {
-            return true;
         }
     } // namespace opengl
 } // namespace engine

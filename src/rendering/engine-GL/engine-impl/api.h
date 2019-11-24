@@ -3,6 +3,8 @@
 
 #pragma once
 
+#include "GL/glew.h"
+
 #include <memory>
 
 namespace tst {

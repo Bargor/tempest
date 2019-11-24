@@ -45,12 +45,21 @@ namespace engine {
             gpu_info& get_GPU_info() const noexcept;
             void submit_command_list(const command_list& commandList);
 
-            bool draw();
+            template<typename Iter>
+            bool draw_frame(Iter first, Iter last);
+
+            void start();
+            void stop();
 
         private:
             ptr<gpu_info> m_gpuInfo;
             std::vector<command_list> m_drawCommands;
         };
+
+        template<typename Iter>
+        bool device::draw_frame(Iter first, Iter last) {
+            return true;
+        }
 
         template<typename IndexType>
         index_buffer<IndexType> device::create_index_buffer(std::vector<IndexType>&& indices) const {

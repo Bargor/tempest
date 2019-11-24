@@ -12,7 +12,7 @@ namespace engine {
         public:
             using super = base::vertex_format;
 
-            vertex_format();
+            vertex_format(primitive_topology topology);
             ~vertex_format();
         private:
         };
