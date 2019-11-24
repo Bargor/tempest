@@ -51,8 +51,6 @@ namespace engine {
                 m_device.submit_command_list(commandList);
             }
 
-            m_device.draw();
-
             return true;
         }
 
