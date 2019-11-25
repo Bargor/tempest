@@ -51,7 +51,7 @@ namespace scene {
     }
 
     void object_controller::load_object(const std::string&) {
-        m_dataLoader;
+        m_dataLoader.add_search_path(""); //for ununsed priate object touch
         auto vertexFormat = engine::vertex_format(engine::base::vertex_format::primitive_topology::triangle_list);
         vertexFormat.add_attribute(engine::base::vertex_format::location::position,
                                    engine::base::vertex_format::format::float2,
