@@ -60,8 +60,11 @@ namespace engine {
 
             std::vector<vk::Buffer> vertexBuffers = {drawInfo.vertices->get_handle()};
             std::vector<vk::DeviceSize> offsets = {0};
+            auto descriptorSet = drawInfo.uniforms->get_descriptor_set();
             commandBuffer.bindVertexBuffers(0, vertexBuffers, offsets);
             commandBuffer.bindIndexBuffer(drawInfo.indices->get_handle(), 0, vk::IndexType::eUint16);
+            commandBuffer.bindDescriptorSets(
+                vk::PipelineBindPoint::eGraphics, drawInfo.pipelineState.get_layout(), 0, 1, &descriptorSet, 0, nullptr);
             commandBuffer.drawIndexed(drawInfo.indices->get_index_count(), 1, 0, 0, 0);
             commandBuffer.endRenderPass();
             commandBuffer.end();

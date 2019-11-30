@@ -30,13 +30,13 @@ namespace scene {
     class scene;
     class object_controller;
 
-    std::vector<scene_object::state> update_scene(const scene& scene,
+    std::vector<scene_object::state> update_scene(scene& scene,
                                                   std::chrono::duration<std::uint64_t, std::micro> elapsedTime);
 
     std::vector<engine::draw_info> prepare_draw_info(const std::vector<scene_object::state>& sceneState);
 
     class scene {
-        friend std::vector<scene_object::state> update_scene(const scene& scene,
+        friend std::vector<scene_object::state> update_scene(scene& scene,
                                                              std::chrono::duration<std::uint64_t, std::micro> elapsedTime);
 
     public:

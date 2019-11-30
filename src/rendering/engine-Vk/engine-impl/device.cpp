@@ -141,14 +141,15 @@ namespace engine {
             , m_resourceIndex(0) {
             auto framebufferResizeCallback = [&](const application::app_event::arguments& args) {
                 assert(std::holds_alternative<application::app_event::framebuffer>(args));
-                m_framebufferResizeInfo =
-                    {true, std::get<application::app_event::framebuffer>(args).size};
+                m_framebufferResizeInfo = {true, std::get<application::app_event::framebuffer>(args).size};
             };
 
             m_eventProcessor.subscribe(
                 core::variant_index<application::app_event::arguments, application::app_event::framebuffer>(),
                 this,
                 std::move(framebufferResizeCallback));
+
+            create_descriptor_pool(200);
         }
 
         device::~device() {
@@ -171,7 +172,7 @@ namespace engine {
             m_logicalDevice.destroy();
         }
 
-        vk::CommandPool& device::create_command_pool() {
+        vk::CommandPool device::create_command_pool() {
             vk::CommandPoolCreateInfo createInfo(vk::CommandPoolCreateFlags(), m_physicalDevice->get_graphics_index());
 
             m_commandPools.emplace_back(m_logicalDevice.createCommandPool(createInfo));
@@ -204,7 +205,7 @@ namespace engine {
 
         vertex_buffer device::create_vertex_buffer(const vertex_format& format,
                                                    std::vector<vertex>&& vertices,
-                                                   const vk::CommandPool& cmdPool) const {
+                                                   const vk::CommandPool cmdPool) const {
             return vertex_buffer(m_logicalDevice,
                                  m_graphicsQueueHandle,
                                  cmdPool,
@@ -213,10 +214,13 @@ namespace engine {
                                  std::move(vertices));
         }
 
-        uniform_buffer device::create_uniform_buffer(const vk::CommandPool& cmdPool) const {
+        uniform_buffer device::create_uniform_buffer(const vk::CommandPool cmdPool,
+                                                     const vk::DescriptorSetLayout layout) const {
             return uniform_buffer(m_logicalDevice,
                                   m_graphicsQueueHandle,
                                   cmdPool,
+                                  m_descriptorPools[0],
+                                  layout,
                                   m_physicalDevice->get_memory_properties(),
                                   m_resourceIndex);
         }
@@ -290,7 +294,7 @@ namespace engine {
         }
 
         void device::cleanup_swap_chain_dependancies() {
-            //m_resourceCache.
+            // m_resourceCache.
         }
 
         void device::update_framebuffer() {

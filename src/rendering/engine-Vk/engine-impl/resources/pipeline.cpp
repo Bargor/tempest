@@ -393,6 +393,10 @@ namespace engine {
             return m_technique;
         }
 
+        vk::PipelineLayout pipeline::get_layout() const noexcept {
+            return m_pipelineLayout;
+        }
+
         void pipeline::recreate() {
             destroy();
             m_pipelineLayout = create_pipeline_layout(m_logicalDevice, m_shaders.layouts);

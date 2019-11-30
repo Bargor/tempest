@@ -27,7 +27,7 @@ namespace application {
         rasterizerSettings.rasterizerDiscard = false;
         rasterizerSettings.polygonMode = engine::base::rasterizer_settings::polygon_mode::fill;
         rasterizerSettings.cullMode = engine::base::rasterizer_settings::cull_mode::back;
-        rasterizerSettings.frontFace = engine::base::rasterizer_settings::front_face::clockwise;
+        rasterizerSettings.frontFace = engine::base::rasterizer_settings::front_face::counter_clockwise;
         rasterizerSettings.lineWidth = 1.0f;
         rasterizerSettings.depthBias = {false, 0.0f, 0.0f, 0.0f};
 

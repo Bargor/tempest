@@ -56,7 +56,7 @@ namespace engine {
         public: // public engine interface
             template<typename IndexType>
             index_buffer<IndexType> create_index_buffer(std::vector<IndexType>&& indices,
-                                                        const vk::CommandPool& cmdPool) const;
+                                                        const vk::CommandPool cmdPool) const;
             rendering_technique create_technique(std::string&& name, base::technique_settings&& settings) const;
             shader crate_shader(shader::shader_type type, std::vector<char>&& source, const std::string& name) const;
             pipeline create_pipeline(const vertex_format& format,
@@ -64,8 +64,9 @@ namespace engine {
                                      const rendering_technique& technique);
             vertex_buffer create_vertex_buffer(const vertex_format& format,
                                                std::vector<vertex>&& vertices,
-                                               const vk::CommandPool& cmdPool) const;
-            uniform_buffer create_uniform_buffer(const vk::CommandPool& cmdPool) const;
+                                               const vk::CommandPool cmdPool) const;
+            uniform_buffer create_uniform_buffer(const vk::CommandPool cmdPool,
+                                                 const vk::DescriptorSetLayout layout) const;
             gpu_info& get_GPU_info() const noexcept;
             resource_cache& get_resource_cache() noexcept;
 
@@ -76,7 +77,7 @@ namespace engine {
             void stop();
 
         public: // public Vulkan interface
-            vk::CommandPool& create_command_pool();
+            vk::CommandPool create_command_pool();
             vk::DescriptorPool create_descriptor_pool(std::uint32_t size);
             vk::DescriptorSetLayout create_descriptor_set_layout() const;
 
@@ -139,7 +140,7 @@ namespace engine {
 
         template<typename IndexType>
         index_buffer<IndexType> device::create_index_buffer(std::vector<IndexType>&& indices,
-                                                            const vk::CommandPool& cmdPool) const {
+                                                            const vk::CommandPool cmdPool) const {
             return index_buffer<std::uint16_t>(m_logicalDevice,
                                                m_graphicsQueueHandle,
                                                cmdPool,

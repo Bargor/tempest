@@ -31,6 +31,7 @@ namespace engine {
             void bind_command_buffer(vk::CommandBuffer& buffer, vk::PipelineBindPoint bindPoint) const;
 
             const rendering_technique& get_technique() const noexcept;
+            vk::PipelineLayout get_layout() const noexcept;
 
             void recreate();
 

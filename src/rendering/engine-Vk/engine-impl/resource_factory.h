@@ -36,7 +36,7 @@ namespace engine {
                                             const vertex_format& format);
             void create_technique(std::string&& name, base::technique_settings&& settings);
             vertex_buffer create_vertex_buffer(const vertex_format& format, std::vector<vertex>&& vertices);
-            uniform_buffer create_uniform_buffer();
+            uniform_buffer create_uniform_buffer(const std::string& shaderName);
 
         public: // vulkan internal
             const shader_set* load_shaders(const std::string& shadersName);

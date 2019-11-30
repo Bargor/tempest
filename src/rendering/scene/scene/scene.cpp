@@ -5,7 +5,7 @@
 
 namespace tst {
 namespace scene {
-    std::vector<scene_object::state> update_scene(const scene& scene,
+    std::vector<scene_object::state> update_scene(scene& scene,
                                                   std::chrono::duration<std::uint64_t, std::micro> elapsedTime) {
         std::vector<scene_object::state> newSceneState;
         for (auto& object : scene.m_objects) {
@@ -19,7 +19,7 @@ namespace scene {
         drawInfos.reserve(sceneState.size());
 
         for (auto& state : sceneState) {
-            engine::draw_info info(state.vertices, state.indices, state.pipeline);
+            engine::draw_info info(state.vertices, state.indices, state.pipeline, &state.uniform);
             drawInfos.emplace_back(std::move(info));
         }
 

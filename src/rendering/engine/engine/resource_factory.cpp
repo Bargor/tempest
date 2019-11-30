@@ -38,8 +38,8 @@ namespace engine {
         return super::create_vertex_buffer(format, std::move(vertices));
     }
 
-    resources::uniform_buffer resource_factory::create_uniform_buffer() {
-        return super::create_uniform_buffer();
+    resources::uniform_buffer resource_factory::create_uniform_buffer(const std::string& shaderName) {
+        return super::create_uniform_buffer(shaderName);
     }
 } // namespace engine
 } // namespace tst
