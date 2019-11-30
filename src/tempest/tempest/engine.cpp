@@ -102,7 +102,7 @@ namespace application {
             m_mainWindow.end_frame();
             m_lastSecondFrames++;
         }
-        m_lastFrameDuration = frameStart - m_timeSource.now();
+        m_lastFrameDuration = m_timeSource.now() - frameStart;
     }
 
 } // namespace application

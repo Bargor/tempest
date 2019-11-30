@@ -42,6 +42,8 @@ namespace scene {
         const engine::resources::pipeline& m_pipeline;
 
         state m_objectState;
+
+        float m_time;
     };
 
 } // namespace scene
