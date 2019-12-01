@@ -2,6 +2,7 @@
 // Author: Karol Kontny
 #pragma once
 
+#include "api.h"
 #include "command_list.h"
 #include "resources/index_buffer.h"
 #include "resources/settings.h"

@@ -3,11 +3,15 @@
 
 #include "resource_factory.h"
 
+#include "shader_compiler.h"
+
 namespace tst {
 namespace engine {
     namespace opengl {
         resource_factory::resource_factory(device& device, application::data_loader& dataLoader)
-            : m_device(device), m_dataLoader(dataLoader) {
+            : m_device(device)
+            , m_dataLoader(dataLoader)
+            , m_shaderCompiler(std::make_unique<shader_compiler>(m_dataLoader)) {
         }
 
         resource_factory::~resource_factory() {
@@ -31,8 +35,8 @@ namespace engine {
             return m_device.create_uniform_buffer(shaderName);
         }
 
-        void resource_factory::create_technique(std::string&&, base::technique_settings&&) {
-        
+        void resource_factory::create_technique(std::string&& name, base::technique_settings&&) {
+            m_shaderCompiler->compile_program(name, shaderTypesSet{});
         }
     }
 }

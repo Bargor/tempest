@@ -18,7 +18,7 @@ namespace engine {
         class shader_compiler {
         public:
             std::optional<shader_program> compile_program(std::string_view&& name,
-                                                          const opengl::shaderTypesSet& types) const;
+                                                          const shaderTypesSet& types) const;
 
         public:
             shader_compiler(application::data_loader& data_loader);

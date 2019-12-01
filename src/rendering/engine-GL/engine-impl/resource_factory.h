@@ -19,6 +19,7 @@ namespace engine {
 
     namespace opengl {
         class device;
+        class shader_compiler;
 
         class resource_factory {
         public:
@@ -38,6 +39,7 @@ namespace engine {
         private:
             device& m_device;
             application::data_loader& m_dataLoader;
+            ptr<shader_compiler> m_shaderCompiler;
         };
 
         template<typename IndexType>
