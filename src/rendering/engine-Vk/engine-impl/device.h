@@ -88,7 +88,6 @@ namespace engine {
             std::uint32_t get_resource_index() const noexcept;
 
         private:
-            void cleanup_swap_chain_dependancies();
             void update_framebuffer();
             void recreate_swap_chain(const core::extent<std::uint32_t>& extent);
 

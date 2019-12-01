@@ -293,10 +293,6 @@ namespace engine {
             return true;
         }
 
-        void device::cleanup_swap_chain_dependancies() {
-            // m_resourceCache.
-        }
-
         void device::update_framebuffer() {
             m_framebufferResizeInfo.shouldResize = false;
             m_mainWindow.set_size(m_framebufferResizeInfo.size);
@@ -306,7 +302,14 @@ namespace engine {
         void device::recreate_swap_chain(const core::extent<std::uint32_t>& extent) {
             m_logicalDevice.waitIdle();
 
-            cleanup_swap_chain_dependancies();
+            for (auto& resource : m_frameResources) {
+                m_logicalDevice.destroySemaphore(resource.imageAvailable);
+                m_logicalDevice.destroySemaphore(resource.renderFinished);
+                m_logicalDevice.destroyFence(resource.inFlightFences);
+            }
+
+            m_frameResources = {
+                frame_resources(m_logicalDevice), frame_resources(m_logicalDevice), frame_resources(m_logicalDevice)};
 
             m_swapChain.reset();
 
