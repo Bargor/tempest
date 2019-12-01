@@ -15,9 +15,16 @@ namespace engine {
             settings(base::settings&& settings, buffering buffers);
             ~settings();
 
+            //TODO: remove this
+            buffering get_buffering() const noexcept;
+
         private:
             buffering m_buffering;
         };
+
+        inline settings::buffering settings::get_buffering() const noexcept {
+            return m_buffering;
+        }
 
     } // namespace opengl
 } // namespace engine
