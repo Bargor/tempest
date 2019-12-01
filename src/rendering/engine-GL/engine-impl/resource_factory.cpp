@@ -27,8 +27,8 @@ namespace engine {
             return m_device.create_vertex_buffer(format, std::move(vertices));
         }
 
-        uniform_buffer resource_factory::create_uniform_buffer() {
-            return m_device.create_uniform_buffer();
+        uniform_buffer resource_factory::create_uniform_buffer(const std::string& shaderName) {
+            return m_device.create_uniform_buffer(shaderName);
         }
 
         void resource_factory::create_technique(std::string&&, base::technique_settings&&) {

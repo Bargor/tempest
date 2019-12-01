@@ -32,7 +32,7 @@ namespace engine {
             return vertex_buffer(format, std::move(vertices));
         }
 
-        uniform_buffer device::create_uniform_buffer() const {
+        uniform_buffer device::create_uniform_buffer(const std::string&) const {
             return uniform_buffer();
         }
     } // namespace opengl

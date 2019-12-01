@@ -40,7 +40,7 @@ namespace engine {
             template<typename IndexType>
             index_buffer<IndexType> create_index_buffer(std::vector<IndexType>&& indices) const;
             vertex_buffer create_vertex_buffer(const vertex_format& format, std::vector<vertex>&& vertices) const;
-            uniform_buffer create_uniform_buffer() const;
+            uniform_buffer create_uniform_buffer(const std::string& shaderName) const;
 
             gpu_info& get_GPU_info() const noexcept;
             void submit_command_list(const command_list& commandList);

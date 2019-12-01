@@ -12,7 +12,7 @@ namespace engine {
     namespace opengl {
         class draw_info {
         public:
-            draw_info(const vertex_buffer* vertices, const index_buffer<std::uint16_t>* indices, const pipeline& pipeline);
+            draw_info(const vertex_buffer* vertices, const index_buffer<std::uint16_t>* indices, const pipeline& pipeline, const uniform_buffer* uniforms);
 
             ~draw_info() = default;
 
@@ -20,6 +20,7 @@ namespace engine {
             const vertex_buffer* vertices;
             const index_buffer<std::uint16_t>* indices;
             const pipeline& pipelineState;
+            const uniform_buffer* uniforms;
         };
     } // namespace opengl
 } // namespace engine

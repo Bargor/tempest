@@ -3,7 +3,6 @@
 #pragma once
 
 #include "draw_info.h"
-#include "engine_init.h"
 #include "queue_indices.h"
 #include "resources/settings.h"
 

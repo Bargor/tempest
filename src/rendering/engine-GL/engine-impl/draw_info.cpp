@@ -8,9 +8,10 @@ namespace engine {
     namespace opengl {
         draw_info::draw_info(const vertex_buffer* vertices,
                              const index_buffer<std::uint16_t>* indices,
-                             const pipeline& pipeline)
-            : vertices(vertices), indices(indices), pipelineState(pipeline) {
+                             const pipeline& pipeline,
+                             const uniform_buffer* uniforms)
+            : vertices(vertices), indices(indices), pipelineState(pipeline), uniforms(uniforms) {
         }
-    }
-}
-}
+    } // namespace opengl
+} // namespace engine
+} // namespace tst
