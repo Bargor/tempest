@@ -40,8 +40,11 @@ namespace scene {
                                          application::event_processor<application::app_event>& eventProcessor,
                                          engine::resource_factory& resourceFactory)
         : m_scene(scene), m_dataLoader(dataLoader), m_eventProcessor(eventProcessor), m_resourceFactory(resourceFactory) {
-        auto framebuffer_callback = [](const application::app_event::arguments& args) {
+        auto framebuffer_callback = [this](const application::app_event::arguments& args) {
             assert(std::holds_alternative<application::app_event::framebuffer>(args));
+            if (std::get<application::app_event::framebuffer>(args).size.height > 2000) { //for compilation purposes
+                m_dataLoader.add_search_path(""); // for ununsed priate object touch
+            }
         };
 
         m_eventProcessor.subscribe(
@@ -51,7 +54,6 @@ namespace scene {
     }
 
     void object_controller::load_object(const std::string&) {
-        m_dataLoader.add_search_path(""); // for ununsed priate object touch
         auto vertexFormat = engine::vertex_format(engine::base::vertex_format::primitive_topology::triangle_list);
         vertexFormat.add_attribute(engine::base::vertex_format::location::position,
                                    engine::base::vertex_format::format::float2,
