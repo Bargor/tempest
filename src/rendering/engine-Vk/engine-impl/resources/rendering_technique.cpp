@@ -90,6 +90,7 @@ namespace engine {
             : base::rendering_technique(std::move(technique))
             , m_device(technique.m_device)
             , m_swapChain(technique.m_swapChain)
+            , m_extent(technique.m_extent)
             , m_renderPass(technique.m_renderPass)
             , m_framebuffers(std::move(technique.m_framebuffers)) {
             technique.m_renderPass = vk::RenderPass();
