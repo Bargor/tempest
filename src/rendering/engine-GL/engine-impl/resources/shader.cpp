@@ -3,7 +3,7 @@
 
 #include "shader.h"
 
-#include "opengl_exception.h"
+#include "../opengl_exception.h"
 
 #include <algorithm/algorithm.h>
 #include <assert.h>

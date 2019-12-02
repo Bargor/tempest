@@ -51,8 +51,10 @@ namespace engine {
                 shader shaderModule =
                     m_device.crate_shader(static_cast<shader::shader_type>(idx), std::move(bytecode.value()), name);
 
-                shaders.emplace_back(std::move(shaderModule));
+                shaders.shaders.emplace_back(std::move(shaderModule));
             }
+            shaders.layouts.emplace_back(m_device.create_descriptor_set_layout());
+
             return shaders;
         }
 

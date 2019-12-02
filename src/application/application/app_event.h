@@ -3,11 +3,11 @@
 
 #pragma once
 
-#include <chrono>
-#include <variant>
-
 #include "object_id.h"
 #include "window.h"
+
+#include <chrono>
+#include <variant>
 
 namespace tst {
 namespace application {
@@ -45,14 +45,14 @@ namespace application {
         };
 
         struct framebuffer {
-            window::window_size size;
+            core::extent<std::uint32_t> size;
         };
 
         struct closed {};
 
-		struct visible {
+        struct visible {
             window::visible_option visible;
-		};
+        };
 
         struct time {
             std::chrono::microseconds time;

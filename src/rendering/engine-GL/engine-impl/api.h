@@ -3,6 +3,10 @@
 
 #pragma once
 
+#include "GL/glew.h"
+
+#include <memory>
+
 namespace tst {
 namespace engine {
 
@@ -11,6 +15,9 @@ namespace engine {
         class gpu_info;
         class rendering_engine;
         class vertex_format;
+
+        template<typename T>
+        using ptr = std::unique_ptr<T>;
     } // namespace opengl
 
     namespace api = opengl;

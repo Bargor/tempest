@@ -3,25 +3,69 @@
 
 #include "resource_factory.h"
 
+#include "resource_cache.h"
+#include "shader_compiler.h"
+
 namespace tst {
 namespace engine {
     namespace vulkan {
 
-        resource_factory::resource_factory(device& device)
-            : m_device(device), m_commandPool(m_device.create_command_pool()) {
+        resource_factory::resource_factory(device& device, application::data_loader& dataLoader)
+            : m_device(device)
+            , m_dataLoader(dataLoader)
+            , m_resourceCache(m_device.get_resource_cache())
+            , m_shaderCompiler(std::make_unique<shader_compiler>(m_dataLoader, m_device))
+            , m_commandPool(m_device.create_command_pool()) {
         }
 
         resource_factory::~resource_factory() {
         }
 
-        vertex_buffer resource_factory::create_vertex_buffer(const vertex_format& format,
-                                                             std::vector<vertex>&& vertices) {
+        const pipeline& resource_factory::create_pipeline(const std::string& techniqueName,
+                                                          const std::string& shadersName,
+                                                          const vertex_format& format) {
+            auto shaders = m_resourceCache.find_shaders(shadersName);
+            auto technique = m_resourceCache.find_technique(techniqueName);
+
+            if (!shaders) {
+                shaders = load_shaders(shadersName);
+            }
+
+            if (shaders && technique) {
+                auto pipeline = m_device.create_pipeline(format, *shaders, *technique);
+
+                auto hash = m_resourceCache.add_pipeline(std::move(pipeline));
+
+                return *m_resourceCache.find_pipeline(hash);
+            }
+            throw std::runtime_error("Can't find pipeline");
+        }
+
+        void resource_factory::create_technique(std::string&& name, base::technique_settings&& settings) {
+            if (m_resourceCache.find_technique(name) != nullptr) {
+                return;
+            }
+            auto technique = m_device.create_technique(std::move(name), std::move(settings));
+
+            m_resourceCache.add_rendering_technique(std::move(technique));
+        }
+
+        vertex_buffer resource_factory::create_vertex_buffer(const vertex_format& format, std::vector<vertex>&& vertices) {
             return m_device.create_vertex_buffer(format, std::move(vertices), m_commandPool);
         }
 
-        uniform_buffer resource_factory::create_uniform_buffer() {
-            return m_device.create_uniform_buffer(m_commandPool);
+        uniform_buffer resource_factory::create_uniform_buffer(const std::string& shaderName) {
+            auto shaders = m_resourceCache.find_shaders(shaderName);
+            return m_device.create_uniform_buffer(m_commandPool, shaders->layouts[0]);
         }
-    } // namespace resources
+
+        const shader_set* resource_factory::load_shaders(const std::string& shadersName) {
+            auto shaders = m_shaderCompiler->compile_shaders(shadersName);
+
+            m_resourceCache.add_shaders(shadersName, std::move(shaders));
+
+            return m_resourceCache.find_shaders(shadersName);
+        }
+    } // namespace vulkan
 } // namespace engine
 } // namespace tst

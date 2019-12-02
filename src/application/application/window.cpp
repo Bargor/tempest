@@ -10,7 +10,7 @@ namespace application {
 
     window::window(std::string&& name,
                    event_processor<app_event>& eventProcessor,
-                   const window_size& size,
+                   const core::extent<std::uint32_t>& size,
                    fullscreen_option windowMode,
                    visible_option visibility,
                    open_option open,
@@ -27,7 +27,7 @@ namespace application {
     window::~window() {
     }
 
-    window::window_size window::get_size() const noexcept {
+    core::extent<std::uint32_t> window::get_size() const noexcept {
         return m_size;
     }
 

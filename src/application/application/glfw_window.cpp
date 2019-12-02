@@ -18,7 +18,7 @@ namespace application {
 
     glfw_window::glfw_window(std::string&& name,
                              event_processor<app_event>& eventProcessor,
-                             const window_size& size,
+                             const core::extent<std::uint32_t>& size,
                              fullscreen_option windowMode,
                              visible_option visibility,
                              open_option open,
@@ -47,14 +47,13 @@ namespace application {
             assert(std::holds_alternative<app_event::framebuffer>(args));
             set_size_internal(std::get<app_event::framebuffer>(args).size, false);
         };
-        auto focus_callback = [&](const app_event::arguments& args) { 
-			if (std::get<app_event::focus>(args).focused == focus_option::focused) {
-                focus_internal(false); 
+        auto focus_callback = [&](const app_event::arguments& args) {
+            if (std::get<app_event::focus>(args).focused == focus_option::focused) {
+                focus_internal(false);
             } else {
                 unfocus();
-			}
-				
-		};
+            }
+        };
         auto visible_callback = [&](const app_event::arguments& args) {
             if (std::get<app_event::visible>(args).visible == visible_option::visible) {
                 show_internal(false);
@@ -89,7 +88,7 @@ namespace application {
         close();
     }
 
-    void glfw_window::set_size_internal(const window_size& size, bool broadcast) noexcept {
+    void glfw_window::set_size_internal(const core::extent<std::uint32_t>& size, bool broadcast) noexcept {
         assert(m_windowHandle);
         assert(std::this_thread::get_id() == core::main_thread::get_id());
         m_size = size;
@@ -99,19 +98,19 @@ namespace application {
         }
     }
 
-    void glfw_window::set_size(const window_size& size) noexcept {
+    void glfw_window::set_size(const core::extent<std::uint32_t>& size) noexcept {
         set_size_internal(size, false);
     }
 
-    position<std::int32_t> glfw_window::get_position() const noexcept {
+    core::position<std::int32_t> glfw_window::get_position() const noexcept {
         assert(m_windowHandle);
         assert(std::this_thread::get_id() == core::main_thread::get_id());
-        position<std::int32_t> pos;
+        core::position<std::int32_t> pos;
         glfwGetWindowPos(m_windowHandle, &pos.x, &pos.y);
         return pos;
     }
 
-    void glfw_window::set_position(const position<std::int32_t>& pos) noexcept {
+    void glfw_window::set_position(const core::position<std::int32_t>& pos) noexcept {
         assert(m_windowHandle);
         assert(std::this_thread::get_id() == core::main_thread::get_id());
         assert(m_windowMode == fullscreen_option::windowed);
@@ -127,7 +126,7 @@ namespace application {
     void glfw_window::focus_internal(bool broadcast) noexcept {
         assert(m_windowHandle);
         assert(std::this_thread::get_id() == core::main_thread::get_id());
-        assert(m_focused == focus_option::unfocused);
+        // assert(m_focused == focus_option::unfocused);
         m_focused = focus_option::focused;
         if (broadcast) {
             glfwFocusWindow(m_windowHandle);
@@ -139,7 +138,7 @@ namespace application {
         focus_internal(true);
     }
 
-	void glfw_window::unfocus() noexcept {
+    void glfw_window::unfocus() noexcept {
         assert(m_windowHandle);
         assert(std::this_thread::get_id() == core::main_thread::get_id());
         assert(m_focused == focus_option::focused);

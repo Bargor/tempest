@@ -9,11 +9,14 @@ set(CORE_HDRS
 	algorithm/algorithm.h
 	atomic/spinlock.h
 	common/position.h
+	common/rectangle.h
 	container/queue.h
 	memory/frame_allocator.h
 	numeric/random.h
 	time/timer.h
 	thread/main_thread.h
+	util/bitpack.h
+	util/hash.h
 	util/variant.h
 )
 

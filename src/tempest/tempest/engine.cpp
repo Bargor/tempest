@@ -3,18 +3,42 @@
 
 #include "engine.h"
 
+// clang-format off
+#include <engine/device.h>
 #include <application/app_event.h>
 #include <application/event_processor.h>
 #include <application/input_processor.h>
-#include <engine/engine.h>
 #include <application/main_window.h>
-#include <fmt/printf.h>
 #include <engine/resource_factory.h>
+#include <engine/settings.h>
+#include <fmt/printf.h>
 #include <scene/scene.h>
+#include <scene/object_controller.h>
 #include <util/variant.h>
+// clang-format on
 
 namespace tst {
 namespace application {
+
+    engine::api::settings create_engine_settings() {
+        engine::base::rasterizer_settings rasterizerSettings;
+
+        rasterizerSettings.depthClamp = false;
+        rasterizerSettings.rasterizerDiscard = false;
+        rasterizerSettings.polygonMode = engine::base::rasterizer_settings::polygon_mode::fill;
+        rasterizerSettings.cullMode = engine::base::rasterizer_settings::cull_mode::back;
+        rasterizerSettings.frontFace = engine::base::rasterizer_settings::front_face::counter_clockwise;
+        rasterizerSettings.lineWidth = 1.0f;
+        rasterizerSettings.depthBias = {false, 0.0f, 0.0f, 0.0f};
+
+        engine::base::multisampling_settings multisamplingSettings;
+        multisamplingSettings.enable = false;
+        multisamplingSettings.samples = engine::base::multisampling_settings::sample_count::samples_1;
+        engine::api::settings engineSettings{engine::base::settings(rasterizerSettings, multisamplingSettings),
+                                             engine::api::settings::buffering::triple_buf};
+
+        return engineSettings;
+    }
 
     simulation_engine::simulation_engine(time_source& timeSource,
                                          event_processor<app_event>& eventProcessor,
@@ -26,14 +50,14 @@ namespace application {
         , m_inputProcessor(inputProcessor)
         , m_mainWindow(mainWindow)
         , m_dataLoader(dataLoader)
-        , m_renderingDevice(std::make_unique<engine::device>(m_mainWindow))
-        , m_renderingEngine(std::make_unique<engine::rendering_engine>(m_mainWindow, m_dataLoader, m_eventProcessor, *m_renderingDevice))
-        , m_resourceFactory(std::make_unique<engine::resource_factory>(*m_renderingDevice))
-        , m_scene(std::make_unique<scene::scene>())
+        , m_renderingDevice(std::make_unique<engine::device>(m_mainWindow, m_eventProcessor, create_engine_settings()))
+        , m_resourceFactory(std::make_unique<engine::resource_factory>(*m_renderingDevice, m_dataLoader))
+        , m_scene(std::make_unique<scene::scene>("world", dataLoader, eventProcessor, *m_resourceFactory))
         , m_frameCounter(0)
         , m_lastSecondFrames(0)
         , m_shouldClose(false)
-        , m_windowMinimized(false) {
+        , m_windowMinimized(false)
+        , m_lastFrameDuration(0) {
         auto close_callback = [&](const app_event::arguments&) { m_shouldClose = true; };
         auto iconify_callback = [&](const app_event::arguments& args) {
             assert(std::holds_alternative<application::app_event::iconify>(args));
@@ -52,31 +76,19 @@ namespace application {
                                    this,
                                    std::move(time_callback),
                                    std::chrono::seconds(1));
-
-        std::vector<engine::resources::vertex_buffer> vertexBuffers;
-        vertexBuffers.emplace_back(
-            m_resourceFactory->create_vertex_buffer(engine::vertex_format{},
-                                                    std::vector<engine::vertex>({{{-0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}},
-                                                                                 {{0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}},
-                                                                                 {{0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}},
-                                                                                 {{-0.5f, 0.5f}, {1.0f, 1.0f, 1.0f}}})));
-        std::vector<engine::resources::index_buffer> indexBuffers;
-        indexBuffers.emplace_back(
-            m_resourceFactory->create_index_buffer(std::vector<std::uint16_t>({{0, 1, 2, 2, 3, 0}})));
-
-        scene::scene_object object(std::move(vertexBuffers[0]), std::move(indexBuffers[0]));
-        m_scene->add_object(std::move(object));
+        m_scene->get_object_controller().load_object("");
     }
 
     simulation_engine::~simulation_engine() {
     }
 
     void simulation_engine::run() {
+        m_renderingDevice->start();
         while (!m_shouldClose) {
             main_loop();
             m_frameCounter++;
         }
-        m_renderingEngine->stop();
+        m_renderingDevice->stop();
     }
 
     void simulation_engine::main_loop() {
@@ -86,12 +98,11 @@ namespace application {
         if (!m_windowMinimized) {
             auto newSceneState = scene::update_scene(*m_scene, m_lastFrameDuration);
             auto drawInfo = scene::prepare_draw_info(newSceneState);
-            m_renderingEngine->draw_frame(drawInfo.begin(), drawInfo.end());
-            m_renderingEngine->frame(m_frameCounter);
+            m_renderingDevice->draw_frame(drawInfo.begin(), drawInfo.end());
             m_mainWindow.end_frame();
             m_lastSecondFrames++;
         }
-        m_lastFrameDuration = frameStart - m_timeSource.now();
+        m_lastFrameDuration = m_timeSource.now() - frameStart;
     }
 
 } // namespace application

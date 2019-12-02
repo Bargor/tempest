@@ -9,14 +9,15 @@ namespace tst {
 namespace engine {
     namespace vulkan {
         class gpu_info : public base::gpu_info {
-            public:
-                using super = base::gpu_info;
+        public:
+            using super = base::gpu_info;
 
-                gpu_info(const vk::PhysicalDevice& physicalDevice);
-            private:
-                std::uint32_t maxPushConstantSize;
-                std::uint32_t maxMemoryAllocationCount;
+            gpu_info(vk::PhysicalDevice physicalDevice);
+
+        private:
+            std::uint32_t maxPushConstantSize;
+            std::uint32_t maxMemoryAllocationCount;
         };
-    }
-}
-}
+    } // namespace vulkan
+} // namespace engine
+} // namespace tst

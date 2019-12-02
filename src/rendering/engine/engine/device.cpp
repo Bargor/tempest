@@ -5,7 +5,10 @@
 
 namespace tst {
 namespace engine {
-    device::device(application::main_window& mainWindow) : api::device(mainWindow) {
+    device::device(application::main_window& mainWindow,
+                   application::event_processor<application::app_event>& eventProcessor,
+                   api::settings&& settings)
+        : api::device(mainWindow, eventProcessor, std::move(settings)) {
     }
 
     device::~device() {

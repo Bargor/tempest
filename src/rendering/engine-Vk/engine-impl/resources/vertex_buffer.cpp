@@ -9,26 +9,27 @@ namespace tst {
 namespace engine {
     namespace vulkan {
 
-        vertex_buffer::vertex_buffer(const vk::Device& logicalDevice,
-                                     const vk::PhysicalDevice& physicallDevice,
+        vertex_buffer::vertex_buffer(const vk::Device logicalDevice,
                                      const vk::Queue queueHandle,
-                                     const vk::CommandPool& cmdPool,
-                                     const vertex_format&,
+                                     const vk::CommandPool cmdPool,
+                                     const vk::PhysicalDeviceMemoryProperties memoryProperties,
+                                     const vertex_format& format,
                                      std::vector<vertex>&& vertices)
             : buffer(logicalDevice,
-                     physicallDevice,
                      queueHandle,
                      cmdPool,
                      vertices.size() * sizeof(vertex),
                      vk::BufferUsageFlagBits::eVertexBuffer | vk::BufferUsageFlagBits::eTransferDst,
+                     memoryProperties,
                      vk::MemoryPropertyFlagBits::eDeviceLocal)
+            , m_format(std::move(format))
             , m_vertices(std::move(vertices)) {
             buffer stagingBuffer(logicalDevice,
-                                 physicallDevice,
                                  queueHandle,
                                  cmdPool,
                                  m_memSize,
                                  vk::BufferUsageFlagBits::eTransferSrc,
+                                 memoryProperties,
                                  vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent);
 
             stagingBuffer.copy_data(m_vertices.data(), m_memSize);

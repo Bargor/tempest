@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include <engine-base/resources/vertex_format.h>
+#include <engine-base/vertex_format.h>
 
 namespace tst {
 namespace engine {
@@ -12,7 +12,7 @@ namespace engine {
         public:
             using super = base::vertex_format;
 
-            vertex_format();
+            vertex_format(primitive_topology topology);
             ~vertex_format();
         private:
         };

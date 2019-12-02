@@ -18,62 +18,42 @@ namespace application {
 } // namespace application
 
 namespace engine {
-	
-	namespace opengl {
 
-        class shader_compiler;
+    namespace opengl {
 
-        class rendering_engine {
+        class engine_frontend {
             template<typename T>
             using ptr = std::unique_ptr<T>;
 
         public:
-            rendering_engine(application::main_window&,
-                            application::data_loader& dataLoader,
+            engine_frontend(application::data_loader& dataLoader,
                             application::event_processor<application::app_event>&,
                             device& device);
-            ~rendering_engine();
+            ~engine_frontend();
 
             void frame(size_t frameCount);
             void start();
             void stop();
 
             template<typename Iter>
-            std::vector<command_list> prepare_draw(Iter first, Iter last);
-            template<typename Iter>
             bool draw_frame(Iter first, Iter last);
 
         private:
             application::data_loader& m_dataLoader;
             device& m_device;
-            ptr<shader_compiler> m_shaderCompiler;
         };
 
         template<typename Iter>
-        std::vector<command_list> rendering_engine::prepare_draw(Iter, Iter) {
-            std::vector<command_list> commands;
-
-            /*for (; first != last; ++first) {
-                auto& drawItem = *first;
-                buffers.emplace_back(generate_command_buffer(drawItem));
-            }*/
-
-            return commands;
-        }
-
-        template<typename Iter>
-        bool rendering_engine::draw_frame(Iter first, Iter last) {
+        bool engine_frontend::draw_frame(Iter first, Iter last) {
             auto commandLists = prepare_draw(first, last);
 
             for (auto& commandList : commandLists) {
                 m_device.submit_command_list(commandList);
             }
 
-            m_device.draw();
-
             return true;
         }
-	
-	}
+
+    } // namespace opengl
 } // namespace engine
 } // namespace tst

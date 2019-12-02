@@ -1,7 +1,11 @@
 // This file is part of Tempest-engine project
 // Author: Karol Kontny
-
 #pragma once
+
+#include <memory>
+
+template<typename T>
+using ptr = std::unique_ptr<T>;
 
 namespace tst {
 namespace engine {
@@ -10,7 +14,7 @@ namespace engine {
         class device;
         class draw_command;
         class gpu_info;
-        class rendering_engine;
+        class engine_frontend;
         class vertex_format;
     } // namespace vulkan
 

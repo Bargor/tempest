@@ -47,7 +47,9 @@ namespace application {
             static_cast<input_processor*>(glfwGetWindowUserPointer(window))->window_close_callback(window);
         };
         auto framebuffer_size_callback = [](GLFWwindow* window, const std::int32_t width, const std::int32_t height) {
-            static_cast<input_processor*>(glfwGetWindowUserPointer(window))->framebuffer_size_callback(window, width, height);
+            static_cast<input_processor*>(glfwGetWindowUserPointer(window))
+                ->framebuffer_size_callback(window,
+                                            {static_cast<std::uint32_t>(width), static_cast<std::uint32_t>(height)});
         };
 
         if (glfwSetWindowFocusCallback(m_window, focus_callback) != nullptr) {
@@ -120,9 +122,9 @@ namespace application {
         m_eventProcessor.create_event(app_event{this, app_event::closed{}});
     }
 
-    void input_processor::framebuffer_size_callback(GLFWwindow*, const std::int32_t width, const std::int32_t height) {
+    void input_processor::framebuffer_size_callback(GLFWwindow*, const core::extent<std::uint32_t>& windowSize) {
         assert(std::this_thread::get_id() == core::main_thread::get_id());
-        m_eventProcessor.create_event(app_event{this, app_event::framebuffer{width, height}});
+        m_eventProcessor.create_event(app_event{this, app_event::framebuffer{windowSize}});
     }
 } // namespace application
 } // namespace tst

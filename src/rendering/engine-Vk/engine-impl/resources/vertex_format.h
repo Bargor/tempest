@@ -4,10 +4,9 @@
 #pragma once
 
 #include <array>
+#include <engine-base/vertex_format.h>
 #include <glm/glm.hpp>
 #include <vulkan/vulkan.hpp>
-
-#include <engine-base/resources/vertex_format.h>
 
 namespace tst {
 namespace engine {
@@ -17,14 +16,12 @@ namespace engine {
         public:
             using super = base::vertex_format;
 
-            vertex_format();
+            vertex_format(base::vertex_format::primitive_topology topology);
 
-            const vk::VertexInputBindingDescription& get_binding_description() const;
-            const std::array<vk::VertexInputAttributeDescription, 2>& get_attribute_descriptions() const;
+            vk::VertexInputBindingDescription get_binding_description() const noexcept;
+            std::vector<vk::VertexInputAttributeDescription> get_attribute_descriptions() const noexcept;
 
         private:
-            vk::VertexInputBindingDescription m_bindingDescription;
-            std::array<vk::VertexInputAttributeDescription, 2> m_attributeDescriptions;
         };
 
     } // namespace vulkan

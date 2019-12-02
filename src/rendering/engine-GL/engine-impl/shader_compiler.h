@@ -3,7 +3,8 @@
 
 #pragma once
 
-#include "shader.h"
+#include "resources/shader.h"
+
 #include <optional>
 
 namespace tst {
@@ -16,15 +17,14 @@ namespace engine {
 
         class shader_compiler {
         public:
-            std::optional<opengl::shader_program> compile_program(std::string_view&& name,
-                                                                  const opengl::shaderTypesSet& types) const;
+            std::optional<shader_program> compile_program(std::string_view&& name,
+                                                          const shaderTypesSet& types) const;
 
         public:
             shader_compiler(application::data_loader& data_loader);
 
         private:
-            std::optional<opengl::shader> compile_shader(const std::string& name,
-                                                         const opengl::shader_type type) const;
+            std::optional<shader> compile_shader(const std::string& name, const opengl::shader_type type) const;
 
         private:
             application::data_loader& m_dataLoader;

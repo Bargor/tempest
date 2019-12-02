@@ -24,6 +24,8 @@ namespace engine {
             uniform_buffer(const uniform_buffer& other) = delete;
 
             ~uniform_buffer();
+
+            void update_buffer(const uniform_buffer_object& ubo);
         private:
 		};
 	}

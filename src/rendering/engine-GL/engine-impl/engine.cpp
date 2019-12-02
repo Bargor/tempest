@@ -13,7 +13,7 @@
 
 namespace tst {
 namespace engine {
-	namespace opengl {
+    namespace opengl {
 
     void init_OpenGL() {
         glewExperimental = GL_TRUE;
@@ -24,29 +24,20 @@ namespace engine {
         }
     }
 
-    rendering_engine::rendering_engine(application::main_window&,
-                                       application::data_loader& dataLoader,
+    engine_frontend::engine_frontend(application::data_loader& dataLoader,
                                        application::event_processor<application::app_event>&,
                                        device& device)
         : m_dataLoader(dataLoader)
-        , m_device(device)
-        , m_shaderCompiler(std::make_unique<shader_compiler>(m_dataLoader)) {
+        , m_device(device) {
         init_OpenGL();
     }
 
-    rendering_engine::~rendering_engine() {
+    engine_frontend::~engine_frontend() {
     }
 
-    void rendering_engine::frame(size_t) {
+    void engine_frontend::frame(size_t) {
     }
 
-    void rendering_engine::start() {
-    }
-
-    void rendering_engine::stop() {
-    }
-
-
-	}
+}
 } // namespace engine
 } // namespace tst

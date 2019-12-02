@@ -46,13 +46,11 @@ namespace engine {
                 return bestMode;
             }
 
-            vk::Extent2D choose_extent(const vk::SurfaceCapabilitiesKHR& capabilities,
-                                       std::uint32_t width,
-                                       std::uint32_t height) {
+            vk::Extent2D choose_extent(const vk::SurfaceCapabilitiesKHR& capabilities, const vk::Extent2D extent) {
                 if (capabilities.currentExtent.width != std::numeric_limits<uint32_t>::max()) {
                     return capabilities.currentExtent;
                 } else {
-                    vk::Extent2D actualExtent = {width, height};
+                    vk::Extent2D actualExtent = extent;
 
                     actualExtent.width = std::clamp(
                         actualExtent.width, capabilities.minImageExtent.width, capabilities.maxImageExtent.width);
@@ -65,25 +63,25 @@ namespace engine {
 
             vk::SwapchainKHR create_swap_chain(const vk::SurfaceKHR& m_windowSurface,
                                                const vk::Device& logicalDevice,
-                                               const queue_family_indices& queueIndices,
-                                               const swap_chain::support_details& supportDetails,
+                                               std::uint32_t graphicsQueueIndex,
+                                               std::uint32_t presentationQueueIndex,
+                                               const surface_support_info& supportInfo,
                                                const vk::SurfaceFormatKHR surfaceFormat,
                                                const vk::PresentModeKHR& presentationMode,
                                                const vk::Extent2D& extent,
-                                               std::uint32_t& imageCount) {
-                imageCount = supportDetails.capabilities.minImageCount + 1;
-                if (supportDetails.capabilities.maxImageCount > 0 &&
-                    imageCount > supportDetails.capabilities.maxImageCount) {
-                    imageCount = supportDetails.capabilities.maxImageCount;
+                                               settings::buffering buffers) {
+                auto buffersCount = static_cast<std::uint32_t>(buffers);
+                if (supportInfo.capabilities.maxImageCount < buffersCount ||
+                    buffersCount < supportInfo.capabilities.minImageCount) {
+                    throw vulkan_exception("Requested not supported count of swap chain images");
                 }
 
-                uint32_t queueFamilyIndices[] = {queueIndices.graphicsIndex.value(),
-                                                 queueIndices.presentationIndex.value()};
+                uint32_t queueFamilyIndices[] = {graphicsQueueIndex, presentationQueueIndex};
 
                 vk::SharingMode sharingMode;
                 std::uint32_t queueFamilyIndexCount;
 
-                if (queueIndices.graphicsIndex != queueIndices.presentationIndex) {
+                if (graphicsQueueIndex != presentationQueueIndex) {
                     sharingMode = vk::SharingMode::eConcurrent;
                     queueFamilyIndexCount = 2;
                 } else {
@@ -94,7 +92,7 @@ namespace engine {
                 vk::SwapchainCreateInfoKHR createInfo(
                     vk::SwapchainCreateFlagsKHR(),
                     m_windowSurface,
-                    imageCount,
+                    buffersCount,
                     surfaceFormat.format,
                     surfaceFormat.colorSpace,
                     extent,
@@ -102,8 +100,8 @@ namespace engine {
                     vk::ImageUsageFlagBits::eColorAttachment,
                     sharingMode,
                     queueFamilyIndexCount,
-                    queueIndices.graphicsIndex != queueIndices.presentationIndex ? queueFamilyIndices : nullptr,
-                    supportDetails.capabilities.currentTransform,
+                    graphicsQueueIndex != presentationQueueIndex ? queueFamilyIndices : nullptr,
+                    supportInfo.capabilities.currentTransform,
                     vk::CompositeAlphaFlagBitsKHR::eOpaque,
                     presentationMode,
                     true,
@@ -140,39 +138,32 @@ namespace engine {
                 return imageViews;
             }
 
-            swap_chain::support_details check_support(const vk::PhysicalDevice& physicalDevice,
-                                                      const vk::SurfaceKHR& m_windowSurface) {
-                swap_chain::support_details details;
-
-                details.capabilities = physicalDevice.getSurfaceCapabilitiesKHR(m_windowSurface);
-                details.formats = physicalDevice.getSurfaceFormatsKHR(m_windowSurface);
-                details.presentModes = physicalDevice.getSurfacePresentModesKHR(m_windowSurface);
-
-                return details;
-            }
-
         } // namespace
 
-        swap_chain::swap_chain(const vk::Device& device,
-                               const vk::PhysicalDevice& physicalDevice,
-                               const vk::SurfaceKHR& windowSurface,
-                               const queue_family_indices& indices,
-                               std::uint32_t width,
-                               std::uint32_t height)
+        swap_chain::swap_chain(vk::Device device,
+                               vk::SurfaceKHR windowSurface,
+                               const surface_support_info& info,
+                               std::uint32_t graphicsQueueIndex,
+                               std::uint32_t presentationQueueIndex,
+                               const vk::Extent2D extent,
+                               settings::buffering buffers)
             : m_logicalDevice(device)
             , m_windowSurface(windowSurface)
-            , m_supportDetails(check_support(physicalDevice, m_windowSurface))
-            , m_surfaceFormat(choose_surface_format(m_supportDetails.formats))
-            , m_presentationMode(choose_presentation_mode(m_supportDetails.presentModes))
-            , m_extent(choose_extent(m_supportDetails.capabilities, width, height))
+            , m_supportInfo(info)
+            , m_surfaceFormat(choose_surface_format(m_supportInfo.formats))
+            , m_presentationMode(choose_presentation_mode(m_supportInfo.presentModes))
+            , m_extent(choose_extent(m_supportInfo.capabilities, extent))
+            , m_buffering(buffers)
             , m_swapChain(create_swap_chain(m_windowSurface,
                                             m_logicalDevice,
-                                            indices,
-                                            m_supportDetails,
+                                            graphicsQueueIndex,
+                                            presentationQueueIndex,
+                                            m_supportInfo,
                                             m_surfaceFormat,
                                             m_presentationMode,
                                             m_extent,
-                                            m_imagesCount)) {
+                                            buffers))
+            , m_currentImage(0) {
             m_images = m_logicalDevice.getSwapchainImagesKHR(m_swapChain);
             m_imageViews = create_image_views(m_logicalDevice, m_surfaceFormat, m_images);
         }
@@ -182,6 +173,35 @@ namespace engine {
                 m_logicalDevice.destroyImageView(view);
             });
             m_logicalDevice.destroySwapchainKHR(m_swapChain);
+        }
+
+        swap_chain::result swap_chain::acquire_next_image(vk::Device device, const vk::Semaphore& imageAvailable) {
+            auto acquireResult = device.acquireNextImageKHR(
+                m_swapChain, std::numeric_limits<std::uint64_t>::max(), imageAvailable, vk::Fence());
+
+            if (acquireResult.result == vk::Result::eErrorOutOfDateKHR) {
+                return result::resize;
+            } else if (acquireResult.result != vk::Result::eSuccess &&
+                       acquireResult.result != vk::Result::eSuboptimalKHR) {
+                return result::fail;
+            }
+            m_currentImage = acquireResult.value;
+
+            return result::success;
+        }
+
+        swap_chain::result swap_chain::present_image(vk::Queue presentationQueueHandle,
+                                                     const vk::Semaphore& renderFinished) {
+            vk::PresentInfoKHR presentInfo(1, &renderFinished, 1, &m_swapChain, &m_currentImage);
+
+            auto presentResult = presentationQueueHandle.presentKHR(presentInfo);
+
+            if (presentResult == vk::Result::eErrorOutOfDateKHR || presentResult == vk::Result::eSuboptimalKHR) {
+                return result::resize;
+            } else if (presentResult != vk::Result::eSuccess) {
+                return result::fail;
+            }
+            return result::success;
         }
 
     } // namespace vulkan

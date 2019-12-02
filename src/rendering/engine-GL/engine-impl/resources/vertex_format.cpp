@@ -6,7 +6,7 @@
 namespace tst {
 namespace engine {
     namespace opengl {
-        vertex_format::vertex_format() {
+        vertex_format::vertex_format(primitive_topology topology) : base::vertex_format(topology) {
 
         }
 

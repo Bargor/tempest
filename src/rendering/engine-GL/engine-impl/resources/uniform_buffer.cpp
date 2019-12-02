@@ -15,6 +15,9 @@ namespace engine {
         uniform_buffer::uniform_buffer(uniform_buffer&& other) noexcept : buffer(std::move(other)) {
 
         }
+
+        void uniform_buffer::update_buffer(const uniform_buffer_object&) {
+        }
     }
 }
 }

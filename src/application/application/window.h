@@ -4,6 +4,7 @@
 
 #include <array>
 #include <common/position.h>
+#include <common/rectangle.h>
 #include <string>
 
 namespace tst {
@@ -14,7 +15,7 @@ namespace device {
 
 namespace application {
 
-	template<typename Event>
+    template<typename Event>
     class event_processor;
     struct app_event;
 
@@ -28,17 +29,12 @@ namespace application {
 
         enum class focus_option { unfocused, focused };
 
-        struct window_size {
-            std::int32_t width;
-            std::int32_t height;
-        };
-
     public:
         visible_option is_visible() const noexcept;
-        window_size get_size() const noexcept;
-        virtual void set_size(const window_size& size) = 0;
-        virtual position<std::int32_t> get_position() const noexcept = 0;
-        virtual void set_position(const position<std::int32_t>& pos) noexcept = 0;
+        core::extent<std::uint32_t> get_size() const noexcept;
+        virtual void set_size(const core::extent<std::uint32_t>& size) = 0;
+        virtual core::position<std::int32_t> get_position() const noexcept = 0;
+        virtual void set_position(const core::position<std::int32_t>& pos) noexcept = 0;
         virtual void set_title(const std::string&) noexcept = 0;
         virtual void focus() noexcept = 0;
         virtual void unfocus() noexcept = 0;
@@ -52,7 +48,7 @@ namespace application {
     protected:
         window(std::string&& name,
                event_processor<app_event>& m_eventProcessor,
-               const window_size& size,
+               const core::extent<std::uint32_t>& size,
                fullscreen_option windowMode,
                visible_option visibility,
                open_option open,
@@ -63,7 +59,7 @@ namespace application {
         std::string m_name;
         event_processor<app_event>& m_eventProcessor;
 
-        window_size m_size;
+        core::extent<std::uint32_t> m_size;
         fullscreen_option m_windowMode;
         visible_option m_visible;
         open_option m_opened;

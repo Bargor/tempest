@@ -2,8 +2,10 @@
 // Author: Karol Kontny
 #pragma once
 
+#include "api.h"
 #include "command_list.h"
 #include "resources/index_buffer.h"
+#include "resources/settings.h"
 #include "resources/uniform_buffer.h"
 #include "resources/vertex_buffer.h"
 
@@ -13,36 +15,52 @@
 
 namespace tst {
 namespace application {
+    template<typename Event>
+    class event_processor;
     class main_window;
-}
+
+    struct app_event;
+} // namespace application
+
 namespace engine {
     namespace opengl {
 
         class gpu_info;
 
-		class device {
+        class device {
             template<typename T>
             using ptr = std::unique_ptr<T>;
+
         public:
-            device(application::main_window& mainWindow);
+            device(application::main_window& mainWindow,
+                   application::event_processor<application::app_event>& eventProcessor,
+                   settings&& engineSettings);
             device(const device& device) = delete;
             ~device();
 
-        template<typename IndexType>
-        index_buffer<IndexType> create_index_buffer(std::vector<IndexType>&& indices) const;
-        vertex_buffer create_vertex_buffer(const vertex_format& format,
-                                               std::vector<vertex>&& vertices) const;
-        uniform_buffer create_uniform_buffer() const;
+            template<typename IndexType>
+            index_buffer<IndexType> create_index_buffer(std::vector<IndexType>&& indices) const;
+            vertex_buffer create_vertex_buffer(const vertex_format& format, std::vector<vertex>&& vertices) const;
+            uniform_buffer create_uniform_buffer(const std::string& shaderName) const;
 
-        gpu_info& get_GPU_info() const noexcept;
-        void submit_command_list(const command_list& commandList);
+            gpu_info& get_GPU_info() const noexcept;
+            void submit_command_list(const command_list& commandList);
 
-        bool draw();
+            template<typename Iter>
+            bool draw_frame(Iter first, Iter last);
+
+            void start();
+            void stop();
 
         private:
             ptr<gpu_info> m_gpuInfo;
             std::vector<command_list> m_drawCommands;
-		};
+        };
+
+        template<typename Iter>
+        bool device::draw_frame(Iter, Iter) {
+            return true;
+        }
 
         template<typename IndexType>
         index_buffer<IndexType> device::create_index_buffer(std::vector<IndexType>&& indices) const {
@@ -56,6 +74,6 @@ namespace engine {
         TST_INLINE void device::submit_command_list(const command_list& commandList) {
             m_drawCommands.emplace_back(commandList);
         }
-	}
-}
-}
+    } // namespace opengl
+} // namespace engine
+} // namespace tst

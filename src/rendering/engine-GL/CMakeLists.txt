@@ -11,11 +11,14 @@ set(ENGINE_HDRS
 	engine-impl/opengl_exception.h
 	engine-impl/resources/buffer.h
 	engine-impl/resources/index_buffer.h
+	engine-impl/resources/material.h
+	engine-impl/resources/pipeline.h
+	engine-impl/resources/settings.h
+	engine-impl/resources/shader.h
 	engine-impl/resources/uniform_buffer.h
 	engine-impl/resources/vertex_buffer.h
 	engine-impl/resources/vertex_format.h
 	engine-impl/resource_factory.h
-	engine-impl/shader.h
 	engine-impl/shader_compiler.h
 )
 
@@ -27,11 +30,14 @@ set(ENGINE_SRCS
 	engine-impl/gpu_info.cpp
 	engine-impl/resources/buffer.cpp
 	engine-impl/resources/index_buffer.cpp
+	engine-impl/resources/material.cpp
+	engine-impl/resources/pipeline.cpp
+	engine-impl/resources/settings.cpp
+	engine-impl/resources/shader.cpp
 	engine-impl/resources/uniform_buffer.cpp
 	engine-impl/resources/vertex_buffer.cpp
 	engine-impl/resources/vertex_format.cpp
 	engine-impl/resource_factory.cpp
-	engine-impl/shader.cpp
 	engine-impl/shader_compiler.cpp
 )
 

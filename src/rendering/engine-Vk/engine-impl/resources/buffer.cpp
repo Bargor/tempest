@@ -9,37 +9,36 @@ namespace tst {
 namespace engine {
     namespace vulkan {
 
-        buffer::buffer(const vk::Device& logicalDevice,
-                       const vk::PhysicalDevice& physicalDevice,
-                       const vk::Queue& queueHandle,
-                       const vk::CommandPool& cmdPool,
+        class physical_device;
+
+        buffer::buffer(vk::Device logicalDevice,
+                       vk::Queue queueHandle,
+                       vk::CommandPool cmdPool,
                        std::uint64_t size,
                        vk::BufferUsageFlags usageFlags,
+                       const vk::PhysicalDeviceMemoryProperties& memoryProperties,
                        vk::MemoryPropertyFlags memoryFlags)
-            : m_logicalDevice(logicalDevice)
-            , m_physicalDevice(physicalDevice)
-            , m_queueHandle(queueHandle)
-            , m_cmdPool(cmdPool)
-            , m_memSize(size) {
+            : m_logicalDevice(logicalDevice), m_queueHandle(queueHandle), m_cmdPool(cmdPool), m_memSize(size) {
             vk::BufferCreateInfo createInfo(vk::BufferCreateFlags(), size, usageFlags, vk::SharingMode::eExclusive);
 
             m_buffer = m_logicalDevice.createBuffer(createInfo);
             vk::MemoryRequirements requirements = m_logicalDevice.getBufferMemoryRequirements(m_buffer);
-            vk::MemoryAllocateInfo allocateInfo(requirements.size,
-                                                findMemoryType(requirements.memoryTypeBits, memoryFlags));
+            vk::MemoryAllocateInfo allocateInfo(
+                requirements.size, findMemoryType(memoryProperties, requirements.memoryTypeBits, memoryFlags));
 
             m_bufferMemory = m_logicalDevice.allocateMemory(allocateInfo);
             m_logicalDevice.bindBufferMemory(m_buffer, m_bufferMemory, 0);
         }
 
         buffer::~buffer() {
-            m_logicalDevice.destroyBuffer(m_buffer);
-            m_logicalDevice.freeMemory(m_bufferMemory);
+            if (m_buffer) {
+                m_logicalDevice.destroyBuffer(m_buffer);
+                m_logicalDevice.freeMemory(m_bufferMemory);
+            }
         }
 
         buffer::buffer(buffer&& other) noexcept
             : m_logicalDevice(other.m_logicalDevice)
-            , m_physicalDevice(other.m_physicalDevice)
             , m_queueHandle(other.m_queueHandle)
             , m_cmdPool(other.m_cmdPool)
             , m_memSize(other.m_memSize)
@@ -78,9 +77,9 @@ namespace engine {
             m_queueHandle.waitIdle();
         }
 
-        std::uint32_t buffer::findMemoryType(uint32_t typeFilter, vk::MemoryPropertyFlags propertyFlags) const {
-            auto properties = m_physicalDevice.getMemoryProperties();
-
+        std::uint32_t buffer::findMemoryType(const vk::PhysicalDeviceMemoryProperties& properties,
+                                             uint32_t typeFilter,
+                                             vk::MemoryPropertyFlags propertyFlags) const {
             for (uint32_t i = 0; i < properties.memoryTypeCount; i++) {
                 if ((typeFilter & (1 << i)) &&
                     (properties.memoryTypes[i].propertyFlags & propertyFlags) == propertyFlags) {

@@ -11,8 +11,12 @@ namespace engine {
 
         class uniform_buffer : public api::uniform_buffer {
         public:
+            using super = api::uniform_buffer;
+
             uniform_buffer(api::uniform_buffer&& bufferImpl);
             ~uniform_buffer();
+
+            uniform_buffer(uniform_buffer&& other) noexcept;
 
         private:
         };

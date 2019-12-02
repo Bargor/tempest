@@ -18,9 +18,7 @@ namespace application {
 namespace engine {
     namespace vulkan {
 
-		class device;
-
-        using shader_set = std::vector<shader>;
+        class device;
 
         class shader_compiler {
         public:

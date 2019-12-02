@@ -14,10 +14,12 @@ namespace engine {
         template<typename IndexType>
         class index_buffer : public buffer {
         public:
-            index_buffer(const vk::Device& logicalDevice,
-                         const vk::PhysicalDevice& physicalDevice,
-                         const vk::Queue& queueHandle,
-                         const vk::CommandPool& cmdPool,
+            using super = buffer;
+
+            index_buffer(vk::Device logicalDevice,
+                         vk::Queue queueHandle,
+                         vk::CommandPool cmdPool,
+                         const vk::PhysicalDeviceMemoryProperties& memoryProperties,
                          vk::IndexType format,
                          std::vector<IndexType>&& indices);
             ~index_buffer();
@@ -32,27 +34,27 @@ namespace engine {
         };
 
         template<typename IndexType>
-        index_buffer<IndexType>::index_buffer(const vk::Device& logicalDevice,
-                                              const vk::PhysicalDevice& physicalDevice,
-                                              const vk::Queue& queueHandle,
-                                              const vk::CommandPool& cmdPool,
+        index_buffer<IndexType>::index_buffer(vk::Device logicalDevice,
+                                              vk::Queue queueHandle,
+                                              vk::CommandPool cmdPool,
+                                              const vk::PhysicalDeviceMemoryProperties& memoryProperties,
                                               vk::IndexType format,
                                               std::vector<IndexType>&& indices)
             : buffer(logicalDevice,
-                     physicalDevice,
                      queueHandle,
                      cmdPool,
                      indices.size() * sizeof(IndexType),
                      vk::BufferUsageFlagBits::eIndexBuffer | vk::BufferUsageFlagBits::eTransferDst,
+                     memoryProperties,
                      vk::MemoryPropertyFlagBits::eDeviceLocal)
             , m_format(format)
             , m_indices(std::move(indices)) {
             buffer stagingBuffer(logicalDevice,
-                                 physicalDevice,
                                  queueHandle,
                                  cmdPool,
                                  m_memSize,
                                  vk::BufferUsageFlagBits::eTransferSrc,
+                                 memoryProperties,
                                  vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent);
 
             stagingBuffer.copy_data(m_indices.data(), m_memSize);
