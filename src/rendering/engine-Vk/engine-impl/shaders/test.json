@@ -1,0 +1,10 @@
+{
+	"vertex": [
+		{
+			"type": "uniform",
+			"binding": 0
+		}
+	]
+	"fragment": {
+	}
+}
