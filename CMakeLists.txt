@@ -76,6 +76,7 @@ set(GLM_TEST_ENABLE OFF CACHE BOOL "Build unit tests")
 
 add_subdirectory(libs/fmt)
 add_subdirectory(libs/rapidjson)
+add_subdirectory(libs/tinyobjloader)
 add_subdirectory(src)
 
 if(TEMPEST_BUILD_ALL)

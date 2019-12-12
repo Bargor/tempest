@@ -64,6 +64,7 @@ target_link_libraries(engine-impl PUBLIC
 	${Vulkan_LIBRARIES}
 	PRIVATE
 	rapidjson::rapidjson
+	tinyobjloader
 )
 
 #Compiler specific options

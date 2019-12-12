@@ -18,8 +18,7 @@ if(TEMPEST_BUILD_ALL)
 		find_package(Vulkan REQUIRED)
 		add_definitions (-DGLFW_INCLUDE_VULKAN)
 	endif(ENGINE STREQUAL "Vk")
-	
-	
+		
 	add_subdirectory(device)
 	add_subdirectory(application)
 	add_subdirectory(rendering)
