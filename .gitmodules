@@ -13,3 +13,6 @@
 [submodule "libs/glfw"]
 	path = libs/glfw
 	url = https://github.com/glfw/glfw
+[submodule "libs/rapidjson"]
+	path = libs/rapidjson
+	url = https://github.com/Bargor/rapidjson

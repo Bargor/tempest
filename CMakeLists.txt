@@ -68,7 +68,14 @@ set(ARCHIVE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/libs)
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/exe)
 
 #Build lib
+set(RAPIDJSON_BUILD_DOC OFF CACHE BOOL "Build the GLFW example programs")
+set(RAPIDJSON_BUILD_EXAMPLES OFF CACHE BOOL "Build the GLFW test programs")
+set(RAPIDJSON_BUILD_TESTS OFF CACHE BOOL "Build the GLFW documentation")
+	
+set(GLM_TEST_ENABLE OFF CACHE BOOL "Build unit tests")
+
 add_subdirectory(libs/fmt)
+add_subdirectory(libs/rapidjson)
 add_subdirectory(src)
 
 if(TEMPEST_BUILD_ALL)

@@ -57,7 +57,14 @@ tst_add_library(engine-impl "${ENGINE_HDRS}" "${ENGINE_SRCS}")
 
 target_include_directories(engine-impl PUBLIC ${Vulkan_INCLUDE_DIRS})
 
-target_link_libraries(engine-impl PUBLIC tst::application tst::engine-base glfw ${Vulkan_LIBRARIES})
+target_link_libraries(engine-impl PUBLIC
+	tst::application
+	tst::engine-base
+	glfw
+	${Vulkan_LIBRARIES}
+	PRIVATE
+	rapidjson::rapidjson
+)
 
 #Compiler specific options
 if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
