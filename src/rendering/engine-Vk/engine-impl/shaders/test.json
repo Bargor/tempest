@@ -1,10 +1,7 @@
 {
-	"vertex": [
-		{
-			"type": "uniform",
-			"binding": 0
-		}
-	]
-	"fragment": {
-	}
+	"vert": [{
+		"type": "uniform",
+		"binding": 0
+	}],
+	"frag": []
 }

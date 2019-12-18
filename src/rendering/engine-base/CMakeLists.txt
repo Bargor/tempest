@@ -8,6 +8,7 @@ set(ENGINE_BASE_HDRS
 	engine-base/pipeline_settings.h
 	engine-base/vertex_format.h
 	engine-base/settings.h
+	engine-base/shader.h
 )
 
 set(ENGINE_BASE_SRCS

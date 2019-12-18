@@ -6,6 +6,7 @@
 
 #include <filesystem>
 #include <optional>
+#include <rapidjson/document.h>
 #include <string>
 #include <vulkan/vulkan.hpp>
 
@@ -31,6 +32,9 @@ namespace engine {
             std::optional<std::vector<char>> load_bytecode(const std::optional<std::filesystem::path>& shaderSourceFile,
                                                            const std::optional<std::filesystem::path>& shaderBytecodeFile,
                                                            const std::string& bytecodeFileName) const;
+
+            std::vector<vk::DescriptorSetLayout> parse_descriptor_layouts(const rapidjson::Document& jsonModel,
+                                                                          shader_type type) const;
 
         private:
             application::data_loader& m_dataLoader;

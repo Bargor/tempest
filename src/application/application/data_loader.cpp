@@ -8,6 +8,8 @@
 #include <fmt/format.h>
 #include <fmt/printf.h>
 #include <fstream>
+#include <rapidjson/istreamwrapper.h>
+#include <rapidjson/rapidjson.h>
 
 namespace tst {
 namespace application {
@@ -51,6 +53,15 @@ namespace application {
     }
 
     void data_loader::load_obj_model(const std::string_view&) const {
+    }
+
+    rapidjson::Document data_loader::load_json(const std::filesystem::path& path) const {
+        std::ifstream input(path, std::ios::in);
+        rapidjson::IStreamWrapper inputStreamWrapper(input);
+
+        rapidjson::Document jsonDocument;
+        jsonDocument.ParseStream(inputStreamWrapper);
+        return jsonDocument;
     }
 
     std::optional<std::filesystem::path> data_loader::find_file(const std::string& name) const {

@@ -2,6 +2,8 @@
 // Author: Karol Kontny
 #pragma once
 
+#include <engine-base/shader.h>
+
 #include <GL/glew.h>
 #include <array>
 #include <bitset>
@@ -12,18 +14,6 @@
 namespace tst {
 namespace engine {
     namespace opengl {
-
-        enum class shader_type : std::uint8_t {
-            vertex,
-            fragment,
-            geometry,
-            compute,
-            tessellation_control,
-            tessellation_evaluation,
-            enum_size = 6
-        };
-
-        constexpr std::uint32_t shader_types_count = static_cast<std::uint32_t>(shader_type::enum_size);
 
         using shaderTypesSet = std::bitset<static_cast<std::size_t>(shader_type::enum_size)>;
 

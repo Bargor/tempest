@@ -190,9 +190,10 @@ namespace engine {
             return m_descriptorPools.back();
         }
 
-        vk::DescriptorSetLayout device::create_descriptor_set_layout() const {
-            vk::DescriptorSetLayoutBinding descriptorBinding(
-                0, vk::DescriptorType::eUniformBuffer, 1, vk::ShaderStageFlagBits::eVertex, nullptr);
+        vk::DescriptorSetLayout device::create_descriptor_set_layout(std::uint32_t binding,
+                                                                     vk::DescriptorType type,
+                                                                     vk::ShaderStageFlagBits flags) const {
+            vk::DescriptorSetLayoutBinding descriptorBinding(binding, type, 1, flags, nullptr);
 
             vk::DescriptorSetLayoutCreateInfo setLayoutInfo(vk::DescriptorSetLayoutCreateFlags(), 1, &descriptorBinding);
 
@@ -225,8 +226,11 @@ namespace engine {
                                   m_resourceIndex);
         }
 
-        shader device::crate_shader(shader::shader_type type, std::vector<char>&& source, const std::string& name) const {
-            return shader(m_logicalDevice, type, std::move(source), name);
+        shader device::crate_shader(shader_type type,
+                                    std::vector<char>&& source,
+                                    const std::string& name,
+                                    std::vector<vk::DescriptorSetLayout>&& layouts) const {
+            return shader(m_logicalDevice, type, std::move(source), name, std::move(layouts));
         }
 
         pipeline device::create_pipeline(const vertex_format& format,

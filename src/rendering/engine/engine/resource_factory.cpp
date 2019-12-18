@@ -24,8 +24,8 @@ namespace engine {
     }
 
     const resources::pipeline& resource_factory::create_pipeline(const std::string& techniqueName,
-                                                           const std::string& shadersName,
-                                                           const vertex_format& format) {
+                                                                 const std::string& shadersName,
+                                                                 const vertex_format& format) {
         return static_cast<const resources::pipeline&>(super::create_pipeline(techniqueName, shadersName, format));
     }
 
@@ -38,9 +38,10 @@ namespace engine {
         return super::create_vertex_buffer(format, std::move(vertices));
     }
 
-    resources::uniform_buffer resource_factory::create_uniform_buffer(const std::string& shaderName) {
-        return super::create_uniform_buffer(shaderName);
+    resources::uniform_buffer resource_factory::create_uniform_buffer(const std::string& shaderName,
+                                                                      shader::shader_type type,
+                                                                      std::uint32_t binding) {
+        return super::create_uniform_buffer(shaderName, type, binding);
     }
 } // namespace engine
 } // namespace tst
-

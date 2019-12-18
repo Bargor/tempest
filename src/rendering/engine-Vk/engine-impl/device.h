@@ -58,7 +58,10 @@ namespace engine {
             index_buffer<IndexType> create_index_buffer(std::vector<IndexType>&& indices,
                                                         const vk::CommandPool cmdPool) const;
             rendering_technique create_technique(std::string&& name, base::technique_settings&& settings) const;
-            shader crate_shader(shader::shader_type type, std::vector<char>&& source, const std::string& name) const;
+            shader crate_shader(shader_type type,
+                                std::vector<char>&& source,
+                                const std::string& name,
+                                std::vector<vk::DescriptorSetLayout>&& layouts) const;
             pipeline create_pipeline(const vertex_format& format,
                                      const shader_set& shaders,
                                      const rendering_technique& technique);
@@ -79,7 +82,9 @@ namespace engine {
         public: // public Vulkan interface
             vk::CommandPool create_command_pool();
             vk::DescriptorPool create_descriptor_pool(std::uint32_t size);
-            vk::DescriptorSetLayout create_descriptor_set_layout() const;
+            vk::DescriptorSetLayout create_descriptor_set_layout(std::uint32_t binding,
+                                                                 vk::DescriptorType type,
+                                                                 vk::ShaderStageFlagBits flags) const;
 
             bool startFrame();
             bool draw(const std::vector<vk::CommandBuffer>& commandBuffers);
