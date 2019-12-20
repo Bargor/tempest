@@ -95,9 +95,9 @@ namespace engine {
         void shader_program::detach_shaders() {
             assert(m_linked);
             GLint shadersCount;
-            std::array<shader::glShaderType, shader_types_count> shaderIds;
+            std::array<shader::glShaderType, base::shader_types_count> shaderIds;
 
-            glGetAttachedShaders(m_programId, shader_types_count, &shadersCount, &shaderIds[0]);
+            glGetAttachedShaders(m_programId, base::shader_types_count, &shadersCount, &shaderIds[0]);
             std::for_each_n(
                 shaderIds.begin(), shadersCount, [&](auto shaderId) { glDetachShader(m_programId, shaderId); });
         }

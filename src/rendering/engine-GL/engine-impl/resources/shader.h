@@ -15,6 +15,8 @@ namespace tst {
 namespace engine {
     namespace opengl {
 
+        using shader_type = base::shader_type;
+
         using shaderTypesSet = std::bitset<static_cast<std::size_t>(shader_type::enum_size)>;
 
         class shader {
