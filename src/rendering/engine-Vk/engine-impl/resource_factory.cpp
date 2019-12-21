@@ -54,9 +54,18 @@ namespace engine {
             return m_device.create_vertex_buffer(format, std::move(vertices), m_commandPool);
         }
 
-        uniform_buffer resource_factory::create_uniform_buffer(const std::string& shaderName) {
+        uniform_buffer resource_factory::create_uniform_buffer(const std::string& shaderName,
+                                                               shader_type type,
+                                                               std::uint32_t binding) {
             auto shaders = m_resourceCache.find_shaders(shaderName);
-            return m_device.create_uniform_buffer(m_commandPool, shaders->layouts[0]);
+            assert(shaders);
+            for (const auto& shader : *shaders) {
+                if (shader.get_stage() == type) {
+                    return m_device.create_uniform_buffer(m_commandPool, shader.get_layouts()[binding]);
+                }
+            }
+            assert(false);
+            return m_device.create_uniform_buffer(m_commandPool, (*shaders)[0].get_layouts()[binding]);
         }
 
         const shader_set* resource_factory::load_shaders(const std::string& shadersName) {

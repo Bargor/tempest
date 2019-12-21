@@ -12,13 +12,13 @@ namespace tst {
 namespace engine {
     namespace vulkan {
 
-        std::string get_shader_format(const shader::shader_type type) {
-            static std::array<std::string, static_cast<std::size_t>(shader::shader_type::enum_size)> formats = {
+        std::string get_shader_format(const shader_type type) {
+            static std::array<std::string, static_cast<std::size_t>(shader_type::enum_size)> formats = {
                 "vert", "frag", "geom", "comp", "tesc", "tese"};
             return formats[static_cast<std::size_t>(type)];
         }
 
-        bool compile_shader(const std::string& shaderBytecodeFile, const std::string shaderSourceFile) {
+        bool compile_shader(const std::string& shaderBytecodeFile, const std::string& shaderSourceFile) {
             std::string command = fmt::sprintf("glslangValidator -V -o %s %s", shaderBytecodeFile, shaderSourceFile);
             return std::system(command.c_str());
         }
@@ -33,10 +33,15 @@ namespace engine {
         shader_set shader_compiler::compile_shaders(const std::string& name) const {
             shader_set shaders;
 
-            for (std::int32_t idx = 0; idx < static_cast<std::int32_t>(shader::shader_type::enum_size); ++idx) {
+            auto jsonDescriptorFile =
+                m_dataLoader.find_file(std::string("shaders") + application::data_loader::separator + name + ".json");
+            assert(jsonDescriptorFile);
+            const auto& jsonModel = m_dataLoader.load_json(jsonDescriptorFile.value());
+
+            for (std::int32_t idx = 0; idx < static_cast<std::int32_t>(shader_type::enum_size); ++idx) {
                 std::string shaderFileName(std::string("shaders") + application::data_loader::separator + name + "." +
-                                           get_shader_format(static_cast<shader::shader_type>(idx)));
-                std::string bytecodeFileName(name + "." + get_shader_format(static_cast<shader::shader_type>(idx)) +
+                                           get_shader_format(static_cast<shader_type>(idx)));
+                std::string bytecodeFileName(name + "." + get_shader_format(static_cast<shader_type>(idx)) +
                                              m_shaderExtension);
 
                 auto shaderSourceFile = m_dataLoader.find_file(shaderFileName);
@@ -48,12 +53,13 @@ namespace engine {
                     continue;
                 }
 
-                shader shaderModule =
-                    m_device.crate_shader(static_cast<shader::shader_type>(idx), std::move(bytecode.value()), name);
+                auto descriptorLayouts = parse_descriptor_layouts(jsonModel, static_cast<shader_type>(idx));
 
-                shaders.shaders.emplace_back(std::move(shaderModule));
+                shader shaderModule =
+                    m_device.crate_shader(static_cast<shader_type>(idx), std::move(bytecode.value()), name, std::move(descriptorLayouts));
+
+                shaders.emplace_back(std::move(shaderModule));
             }
-            shaders.layouts.emplace_back(m_device.create_descriptor_set_layout());
 
             return shaders;
         }
@@ -84,6 +90,24 @@ namespace engine {
             }
 
             return m_dataLoader.load_shader_bytecode(shaderBytecodeFile.value());
+        }
+
+        std::vector<vk::DescriptorSetLayout> shader_compiler::parse_descriptor_layouts(const rapidjson::Document& jsonModel,
+                                                                                       shader_type type) const {
+            assert(jsonModel.HasMember(get_shader_format(type).c_str()));
+            auto& descriptors = jsonModel[get_shader_format(type).c_str()];
+            assert(descriptors.IsArray());
+            std::vector<vk::DescriptorSetLayout> layouts;
+            layouts.reserve(descriptors.GetArray().Size());
+
+            for (auto& descriptor : descriptors.GetArray()) {
+                auto binding = descriptor["binding"].GetInt();
+
+                layouts.emplace_back(m_device.create_descriptor_set_layout(binding,
+                                                      vk::DescriptorType::eUniformBuffer,
+                                                      shader::get_native_shader_type(type)));
+            }
+            return layouts;
         }
 
     } // namespace vulkan

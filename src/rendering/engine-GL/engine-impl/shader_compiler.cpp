@@ -18,7 +18,7 @@ namespace engine {
 
         std::optional<shader_program> shader_compiler::compile_program(std::string_view&& name,
                                                                        const shaderTypesSet& types) const {
-            std::array<std::optional<shader>, shader_types_count> shaders{std::nullopt};
+            std::array<std::optional<shader>, base::shader_types_count> shaders{std::nullopt};
             for (std::size_t i = 0; i < shaders.size(); i++) {
                 if (types[i]) {
                     shaders[i] = compile_shader(std::string(name), static_cast<shader_type>(i));

@@ -5,6 +5,7 @@
 #include "device.h"
 #include "resources/index_buffer.h"
 #include "resources/pipeline.h"
+#include "resources/shader.h"
 #include "resources/uniform_buffer.h"
 #include "resources/vertex_buffer.h"
 #include "resources/vertex_format.h"
@@ -34,7 +35,9 @@ namespace engine {
                                             const vertex_format& format);
             void create_technique(std::string&& name, base::technique_settings&& settings);
             vertex_buffer create_vertex_buffer(const vertex_format& format, std::vector<vertex>&& vertices);
-            uniform_buffer create_uniform_buffer(const std::string& shaderName);
+            uniform_buffer create_uniform_buffer(const std::string& shaderName,
+                                                 shader_type type,
+                                                 std::uint32_t binding);
 
         private:
             device& m_device;
@@ -46,6 +49,6 @@ namespace engine {
         index_buffer<IndexType> resource_factory::create_index_buffer(std::vector<std::uint16_t>&& indices) {
             return m_device.create_index_buffer(std::move(indices));
         }
-    }
-}
-}
+    } // namespace opengl
+} // namespace engine
+} // namespace tst

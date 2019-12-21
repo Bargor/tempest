@@ -77,7 +77,7 @@ namespace scene {
                                                                                 {{-0.5f, 0.5f}, {1.0f, 1.0f, 1.0f}}}));
         auto indexBuffer = m_resourceFactory.create_index_buffer(std::vector<std::uint16_t>({{0, 1, 2, 2, 3, 0}}));
 
-        auto uniformBuffer = m_resourceFactory.create_uniform_buffer("test");
+        auto uniformBuffer = m_resourceFactory.create_uniform_buffer("test", engine::shader::shader_type::vertex, 0);
 
         auto material = m_resourceFactory.create_material();
 

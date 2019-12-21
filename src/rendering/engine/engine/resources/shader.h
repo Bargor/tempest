@@ -9,6 +9,7 @@ namespace engine {
 
     class shader final : api::shader {
     public:
+        using shader_type = base::shader_type;
     private:
     };
 
