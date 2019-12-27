@@ -22,6 +22,13 @@ namespace engine {
             m_shaders.insert(std::make_pair(name, std::move(shaders)));
         }
 
+        void resource_cache::add_descritptor_set_layout(shader::descriptor_layout&& layout,
+                                                        vk::DescriptorSetLayout vkLayout) {
+            if (m_descriptorLayouts.find(layout) == m_descriptorLayouts.cend()) {
+                m_descriptorLayouts[layout] = vkLayout;
+            }
+        }
+
         const pipeline* resource_cache::find_pipeline(std::size_t pipelineHash) const {
             const auto& it = m_pipelines.find(pipelineHash);
             return (it != m_pipelines.end()) ? &(it->second) : nullptr;
@@ -50,10 +57,19 @@ namespace engine {
             return nullptr;
         }
 
+        const vk::DescriptorSetLayout* resource_cache::find_descriptor_layout(const shader::descriptor_layout& layout) {
+            const auto& flayout = m_descriptorLayouts.find(layout);
+            if (flayout != m_descriptorLayouts.end()) {
+                return &flayout->second;
+            }
+            return nullptr;
+        }
+
         void resource_cache::clear() {
             m_pipelines.clear();
             m_techniques.clear();
             m_shaders.clear();
+            m_descriptorLayouts.clear();
         }
 
         void resource_cache::rebuild_techniques(const swap_chain& newSwapChain) {

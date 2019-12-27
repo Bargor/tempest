@@ -187,11 +187,8 @@ namespace engine {
             return vk::PrimitiveTopology::eTriangleList;
         }
 
-        vk::PipelineLayout create_pipeline_layout(const vk::Device logicalDevice, const shader_set& shaders) {
-            std::vector<vk::DescriptorSetLayout> layouts;
-            for (const auto& shader : shaders) {
-                layouts.insert(layouts.end(), shader.get_layouts().begin(), shader.get_layouts().end());
-            }
+        vk::PipelineLayout create_pipeline_layout(const vk::Device logicalDevice,
+                                                  const std::vector<vk::DescriptorSetLayout>& layouts) {
 
             vk::PipelineLayoutCreateInfo pipelineLayoutInfo(vk::PipelineLayoutCreateFlags(),
                                                             static_cast<std::uint32_t>(layouts.size()), layouts.data(),
@@ -347,8 +344,9 @@ namespace engine {
                            const settings& engineSettings,
                            const vertex_format& format,
                            const shader_set& shaders,
-                           const rendering_technique& technique)
-            : m_pipelineLayout(create_pipeline_layout(logicalDevice, shaders))
+                           const rendering_technique& technique,
+                           std::vector<vk::DescriptorSetLayout>&& layouts)
+            : m_pipelineLayout(create_pipeline_layout(logicalDevice, layouts))
             , m_pipeline(compile_pipeline(logicalDevice,
                                           m_pipelineLayout,
                                           technique.m_renderPass,
@@ -369,7 +367,9 @@ namespace engine {
             , m_technique(technique)
             , m_shaders(shaders)
             , m_vertexFormat(format)
-            , m_logicalDevice(logicalDevice) {
+            , m_logicalDevice(logicalDevice)
+            , m_layouts(std::move(layouts))
+        {
         }
 
         pipeline::pipeline(pipeline&& pipeline) noexcept
@@ -379,7 +379,9 @@ namespace engine {
             , m_technique(pipeline.m_technique)
             , m_shaders(pipeline.m_shaders)
             , m_vertexFormat(pipeline.m_vertexFormat)
-            , m_logicalDevice(pipeline.m_logicalDevice) {
+            , m_logicalDevice(pipeline.m_logicalDevice)
+            , m_layouts(std::move(pipeline.m_layouts)) {
+            pipeline.m_pipeline = vk::Pipeline();
             pipeline.m_pipeline = vk::Pipeline();
             pipeline.m_pipelineLayout = vk::PipelineLayout();
         }
@@ -402,7 +404,7 @@ namespace engine {
 
         void pipeline::recreate() {
             destroy();
-            m_pipelineLayout = create_pipeline_layout(m_logicalDevice, m_shaders);
+            m_pipelineLayout = create_pipeline_layout(m_logicalDevice, m_layouts);
             m_pipelineSettings.m_viewport.width = m_technique.m_viewportSettings.width;
             m_pipelineSettings.m_viewport.height = m_technique.m_viewportSettings.height;
 

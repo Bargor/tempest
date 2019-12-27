@@ -61,15 +61,16 @@ namespace engine {
             shader crate_shader(shader_type type,
                                 std::vector<char>&& source,
                                 const std::string& name,
-                                std::vector<vk::DescriptorSetLayout>&& layouts) const;
+                                std::vector<shader::descriptor_layout>&& layouts) const;
             pipeline create_pipeline(const vertex_format& format,
                                      const shader_set& shaders,
-                                     const rendering_technique& technique);
+                                     const rendering_technique& technique,
+                                     std::vector<vk::DescriptorSetLayout>&& layouts);
             vertex_buffer create_vertex_buffer(const vertex_format& format,
                                                std::vector<vertex>&& vertices,
                                                const vk::CommandPool cmdPool) const;
             uniform_buffer create_uniform_buffer(const vk::CommandPool cmdPool,
-                                                 const vk::DescriptorSetLayout layout) const;
+                                                 const vk::DescriptorSetLayout descLayout) const;
             gpu_info& get_GPU_info() const noexcept;
             resource_cache& get_resource_cache() noexcept;
 

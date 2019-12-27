@@ -22,7 +22,8 @@ namespace engine {
                      const settings& engineSettings,
                      const vertex_format& format,
                      const shader_set& shaders,
-                     const rendering_technique& technique);
+                     const rendering_technique& technique,
+                     std::vector<vk::DescriptorSetLayout>&& layouts);
             pipeline(const pipeline&) = delete;
             pipeline(pipeline&& pipeline) noexcept;
 
@@ -45,6 +46,7 @@ namespace engine {
             const shader_set& m_shaders;
             const vertex_format m_vertexFormat;
             const vk::Device m_logicalDevice;
+            std::vector<vk::DescriptorSetLayout> m_layouts;
         };
 
     } // namespace vulkan

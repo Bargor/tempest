@@ -28,7 +28,7 @@ namespace engine {
                            vk::CommandPool cmdPool,
                            vk::DescriptorPool descPool,
                            vk::DescriptorSetLayout descLayout,
-                           const vk::PhysicalDeviceMemoryProperties& memoryProperties,
+                           vk::PhysicalDeviceMemoryProperties memoryProperties,
                            const std::uint32_t& resourceIndex);
             uniform_buffer(uniform_buffer&& other) noexcept;
             uniform_buffer(const uniform_buffer& other) = delete;
