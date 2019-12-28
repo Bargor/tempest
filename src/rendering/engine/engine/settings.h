@@ -3,6 +3,7 @@
 
 #include "engine-impl/api.h"
 #include "engine-impl/resources/settings.h"
+#include "engine-impl/settings_parser.h"
 
 namespace tst {
 namespace engine {

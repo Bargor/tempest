@@ -45,13 +45,17 @@ namespace engine {
 
         class settings {
         public:
-            settings(const rasterizer_settings& rasterizerSettings, const multisampling_settings& multisamplingSettings);
-            ~settings();
+            constexpr settings(const rasterizer_settings& rasterizerSettings, const multisampling_settings& multisamplingSettings);
 
         public:
             rasterizer_settings m_rasterizer;
             multisampling_settings m_multisampling;
         };
+
+        constexpr settings::settings(const rasterizer_settings& rasterizerSettings,
+                                     const multisampling_settings& multisamplingSettings)
+            : m_rasterizer(rasterizerSettings), m_multisampling(multisamplingSettings) {
+        }
 
     } // namespace base
 } // namespace engine

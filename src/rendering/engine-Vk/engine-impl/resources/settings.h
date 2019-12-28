@@ -13,8 +13,7 @@ namespace engine {
             enum class buffering { double_buf = 2, triple_buf = 3 };
 
         public:
-            settings(base::settings&& settings, buffering buffers);
-            ~settings();
+            constexpr settings(base::settings&& settings, buffering buffers);
 
         public:
             static constexpr std::uint32_t m_inFlightFrames = 3;
@@ -22,6 +21,10 @@ namespace engine {
 
         private:
         };
+
+        constexpr settings::settings(base::settings&& settings, buffering buffers)
+            : base::settings(settings), m_buffering(buffers) {
+        }
 
     } // namespace vulkan
 } // namespace engine

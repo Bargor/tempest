@@ -27,12 +27,12 @@ namespace engine {
         std::vector<shader::descriptor_layout> parse_descriptor_layouts(const rapidjson::Document& jsonModel,
                                                                         shader_type type) {
             assert(jsonModel.HasMember(get_shader_format(type).c_str()));
-            auto& descriptors = jsonModel[get_shader_format(type).c_str()];
+            const auto& descriptors = jsonModel[get_shader_format(type).c_str()];
             assert(descriptors.IsArray());
             std::vector<shader::descriptor_layout> layouts;
             layouts.reserve(descriptors.GetArray().Size());
 
-            for (auto& descriptor : descriptors.GetArray()) {
+            for (const auto& descriptor : descriptors.GetArray()) {
                 auto binding = descriptor["binding"].GetUint();
 
                 layouts.emplace_back(shader::descriptor_layout{
