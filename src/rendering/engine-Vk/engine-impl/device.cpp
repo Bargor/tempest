@@ -129,7 +129,7 @@ namespace engine {
                                                m_physicalDevice->get_presentation_index(),
                                                vk::Extent2D{mainWindow.get_size().width, mainWindow.get_size().height},
                                                m_engineSettings.m_buffering))
-            , m_resourceCache(std::make_unique<resource_cache>())
+            , m_resourceCache(std::make_unique<resource_cache>(m_logicalDevice))
             , m_graphicsQueueHandle(m_logicalDevice.getQueue(m_physicalDevice->get_graphics_index(), 0))
             , m_computeQueueHandle(m_logicalDevice.getQueue(m_physicalDevice->get_compute_index(), 0))
             , m_presentationQueueHandle(m_logicalDevice.getQueue(m_physicalDevice->get_presentation_index(), 0))
@@ -216,12 +216,12 @@ namespace engine {
         }
 
         uniform_buffer device::create_uniform_buffer(const vk::CommandPool cmdPool,
-                                                     const vk::DescriptorSetLayout layout) const {
+                                                     const vk::DescriptorSetLayout descLayout) const {
             return uniform_buffer(m_logicalDevice,
                                   m_graphicsQueueHandle,
                                   cmdPool,
                                   m_descriptorPools[0],
-                                  layout,
+                                  descLayout,
                                   m_physicalDevice->get_memory_properties(),
                                   m_resourceIndex);
         }
@@ -229,14 +229,15 @@ namespace engine {
         shader device::crate_shader(shader_type type,
                                     std::vector<char>&& source,
                                     const std::string& name,
-                                    std::vector<vk::DescriptorSetLayout>&& layouts) const {
+                                    std::vector<shader::descriptor_layout>&& layouts) const {
             return shader(m_logicalDevice, type, std::move(source), name, std::move(layouts));
         }
 
         pipeline device::create_pipeline(const vertex_format& format,
                                          const shader_set& shaders,
-                                         const rendering_technique& technique) {
-            return pipeline(m_logicalDevice, m_engineSettings, format, shaders, technique);
+                                         const rendering_technique& technique,
+                                         std::vector<vk::DescriptorSetLayout>&& layouts) {
+            return pipeline(m_logicalDevice, m_engineSettings, format, shaders, technique, std::move(layouts));
         }
 
         resource_cache& device::get_resource_cache() noexcept {

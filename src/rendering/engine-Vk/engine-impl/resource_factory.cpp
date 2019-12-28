@@ -14,7 +14,7 @@ namespace engine {
             : m_device(device)
             , m_dataLoader(dataLoader)
             , m_resourceCache(m_device.get_resource_cache())
-            , m_shaderCompiler(std::make_unique<shader_compiler>(m_dataLoader, m_device))
+            , m_shaderCompiler(std::make_unique<shader_compiler>(m_dataLoader, m_device, m_device.get_resource_cache()))
             , m_commandPool(m_device.create_command_pool()) {
         }
 
@@ -32,7 +32,16 @@ namespace engine {
             }
 
             if (shaders && technique) {
-                auto pipeline = m_device.create_pipeline(format, *shaders, *technique);
+                std::vector<vk::DescriptorSetLayout> layouts;
+                for (const auto& shader : *shaders) {
+                    auto shaderLayouts = shader.get_layouts();
+                    for (const auto& layout : shaderLayouts) {
+                        layouts.emplace_back(*m_resourceCache.find_descriptor_layout(layout));
+                    }
+                    
+                }
+
+                auto pipeline = m_device.create_pipeline(format, *shaders, *technique, std::move(layouts));
 
                 auto hash = m_resourceCache.add_pipeline(std::move(pipeline));
 
@@ -61,11 +70,13 @@ namespace engine {
             assert(shaders);
             for (const auto& shader : *shaders) {
                 if (shader.get_stage() == type) {
-                    return m_device.create_uniform_buffer(m_commandPool, shader.get_layouts()[binding]);
+                    const auto layout = m_resourceCache.find_descriptor_layout(shader.get_layouts()[binding]);
+                    return m_device.create_uniform_buffer(m_commandPool, *layout);
                 }
             }
             assert(false);
-            return m_device.create_uniform_buffer(m_commandPool, (*shaders)[0].get_layouts()[binding]);
+            const auto layout = m_resourceCache.find_descriptor_layout((*shaders)[0].get_layouts()[binding]);
+            return m_device.create_uniform_buffer(m_commandPool, *layout);
         }
 
         const shader_set* resource_factory::load_shaders(const std::string& shadersName) {

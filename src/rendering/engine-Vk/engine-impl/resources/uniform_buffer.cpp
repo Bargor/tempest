@@ -15,7 +15,7 @@ namespace engine {
                                        vk::CommandPool cmdPool,
                                        vk::DescriptorPool descPool,
                                        vk::DescriptorSetLayout descLayout,
-                                       const vk::PhysicalDeviceMemoryProperties& memoryProperties,
+                                       vk::PhysicalDeviceMemoryProperties memoryProperties,
                                        const std::uint32_t& resourceIndex)
             : buffer(logicalDevice,
                      queueHandle,

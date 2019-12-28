@@ -32,11 +32,16 @@ namespace engine {
             return vk::ShaderStageFlagBits::eAll;
         }
 
+
+        bool shader::descriptor_layout::operator==(const shader::descriptor_layout& other) const noexcept {
+            return binding == other.binding && type == other.type && stages == other.stages;
+        }
+
         shader::shader(vk::Device device,
                        shader_type type,
                        std::vector<char>&& source,
                        const std::string& name,
-                       std::vector<vk::DescriptorSetLayout>&& layouts)
+                       std::vector<shader::descriptor_layout>&& layouts)
             : m_device(device), m_source(source), m_name(name), m_type(type), m_descriptorLayouts(std::move(layouts)) {
             vk::ShaderModuleCreateInfo createInfo(
                 vk::ShaderModuleCreateFlags(), source.size(), reinterpret_cast<const uint32_t*>(source.data()));
@@ -66,16 +71,13 @@ namespace engine {
             if (m_shader) {
                 m_device.destroyShaderModule(m_shader);
             }
-            for (const auto& layout : m_descriptorLayouts) {
-                m_device.destroyDescriptorSetLayout(layout);
-            }
         }
 
         vk::PipelineShaderStageCreateInfo shader::get_pipeline_info() const noexcept{
             return m_pipelineInfo;
         }
 
-        const std::vector<vk::DescriptorSetLayout>& shader::get_layouts() const  noexcept{
+        const std::vector<shader::descriptor_layout>& shader::get_layouts() const noexcept {
             return m_descriptorLayouts;
         }
 
