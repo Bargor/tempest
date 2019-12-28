@@ -2,11 +2,15 @@
 // Author: Karol Kontny
 
 #include "resource_cache.h"
+
 #include "swap_chain.h"
 
 namespace tst {
 namespace engine {
     namespace vulkan {
+
+        resource_cache::resource_cache(const vk::Device device) : m_device(device) {
+        }
 
         std::size_t resource_cache::add_pipeline(pipeline&& newPipeline) {
             auto hash = std::hash<pipeline>{}(newPipeline);
@@ -69,6 +73,9 @@ namespace engine {
             m_pipelines.clear();
             m_techniques.clear();
             m_shaders.clear();
+            for (const auto& layout : m_descriptorLayouts) {
+                m_device.destroyDescriptorSetLayout(layout.second);
+            }
             m_descriptorLayouts.clear();
         }
 

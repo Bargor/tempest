@@ -18,7 +18,8 @@ namespace engine {
 
         class resource_cache {
         public:
-            //resource_cache(const resource_cache&) = delete;
+            resource_cache(const vk::Device device);
+            resource_cache(const resource_cache&) = delete;
 
             std::size_t add_pipeline(pipeline&& newPipeline);
             void add_rendering_technique(rendering_technique&& technique);
@@ -35,6 +36,7 @@ namespace engine {
             void rebuild_pipelines();
 
         private:
+            vk::Device m_device;
             std::unordered_map<std::size_t, pipeline> m_pipelines;
             std::vector<rendering_technique> m_techniques;
             std::unordered_map<std::string, shader_set> m_shaders;

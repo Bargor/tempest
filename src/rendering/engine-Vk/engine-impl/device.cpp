@@ -129,7 +129,7 @@ namespace engine {
                                                m_physicalDevice->get_presentation_index(),
                                                vk::Extent2D{mainWindow.get_size().width, mainWindow.get_size().height},
                                                m_engineSettings.m_buffering))
-            , m_resourceCache(std::make_unique<resource_cache>())
+            , m_resourceCache(std::make_unique<resource_cache>(m_logicalDevice))
             , m_graphicsQueueHandle(m_logicalDevice.getQueue(m_physicalDevice->get_graphics_index(), 0))
             , m_computeQueueHandle(m_logicalDevice.getQueue(m_physicalDevice->get_compute_index(), 0))
             , m_presentationQueueHandle(m_logicalDevice.getQueue(m_physicalDevice->get_presentation_index(), 0))
