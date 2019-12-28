@@ -8,25 +8,17 @@
 
 namespace tst {
 namespace engine {
-    namespace vulkan {
-
-        constexpr settings default_settings{
-            base::settings::get_default_settings(),
-            settings::buffering::triple_buf};
+    namespace opengl {
 
         settings parse_engine_settings(const application::data_loader& dataLoader) {
             auto settingsFile = dataLoader.find_file(std::filesystem::path("engine_settings.json"));
             if (settingsFile) {
-
                 const auto& jsonModel = dataLoader.load_json(settingsFile.value());
                 assert(jsonModel.HasMember("rasterizer"));
                 assert(jsonModel.HasMember("multisampling"));
-                assert(jsonModel.HasMember("buffering"));
-                const auto buffering = jsonModel["buffering"].GetUint();
-                return settings(base::parse_engine_settings(jsonModel),
-                                static_cast<settings::buffering>(buffering));
+                return settings(base::parse_engine_settings(jsonModel));
             } else {
-                return default_settings;
+                return base::settings::get_default_settings();
             }
         }
     } // namespace vulkan

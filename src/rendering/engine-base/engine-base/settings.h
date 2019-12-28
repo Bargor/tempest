@@ -45,12 +45,26 @@ namespace engine {
 
         class settings {
         public:
+            constexpr static settings get_default_settings();
+        public:
             constexpr settings(const rasterizer_settings& rasterizerSettings, const multisampling_settings& multisamplingSettings);
 
         public:
             rasterizer_settings m_rasterizer;
             multisampling_settings m_multisampling;
         };
+
+        constexpr settings settings::get_default_settings() {
+            return base::settings{
+                base::rasterizer_settings{false,
+                                          false,
+                                          base::rasterizer_settings::polygon_mode::fill,
+                                          base::rasterizer_settings::cull_mode::back,
+                                          base::rasterizer_settings::front_face::counter_clockwise,
+                                          1.0f,
+                                          {false, 0.0f, 0.0f, 0.0f}},
+                base::multisampling_settings{false, base::multisampling_settings::sample_count::samples_1}};
+        }
 
         constexpr settings::settings(const rasterizer_settings& rasterizerSettings,
                                      const multisampling_settings& multisamplingSettings)

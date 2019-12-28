@@ -1,0 +1,21 @@
+{
+	"rasterizer": {
+		"depth_clamp": false,
+		"rasterizer_discard": false,
+		"polygon_mode": 2,
+		"cull_mode": 1,
+		"front_face": 1,
+		"line_width": 1.0,
+		"depth_bias": {
+			"enable": false,
+			"constant_factor": 0.0,
+			"clamp": 0.0,
+			"slope_factor": 0.0
+		}
+	},
+	"multisampling": {
+		"enable": false,
+		"samples": 1
+	},
+	"buffering": 3
+}

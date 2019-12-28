@@ -63,7 +63,6 @@ target_link_libraries(engine-impl PUBLIC
 	glfw
 	${Vulkan_LIBRARIES}
 	PRIVATE
-	rapidjson::rapidjson
 	tinyobjloader
 )
 
@@ -103,6 +102,5 @@ else()
 		COMMENT "Copying settings for target: test" VERBATIM
 		)
 endif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-
 
 add_dependencies(engine-impl copy_shader_files copy_settings_file)

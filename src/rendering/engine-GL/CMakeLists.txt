@@ -19,6 +19,7 @@ set(ENGINE_HDRS
 	engine-impl/resources/vertex_buffer.h
 	engine-impl/resources/vertex_format.h
 	engine-impl/resource_factory.h
+	engine-impl/settings_parser.h
 	engine-impl/shader_compiler.h
 )
 
@@ -38,6 +39,7 @@ set(ENGINE_SRCS
 	engine-impl/resources/vertex_buffer.cpp
 	engine-impl/resources/vertex_format.cpp
 	engine-impl/resource_factory.cpp
+	engine-impl/settings_parser.cpp
 	engine-impl/shader_compiler.cpp
 )
 
@@ -59,3 +61,26 @@ endif(WIN32)
 if(UNIX)
 	target_link_libraries(engine-impl PRIVATE -lGL -lX11 -lXxf86vm -lXrandr -lXi -ldl)
 endif(UNIX)
+
+#Compiler specific options
+if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+	add_custom_target(
+		copy_settings_file
+		${CMAKE_COMMAND}
+		-D SOURCE_DIR=${CMAKE_CURRENT_SOURCE_DIR}
+		-D DESTINATION_DIR=${RUNTIME_OUTPUT_PATH}/$<CONFIG>/
+		-P ${PROJECT_SOURCE_DIR}/cmake/CopySettings.cmake
+		COMMENT "Copying settings for target: test" VERBATIM
+		)
+else()
+	add_custom_target(
+		copy_settings_file
+		${CMAKE_COMMAND}
+		-D SOURCE_DIR=${CMAKE_CURRENT_SOURCE_DIR}
+		-D DESTINATION_DIR=${RUNTIME_OUTPUT_PATH}/
+		-P ${PROJECT_SOURCE_DIR}/cmake/CopySettings.cmake
+		COMMENT "Copying settings for target: test" VERBATIM
+		)
+endif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+
+add_dependencies(engine-impl copy_settings_file)
