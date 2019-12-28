@@ -9,6 +9,7 @@ set(ENGINE_BASE_HDRS
 	engine-base/vertex_format.h
 	engine-base/settings.h
 	engine-base/shader.h
+	engine-base/settings_parser.h
 )
 
 set(ENGINE_BASE_SRCS
@@ -18,10 +19,11 @@ set(ENGINE_BASE_SRCS
 	engine-base/pipeline_settings.cpp
 	engine-base/vertex_format.cpp
 	engine-base/settings.cpp
+	engine-base/settings_parser.cpp
 )
 
 include(${PROJECT_SOURCE_DIR}/cmake/TstAddLibrary.cmake)
 
 tst_add_library(engine-base "${ENGINE_BASE_HDRS}" "${ENGINE_BASE_SRCS}")
 
-target_link_libraries(engine-base PUBLIC fmt::fmt glm tst::core)
+target_link_libraries(engine-base PUBLIC fmt::fmt glm tst::core rapidjson::rapidjson)

@@ -7,8 +7,8 @@ namespace tst {
 namespace engine {
     namespace opengl {
 
-        settings::settings(base::settings&& settings, buffering buffers)
-            : base::settings(settings), m_buffering(buffers) {
+        settings::settings(base::settings&& settings)
+            : base::settings(settings) {
         }
 
         settings::~settings() {

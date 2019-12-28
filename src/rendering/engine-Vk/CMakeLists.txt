@@ -22,6 +22,7 @@ set(ENGINE_HDRS
 	engine-impl/resources/uniform_buffer.h
 	engine-impl/resources/vertex_buffer.h
 	engine-impl/resources/vertex_format.h
+	engine-impl/settings_parser.h
 	engine-impl/shader_compiler.h
 	engine-impl/swap_chain.h
 	engine-impl/vulkan_exception.h
@@ -47,11 +48,10 @@ set(ENGINE_SRCS
 	engine-impl/resources/uniform_buffer.cpp
 	engine-impl/resources/vertex_buffer.cpp
 	engine-impl/resources/vertex_format.cpp
+	engine-impl/settings_parser.cpp
 	engine-impl/shader_compiler.cpp
 	engine-impl/swap_chain.cpp
 )
-
-include(${PROJECT_SOURCE_DIR}/cmake/TstAddLibrary.cmake)
 
 tst_add_library(engine-impl "${ENGINE_HDRS}" "${ENGINE_SRCS}")
 
@@ -63,7 +63,6 @@ target_link_libraries(engine-impl PUBLIC
 	glfw
 	${Vulkan_LIBRARIES}
 	PRIVATE
-	rapidjson::rapidjson
 	tinyobjloader
 )
 
@@ -75,7 +74,15 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
 		-D SOURCE_DIR=${CMAKE_CURRENT_SOURCE_DIR}
 		-D DESTINATION_DIR=${RUNTIME_OUTPUT_PATH}/$<CONFIG>/shaders/
 		-P ${PROJECT_SOURCE_DIR}/cmake/CopyShaders.cmake
-		COMMENT "Copying Files for target: test_SphereShader" VERBATIM
+		COMMENT "Copying shader files for target: test" VERBATIM
+		)
+	add_custom_target(
+		copy_settings_file
+		${CMAKE_COMMAND}
+		-D SOURCE_DIR=${CMAKE_CURRENT_SOURCE_DIR}
+		-D DESTINATION_DIR=${RUNTIME_OUTPUT_PATH}/$<CONFIG>/
+		-P ${PROJECT_SOURCE_DIR}/cmake/CopySettings.cmake
+		COMMENT "Copying settings for target: test" VERBATIM
 		)
 else()
 	add_custom_target(
@@ -84,9 +91,16 @@ else()
 		-D SOURCE_DIR=${CMAKE_CURRENT_SOURCE_DIR}
 		-D DESTINATION_DIR=${RUNTIME_OUTPUT_PATH}/shaders/
 		-P ${PROJECT_SOURCE_DIR}/cmake/CopyShaders.cmake
-		COMMENT "Copying Files for target: test_SphereShader" VERBATIM
+		COMMENT "Copying shader files for target: test" VERBATIM
+		)
+	add_custom_target(
+		copy_settings_file
+		${CMAKE_COMMAND}
+		-D SOURCE_DIR=${CMAKE_CURRENT_SOURCE_DIR}
+		-D DESTINATION_DIR=${RUNTIME_OUTPUT_PATH}/
+		-P ${PROJECT_SOURCE_DIR}/cmake/CopySettings.cmake
+		COMMENT "Copying settings for target: test" VERBATIM
 		)
 endif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
 
-
-add_dependencies(engine-impl copy_shader_files)
+add_dependencies(engine-impl copy_shader_files copy_settings_file)
