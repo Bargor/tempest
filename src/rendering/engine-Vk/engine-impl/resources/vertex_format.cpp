@@ -53,7 +53,7 @@ namespace engine {
             std::vector<vk::VertexInputAttributeDescription> descriptions;
             descriptions.reserve(attributes.size());
 
-            for (auto& attribute : attributes) {
+            for (const auto& attribute : attributes) {
                 descriptions.emplace_back(vk::VertexInputAttributeDescription{
                     static_cast<std::uint32_t>(attribute.location), 0, translate_format(attribute.format), attribute.offset});
             }

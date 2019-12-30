@@ -18,7 +18,7 @@ namespace scene {
         std::vector<engine::draw_info> drawInfos;
         drawInfos.reserve(sceneState.size());
 
-        for (auto& state : sceneState) {
+        for (const auto& state : sceneState) {
             engine::draw_info info(state.vertices, state.indices, state.pipeline, &state.uniform);
             drawInfos.emplace_back(std::move(info));
         }

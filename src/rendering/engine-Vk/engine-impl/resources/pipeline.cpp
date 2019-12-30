@@ -252,7 +252,7 @@ namespace engine {
             std::vector<vk::PipelineColorBlendAttachmentState> colorBlendAttachments;
             colorBlendAttachments.reserve(framebufferColorBlending.size());
 
-            for (auto& attachment : framebufferColorBlending) {
+            for (const auto& attachment : framebufferColorBlending) {
                 vk::PipelineColorBlendAttachmentState colorBlendAttachment(
                     attachment.enable,
                     translate_blend_factor(attachment.srcColorBlendFactor),
@@ -304,15 +304,15 @@ namespace engine {
             vk::Rect2D scissor({scissorSettings.offset.x, scissorSettings.offset.y},
                                {scissorSettings.dimensions.width, scissorSettings.dimensions.height});
 
-            auto bindingDesc = format.get_binding_description();
-            auto attributeDesc = format.get_attribute_descriptions();
-            auto vertexInfo = create_vertex_input_info(bindingDesc, attributeDesc);
-            auto assemblyInfo = create_assembly_info(format);
-            auto viewportInfo = create_viewport_info(viewport, scissor);
-            auto rasterizationInfo = create_rasterization_info(rasterizerSettings);
-            auto multisamplingInfo = create_multisampling_info(multisamplingSettings);
-            auto colorBlendAttachment = create_color_blend_attachment(framebufferBlendingSettings);
-            auto blendingInfo = create_color_blending_info(globalBlendingSettings, colorBlendAttachment);
+            const auto bindingDesc = format.get_binding_description();
+            const auto attributeDesc = format.get_attribute_descriptions();
+            const auto vertexInfo = create_vertex_input_info(bindingDesc, attributeDesc);
+            const auto assemblyInfo = create_assembly_info(format);
+            const auto viewportInfo = create_viewport_info(viewport, scissor);
+            const auto rasterizationInfo = create_rasterization_info(rasterizerSettings);
+            const auto multisamplingInfo = create_multisampling_info(multisamplingSettings);
+            const auto colorBlendAttachment = create_color_blend_attachment(framebufferBlendingSettings);
+            const auto blendingInfo = create_color_blending_info(globalBlendingSettings, colorBlendAttachment);
 
             std::vector<vk::PipelineShaderStageCreateInfo> shaderInfos;
             std::transform(shaders.cbegin(),

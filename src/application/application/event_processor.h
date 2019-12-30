@@ -28,7 +28,7 @@ namespace application {
         friend class input_processor;
 
     public:
-        event_processor(time_source& timeSource);
+        event_processor(const time_source& timeSource);
         ~event_processor();
 
         void create_event(Event&& event) noexcept;
@@ -55,11 +55,11 @@ namespace application {
         std::array<std::vector<subscriber>, std::variant_size_v<typename Event::arguments>> m_listeners;
         std::uint32_t m_readIndex;
         std::uint32_t m_writeIndex;
-        time_source& m_timeSource;
+        const time_source& m_timeSource;
     };
 
     template<typename Event>
-    event_processor<Event>::event_processor(time_source& timeSource)
+    event_processor<Event>::event_processor(const time_source& timeSource)
         : m_readIndex(0), m_writeIndex(0), m_timeSource(timeSource) {
     }
 
@@ -85,11 +85,11 @@ namespace application {
 
     template<typename Event>
     void event_processor<Event>::process_events() {
-        auto now = m_timeSource.now();
+        const auto now = m_timeSource.now();
         create_event(Event{this, typename Event::time{m_timeSource.get_time()}});
 
         while (m_writeIndex != m_readIndex) { // it requires that number of events is less that queue size to work
-            auto& event = m_events[m_readIndex++];
+            const auto& event = m_events[m_readIndex++];
             m_readIndex &= m_mask;
             for (auto& listener : m_listeners[event.args.index()]) {
                 if (event.id != listener.id) {

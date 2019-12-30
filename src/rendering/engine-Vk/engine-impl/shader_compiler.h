@@ -22,7 +22,9 @@ namespace engine {
 
         class shader_compiler {
         public:
-            shader_compiler(application::data_loader& dataLoader, const device& device, resource_cache& resourceCache);
+            shader_compiler(const application::data_loader& dataLoader,
+                            const device& device,
+                            resource_cache& resourceCache);
             ~shader_compiler();
 
             shader_set compile_shaders(const std::string& name) const;
@@ -33,7 +35,7 @@ namespace engine {
                                                            const std::string& bytecodeFileName) const;
 
         private:
-            application::data_loader& m_dataLoader;
+            const application::data_loader& m_dataLoader;
             const device& m_device;
             resource_cache& m_resourceCache;
 

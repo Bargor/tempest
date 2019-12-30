@@ -46,9 +46,9 @@ namespace engine {
             std::vector<vk::Framebuffer> framebuffers(imageViews.size());
 
             for (std::uint32_t i = 0; i < imageViews.size(); i++) {
-                vk::ImageView attachments[] = {imageViews[i]};
+                const vk::ImageView attachments[] = {imageViews[i]};
 
-                vk::FramebufferCreateInfo createInfo(
+                const vk::FramebufferCreateInfo createInfo(
                     vk::FramebufferCreateFlags(), renderPass, 1, attachments, extent.width, extent.height, 1);
 
                 framebuffers[i] = device.createFramebuffer(createInfo);
@@ -73,11 +73,11 @@ namespace engine {
         rendering_technique::rendering_technique(std::string&& techniqueName,
                                                  const base::viewport_settings& viewport,
                                                  const core::rectangle<std::int32_t, std::uint32_t> scissor,
-                                                 std::vector<base::color_blending_settings> framebufferBlending,
+                                                 std::vector<base::color_blending_settings>&& framebufferBlending,
                                                  const base::global_blending_settings& globalBlending,
                                                  vk::Device device,
                                                  const swap_chain& swapChain)
-            : base::rendering_technique(std::move(techniqueName), viewport, scissor, framebufferBlending, globalBlending)
+            : base::rendering_technique(std::move(techniqueName), viewport, scissor, std::move(framebufferBlending), globalBlending)
             , m_device(device)
             , m_swapChain(swapChain)
             , m_extent(m_swapChain.get().get_extent())

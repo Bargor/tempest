@@ -44,12 +44,12 @@ namespace engine {
         rendering_technique::rendering_technique(std::string&& techniqueName,
                                                  const viewport_settings& viewport,
                                                  const core::rectangle<std::int32_t, std::uint32_t> scissor,
-                                                 std::vector<color_blending_settings> framebufferBlending,
+                                                 std::vector<color_blending_settings>&& framebufferBlending,
                                                  const global_blending_settings& globalBlending)
             : m_techniqueName(std::move(techniqueName))
             , m_viewportSettings(viewport)
             , m_scissor(scissor)
-            , m_framebufferColorBlending(framebufferBlending)
+            , m_framebufferColorBlending(std::move(framebufferBlending))
             , m_globalColorBlending(globalBlending) {
         }
 

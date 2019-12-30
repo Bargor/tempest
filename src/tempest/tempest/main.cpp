@@ -47,8 +47,7 @@ int main(int argc, const char** argv) {
     std::filesystem::current_path(params.executionDirectory);
     tst::init_Glfw();
     try {
-        auto monitor = tst::init_monitor();
-        tst::application::application app(params, std::move(monitor), "Tempest");
+        tst::application::application app(params, tst::init_monitor(), "Tempest");
         app.run();
     } catch (tst::application::glfw_exception& ex) {
         const char* description;

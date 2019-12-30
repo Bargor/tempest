@@ -74,10 +74,10 @@ namespace application {
     void simulation_engine::main_loop() {
         m_inputProcessor.process_events();
         m_eventProcessor.process_events();
-        auto frameStart = m_timeSource.now();
+        const auto frameStart = m_timeSource.now();
         if (!m_windowMinimized) {
-            auto newSceneState = scene::update_scene(*m_scene, m_lastFrameDuration);
-            auto drawInfo = scene::prepare_draw_info(newSceneState);
+            const auto newSceneState = scene::update_scene(*m_scene, m_lastFrameDuration);
+            const auto drawInfo = scene::prepare_draw_info(newSceneState);
             m_renderingDevice->draw_frame(drawInfo.begin(), drawInfo.end());
             m_mainWindow.end_frame();
             m_lastSecondFrames++;

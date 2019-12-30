@@ -15,7 +15,7 @@ namespace engine {
             settings::buffering::triple_buf};
 
         settings parse_engine_settings(const application::data_loader& dataLoader) {
-            auto settingsFile = dataLoader.find_file(std::filesystem::path("engine_settings.json"));
+            const auto settingsFile = dataLoader.find_file(std::filesystem::path("engine_settings.json"));
             if (settingsFile) {
 
                 const auto& jsonModel = dataLoader.load_json(settingsFile.value());

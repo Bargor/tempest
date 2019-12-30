@@ -34,7 +34,7 @@ namespace engine {
 
         bool check_extensions_support(const vk::PhysicalDevice& handle,
                                       const std::vector<const char*>& requiredExtenstions) {
-            auto availableExtensions = handle.enumerateDeviceExtensionProperties();
+            const auto availableExtensions = handle.enumerateDeviceExtensionProperties();
 
             return tst::includes(availableExtensions.cbegin(),
                                  availableExtensions.cend(),
@@ -68,7 +68,7 @@ namespace engine {
 
         ptr<physical_device> select_physical_device(vk::SurfaceKHR& surface,
                                                     const std::vector<const char*>& requiredExtensions) {
-            auto& instance = instance::get_instance();
+            const auto& instance = instance::get_instance();
             std::vector<vk::PhysicalDevice> devices = instance.get_instance_handle().enumeratePhysicalDevices();
 
             if (devices.size() == 0) {

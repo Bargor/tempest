@@ -25,7 +25,7 @@ namespace engine {
             rendering_technique(std::string&& techniqueName,
                                 const base::viewport_settings& viewport,
                                 const core::rectangle<std::int32_t, std::uint32_t> scissor,
-                                std::vector<base::color_blending_settings> framebufferBlending,
+                                std::vector<base::color_blending_settings>&& framebufferBlending,
                                 const base::global_blending_settings& globalBlending,
                                 vk::Device device,
                                 const swap_chain& swapChain);

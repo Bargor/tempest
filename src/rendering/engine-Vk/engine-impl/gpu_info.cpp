@@ -7,7 +7,7 @@ namespace tst {
 namespace engine {
     namespace vulkan {
         gpu_info::gpu_info(vk::PhysicalDevice physicalDevice) {
-            auto deviceProperties = physicalDevice.getProperties();
+            const auto deviceProperties = physicalDevice.getProperties();
             super::versionMajor = VK_VERSION_MAJOR(deviceProperties.apiVersion);
             super::versionMinor = VK_VERSION_MINOR(deviceProperties.apiVersion);
             super::versionPatch = VK_VERSION_PATCH(deviceProperties.apiVersion);

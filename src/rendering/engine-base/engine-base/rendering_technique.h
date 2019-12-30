@@ -114,7 +114,7 @@ namespace engine {
             rendering_technique(std::string&& techniqueName,
                                 const viewport_settings& viewport,
                                 const core::rectangle<std::int32_t, std::uint32_t> scissor,
-                                std::vector<color_blending_settings> framebufferBlending,
+                                std::vector<color_blending_settings>&& framebufferBlending,
                                 const global_blending_settings& globalBlending);
             rendering_technique(std::string&& techniqueName, technique_settings&& techniqueSettings);
 

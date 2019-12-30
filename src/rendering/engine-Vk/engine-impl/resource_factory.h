@@ -25,7 +25,7 @@ namespace engine {
 
         class resource_factory {
         public:
-            resource_factory(device& device, application::data_loader& dataLoader);
+            resource_factory(device& device, const application::data_loader& dataLoader);
             ~resource_factory();
 
         public: // public resource factory interface
@@ -45,7 +45,7 @@ namespace engine {
 
         private:
             device& m_device;
-            application::data_loader& m_dataLoader;
+            const application::data_loader& m_dataLoader;
             resource_cache& m_resourceCache;
             ptr<shader_compiler> m_shaderCompiler;
             vk::CommandPool m_commandPool;

@@ -41,7 +41,7 @@ namespace engine {
             return layouts;
         }
 
-        shader_compiler::shader_compiler(application::data_loader& dataLoader,
+        shader_compiler::shader_compiler(const application::data_loader& dataLoader,
                                          const device& device,
                                          resource_cache& resourceCache)
             : m_dataLoader(dataLoader), m_device(device), m_resourceCache(resourceCache) {
@@ -53,19 +53,18 @@ namespace engine {
         shader_set shader_compiler::compile_shaders(const std::string& name) const {
             shader_set shaders;
 
-            auto jsonDescriptorFile =
-                m_dataLoader.find_file(std::string("shaders") + application::data_loader::separator + name + ".json");
+            auto jsonDescriptorFile = m_dataLoader.find_file(std::filesystem::path("shaders") / (name + ".json"));
             assert(jsonDescriptorFile);
             const auto& jsonModel = m_dataLoader.load_json(jsonDescriptorFile.value());
 
             for (std::int32_t idx = 0; idx < static_cast<std::int32_t>(shader_type::enum_size); ++idx) {
-                std::string shaderFileName(std::string("shaders") + application::data_loader::separator + name + "." +
-                                           get_shader_format(static_cast<shader_type>(idx)));
-                std::string bytecodeFileName(name + "." + get_shader_format(static_cast<shader_type>(idx)) +
+                const auto shaderFileName(std::filesystem::path("shaders") /
+                                           (name + "." + get_shader_format(static_cast<shader_type>(idx))));
+                const auto bytecodeFileName(name + "." + get_shader_format(static_cast<shader_type>(idx)) +
                                              m_shaderExtension);
 
-                auto shaderSourceFile = m_dataLoader.find_file(shaderFileName);
-                auto shaderBytecodeFile = m_dataLoader.find_file(bytecodeFileName);
+                const auto shaderSourceFile = m_dataLoader.find_file(shaderFileName);
+                const auto shaderBytecodeFile = m_dataLoader.find_file(bytecodeFileName);
 
                 auto bytecode = load_bytecode(shaderSourceFile, shaderBytecodeFile, bytecodeFileName);
 
@@ -76,7 +75,7 @@ namespace engine {
                 auto descriptorLayouts = parse_descriptor_layouts(jsonModel, static_cast<shader_type>(idx));
 
                 for (auto& layout : descriptorLayouts) {
-                    auto vkLayout = m_device.create_descriptor_set_layout(layout.binding, layout.type, layout.stages);
+                    const auto vkLayout = m_device.create_descriptor_set_layout(layout.binding, layout.type, layout.stages);
                     m_resourceCache.add_descritptor_set_layout(std::move(layout), vkLayout);
                 }
                 shader shaderModule = m_device.crate_shader(

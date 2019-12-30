@@ -19,11 +19,11 @@ namespace engine {
                        const vk::PhysicalDeviceMemoryProperties& memoryProperties,
                        vk::MemoryPropertyFlags memoryFlags)
             : m_logicalDevice(logicalDevice), m_queueHandle(queueHandle), m_cmdPool(cmdPool), m_memSize(size) {
-            vk::BufferCreateInfo createInfo(vk::BufferCreateFlags(), size, usageFlags, vk::SharingMode::eExclusive);
+            const vk::BufferCreateInfo createInfo(vk::BufferCreateFlags(), size, usageFlags, vk::SharingMode::eExclusive);
 
             m_buffer = m_logicalDevice.createBuffer(createInfo);
-            vk::MemoryRequirements requirements = m_logicalDevice.getBufferMemoryRequirements(m_buffer);
-            vk::MemoryAllocateInfo allocateInfo(
+            const vk::MemoryRequirements requirements = m_logicalDevice.getBufferMemoryRequirements(m_buffer);
+            const vk::MemoryAllocateInfo allocateInfo(
                 requirements.size, findMemoryType(memoryProperties, requirements.memoryTypeBits, memoryFlags));
 
             m_bufferMemory = m_logicalDevice.allocateMemory(allocateInfo);

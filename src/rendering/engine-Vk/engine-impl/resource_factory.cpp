@@ -10,7 +10,7 @@ namespace tst {
 namespace engine {
     namespace vulkan {
 
-        resource_factory::resource_factory(device& device, application::data_loader& dataLoader)
+        resource_factory::resource_factory(device& device, const application::data_loader& dataLoader)
             : m_device(device)
             , m_dataLoader(dataLoader)
             , m_resourceCache(m_device.get_resource_cache())
@@ -66,7 +66,7 @@ namespace engine {
         uniform_buffer resource_factory::create_uniform_buffer(const std::string& shaderName,
                                                                shader_type type,
                                                                std::uint32_t binding) {
-            auto shaders = m_resourceCache.find_shaders(shaderName);
+            const auto shaders = m_resourceCache.find_shaders(shaderName);
             assert(shaders);
             for (const auto& shader : *shaders) {
                 if (shader.get_stage() == type) {

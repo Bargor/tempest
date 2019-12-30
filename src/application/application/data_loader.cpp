@@ -69,10 +69,10 @@ namespace application {
     }
 
     std::optional<std::filesystem::path> data_loader::find_file(const std::filesystem::path& name) const {
-        for (auto path : m_searchPaths) {
-            path += name;
-            if (std::filesystem::exists(path)) {
-                return path;
+        for (const auto& path : m_searchPaths) {
+            const auto filename = path / name;
+            if (std::filesystem::exists(filename)) {
+                return filename;
             }
         }
         return std::nullopt;

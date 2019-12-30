@@ -41,7 +41,7 @@ namespace engine {
         }
 
         vk::CommandBuffer engine_frontend::generate_command_buffer(const draw_info& drawInfo) {
-            auto idx = m_device.get_resource_index();
+            const auto idx = m_device.get_resource_index();
             vk::CommandBufferAllocateInfo bufferAllocateInfo(m_commandPools[idx], vk::CommandBufferLevel::ePrimary, 1);
 
             m_device.m_logicalDevice.resetCommandPool(m_commandPools[idx], vk::CommandPoolResetFlags());
@@ -50,7 +50,7 @@ namespace engine {
                 m_bufferCache[idx].emplace_back(m_device.m_logicalDevice.allocateCommandBuffers(bufferAllocateInfo)[0]);
             }
 
-            auto commandBuffer = m_bufferCache[m_device.get_resource_index()][0];
+            const auto commandBuffer = m_bufferCache[m_device.get_resource_index()][0];
 
             vk::CommandBufferBeginInfo commandBufferInfo(vk::CommandBufferUsageFlagBits::eSimultaneousUse, nullptr);
             commandBuffer.begin(commandBufferInfo);
@@ -60,7 +60,7 @@ namespace engine {
 
             std::vector<vk::Buffer> vertexBuffers = {drawInfo.vertices->get_handle()};
             std::vector<vk::DeviceSize> offsets = {0};
-            auto descriptorSet = drawInfo.uniforms->get_descriptor_set();
+            const auto descriptorSet = drawInfo.uniforms->get_descriptor_set();
             commandBuffer.bindVertexBuffers(0, vertexBuffers, offsets);
             commandBuffer.bindIndexBuffer(drawInfo.indices->get_handle(), 0, vk::IndexType::eUint16);
             commandBuffer.bindDescriptorSets(
