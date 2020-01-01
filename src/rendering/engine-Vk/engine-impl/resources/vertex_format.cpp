@@ -60,7 +60,8 @@ namespace engine {
             return descriptions;
         }
 
-        vertex_format::vertex_format(base::vertex_format::primitive_topology topology) : base::vertex_format(topology) {
+        vertex_format::vertex_format(super::vertex_format::primitive_topology topology)
+            : super::vertex_format(topology) {
         }
 
         vk::VertexInputBindingDescription vertex_format::get_binding_description() const noexcept {
