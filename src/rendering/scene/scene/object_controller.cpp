@@ -52,14 +52,14 @@ namespace scene {
 
     void object_controller::load_object(const std::string& path) {
         m_dataLoader.find_file(path);
-        auto vertexFormat = engine::vertex_format(engine::base::vertex_format::primitive_topology::triangle_list);
-        vertexFormat.add_attribute(engine::base::vertex_format::location::position,
-                                   engine::base::vertex_format::format::float2,
+        auto vertexFormat = engine::vertex_format(engine::vertex_format::primitive_topology::triangle_list);
+        vertexFormat.add_attribute(engine::vertex_format::location::position,
+                                   engine::vertex_format::format::float2,
                                    offsetof(engine::vertex, pos),
                                    sizeof(engine::vertex),
                                    0);
-        vertexFormat.add_attribute(engine::base::vertex_format::location::normal,
-                                   engine::base::vertex_format::format::float3,
+        vertexFormat.add_attribute(engine::vertex_format::location::normal,
+                                   engine::vertex_format::format::float3,
                                    offsetof(engine::vertex, color),
                                    sizeof(engine::vertex),
                                    0);

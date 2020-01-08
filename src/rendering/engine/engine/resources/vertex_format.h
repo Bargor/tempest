@@ -15,6 +15,8 @@ namespace engine {
 
     public:
         using primitive_topology = base::vertex_format::primitive_topology;
+        using location = base::vertex_format::location;
+        using format = base::vertex_format::format;
 
     public:
         vertex_format(vertex_format::primitive_topology topology);
