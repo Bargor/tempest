@@ -10,13 +10,18 @@ namespace engine {
     namespace resources {
 
         class uniform_buffer : public api::uniform_buffer {
-        public:
             using super = api::uniform_buffer;
 
+        public:
             uniform_buffer(api::uniform_buffer&& bufferImpl);
             ~uniform_buffer();
 
             uniform_buffer(uniform_buffer&& other) noexcept;
+
+        public:
+            const api::uniform_buffer& to_super() const noexcept {
+                return *this;
+            }
 
         private:
         };

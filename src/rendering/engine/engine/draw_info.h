@@ -14,9 +14,9 @@ namespace tst {
 namespace engine {
 
     class draw_info final : public api::draw_info {
-    public:
         using super = api::draw_info;
 
+    public:
         ~draw_info() = default;
 
         draw_info(const resources::vertex_buffer* vertices,

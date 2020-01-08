@@ -13,8 +13,8 @@ namespace engine {
 
         template<typename IndexType>
         class index_buffer : public buffer {
-        public:
             using super = buffer;
+        public:
 
             index_buffer(vk::Device logicalDevice,
                          vk::Queue queueHandle,

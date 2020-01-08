@@ -8,8 +8,8 @@ namespace tst {
 namespace engine {
     namespace vulkan {
         class material : base::material {
-        public:
             using super = base::material;
+        public:
 
         private:
         };
