@@ -9,6 +9,7 @@ namespace engine {
     namespace vulkan {
 
         class settings : public base::settings {
+            using super = base::settings;
         public:
             enum class buffering { double_buf = 2, triple_buf = 3 };
 

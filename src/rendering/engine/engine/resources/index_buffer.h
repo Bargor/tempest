@@ -11,10 +11,10 @@ namespace engine {
     namespace resources {
 
         class index_buffer : public api::index_buffer<std::uint16_t> {
-        public:
             template<typename T>
             using super = api::index_buffer<T>;
 
+        public:
             index_buffer(api::index_buffer<std::uint16_t>&& bufferImpl);
             ~index_buffer();
 

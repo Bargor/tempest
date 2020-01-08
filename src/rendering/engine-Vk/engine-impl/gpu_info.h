@@ -9,8 +9,8 @@ namespace tst {
 namespace engine {
     namespace vulkan {
         class gpu_info : public base::gpu_info {
-        public:
             using super = base::gpu_info;
+        public:
 
             gpu_info(vk::PhysicalDevice physicalDevice);
 

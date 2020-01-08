@@ -11,8 +11,9 @@ namespace engine {
         class uniform_buffer;
 
         class material : api::material {
-        public:
             using super = api::material;
+
+        public:
         private:
         };
 

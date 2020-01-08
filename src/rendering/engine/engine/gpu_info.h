@@ -8,13 +8,15 @@
 namespace tst {
 namespace engine {
     class gpu_info final : public api::gpu_info {
-        public:
-            using super = api::gpu_info;
-            gpu_info(const api::gpu_info& info);
-        private:
+        using super = api::gpu_info;
+
+    public:
+        gpu_info(const api::gpu_info& info);
+
+    private:
     };
 
     static_assert(!std::is_polymorphic_v<gpu_info>);
     static_assert(sizeof(gpu_info) == sizeof(api::gpu_info));
-}
-}
+} // namespace engine
+} // namespace tst

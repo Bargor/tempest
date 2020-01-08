@@ -2,6 +2,8 @@
 // Author: Karol Kontny
 #pragma once
 
+#include "settings.h"
+
 #include <engine-impl/api.h>
 #include <engine-impl/device.h>
 #include <type_traits>
@@ -19,13 +21,12 @@ namespace engine {
 
     class device final : public api::device {
         friend class resource_factory;
-
-    public:
         using super = api::device;
+    public:
 
         device(application::main_window& mainWindow,
                application::event_processor<application::app_event>& eventProcessor,
-               api::settings&& settings);
+               settings&& settings);
         ~device();
 
     private:

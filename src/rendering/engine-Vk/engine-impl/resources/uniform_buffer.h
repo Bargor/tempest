@@ -20,8 +20,8 @@ namespace engine {
         };
 
         class uniform_buffer : public buffer {
-        public:
             using super = buffer;
+        public:
 
             uniform_buffer(vk::Device logicalDevice,
                            vk::Queue m_queueHandle,

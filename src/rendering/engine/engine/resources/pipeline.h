@@ -10,9 +10,9 @@ namespace engine {
     namespace resources {
 
         class pipeline : public api::pipeline {
-        public:
             using super = api::pipeline;
 
+        public:
             pipeline(api::pipeline&& pipelineImpl);
             ~pipeline();
 

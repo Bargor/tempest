@@ -10,9 +10,9 @@ namespace engine {
     namespace resources {
 
         class uniform_buffer : public api::uniform_buffer {
-        public:
             using super = api::uniform_buffer;
 
+        public:
             uniform_buffer(api::uniform_buffer&& bufferImpl);
             ~uniform_buffer();
 

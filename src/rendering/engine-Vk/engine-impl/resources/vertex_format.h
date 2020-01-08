@@ -11,9 +11,8 @@ namespace engine {
     namespace vulkan {
 
         class vertex_format : public base::vertex_format {
-        public:
             using super = base::vertex_format;
-
+        public:
             vertex_format(super::primitive_topology topology);
 
             vk::VertexInputBindingDescription get_binding_description() const noexcept;
