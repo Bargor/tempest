@@ -7,7 +7,7 @@
 
 namespace tst {
 namespace engine {
-    class gpu_info final : public api::gpu_info {
+    class gpu_info final : private api::gpu_info {
         using super = api::gpu_info;
 
     public:

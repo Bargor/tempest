@@ -26,7 +26,7 @@ namespace engine {
     const resources::pipeline& resource_factory::create_pipeline(const std::string& techniqueName,
                                                                  const std::string& shadersName,
                                                                  const vertex_format& format) {
-        return static_cast<const resources::pipeline&>(
+        return (const resources::pipeline&)(
             super::create_pipeline(techniqueName, shadersName, format.to_super()));
     }
 
