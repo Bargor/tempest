@@ -20,11 +20,6 @@ namespace engine {
         ~vertex_format();
 
     public:
-        operator const api::vertex_format&() const {
-            return *this;
-        }
-
-    public:
         void add_attribute(
             location location, format format, std::uint32_t offset, std::uint32_t stride, std::uint32_t divisor);
         const std::vector<attribute_descriptor>& get_attribute_descriptors() const noexcept;
