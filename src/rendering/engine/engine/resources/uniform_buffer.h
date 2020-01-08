@@ -18,6 +18,11 @@ namespace engine {
 
             uniform_buffer(uniform_buffer&& other) noexcept;
 
+        public:
+            const api::uniform_buffer& to_super() const noexcept {
+                return *this;
+            }
+
         private:
         };
 

@@ -21,7 +21,7 @@ namespace engine {
         ~vertex_format();
 
     public:
-        const api::vertex_format& to_super() const {
+        const api::vertex_format& to_super() const noexcept {
             return *this;
         }
 

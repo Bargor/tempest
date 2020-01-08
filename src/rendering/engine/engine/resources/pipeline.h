@@ -9,12 +9,17 @@ namespace tst {
 namespace engine {
     namespace resources {
 
-        class pipeline : public api::pipeline {
+        class pipeline : private api::pipeline {
             using super = api::pipeline;
 
         public:
             pipeline(api::pipeline&& pipelineImpl);
             ~pipeline();
+
+        public:
+            const api::pipeline& to_super() const noexcept {
+                return *this;
+            }
 
         private:
         };

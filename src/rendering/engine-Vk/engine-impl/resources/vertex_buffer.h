@@ -30,6 +30,8 @@ namespace engine {
 
             vertex_buffer(vertex_buffer&& other) noexcept;
 
+        public:
+
             std::uint32_t get_vertex_count() const noexcept;
 
             const vertex_format& get_vertex_format() const noexcept;
