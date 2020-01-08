@@ -11,13 +11,19 @@ namespace tst {
 namespace engine {
 
     class vertex_format final : private api::vertex_format {
-    public:
         using super = api::vertex_format;
+
+    public:
         using primitive_topology = base::vertex_format::primitive_topology;
 
     public:
         vertex_format(vertex_format::primitive_topology topology);
         ~vertex_format();
+
+    public:
+        const api::vertex_format& to_super() const {
+            return *this;
+        }
 
     public:
         void add_attribute(
