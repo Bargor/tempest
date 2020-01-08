@@ -18,7 +18,7 @@ namespace engine {
 
     class device;
 
-    class resource_factory final : public api::resource_factory {
+    class resource_factory final : private api::resource_factory {
         using super = api::resource_factory;
 
     public:
