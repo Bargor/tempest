@@ -13,7 +13,7 @@ namespace tst {
 namespace engine {
     namespace opengl {
 
-        shader_compiler::shader_compiler(application::data_loader& data_loader) : m_dataLoader(data_loader) {
+        shader_compiler::shader_compiler(const application::data_loader& data_loader) : m_dataLoader(data_loader) {
         }
 
         std::optional<shader_program> shader_compiler::compile_program(std::string_view&& name,

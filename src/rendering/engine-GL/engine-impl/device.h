@@ -4,6 +4,7 @@
 
 #include "api.h"
 #include "command_list.h"
+#include "resource_factory.h"
 #include "resources/index_buffer.h"
 #include "resources/settings.h"
 #include "resources/uniform_buffer.h"
@@ -15,6 +16,7 @@
 
 namespace tst {
 namespace application {
+    class data_loader;
     template<typename Event>
     class event_processor;
     class main_window;
@@ -38,10 +40,8 @@ namespace engine {
             device(const device& device) = delete;
             ~device();
 
-            template<typename IndexType>
-            index_buffer<IndexType> create_index_buffer(std::vector<IndexType>&& indices) const;
-            vertex_buffer create_vertex_buffer(const vertex_format& format, std::vector<vertex>&& vertices) const;
-            uniform_buffer create_uniform_buffer(const std::string& shaderName) const;
+        public:
+            resource_factory create_resource_factory(const application::data_loader& dataLoader) const;
 
             gpu_info& get_GPU_info() const noexcept;
             void submit_command_list(const command_list& commandList);
@@ -60,11 +60,6 @@ namespace engine {
         template<typename Iter>
         bool device::draw_frame(Iter, Iter) {
             return true;
-        }
-
-        template<typename IndexType>
-        index_buffer<IndexType> device::create_index_buffer(std::vector<IndexType>&& indices) const {
-            return index_buffer<std::uint16_t>(std::move(indices));
         }
 
         TST_INLINE gpu_info& device::get_GPU_info() const noexcept {

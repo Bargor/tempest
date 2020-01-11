@@ -3,6 +3,7 @@
 #pragma once
 
 #include "settings.h"
+#include "resource_factory.h"
 
 #include <engine-impl/api.h>
 #include <engine-impl/device.h>
