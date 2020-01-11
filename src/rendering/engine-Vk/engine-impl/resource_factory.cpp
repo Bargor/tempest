@@ -43,9 +43,9 @@ namespace engine {
 
         resource_factory::resource_factory(resource_factory&& factory) noexcept
             : m_logicalDevice(factory.m_logicalDevice)
+            , m_dataLoader(factory.m_dataLoader)
             , m_physicalDevice(factory.m_physicalDevice)
             , m_swapChain(factory.m_swapChain)
-            , m_dataLoader(factory.m_dataLoader)
             , m_resourceCache(factory.m_resourceCache)
             , m_shaderCompiler(std::move(factory.m_shaderCompiler))
             , m_engineSettings(factory.m_engineSettings)
