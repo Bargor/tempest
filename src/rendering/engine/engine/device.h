@@ -37,6 +37,9 @@ namespace engine {
         bool draw_frame(Iter first, Iter last);
 
     private:
+        api::resource_factory create_resource_factory(const application::data_loader& dataLoader) const;
+
+    private:
     };
 
     static_assert(!std::is_polymorphic_v<device>);

@@ -3,6 +3,8 @@
 
 #include "device.h"
 
+#include "resource_factory.h"
+
 namespace tst {
 namespace engine {
     device::device(application::main_window& mainWindow,
@@ -12,6 +14,10 @@ namespace engine {
     }
 
     device::~device() {
+    }
+
+    api::resource_factory device::create_resource_factory(const application::data_loader& dataLoader) const {
+        return super::create_resource_factory(dataLoader);
     }
 
 } // namespace engine

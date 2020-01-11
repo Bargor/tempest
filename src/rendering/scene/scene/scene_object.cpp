@@ -19,7 +19,8 @@ namespace scene {
         , m_material(std::move(material))
         , m_uniforms(std::move(uniformBuffer))
         , m_pipeline(pipeline)
-        , m_objectState({&m_vertices, &m_indices, m_uniforms, m_pipeline, *this}) {
+        , m_objectState({&m_vertices, &m_indices, m_uniforms, m_pipeline, *this})
+        , m_time(0.0f) {
     }
 
     scene_object::scene_object(scene_object&& object) noexcept
@@ -29,8 +30,7 @@ namespace scene {
         , m_uniforms(std::move(object.m_uniforms))
         , m_pipeline(object.m_pipeline)
         , m_objectState(std::move(object.m_objectState))
-        , m_time(0.0f){
-
+        , m_time(0.0f) {
     }
 
     scene_object::state scene_object::update_object(std::chrono::duration<std::uint64_t, std::micro> elapsedTime) {

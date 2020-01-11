@@ -148,8 +148,6 @@ namespace engine {
                 core::variant_index<application::app_event::arguments, application::app_event::framebuffer>(),
                 this,
                 std::move(framebufferResizeCallback));
-
-            create_descriptor_pool(200);
         }
 
         device::~device() {
@@ -162,14 +160,22 @@ namespace engine {
             for (auto& commandPool : m_commandPools) {
                 m_logicalDevice.destroyCommandPool(commandPool);
             }
-            for (auto& descriptorPool : m_descriptorPools) {
-                m_logicalDevice.destroyDescriptorPool(descriptorPool);
-            }
 
             m_resourceCache->clear();
             m_swapChain.reset();
             instance::get_instance().m_instance.destroySurfaceKHR(m_windowSurface);
             m_logicalDevice.destroy();
+        }
+
+        resource_factory device::create_resource_factory(const application::data_loader& dataLoader) const {
+            return resource_factory(m_logicalDevice,
+                                    *m_physicalDevice.get(),
+                                    *m_swapChain.get(),
+                                    dataLoader,
+                                    *m_resourceCache.get(),
+                                    m_graphicsQueueHandle,
+                                    m_engineSettings,
+                                    m_resourceIndex);
         }
 
         vk::CommandPool device::create_command_pool() {
@@ -178,70 +184,6 @@ namespace engine {
             m_commandPools.emplace_back(m_logicalDevice.createCommandPool(createInfo));
 
             return m_commandPools.back();
-        }
-
-        vk::DescriptorPool device::create_descriptor_pool(std::uint32_t size) {
-            vk::DescriptorPoolSize poolSize(vk::DescriptorType::eUniformBuffer, size);
-
-            vk::DescriptorPoolCreateInfo poolCreateInfo(vk::DescriptorPoolCreateFlags(), size, 1, &poolSize);
-
-            m_descriptorPools.emplace_back(m_logicalDevice.createDescriptorPool(poolCreateInfo));
-
-            return m_descriptorPools.back();
-        }
-
-        vk::DescriptorSetLayout device::create_descriptor_set_layout(std::uint32_t binding,
-                                                                     vk::DescriptorType type,
-                                                                     vk::ShaderStageFlagBits flags) const {
-            vk::DescriptorSetLayoutBinding descriptorBinding(binding, type, 1, flags, nullptr);
-
-            vk::DescriptorSetLayoutCreateInfo setLayoutInfo(vk::DescriptorSetLayoutCreateFlags(), 1, &descriptorBinding);
-
-            return m_logicalDevice.createDescriptorSetLayout(setLayoutInfo, nullptr);
-        }
-
-        rendering_technique device::create_technique(std::string&& name, base::technique_settings&& settings) const {
-            return rendering_technique(std::move(name), std::move(settings), m_logicalDevice, *m_swapChain.get());
-        }
-
-        vertex_buffer device::create_vertex_buffer(const vertex_format& format,
-                                                   std::vector<vertex>&& vertices,
-                                                   const vk::CommandPool cmdPool) const {
-            return vertex_buffer(m_logicalDevice,
-                                 m_graphicsQueueHandle,
-                                 cmdPool,
-                                 m_physicalDevice->get_memory_properties(),
-                                 format,
-                                 std::move(vertices));
-        }
-
-        uniform_buffer device::create_uniform_buffer(const vk::CommandPool cmdPool,
-                                                     const vk::DescriptorSetLayout descLayout) const {
-            return uniform_buffer(m_logicalDevice,
-                                  m_graphicsQueueHandle,
-                                  cmdPool,
-                                  m_descriptorPools[0],
-                                  descLayout,
-                                  m_physicalDevice->get_memory_properties(),
-                                  m_resourceIndex);
-        }
-
-        shader device::crate_shader(shader_type type,
-                                    std::vector<char>&& source,
-                                    const std::string& name,
-                                    std::vector<shader::descriptor_layout>&& layouts) const {
-            return shader(m_logicalDevice, type, std::move(source), name, std::move(layouts));
-        }
-
-        pipeline device::create_pipeline(const vertex_format& format,
-                                         const shader_set& shaders,
-                                         const rendering_technique& technique,
-                                         std::vector<vk::DescriptorSetLayout>&& layouts) {
-            return pipeline(m_logicalDevice, m_engineSettings, format, shaders, technique, std::move(layouts));
-        }
-
-        resource_cache& device::get_resource_cache() noexcept {
-            return *m_resourceCache;
         }
 
         void device::start() {
