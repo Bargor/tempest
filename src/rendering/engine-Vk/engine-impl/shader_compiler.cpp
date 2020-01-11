@@ -42,7 +42,7 @@ namespace engine {
         }
 
         shader_compiler::shader_compiler(const application::data_loader& dataLoader,
-                                         const device& device,
+                                         const vk::Device device,
                                          resource_cache& resourceCache)
             : m_dataLoader(dataLoader), m_device(device), m_resourceCache(resourceCache) {
         }
@@ -75,11 +75,19 @@ namespace engine {
                 auto descriptorLayouts = parse_descriptor_layouts(jsonModel, static_cast<shader_type>(idx));
 
                 for (auto& layout : descriptorLayouts) {
-                    const auto vkLayout = m_device.create_descriptor_set_layout(layout.binding, layout.type, layout.stages);
+                    const vk::DescriptorSetLayoutBinding descriptorBinding(layout.binding, layout.type, 1, layout.stages, nullptr);
+
+                    vk::DescriptorSetLayoutCreateInfo setLayoutInfo(
+                        vk::DescriptorSetLayoutCreateFlags(), 1, &descriptorBinding);
+
+                    const auto vkLayout = m_device.createDescriptorSetLayout(setLayoutInfo, nullptr);
                     m_resourceCache.add_descritptor_set_layout(std::move(layout), vkLayout);
                 }
-                shader shaderModule = m_device.crate_shader(
-                    static_cast<shader_type>(idx), std::move(bytecode.value()), name, std::move(descriptorLayouts));
+                shader shaderModule(m_device,
+                                    static_cast<shader_type>(idx),
+                                    std::move(bytecode.value()),
+                                    name,
+                                    std::move(descriptorLayouts));
 
                 shaders.emplace_back(std::move(shaderModule));
             }

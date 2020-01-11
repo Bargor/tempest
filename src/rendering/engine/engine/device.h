@@ -3,6 +3,7 @@
 #pragma once
 
 #include "settings.h"
+#include "resource_factory.h"
 
 #include <engine-impl/api.h>
 #include <engine-impl/device.h>
@@ -35,6 +36,9 @@ namespace engine {
 
         template<typename Iter>
         bool draw_frame(Iter first, Iter last);
+
+    private:
+        api::resource_factory create_resource_factory(const application::data_loader& dataLoader) const;
 
     private:
     };

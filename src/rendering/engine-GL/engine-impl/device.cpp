@@ -28,12 +28,8 @@ namespace engine {
         void device::stop() {
         }
 
-        vertex_buffer device::create_vertex_buffer(const vertex_format& format, std::vector<vertex>&& vertices) const {
-            return vertex_buffer(format, std::move(vertices));
-        }
-
-        uniform_buffer device::create_uniform_buffer(const std::string&) const {
-            return uniform_buffer();
+        resource_factory device::create_resource_factory(const application::data_loader& dataLoader) const {
+            return resource_factory(dataLoader);
         }
     } // namespace opengl
 } // namespace engine

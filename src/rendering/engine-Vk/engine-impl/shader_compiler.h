@@ -23,7 +23,7 @@ namespace engine {
         class shader_compiler {
         public:
             shader_compiler(const application::data_loader& dataLoader,
-                            const device& device,
+                            const vk::Device device,
                             resource_cache& resourceCache);
             ~shader_compiler();
 
@@ -36,7 +36,7 @@ namespace engine {
 
         private:
             const application::data_loader& m_dataLoader;
-            const device& m_device;
+            const vk::Device m_device;
             resource_cache& m_resourceCache;
 
             static constexpr char m_shaderExtension[] = ".spv";
