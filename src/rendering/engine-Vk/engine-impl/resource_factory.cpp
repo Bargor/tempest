@@ -13,17 +13,17 @@ namespace engine {
     namespace vulkan {
 
         resource_factory::resource_factory(const vk::Device logicalDevice,
+                                           const application::data_loader& dataLoader,
                                            const physical_device& physicalDevice,
                                            const swap_chain& swapChain,
-                                           const application::data_loader& dataLoader,
                                            resource_cache& resourceCache,
                                            const vk::Queue transferQueue,
                                            const settings& engineSettings,
                                            const std::uint32_t& resourceIndex)
             : m_logicalDevice(logicalDevice)
+            , m_dataLoader(dataLoader)
             , m_physicalDevice(physicalDevice)
             , m_swapChain(swapChain)
-            , m_dataLoader(dataLoader)
             , m_resourceCache(resourceCache)
             , m_shaderCompiler(std::make_unique<shader_compiler>(m_dataLoader, m_logicalDevice, m_resourceCache))
             , m_engineSettings(engineSettings)

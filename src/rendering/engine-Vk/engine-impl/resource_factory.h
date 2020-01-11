@@ -27,9 +27,9 @@ namespace engine {
         class resource_factory {
         public:
             resource_factory(const vk::Device logicalDevice,
+                             const application::data_loader& dataLoader,
                              const physical_device& physicalDevice,
                              const swap_chain& swapChain,
-                             const application::data_loader& dataLoader,
                              resource_cache& resourceCache,
                              const vk::Queue transferQueue,
                              const settings& engineSettings,

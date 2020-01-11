@@ -169,9 +169,9 @@ namespace engine {
 
         resource_factory device::create_resource_factory(const application::data_loader& dataLoader) const {
             return resource_factory(m_logicalDevice,
+                                    dataLoader,
                                     *m_physicalDevice.get(),
                                     *m_swapChain.get(),
-                                    dataLoader,
                                     *m_resourceCache.get(),
                                     m_graphicsQueueHandle,
                                     m_engineSettings,
