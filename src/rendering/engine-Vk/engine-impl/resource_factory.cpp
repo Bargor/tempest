@@ -100,7 +100,7 @@ namespace engine {
             }
 
             m_resourceCache.add_rendering_technique(
-                std::move(rendering_technique(std::move(name), std::move(settings), m_logicalDevice, m_swapChain)));
+                rendering_technique(std::move(name), std::move(settings), m_logicalDevice, m_swapChain));
         }
 
         vertex_buffer resource_factory::create_vertex_buffer(const vertex_format& format, std::vector<vertex>&& vertices) {
