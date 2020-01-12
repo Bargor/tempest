@@ -37,6 +37,7 @@ namespace engine {
 
         class device {
             friend class engine_frontend;
+            friend class resource_factory;
 
         public:
             struct frame_resources {

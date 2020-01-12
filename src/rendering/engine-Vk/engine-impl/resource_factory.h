@@ -19,6 +19,7 @@ namespace engine {
 
     namespace vulkan {
 
+        class device;
         class physical_device;
         class resource_cache;
         class shader_compiler;
@@ -26,14 +27,8 @@ namespace engine {
 
         class resource_factory {
         public:
-            resource_factory(const vk::Device logicalDevice,
-                             const application::data_loader& dataLoader,
-                             const physical_device& physicalDevice,
-                             const swap_chain& swapChain,
-                             resource_cache& resourceCache,
-                             const vk::Queue transferQueue,
-                             const settings& engineSettings,
-                             const std::uint32_t& resourceIndex);
+            resource_factory(const device& device,
+                             const application::data_loader& dataLoader);
             ~resource_factory();
 
             resource_factory(const resource_factory&) = delete;
@@ -56,18 +51,13 @@ namespace engine {
             vk::DescriptorPool create_descriptor_pool(std::uint32_t size);
 
         private:
-            vk::Device m_logicalDevice;
+            const device& m_device;
             const application::data_loader& m_dataLoader;
-            const physical_device& m_physicalDevice;
-            const swap_chain& m_swapChain;
 
-            resource_cache& m_resourceCache;
             ptr<shader_compiler> m_shaderCompiler;
-            const settings& m_engineSettings;
             vk::CommandPool m_transferCommandPool;
             vk::Queue m_transferQueue;
             std::vector<vk::DescriptorPool> m_descriptorPools;
-            const std::uint32_t& m_resourceIndex;
         };
 
     } // namespace vulkan
