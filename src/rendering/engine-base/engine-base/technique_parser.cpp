@@ -30,8 +30,8 @@ namespace engine {
             const auto y = viewportSettings["y"].GetInt();
             const auto width = viewportSettings["width"].GetInt();
             const auto height = viewportSettings["height"].GetInt();
-            const auto minDepth = viewportSettings["minDepth"].GetFloat();
-            const auto maxDepth = viewportSettings["maxDepth"].GetFloat();
+            const auto minDepth = viewportSettings["min_depth"].GetFloat();
+            const auto maxDepth = viewportSettings["max_depth"].GetFloat();
             return viewport_settings{x, y, width, height, minDepth, maxDepth};
         }
 
