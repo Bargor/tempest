@@ -59,30 +59,19 @@ namespace engine {
 
             for (std::int32_t idx = 0; idx < static_cast<std::int32_t>(shader_type::enum_size); ++idx) {
                 const auto shaderFileName(std::filesystem::path("shaders") /
-                                           (name + "." + get_shader_format(static_cast<shader_type>(idx))));
+                                          (name + "." + get_shader_format(static_cast<shader_type>(idx))));
                 const auto bytecodeFileName(name + "." + get_shader_format(static_cast<shader_type>(idx)) +
-                                             m_shaderExtension);
+                                            m_shaderExtension);
 
-                const auto shaderSourceFile = m_dataLoader.find_file(shaderFileName);
-                const auto shaderBytecodeFile = m_dataLoader.find_file(bytecodeFileName);
-
-                auto bytecode = load_bytecode(shaderSourceFile, shaderBytecodeFile, bytecodeFileName);
+                auto bytecode = load_bytecode(
+                    m_dataLoader.find_file(shaderFileName), m_dataLoader.find_file(bytecodeFileName), bytecodeFileName);
 
                 if (!bytecode) {
                     continue;
                 }
 
-                auto descriptorLayouts = parse_descriptor_layouts(jsonModel, static_cast<shader_type>(idx));
+                auto descriptorLayouts = create_descriptor_layouts(jsonModel, idx);
 
-                for (auto& layout : descriptorLayouts) {
-                    const vk::DescriptorSetLayoutBinding descriptorBinding(layout.binding, layout.type, 1, layout.stages, nullptr);
-
-                    vk::DescriptorSetLayoutCreateInfo setLayoutInfo(
-                        vk::DescriptorSetLayoutCreateFlags(), 1, &descriptorBinding);
-
-                    const auto vkLayout = m_device.createDescriptorSetLayout(setLayoutInfo, nullptr);
-                    m_resourceCache.add_descritptor_set_layout(std::move(layout), vkLayout);
-                }
                 shader shaderModule(m_device,
                                     static_cast<shader_type>(idx),
                                     std::move(bytecode.value()),
@@ -121,6 +110,23 @@ namespace engine {
             }
 
             return m_dataLoader.load_shader_bytecode(shaderBytecodeFile.value());
+        }
+
+        std::vector<shader::descriptor_layout>
+        shader_compiler::create_descriptor_layouts(const rapidjson::Document& jsonModel, std::int32_t idx) const {
+            auto descriptorLayouts = parse_descriptor_layouts(jsonModel, static_cast<shader_type>(idx));
+
+            for (auto& layout : descriptorLayouts) {
+                const vk::DescriptorSetLayoutBinding descriptorBinding(
+                    layout.binding, layout.type, 1, layout.stages, nullptr);
+
+                vk::DescriptorSetLayoutCreateInfo setLayoutInfo(
+                    vk::DescriptorSetLayoutCreateFlags(), 1, &descriptorBinding);
+
+                const auto vkLayout = m_device.createDescriptorSetLayout(setLayoutInfo, nullptr);
+                m_resourceCache.add_descritptor_set_layout(std::move(layout), vkLayout);
+            }
+            return descriptorLayouts;
         }
 
     } // namespace vulkan

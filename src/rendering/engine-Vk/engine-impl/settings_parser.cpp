@@ -16,18 +16,15 @@ namespace engine {
 
         settings parse_engine_settings(const application::data_loader& dataLoader) {
             const auto settingsFile = dataLoader.find_file(std::filesystem::path("engine_settings.json"));
-            if (settingsFile) {
-
-                const auto& jsonModel = dataLoader.load_json(settingsFile.value());
-                assert(jsonModel.HasMember("rasterizer"));
-                assert(jsonModel.HasMember("multisampling"));
-                assert(jsonModel.HasMember("buffering"));
-                const auto buffering = jsonModel["buffering"].GetUint();
-                return settings(base::parse_engine_settings(jsonModel),
-                                static_cast<settings::buffering>(buffering));
-            } else {
+            if (!settingsFile) {
                 return default_settings;
-            }
+            } 
+            const auto& jsonModel = dataLoader.load_json(settingsFile.value());
+            assert(jsonModel.HasMember("rasterizer"));
+            assert(jsonModel.HasMember("multisampling"));
+            assert(jsonModel.HasMember("buffering"));
+            const auto buffering = jsonModel["buffering"].GetUint();
+            return settings(base::parse_engine_settings(jsonModel), static_cast<settings::buffering>(buffering));
         }
     } // namespace vulkan
 } // namespace engine

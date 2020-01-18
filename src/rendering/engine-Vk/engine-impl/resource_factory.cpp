@@ -9,6 +9,8 @@
 #include "shader_compiler.h"
 #include "swap_chain.h"
 
+#include <engine-base/technique_parser.h>
+
 namespace tst {
 namespace engine {
     namespace vulkan {
@@ -80,13 +82,16 @@ namespace engine {
             throw std::runtime_error("Can't find pipeline");
         }
 
-        void resource_factory::create_technique(std::string&& name, base::technique_settings&& settings) {
+        void resource_factory::create_technique(std::string&& name) {
             if (m_device.m_resourceCache->find_technique(name) != nullptr) {
                 return;
             }
 
-            m_device.m_resourceCache->add_rendering_technique(rendering_technique(
-                std::move(name), std::move(settings), m_device.m_logicalDevice, *m_device.m_swapChain));
+            m_device.m_resourceCache->add_rendering_technique(
+                rendering_technique(std::move(name),
+                                    base::parse_rendering_technique(m_dataLoader, name),
+                                    m_device.m_logicalDevice,
+                                    *m_device.m_swapChain));
         }
 
         vertex_buffer resource_factory::create_vertex_buffer(const vertex_format& format, std::vector<vertex>&& vertices) {

@@ -34,6 +34,9 @@ namespace engine {
                                                            const std::optional<std::filesystem::path>& shaderBytecodeFile,
                                                            const std::string& bytecodeFileName) const;
 
+            std::vector<shader::descriptor_layout> create_descriptor_layouts(const rapidjson::Document& jsonModel,
+                                                                             std::int32_t idx) const;
+
         private:
             const application::data_loader& m_dataLoader;
             const vk::Device m_device;
