@@ -1,1 +1,1 @@
-file(COPY ${SOURCE_DIR}/engine-base/techniques/ DESTINATION "${DESTINATION_DIR}")
+file(COPY ${SOURCE_DIR}/techniques/ DESTINATION "${DESTINATION_DIR}")
