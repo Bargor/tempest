@@ -14,27 +14,6 @@
 namespace tst {
 namespace scene {
 
-    engine::base::technique_settings create_technique_settings() {
-        engine::base::viewport_settings viewportSettings{0, 0, 840, 525, 0.0f, 1.0f};
-        core::rectangle<std::int32_t, std::uint32_t> scissorSettings{{0, 0}, {840, 525}};
-        engine::base::color_blending_settings blendingSettings{
-            false,
-            engine::base::color_blending_settings::blend_operation::add,
-            engine::base::color_blending_settings::blend_factor::one,
-            engine::base::color_blending_settings::blend_factor::zero,
-            engine::base::color_blending_settings::blend_operation::add,
-            engine::base::color_blending_settings::blend_factor::one,
-            engine::base::color_blending_settings::blend_factor::zero,
-            {true, true, true, true}};
-        engine::base::global_blending_settings globalBlendingSettings{
-            false, engine::base::global_blending_settings::logic_operation::copy, {0.0f, 0.0f, 0.0f, 0.0f}};
-
-        return engine::base::technique_settings{viewportSettings,
-                                                scissorSettings,
-                                                std::vector<engine::base::color_blending_settings>{blendingSettings},
-                                                globalBlendingSettings};
-    }
-
     object_controller::object_controller(scene& scene,
                                          const application::data_loader& dataLoader,
                                          application::event_processor<application::app_event>& eventProcessor,
@@ -64,7 +43,7 @@ namespace scene {
                                    sizeof(engine::vertex),
                                    0);
 
-        m_resourceFactory.create_technique("test", create_technique_settings());
+        m_resourceFactory.create_technique("test");
         const auto& pipeline = m_resourceFactory.create_pipeline("test", "test", vertexFormat);
 
         auto vertexBuffer =
