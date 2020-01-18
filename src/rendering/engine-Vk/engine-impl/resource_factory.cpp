@@ -89,7 +89,7 @@ namespace engine {
 
             m_device.m_resourceCache->add_rendering_technique(
                 rendering_technique(std::move(name),
-                                    std::move(base::parse_rendering_technique(m_dataLoader, name)),
+                                    base::parse_rendering_technique(m_dataLoader, name),
                                     m_device.m_logicalDevice,
                                     *m_device.m_swapChain));
         }
