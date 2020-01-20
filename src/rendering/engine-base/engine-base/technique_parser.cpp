@@ -12,8 +12,12 @@ namespace engine {
     namespace base {
 
         technique_settings default_settings{
-            viewport_settings{0, 0, 840, 525, 0.0f, 1.0f},
-            core::rectangle<std::int32_t, std::uint32_t>{{0, 0}, {840, 525}},
+            [=](core::extent<std::uint32_t>) {
+                return viewport_settings{0, 0, 840, 525, 0.0f, 1.0f};
+            },
+            [=](core::extent<std::uint32_t>) {
+                return core::rectangle<std::int32_t, std::uint32_t>{{0, 0}, {840, 525}};
+            },
             {color_blending_settings{false,
                                      color_blending_settings::blend_operation::add,
                                      color_blending_settings::blend_factor::one,
@@ -25,21 +29,51 @@ namespace engine {
             global_blending_settings{
                 false, engine::base::global_blending_settings::logic_operation::copy, {0.0f, 0.0f, 0.0f, 0.0f}}};
 
-        viewport_settings parse_viewport_settings(const rapidjson::Value& viewportSettings) {
-            const auto x = viewportSettings["x"].GetInt();
-            const auto y = viewportSettings["y"].GetInt();
-            const auto width = viewportSettings["width"].GetInt();
-            const auto height = viewportSettings["height"].GetInt();
+        viewport_callback parse_viewport_settings(const rapidjson::Value& viewportSettings, callback_mode mode) {
             const auto minDepth = viewportSettings["min_depth"].GetFloat();
             const auto maxDepth = viewportSettings["max_depth"].GetFloat();
-            return viewport_settings{x, y, width, height, minDepth, maxDepth};
+            if (mode == callback_mode::absolute) {
+                const auto x = viewportSettings["x"].GetInt();
+                const auto y = viewportSettings["y"].GetInt();
+                const auto width = viewportSettings["width"].GetInt();
+                const auto height = viewportSettings["height"].GetInt();
+                return [=](core::extent<std::uint32_t>) {
+                    return viewport_settings{x, y, width, height, minDepth, maxDepth};
+                };
+            } else {
+                const auto x = viewportSettings["x"].GetFloat();
+                const auto y = viewportSettings["y"].GetFloat();
+                const auto width = viewportSettings["width"].GetFloat();
+                const auto height = viewportSettings["height"].GetFloat();
+                return [=](core::extent<std::uint32_t> windowSize) {
+                    return viewport_settings{static_cast<std::int32_t>(x * windowSize.width),
+                                             static_cast<std::int32_t>(y * windowSize.height),
+                                             static_cast<std::int32_t>(width * windowSize.width),
+                                             static_cast<std::int32_t>(height * windowSize.height),
+                                             minDepth,
+                                             maxDepth};
+                };
+            }
         }
 
-        core::rectangle<std::int32_t, std::uint32_t> parse_scissor_settings(const rapidjson::Value& scissorSettings) {
+        scissor_callback parse_scissor_settings(const rapidjson::Value& scissorSettings, callback_mode mode) {
             const auto offset = scissorSettings["offset"].GetArray();
             const auto dimensions = scissorSettings["dimensions"].GetArray();
-            return core::rectangle<std::int32_t, std::uint32_t>{{offset[0].GetInt(), offset[1].GetInt()},
-                                                                {dimensions[0].GetUint(), dimensions[1].GetUint()}};
+            if (mode == callback_mode::absolute) {
+                core::rectangle<std::int32_t, std::uint32_t> scissor = {
+                    {offset[0].GetInt(), offset[1].GetInt()}, {dimensions[0].GetUint(), dimensions[1].GetUint()}};
+                return [=](core::extent<std::uint32_t>) { return scissor; };
+            } else {
+                core::rectangle<float, float> scissor = {{offset[0].GetFloat(), offset[1].GetFloat()},
+                                                         {dimensions[0].GetFloat(), dimensions[1].GetFloat()}};
+                return [=](core::extent<std::uint32_t> windowSize) {
+                    return core::rectangle<std::int32_t, std::uint32_t>{
+                        {static_cast<std::int32_t>(scissor.offset.x * windowSize.width),
+                         static_cast<std::int32_t>(scissor.offset.y * windowSize.height)},
+                        {static_cast<std::uint32_t>(scissor.dimensions.width * windowSize.width),
+                         static_cast<std::uint32_t>(scissor.dimensions.height * windowSize.height)}};
+                };
+            }
         }
 
         std::vector<color_blending_settings>
@@ -89,13 +123,15 @@ namespace engine {
             }
             const auto& jsonModel = dataLoader.load_json(techniqueFile.value());
 
+            assert(jsonModel.HasMember("mode"));
             assert(jsonModel.HasMember("viewport"));
             assert(jsonModel.HasMember("scissor"));
             assert(jsonModel.HasMember("framebuffer_blending"));
             assert(jsonModel.HasMember("global_blending"));
 
-            const auto viewport = parse_viewport_settings(jsonModel["viewport"]);
-            const auto scissor = parse_scissor_settings(jsonModel["scissor"]);
+            const auto mode = static_cast<callback_mode>(jsonModel["mode"].GetUint());
+            const auto viewport = parse_viewport_settings(jsonModel["viewport"], mode);
+            const auto scissor = parse_scissor_settings(jsonModel["scissor"], mode);
             const auto framebuffer_blending = parse_framebuffer_blending_settings(jsonModel["framebuffer_blending"]);
             const auto global_blending = parse_global_blending_settings(jsonModel["global_blending"]);
             return technique_settings{viewport, scissor, framebuffer_blending, global_blending};

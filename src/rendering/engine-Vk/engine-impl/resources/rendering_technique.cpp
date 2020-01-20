@@ -61,23 +61,32 @@ namespace engine {
                                                  base::technique_settings&& techniqueSettings,
                                                  vk::Device device,
                                                  const swap_chain& swapChain)
-            : base::rendering_technique(std::move(techniqueName), std::move(techniqueSettings))
+            : base::rendering_technique(
+                  std::move(techniqueName),
+                  std::move(techniqueSettings),
+                  core::extent<std::uint32_t>{swapChain.get_extent().width, swapChain.get_extent().height})
             , m_device(device)
             , m_swapChain(swapChain)
-            , m_extent(m_swapChain.get().get_extent())
-            , m_renderPass(create_render_pass(device, m_swapChain.get().get_format()))
+            , m_extent(m_swapChain.get().get_extent()) 
+            , m_renderPass(create_render_pass(device, m_swapChain.get().get_format())) 
             , m_framebuffers(create_framebuffers(
                   device, m_renderPass, m_swapChain.get().get_image_views(), m_swapChain.get().get_extent())) {
         }
 
         rendering_technique::rendering_technique(std::string&& techniqueName,
-                                                 const base::viewport_settings& viewport,
-                                                 const core::rectangle<std::int32_t, std::uint32_t> scissor,
+                                                 base::viewport_callback&& viewportCallback,
+                                                 base::scissor_callback&& scissorCallback,
                                                  std::vector<base::color_blending_settings>&& framebufferBlending,
                                                  const base::global_blending_settings& globalBlending,
                                                  vk::Device device,
                                                  const swap_chain& swapChain)
-            : base::rendering_technique(std::move(techniqueName), viewport, scissor, std::move(framebufferBlending), globalBlending)
+            : base::rendering_technique(
+                  std::move(techniqueName),
+                  std::move(viewportCallback),
+                  std::move(scissorCallback),
+                  std::move(framebufferBlending),
+                  globalBlending,
+                  core::extent<std::uint32_t>{swapChain.get_extent().width, swapChain.get_extent().height})
             , m_device(device)
             , m_swapChain(swapChain)
             , m_extent(m_swapChain.get().get_extent())
@@ -113,7 +122,8 @@ namespace engine {
             m_viewportSettings.height = m_extent.height;
         }
 
-        vk::RenderPassBeginInfo rendering_technique::generate_render_pass_info(vk::CommandBuffer buffer, vk::SubpassContents contents) const {
+        vk::RenderPassBeginInfo rendering_technique::generate_render_pass_info(vk::CommandBuffer buffer,
+                                                                               vk::SubpassContents contents) const {
             vk::ClearValue clearColor = vk::ClearValue(std::array<float, 4>{0.0f, 0.0f, 0.0f, 1.0f});
 
             vk::RenderPassBeginInfo renderPassInfo(m_renderPass,
