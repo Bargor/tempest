@@ -1,15 +1,16 @@
 {
+	"mode": 1,
 	"viewport": {
 		"x": 0,
 		"y": 0,
-		"width": 840,
-		"height": 525,
+		"width": 1.0,
+		"height": 1.0,
 		"min_depth": 0.0,
 		"max_depth": 1.0
 	},
 	"scissor": {
 		"offset": [0, 0],
-		"dimensions": [840, 525]
+		"dimensions": [1.0, 1.0]
 	},
 	"framebuffer_blending": [
 		{ 

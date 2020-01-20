@@ -23,8 +23,8 @@ namespace engine {
                                 const swap_chain& swapChain);
 
             rendering_technique(std::string&& techniqueName,
-                                const base::viewport_settings& viewport,
-                                const core::rectangle<std::int32_t, std::uint32_t> scissor,
+                                base::viewport_callback&& viewportCallback,
+                                base::scissor_callback&& scissorCallback,
                                 std::vector<base::color_blending_settings>&& framebufferBlending,
                                 const base::global_blending_settings& globalBlending,
                                 vk::Device device,
@@ -37,7 +37,8 @@ namespace engine {
 
             void recreate_technique(const swap_chain& newSwapChain);
 
-            vk::RenderPassBeginInfo generate_render_pass_info(vk::CommandBuffer buffer, vk::SubpassContents contents) const;
+            vk::RenderPassBeginInfo generate_render_pass_info(vk::CommandBuffer buffer,
+                                                              vk::SubpassContents contents) const;
 
         private:
             void destroy();
