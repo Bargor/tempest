@@ -12,10 +12,10 @@ namespace engine {
     namespace base {
 
         technique_settings default_settings{
-            [=](core::extent<std::uint32_t>) {
+            [](core::extent<std::uint32_t>) {
                 return viewport_settings{0, 0, 840, 525, 0.0f, 1.0f};
             },
-            [=](core::extent<std::uint32_t>) {
+            [](core::extent<std::uint32_t>) {
                 return core::rectangle<std::int32_t, std::uint32_t>{{0, 0}, {840, 525}};
             },
             {color_blending_settings{false,
