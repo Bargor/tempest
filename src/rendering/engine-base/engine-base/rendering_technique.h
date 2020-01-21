@@ -102,9 +102,14 @@ namespace engine {
             bool operator==(const global_blending_settings& other) const noexcept;
         };
 
+        enum class callback_mode { absolute, relative };
+
+        using viewport_callback = std::function<viewport_settings(core::extent<std::uint32_t>)>;
+        using scissor_callback = std::function<core::rectangle<std::int32_t, std::uint32_t>(core::extent<std::uint32_t>)>;
+
         struct technique_settings {
-            viewport_settings viewport;
-            core::rectangle<std::int32_t, std::uint32_t> scissor;
+            viewport_callback viewportCallback;
+            scissor_callback scissorCallback;
             std::vector<color_blending_settings> framebufferColorBlending;
             global_blending_settings globalColorBlending;
         };
@@ -112,16 +117,21 @@ namespace engine {
         class rendering_technique {
         public:
             rendering_technique(std::string&& techniqueName,
-                                const viewport_settings& viewport,
-                                const core::rectangle<std::int32_t, std::uint32_t> scissor,
+                                viewport_callback&& viewportCallback,
+                                scissor_callback&& scissorCallback,
                                 std::vector<color_blending_settings>&& framebufferBlending,
-                                const global_blending_settings& globalBlending);
-            rendering_technique(std::string&& techniqueName, technique_settings&& techniqueSettings);
+                                const global_blending_settings& globalBlending,
+                                core::extent<std::uint32_t> windowSize);
+            rendering_technique(std::string&& techniqueName,
+                                technique_settings&& techniqueSettings,
+                                core::extent<std::uint32_t> windowSize);
 
             const std::string& get_name() const;
 
         protected:
             std::string m_techniqueName;
+            viewport_callback m_viewportSettingsCallback;
+            scissor_callback m_scissorCallback;
             viewport_settings m_viewportSettings;
             core::rectangle<std::int32_t, std::uint32_t> m_scissor;
             std::vector<color_blending_settings> m_framebufferColorBlending;
