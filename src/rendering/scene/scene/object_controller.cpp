@@ -19,14 +19,6 @@ namespace scene {
                                          application::event_processor<application::app_event>& eventProcessor,
                                          engine::resource_factory& resourceFactory)
         : m_scene(scene), m_dataLoader(dataLoader), m_eventProcessor(eventProcessor), m_resourceFactory(resourceFactory) {
-        auto framebuffer_callback = []([[maybe_unused]] const application::app_event::arguments& args) {
-            assert(std::holds_alternative<application::app_event::framebuffer>(args));
-        };
-
-        m_eventProcessor.subscribe(
-            core::variant_index<application::app_event::arguments, application::app_event::framebuffer>(),
-            this,
-            std::move(framebuffer_callback));
     }
 
     void object_controller::load_object(const std::string& path) {
