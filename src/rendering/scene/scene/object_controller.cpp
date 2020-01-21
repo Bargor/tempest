@@ -16,9 +16,8 @@ namespace scene {
 
     object_controller::object_controller(scene& scene,
                                          const application::data_loader& dataLoader,
-                                         application::event_processor<application::app_event>& eventProcessor,
                                          engine::resource_factory& resourceFactory)
-        : m_scene(scene), m_dataLoader(dataLoader), m_eventProcessor(eventProcessor), m_resourceFactory(resourceFactory) {
+        : m_scene(scene), m_dataLoader(dataLoader), m_resourceFactory(resourceFactory) {
     }
 
     void object_controller::load_object(const std::string& path) {

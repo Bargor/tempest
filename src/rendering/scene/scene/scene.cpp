@@ -28,10 +28,10 @@ namespace scene {
 
     scene::scene(std::string&& sceneName,
                  application::data_loader& dataLoader,
-                 application::event_processor<application::app_event>& eventProcessor,
+                 application::event_processor<application::app_event>&,
                  engine::resource_factory& resourceFactory)
         : m_sceneName(std::move(sceneName))
-        , m_sceneObjectController(std::make_unique<object_controller>(*this, dataLoader, eventProcessor, resourceFactory)) {
+        , m_sceneObjectController(std::make_unique<object_controller>(*this, dataLoader, resourceFactory)) {
     }
 
     scene::~scene() {

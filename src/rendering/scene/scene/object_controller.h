@@ -27,7 +27,6 @@ namespace scene {
     public:
         object_controller(scene& scene,
                           const application::data_loader& dataLoader,
-                          application::event_processor<application::app_event>& eventProcessor,
                           engine::resource_factory& resourceFactory);
 
         void load_object(const std::string& shaderName);
@@ -35,7 +34,6 @@ namespace scene {
     private:
         scene& m_scene;
         const application::data_loader& m_dataLoader;
-        application::event_processor<application::app_event>& m_eventProcessor;
         engine::resource_factory& m_resourceFactory;
     };
 
