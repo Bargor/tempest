@@ -9,7 +9,7 @@ namespace engine {
                          const resources::index_buffer* indices,
                          const resources::pipeline& pipeline,
                          const resources::uniform_buffer* uniforms)
-        : api::draw_info(vertices, indices, pipeline, uniforms) {
+        : api::draw_info(&vertices->to_super(), &indices->to_super(), pipeline.to_super(), &uniforms->to_super()) {
     }
 
     draw_info::draw_info(api::draw_info&& impl) : api::draw_info(std::move(impl)) {

@@ -26,16 +26,14 @@ namespace scene {
     class object_controller {
     public:
         object_controller(scene& scene,
-                          application::data_loader& dataLoader,
-                          application::event_processor<application::app_event>& eventProcessor,
+                          const application::data_loader& dataLoader,
                           engine::resource_factory& resourceFactory);
 
         void load_object(const std::string& shaderName);
 
     private:
         scene& m_scene;
-        application::data_loader& m_dataLoader;
-        application::event_processor<application::app_event>& m_eventProcessor;
+        const application::data_loader& m_dataLoader;
         engine::resource_factory& m_resourceFactory;
     };
 

@@ -6,7 +6,7 @@
 namespace tst {
 namespace engine {
 
-    vertex_format::vertex_format(base::vertex_format::primitive_topology topology) : api::vertex_format(topology) {
+    vertex_format::vertex_format(vertex_format::primitive_topology topology) : api::vertex_format(topology) {
     }
 
     vertex_format::~vertex_format() {

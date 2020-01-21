@@ -1,0 +1,1 @@
+file(COPY ${SOURCE_DIR}/settings/engine_settings.json DESTINATION "${DESTINATION_DIR}")

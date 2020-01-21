@@ -22,7 +22,7 @@ namespace device {
         , m_blueBits(m_videoMode->blueBits)
         , m_refreshRate(m_videoMode->refreshRate) {
         assert(std::this_thread::get_id() == core::main_thread::get_id());
-        glfwGetMonitorPhysicalSize(&monitor, &m_physicalWidth, &m_physicalWidth);
+        glfwGetMonitorPhysicalSize(&monitor, &m_physicalSize.height, &m_physicalSize.width);
         glfwGetMonitorPos(&monitor, &m_position.x, &m_position.y);
     }
 

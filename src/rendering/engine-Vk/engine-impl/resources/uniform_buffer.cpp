@@ -15,7 +15,7 @@ namespace engine {
                                        vk::CommandPool cmdPool,
                                        vk::DescriptorPool descPool,
                                        vk::DescriptorSetLayout descLayout,
-                                       const vk::PhysicalDeviceMemoryProperties& memoryProperties,
+                                       vk::PhysicalDeviceMemoryProperties memoryProperties,
                                        const std::uint32_t& resourceIndex)
             : buffer(logicalDevice,
                      queueHandle,
@@ -26,15 +26,15 @@ namespace engine {
                      vk::MemoryPropertyFlagBits::eHostCoherent | vk::MemoryPropertyFlagBits::eHostVisible)
             , m_resourceIndex(resourceIndex) {
             std::vector<vk::DescriptorSetLayout> layouts(settings::m_inFlightFrames, descLayout);
-            vk::DescriptorSetAllocateInfo allocInfo(descPool, settings::m_inFlightFrames, layouts.data());
+            const vk::DescriptorSetAllocateInfo allocInfo(descPool, settings::m_inFlightFrames, layouts.data());
 
-            auto descriptorSets = logicalDevice.allocateDescriptorSets(allocInfo);
+            const auto descriptorSets = logicalDevice.allocateDescriptorSets(allocInfo);
 
             for (std::size_t i = 0; i < settings::m_inFlightFrames; ++i) {
-                vk::DescriptorBufferInfo bufferInfo(
+                const vk::DescriptorBufferInfo bufferInfo(
                     m_buffer, i * sizeof(uniform_buffer_object), sizeof(uniform_buffer_object));
 
-                vk::WriteDescriptorSet descriptorWrite(
+                const vk::WriteDescriptorSet descriptorWrite(
                     descriptorSets[i], 0, 0, 1, vk::DescriptorType::eUniformBuffer, nullptr, &bufferInfo, nullptr);
 
                 logicalDevice.updateDescriptorSets({descriptorWrite}, {});
@@ -55,7 +55,7 @@ namespace engine {
 
         void uniform_buffer::update_buffer(const uniform_buffer_object& ubo) {
             m_data = ubo;
-            auto dataPtr = m_logicalDevice.mapMemory(
+            const auto dataPtr = m_logicalDevice.mapMemory(
                 m_bufferMemory, m_resourceIndex * sizeof(uniform_buffer_object), sizeof(uniform_buffer_object));
             std::memcpy(dataPtr, &ubo, sizeof(uniform_buffer_object));
             m_logicalDevice.unmapMemory(m_bufferMemory);

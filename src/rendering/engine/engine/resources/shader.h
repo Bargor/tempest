@@ -7,8 +7,9 @@
 namespace tst {
 namespace engine {
 
-    class shader final : api::shader {
+    class shader final : private api::shader {
     public:
+        using shader_type = base::shader_type;
     private:
     };
 

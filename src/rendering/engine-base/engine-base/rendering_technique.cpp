@@ -42,21 +42,28 @@ namespace engine {
         }
 
         rendering_technique::rendering_technique(std::string&& techniqueName,
-                                                 const viewport_settings& viewport,
-                                                 const core::rectangle<std::int32_t, std::uint32_t> scissor,
-                                                 std::vector<color_blending_settings> framebufferBlending,
-                                                 const global_blending_settings& globalBlending)
+                                                 viewport_callback&& viewportCallback,
+                                                 scissor_callback&& scissorCallback,
+                                                 std::vector<color_blending_settings>&& framebufferBlending,
+                                                 const global_blending_settings& globalBlending,
+                                                 core::extent<std::uint32_t> windowSize)
             : m_techniqueName(std::move(techniqueName))
-            , m_viewportSettings(viewport)
-            , m_scissor(scissor)
-            , m_framebufferColorBlending(framebufferBlending)
+            , m_viewportSettingsCallback(std::move(viewportCallback))
+            , m_scissorCallback(std::move(scissorCallback))
+            , m_viewportSettings(viewportCallback(windowSize))
+            , m_scissor(m_scissorCallback(windowSize))
+            , m_framebufferColorBlending(std::move(framebufferBlending))
             , m_globalColorBlending(globalBlending) {
         }
 
-        rendering_technique::rendering_technique(std::string&& techniqueName, technique_settings&& techniqueSettings)
+        rendering_technique::rendering_technique(std::string&& techniqueName,
+                                                 technique_settings&& techniqueSettings,
+                                                 core::extent<std::uint32_t> windowSize)
             : m_techniqueName(std::move(techniqueName))
-            , m_viewportSettings(std::move(techniqueSettings.viewport))
-            , m_scissor(std::move(techniqueSettings.scissor))
+            , m_viewportSettingsCallback(std::move(techniqueSettings.viewportCallback))
+            , m_scissorCallback(std::move(techniqueSettings.scissorCallback))
+            , m_viewportSettings(m_viewportSettingsCallback(windowSize))
+            , m_scissor(m_scissorCallback(windowSize))
             , m_framebufferColorBlending(std::move(techniqueSettings.framebufferColorBlending))
             , m_globalColorBlending(std::move(techniqueSettings.globalColorBlending)) {
         }

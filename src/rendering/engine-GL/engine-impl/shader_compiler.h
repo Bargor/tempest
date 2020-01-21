@@ -21,13 +21,13 @@ namespace engine {
                                                           const shaderTypesSet& types) const;
 
         public:
-            shader_compiler(application::data_loader& data_loader);
+            shader_compiler(const application::data_loader& data_loader);
 
         private:
             std::optional<shader> compile_shader(const std::string& name, const opengl::shader_type type) const;
 
         private:
-            application::data_loader& m_dataLoader;
+            const application::data_loader& m_dataLoader;
         };
 
     } // namespace opengl

@@ -20,26 +20,6 @@
 namespace tst {
 namespace application {
 
-    engine::api::settings create_engine_settings() {
-        engine::base::rasterizer_settings rasterizerSettings;
-
-        rasterizerSettings.depthClamp = false;
-        rasterizerSettings.rasterizerDiscard = false;
-        rasterizerSettings.polygonMode = engine::base::rasterizer_settings::polygon_mode::fill;
-        rasterizerSettings.cullMode = engine::base::rasterizer_settings::cull_mode::back;
-        rasterizerSettings.frontFace = engine::base::rasterizer_settings::front_face::counter_clockwise;
-        rasterizerSettings.lineWidth = 1.0f;
-        rasterizerSettings.depthBias = {false, 0.0f, 0.0f, 0.0f};
-
-        engine::base::multisampling_settings multisamplingSettings;
-        multisamplingSettings.enable = false;
-        multisamplingSettings.samples = engine::base::multisampling_settings::sample_count::samples_1;
-        engine::api::settings engineSettings{engine::base::settings(rasterizerSettings, multisamplingSettings),
-                                             engine::api::settings::buffering::triple_buf};
-
-        return engineSettings;
-    }
-
     simulation_engine::simulation_engine(time_source& timeSource,
                                          event_processor<app_event>& eventProcessor,
                                          input_processor& inputProcessor,
@@ -50,7 +30,7 @@ namespace application {
         , m_inputProcessor(inputProcessor)
         , m_mainWindow(mainWindow)
         , m_dataLoader(dataLoader)
-        , m_renderingDevice(std::make_unique<engine::device>(m_mainWindow, m_eventProcessor, create_engine_settings()))
+        , m_renderingDevice(std::make_unique<engine::device>(m_mainWindow, m_eventProcessor, engine::api::parse_engine_settings(dataLoader)))
         , m_resourceFactory(std::make_unique<engine::resource_factory>(*m_renderingDevice, m_dataLoader))
         , m_scene(std::make_unique<scene::scene>("world", dataLoader, eventProcessor, *m_resourceFactory))
         , m_frameCounter(0)
@@ -94,10 +74,10 @@ namespace application {
     void simulation_engine::main_loop() {
         m_inputProcessor.process_events();
         m_eventProcessor.process_events();
-        auto frameStart = m_timeSource.now();
+        const auto frameStart = m_timeSource.now();
         if (!m_windowMinimized) {
-            auto newSceneState = scene::update_scene(*m_scene, m_lastFrameDuration);
-            auto drawInfo = scene::prepare_draw_info(newSceneState);
+            const auto newSceneState = scene::update_scene(*m_scene, m_lastFrameDuration);
+            const auto drawInfo = scene::prepare_draw_info(newSceneState);
             m_renderingDevice->draw_frame(drawInfo.begin(), drawInfo.end());
             m_mainWindow.end_frame();
             m_lastSecondFrames++;

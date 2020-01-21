@@ -10,9 +10,14 @@ namespace engine {
     namespace resources {
         class uniform_buffer;
 
-        class material : api::material {
-        public:
+        class material : private api::material {
             using super = api::material;
+
+        public:
+        public:
+            const api::material& to_super() const noexcept {
+                return *this;
+            }
         private:
         };
 

@@ -142,16 +142,16 @@ namespace engine {
             }
         }
 
-        instance& instance::get_instance() {
+        const instance& instance::get_instance() noexcept {
             static instance instance(get_validation_layers());
             return instance;
         }
 
-		vk::Instance& instance::get_instance_handle() {
+		const vk::Instance& instance::get_instance_handle() const noexcept {
             return m_instance;
         }
 
-        std::vector<const char*> instance::get_validation_layers() {
+        std::vector<const char*> instance::get_validation_layers() noexcept {
             if (enableValidationLayers) {
                 return {"VK_LAYER_LUNARG_standard_validation"};
             } else

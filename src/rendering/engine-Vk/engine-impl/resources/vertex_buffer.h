@@ -17,8 +17,8 @@ namespace engine {
         };
 
         class vertex_buffer : public buffer {
-        public:
             using super = buffer;
+        public:
 
             vertex_buffer(const vk::Device logicalDevice,
                           const vk::Queue m_queueHandle,
@@ -29,6 +29,8 @@ namespace engine {
             ~vertex_buffer();
 
             vertex_buffer(vertex_buffer&& other) noexcept;
+
+        public:
 
             std::uint32_t get_vertex_count() const noexcept;
 

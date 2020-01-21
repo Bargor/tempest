@@ -18,7 +18,7 @@ namespace engine {
 
     class device;
 
-    class resource_factory final : public api::resource_factory {
+    class resource_factory final : private api::resource_factory {
         using super = api::resource_factory;
 
     public:
@@ -29,11 +29,13 @@ namespace engine {
         resources::index_buffer create_index_buffer(std::vector<std::uint16_t>&& indices);
         resources::material create_material();
         const resources::pipeline& create_pipeline(const std::string& techniqueName,
-                                             const std::string& shadersName,
-                                             const vertex_format& format);
-        void create_technique(std::string&& name, base::technique_settings&& settings);
+                                                   const std::string& shadersName,
+                                                   const vertex_format& format);
+        void create_technique(std::string&& name);
         resources::vertex_buffer create_vertex_buffer(const vertex_format& format, std::vector<vertex>&& vertices);
-        resources::uniform_buffer create_uniform_buffer(const std::string& shaderName);
+        resources::uniform_buffer create_uniform_buffer(const std::string& shaderName,
+                                                        api::shader_type type,
+                                                        std::uint32_t binding);
 
     private:
     };

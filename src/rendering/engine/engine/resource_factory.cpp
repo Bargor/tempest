@@ -9,7 +9,7 @@ namespace tst {
 namespace engine {
 
     resource_factory::resource_factory(device& device, application::data_loader& dataLoader)
-        : api::resource_factory(device, dataLoader) {
+        : api::resource_factory(device.create_resource_factory(dataLoader)) {
     }
 
     resource_factory::~resource_factory() {
@@ -24,23 +24,25 @@ namespace engine {
     }
 
     const resources::pipeline& resource_factory::create_pipeline(const std::string& techniqueName,
-                                                           const std::string& shadersName,
-                                                           const vertex_format& format) {
-        return static_cast<const resources::pipeline&>(super::create_pipeline(techniqueName, shadersName, format));
+                                                                 const std::string& shadersName,
+                                                                 const vertex_format& format) {
+        return (const resources::pipeline&)(
+            super::create_pipeline(techniqueName, shadersName, format.to_super()));
     }
 
-    void resource_factory::create_technique(std::string&& name, base::technique_settings&& settings) {
-        super::create_technique(std::move(name), std::move(settings));
+    void resource_factory::create_technique(std::string&& name) {
+        super::create_technique(std::move(name));
     }
 
     resources::vertex_buffer resource_factory::create_vertex_buffer(const engine::vertex_format& format,
                                                                     std::vector<vertex>&& vertices) {
-        return super::create_vertex_buffer(format, std::move(vertices));
+        return super::create_vertex_buffer(format.to_super(), std::move(vertices));
     }
 
-    resources::uniform_buffer resource_factory::create_uniform_buffer(const std::string& shaderName) {
-        return super::create_uniform_buffer(shaderName);
+    resources::uniform_buffer resource_factory::create_uniform_buffer(const std::string& shaderName,
+                                                                      shader::shader_type type,
+                                                                      std::uint32_t binding) {
+        return super::create_uniform_buffer(shaderName, type, binding);
     }
 } // namespace engine
 } // namespace tst
-

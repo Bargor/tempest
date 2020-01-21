@@ -20,15 +20,15 @@ namespace engine {
         };
 
         class uniform_buffer : public buffer {
-        public:
             using super = buffer;
+        public:
 
             uniform_buffer(vk::Device logicalDevice,
                            vk::Queue m_queueHandle,
                            vk::CommandPool cmdPool,
                            vk::DescriptorPool descPool,
                            vk::DescriptorSetLayout descLayout,
-                           const vk::PhysicalDeviceMemoryProperties& memoryProperties,
+                           vk::PhysicalDeviceMemoryProperties memoryProperties,
                            const std::uint32_t& resourceIndex);
             uniform_buffer(uniform_buffer&& other) noexcept;
             uniform_buffer(const uniform_buffer& other) = delete;

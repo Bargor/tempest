@@ -8,8 +8,8 @@ namespace tst {
 namespace application {
 
     class data_exception : public std::runtime_error {
-    public:
         using super = std::runtime_error;
+    public:
 
         explicit data_exception(const std::string& message) : super(message.c_str()) {}
 

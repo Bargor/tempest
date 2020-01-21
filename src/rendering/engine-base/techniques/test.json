@@ -1,0 +1,32 @@
+{
+	"mode": 1,
+	"viewport": {
+		"x": 0,
+		"y": 0,
+		"width": 1.0,
+		"height": 1.0,
+		"min_depth": 0.0,
+		"max_depth": 1.0
+	},
+	"scissor": {
+		"offset": [0, 0],
+		"dimensions": [1.0, 1.0]
+	},
+	"framebuffer_blending": [
+		{ 
+			"enable": false,
+			"color_blend_op": 0,
+			"src_color_blend_factor": 1,
+			"dst_color_blend_factor": 0,
+			"alpha_blend_op": 0,
+			"src_alpha_blend_factor": 1,
+			"dst_alpha_blend_factor": 0,
+			"color_write_mask": [true, true, true, true]
+		}
+	],
+	"global_blending": {
+		"enable": false,
+		"logic_operation": 3,
+		"blend_constants": [0.0, 0.0, 0.0, 0.0]
+	}
+}

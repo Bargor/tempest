@@ -5,6 +5,7 @@
 #include "GLFW/glfw3.h"
 
 #include <common/position.h>
+#include <common/rectangle.h>
 #include <cstdint>
 #include <platform.h>
 #include <string>
@@ -40,8 +41,7 @@ namespace device {
         std::int32_t m_greenBits;
         std::int32_t m_blueBits;
         std::int32_t m_refreshRate;
-        std::int32_t m_physicalWidth;
-        std::int32_t m_physicalHeight;
+        core::extent<std::int32_t> m_physicalSize;
         core::position<std::int32_t> m_position;
     };
 
@@ -74,11 +74,11 @@ namespace device {
     }
 
     TST_INLINE std::int32_t monitor::get_physical_width() const noexcept {
-        return m_physicalWidth;
+        return m_physicalSize.width;
     }
 
     TST_INLINE std::int32_t monitor::get_physical_height() const noexcept {
-        return m_physicalHeight;
+        return m_physicalSize.height;
     }
 
     TST_INLINE core::position<std::int32_t> monitor::get_monitor_pos() const noexcept {

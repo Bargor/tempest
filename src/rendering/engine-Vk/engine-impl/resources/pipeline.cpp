@@ -188,10 +188,10 @@ namespace engine {
         }
 
         vk::PipelineLayout create_pipeline_layout(const vk::Device logicalDevice,
-                                                  const std::vector<vk::DescriptorSetLayout>& descriptorLayout) {
+                                                  const std::vector<vk::DescriptorSetLayout>& layouts) {
+
             vk::PipelineLayoutCreateInfo pipelineLayoutInfo(vk::PipelineLayoutCreateFlags(),
-                                                            static_cast<std::uint32_t>(descriptorLayout.size()),
-                                                            descriptorLayout.data(),
+                                                            static_cast<std::uint32_t>(layouts.size()), layouts.data(),
                                                             0,
                                                             nullptr);
             return logicalDevice.createPipelineLayout(pipelineLayoutInfo);
@@ -252,7 +252,7 @@ namespace engine {
             std::vector<vk::PipelineColorBlendAttachmentState> colorBlendAttachments;
             colorBlendAttachments.reserve(framebufferColorBlending.size());
 
-            for (auto& attachment : framebufferColorBlending) {
+            for (const auto& attachment : framebufferColorBlending) {
                 vk::PipelineColorBlendAttachmentState colorBlendAttachment(
                     attachment.enable,
                     translate_blend_factor(attachment.srcColorBlendFactor),
@@ -304,19 +304,19 @@ namespace engine {
             vk::Rect2D scissor({scissorSettings.offset.x, scissorSettings.offset.y},
                                {scissorSettings.dimensions.width, scissorSettings.dimensions.height});
 
-            auto bindingDesc = format.get_binding_description();
-            auto attributeDesc = format.get_attribute_descriptions();
-            auto vertexInfo = create_vertex_input_info(bindingDesc, attributeDesc);
-            auto assemblyInfo = create_assembly_info(format);
-            auto viewportInfo = create_viewport_info(viewport, scissor);
-            auto rasterizationInfo = create_rasterization_info(rasterizerSettings);
-            auto multisamplingInfo = create_multisampling_info(multisamplingSettings);
-            auto colorBlendAttachment = create_color_blend_attachment(framebufferBlendingSettings);
-            auto blendingInfo = create_color_blending_info(globalBlendingSettings, colorBlendAttachment);
+            const auto bindingDesc = format.get_binding_description();
+            const auto attributeDesc = format.get_attribute_descriptions();
+            const auto vertexInfo = create_vertex_input_info(bindingDesc, attributeDesc);
+            const auto assemblyInfo = create_assembly_info(format);
+            const auto viewportInfo = create_viewport_info(viewport, scissor);
+            const auto rasterizationInfo = create_rasterization_info(rasterizerSettings);
+            const auto multisamplingInfo = create_multisampling_info(multisamplingSettings);
+            const auto colorBlendAttachment = create_color_blend_attachment(framebufferBlendingSettings);
+            const auto blendingInfo = create_color_blending_info(globalBlendingSettings, colorBlendAttachment);
 
             std::vector<vk::PipelineShaderStageCreateInfo> shaderInfos;
-            std::transform(shaders.shaders.cbegin(),
-                           shaders.shaders.cend(),
+            std::transform(shaders.cbegin(),
+                           shaders.cend(),
                            std::back_inserter(shaderInfos),
                            [](const shader& shader) { return shader.get_pipeline_info(); });
 
@@ -344,8 +344,9 @@ namespace engine {
                            const settings& engineSettings,
                            const vertex_format& format,
                            const shader_set& shaders,
-                           const rendering_technique& technique)
-            : m_pipelineLayout(create_pipeline_layout(logicalDevice, shaders.layouts))
+                           const rendering_technique& technique,
+                           std::vector<vk::DescriptorSetLayout>&& layouts)
+            : m_pipelineLayout(create_pipeline_layout(logicalDevice, layouts))
             , m_pipeline(compile_pipeline(logicalDevice,
                                           m_pipelineLayout,
                                           technique.m_renderPass,
@@ -366,7 +367,9 @@ namespace engine {
             , m_technique(technique)
             , m_shaders(shaders)
             , m_vertexFormat(format)
-            , m_logicalDevice(logicalDevice) {
+            , m_logicalDevice(logicalDevice)
+            , m_layouts(std::move(layouts))
+        {
         }
 
         pipeline::pipeline(pipeline&& pipeline) noexcept
@@ -376,7 +379,9 @@ namespace engine {
             , m_technique(pipeline.m_technique)
             , m_shaders(pipeline.m_shaders)
             , m_vertexFormat(pipeline.m_vertexFormat)
-            , m_logicalDevice(pipeline.m_logicalDevice) {
+            , m_logicalDevice(pipeline.m_logicalDevice)
+            , m_layouts(std::move(pipeline.m_layouts)) {
+            pipeline.m_pipeline = vk::Pipeline();
             pipeline.m_pipeline = vk::Pipeline();
             pipeline.m_pipelineLayout = vk::PipelineLayout();
         }
@@ -399,7 +404,7 @@ namespace engine {
 
         void pipeline::recreate() {
             destroy();
-            m_pipelineLayout = create_pipeline_layout(m_logicalDevice, m_shaders.layouts);
+            m_pipelineLayout = create_pipeline_layout(m_logicalDevice, m_layouts);
             m_pipelineSettings.m_viewport.width = m_technique.m_viewportSettings.width;
             m_pipelineSettings.m_viewport.height = m_technique.m_viewportSettings.height;
 

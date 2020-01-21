@@ -13,8 +13,8 @@ namespace engine {
 
     namespace vulkan {
 
-        queue_family_indices compute_queue_indices(const vk::SurfaceKHR& windowSurface,
-                                                   const vk::PhysicalDevice& physicalDevice) {
+        queue_family_indices compute_queue_indices(const vk::SurfaceKHR windowSurface,
+                                                   const vk::PhysicalDevice physicalDevice) {
             auto queueFamilies = physicalDevice.getQueueFamilyProperties();
 
             queue_family_indices indices;

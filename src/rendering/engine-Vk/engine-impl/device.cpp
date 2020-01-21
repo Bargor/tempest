@@ -34,7 +34,7 @@ namespace engine {
 
         bool check_extensions_support(const vk::PhysicalDevice& handle,
                                       const std::vector<const char*>& requiredExtenstions) {
-            auto availableExtensions = handle.enumerateDeviceExtensionProperties();
+            const auto availableExtensions = handle.enumerateDeviceExtensionProperties();
 
             return tst::includes(availableExtensions.cbegin(),
                                  availableExtensions.cend(),
@@ -68,7 +68,7 @@ namespace engine {
 
         ptr<physical_device> select_physical_device(vk::SurfaceKHR& surface,
                                                     const std::vector<const char*>& requiredExtensions) {
-            auto& instance = instance::get_instance();
+            const auto& instance = instance::get_instance();
             std::vector<vk::PhysicalDevice> devices = instance.get_instance_handle().enumeratePhysicalDevices();
 
             if (devices.size() == 0) {
@@ -129,7 +129,7 @@ namespace engine {
                                                m_physicalDevice->get_presentation_index(),
                                                vk::Extent2D{mainWindow.get_size().width, mainWindow.get_size().height},
                                                m_engineSettings.m_buffering))
-            , m_resourceCache(std::make_unique<resource_cache>())
+            , m_resourceCache(std::make_unique<resource_cache>(m_logicalDevice))
             , m_graphicsQueueHandle(m_logicalDevice.getQueue(m_physicalDevice->get_graphics_index(), 0))
             , m_computeQueueHandle(m_logicalDevice.getQueue(m_physicalDevice->get_compute_index(), 0))
             , m_presentationQueueHandle(m_logicalDevice.getQueue(m_physicalDevice->get_presentation_index(), 0))
@@ -148,8 +148,6 @@ namespace engine {
                 core::variant_index<application::app_event::arguments, application::app_event::framebuffer>(),
                 this,
                 std::move(framebufferResizeCallback));
-
-            create_descriptor_pool(200);
         }
 
         device::~device() {
@@ -162,14 +160,16 @@ namespace engine {
             for (auto& commandPool : m_commandPools) {
                 m_logicalDevice.destroyCommandPool(commandPool);
             }
-            for (auto& descriptorPool : m_descriptorPools) {
-                m_logicalDevice.destroyDescriptorPool(descriptorPool);
-            }
 
             m_resourceCache->clear();
             m_swapChain.reset();
             instance::get_instance().m_instance.destroySurfaceKHR(m_windowSurface);
             m_logicalDevice.destroy();
+        }
+
+        resource_factory device::create_resource_factory(const application::data_loader& dataLoader) const {
+            return resource_factory(*this,
+                                    dataLoader);
         }
 
         vk::CommandPool device::create_command_pool() {
@@ -178,65 +178,6 @@ namespace engine {
             m_commandPools.emplace_back(m_logicalDevice.createCommandPool(createInfo));
 
             return m_commandPools.back();
-        }
-
-        vk::DescriptorPool device::create_descriptor_pool(std::uint32_t size) {
-            vk::DescriptorPoolSize poolSize(vk::DescriptorType::eUniformBuffer, size);
-
-            vk::DescriptorPoolCreateInfo poolCreateInfo(vk::DescriptorPoolCreateFlags(), size, 1, &poolSize);
-
-            m_descriptorPools.emplace_back(m_logicalDevice.createDescriptorPool(poolCreateInfo));
-
-            return m_descriptorPools.back();
-        }
-
-        vk::DescriptorSetLayout device::create_descriptor_set_layout() const {
-            vk::DescriptorSetLayoutBinding descriptorBinding(
-                0, vk::DescriptorType::eUniformBuffer, 1, vk::ShaderStageFlagBits::eVertex, nullptr);
-
-            vk::DescriptorSetLayoutCreateInfo setLayoutInfo(vk::DescriptorSetLayoutCreateFlags(), 1, &descriptorBinding);
-
-            return m_logicalDevice.createDescriptorSetLayout(setLayoutInfo, nullptr);
-        }
-
-        rendering_technique device::create_technique(std::string&& name, base::technique_settings&& settings) const {
-            return rendering_technique(std::move(name), std::move(settings), m_logicalDevice, *m_swapChain.get());
-        }
-
-        vertex_buffer device::create_vertex_buffer(const vertex_format& format,
-                                                   std::vector<vertex>&& vertices,
-                                                   const vk::CommandPool cmdPool) const {
-            return vertex_buffer(m_logicalDevice,
-                                 m_graphicsQueueHandle,
-                                 cmdPool,
-                                 m_physicalDevice->get_memory_properties(),
-                                 format,
-                                 std::move(vertices));
-        }
-
-        uniform_buffer device::create_uniform_buffer(const vk::CommandPool cmdPool,
-                                                     const vk::DescriptorSetLayout layout) const {
-            return uniform_buffer(m_logicalDevice,
-                                  m_graphicsQueueHandle,
-                                  cmdPool,
-                                  m_descriptorPools[0],
-                                  layout,
-                                  m_physicalDevice->get_memory_properties(),
-                                  m_resourceIndex);
-        }
-
-        shader device::crate_shader(shader::shader_type type, std::vector<char>&& source, const std::string& name) const {
-            return shader(m_logicalDevice, type, std::move(source), name);
-        }
-
-        pipeline device::create_pipeline(const vertex_format& format,
-                                         const shader_set& shaders,
-                                         const rendering_technique& technique) {
-            return pipeline(m_logicalDevice, m_engineSettings, format, shaders, technique);
-        }
-
-        resource_cache& device::get_resource_cache() noexcept {
-            return *m_resourceCache;
         }
 
         void device::start() {

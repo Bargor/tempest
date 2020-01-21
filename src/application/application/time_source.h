@@ -12,8 +12,8 @@ namespace application {
     public:
         time_source() noexcept;
 
-		core::time_point now() noexcept;
-        std::chrono::microseconds get_time() noexcept;
+		core::time_point now() const noexcept;
+        std::chrono::microseconds get_time() const noexcept;
     private:
 		core::timer m_timer;
 	};
@@ -22,11 +22,11 @@ namespace application {
         m_timer.start();
     }
 
-    TST_INLINE std::chrono::microseconds time_source::get_time() noexcept {
+    TST_INLINE std::chrono::microseconds time_source::get_time() const noexcept {
         return m_timer.get_time();
     }
 
-    TST_INLINE core::time_point time_source::now() noexcept {
+    TST_INLINE core::time_point time_source::now() const noexcept {
         return m_timer.now();
 	}
 

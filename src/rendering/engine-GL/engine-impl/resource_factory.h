@@ -2,9 +2,10 @@
 // Author: Karol Kontny
 #pragma once
 
-#include "device.h"
+#include "api.h"
 #include "resources/index_buffer.h"
 #include "resources/pipeline.h"
+#include "resources/shader.h"
 #include "resources/uniform_buffer.h"
 #include "resources/vertex_buffer.h"
 #include "resources/vertex_format.h"
@@ -18,13 +19,15 @@ namespace application {
 namespace engine {
 
     namespace opengl {
-        class device;
         class shader_compiler;
 
         class resource_factory {
         public:
-            resource_factory(device& device, application::data_loader& dataLoader);
+            resource_factory(const application::data_loader& dataLoader);
             ~resource_factory();
+
+            resource_factory(const resource_factory&) = delete;
+            resource_factory(resource_factory&& factory) noexcept;
 
         public:
             template<typename IndexType>
@@ -32,20 +35,21 @@ namespace engine {
             const pipeline& create_pipeline(const std::string& techniqueName,
                                             const std::string& shadersName,
                                             const vertex_format& format);
-            void create_technique(std::string&& name, base::technique_settings&& settings);
+            void create_technique(std::string&& name);
             vertex_buffer create_vertex_buffer(const vertex_format& format, std::vector<vertex>&& vertices);
-            uniform_buffer create_uniform_buffer(const std::string& shaderName);
+            uniform_buffer create_uniform_buffer(const std::string& shaderName,
+                                                 shader_type type,
+                                                 std::uint32_t binding);
 
         private:
-            device& m_device;
-            application::data_loader& m_dataLoader;
+            const application::data_loader& m_dataLoader;
             ptr<shader_compiler> m_shaderCompiler;
         };
 
         template<typename IndexType>
         index_buffer<IndexType> resource_factory::create_index_buffer(std::vector<std::uint16_t>&& indices) {
-            return m_device.create_index_buffer(std::move(indices));
+            return index_buffer<std::uint16_t>(std::move(indices));
         }
-    }
-}
-}
+    } // namespace opengl
+} // namespace engine
+} // namespace tst

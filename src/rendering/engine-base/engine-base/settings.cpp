@@ -31,14 +31,6 @@ namespace engine {
             return false;
         }
 
-        settings::settings(const rasterizer_settings& rasterizerSettings,
-                           const multisampling_settings& multisamplingSettings)
-            : m_rasterizer(rasterizerSettings), m_multisampling(multisamplingSettings) {
-        }
-
-        settings::~settings() {
-        }
-
     } // namespace base
 } // namespace engine
 } // namespace tst

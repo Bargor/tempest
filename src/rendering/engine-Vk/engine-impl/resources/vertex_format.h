@@ -3,9 +3,7 @@
 
 #pragma once
 
-#include <array>
 #include <engine-base/vertex_format.h>
-#include <glm/glm.hpp>
 #include <vulkan/vulkan.hpp>
 
 namespace tst {
@@ -13,10 +11,9 @@ namespace engine {
     namespace vulkan {
 
         class vertex_format : public base::vertex_format {
-        public:
             using super = base::vertex_format;
-
-            vertex_format(base::vertex_format::primitive_topology topology);
+        public:
+            vertex_format(super::primitive_topology topology);
 
             vk::VertexInputBindingDescription get_binding_description() const noexcept;
             std::vector<vk::VertexInputAttributeDescription> get_attribute_descriptions() const noexcept;

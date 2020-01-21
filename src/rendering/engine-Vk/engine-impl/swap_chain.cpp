@@ -61,16 +61,16 @@ namespace engine {
                 }
             }
 
-            vk::SwapchainKHR create_swap_chain(const vk::SurfaceKHR& m_windowSurface,
-                                               const vk::Device& logicalDevice,
+            vk::SwapchainKHR create_swap_chain(const vk::SurfaceKHR windowSurface,
+                                               const vk::Device logicalDevice,
                                                std::uint32_t graphicsQueueIndex,
                                                std::uint32_t presentationQueueIndex,
                                                const surface_support_info& supportInfo,
                                                const vk::SurfaceFormatKHR surfaceFormat,
-                                               const vk::PresentModeKHR& presentationMode,
-                                               const vk::Extent2D& extent,
+                                               const vk::PresentModeKHR presentationMode,
+                                               vk::Extent2D extent,
                                                settings::buffering buffers) {
-                auto buffersCount = static_cast<std::uint32_t>(buffers);
+                const auto buffersCount = static_cast<std::uint32_t>(buffers);
                 if (supportInfo.capabilities.maxImageCount < buffersCount ||
                     buffersCount < supportInfo.capabilities.minImageCount) {
                     throw vulkan_exception("Requested not supported count of swap chain images");
@@ -91,7 +91,7 @@ namespace engine {
 
                 vk::SwapchainCreateInfoKHR createInfo(
                     vk::SwapchainCreateFlagsKHR(),
-                    m_windowSurface,
+                    windowSurface,
                     buffersCount,
                     surfaceFormat.format,
                     surfaceFormat.colorSpace,
@@ -114,15 +114,15 @@ namespace engine {
                 }
             }
 
-            std::vector<vk::ImageView> create_image_views(const vk::Device& logicalDevice,
-                                                          const vk::SurfaceFormatKHR& surfaceFormat,
+            std::vector<vk::ImageView> create_image_views(const vk::Device logicalDevice,
+                                                          const vk::SurfaceFormatKHR surfaceFormat,
                                                           const std::vector<vk::Image>& m_images) {
                 std::vector<vk::ImageView> imageViews(m_images.size());
 
                 for (std::uint32_t idx = 0; idx < imageViews.size(); idx++) {
-                    vk::ImageAspectFlags flags = vk::ImageAspectFlagBits::eColor;
+                    const vk::ImageAspectFlags flags = vk::ImageAspectFlagBits::eColor;
 
-                    vk::ImageViewCreateInfo createInfo(vk::ImageViewCreateFlags(),
+                    const vk::ImageViewCreateInfo createInfo(vk::ImageViewCreateFlags(),
                                                        m_images[idx],
                                                        vk::ImageViewType::e2D,
                                                        surfaceFormat.format,
@@ -175,7 +175,7 @@ namespace engine {
             m_logicalDevice.destroySwapchainKHR(m_swapChain);
         }
 
-        swap_chain::result swap_chain::acquire_next_image(vk::Device device, const vk::Semaphore& imageAvailable) {
+        swap_chain::result swap_chain::acquire_next_image(vk::Device device, const vk::Semaphore imageAvailable) {
             auto acquireResult = device.acquireNextImageKHR(
                 m_swapChain, std::numeric_limits<std::uint64_t>::max(), imageAvailable, vk::Fence());
 
@@ -191,7 +191,7 @@ namespace engine {
         }
 
         swap_chain::result swap_chain::present_image(vk::Queue presentationQueueHandle,
-                                                     const vk::Semaphore& renderFinished) {
+                                                     const vk::Semaphore renderFinished) {
             vk::PresentInfoKHR presentInfo(1, &renderFinished, 1, &m_swapChain, &m_currentImage);
 
             auto presentResult = presentationQueueHandle.presentKHR(presentInfo);

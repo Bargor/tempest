@@ -14,59 +14,27 @@
 namespace tst {
 namespace scene {
 
-    engine::base::technique_settings create_technique_settings() {
-        engine::base::viewport_settings viewportSettings{0, 0, 840, 525, 0.0f, 1.0f};
-        core::rectangle<std::int32_t, std::uint32_t> scissorSettings{{0, 0}, {840, 525}};
-        engine::base::color_blending_settings blendingSettings{
-            false,
-            engine::base::color_blending_settings::blend_operation::add,
-            engine::base::color_blending_settings::blend_factor::one,
-            engine::base::color_blending_settings::blend_factor::zero,
-            engine::base::color_blending_settings::blend_operation::add,
-            engine::base::color_blending_settings::blend_factor::one,
-            engine::base::color_blending_settings::blend_factor::zero,
-            {true, true, true, true}};
-        engine::base::global_blending_settings globalBlendingSettings{
-            false, engine::base::global_blending_settings::logic_operation::copy, {0.0f, 0.0f, 0.0f, 0.0f}};
-
-        return engine::base::technique_settings{viewportSettings,
-                                                scissorSettings,
-                                                std::vector<engine::base::color_blending_settings>{blendingSettings},
-                                                globalBlendingSettings};
-    }
-
     object_controller::object_controller(scene& scene,
-                                         application::data_loader& dataLoader,
-                                         application::event_processor<application::app_event>& eventProcessor,
+                                         const application::data_loader& dataLoader,
                                          engine::resource_factory& resourceFactory)
-        : m_scene(scene), m_dataLoader(dataLoader), m_eventProcessor(eventProcessor), m_resourceFactory(resourceFactory) {
-        auto framebuffer_callback = [this](const application::app_event::arguments& args) {
-            assert(std::holds_alternative<application::app_event::framebuffer>(args));
-            if (std::get<application::app_event::framebuffer>(args).size.height > 2000) { //for compilation purposes
-                m_dataLoader.add_search_path(""); // for ununsed priate object touch
-            }
-        };
-
-        m_eventProcessor.subscribe(
-            core::variant_index<application::app_event::arguments, application::app_event::framebuffer>(),
-            this,
-            std::move(framebuffer_callback));
+        : m_scene(scene), m_dataLoader(dataLoader), m_resourceFactory(resourceFactory) {
     }
 
-    void object_controller::load_object(const std::string&) {
-        auto vertexFormat = engine::vertex_format(engine::base::vertex_format::primitive_topology::triangle_list);
-        vertexFormat.add_attribute(engine::base::vertex_format::location::position,
-                                   engine::base::vertex_format::format::float2,
+    void object_controller::load_object(const std::string& path) {
+        m_dataLoader.find_file(path);
+        auto vertexFormat = engine::vertex_format(engine::vertex_format::primitive_topology::triangle_list);
+        vertexFormat.add_attribute(engine::vertex_format::location::position,
+                                   engine::vertex_format::format::float2,
                                    offsetof(engine::vertex, pos),
                                    sizeof(engine::vertex),
                                    0);
-        vertexFormat.add_attribute(engine::base::vertex_format::location::normal,
-                                   engine::base::vertex_format::format::float3,
+        vertexFormat.add_attribute(engine::vertex_format::location::normal,
+                                   engine::vertex_format::format::float3,
                                    offsetof(engine::vertex, color),
                                    sizeof(engine::vertex),
                                    0);
 
-        m_resourceFactory.create_technique("test", create_technique_settings());
+        m_resourceFactory.create_technique("test");
         const auto& pipeline = m_resourceFactory.create_pipeline("test", "test", vertexFormat);
 
         auto vertexBuffer =
@@ -77,7 +45,7 @@ namespace scene {
                                                                                 {{-0.5f, 0.5f}, {1.0f, 1.0f, 1.0f}}}));
         auto indexBuffer = m_resourceFactory.create_index_buffer(std::vector<std::uint16_t>({{0, 1, 2, 2, 3, 0}}));
 
-        auto uniformBuffer = m_resourceFactory.create_uniform_buffer("test");
+        auto uniformBuffer = m_resourceFactory.create_uniform_buffer("test", engine::shader::shader_type::vertex, 0);
 
         auto material = m_resourceFactory.create_material();
 

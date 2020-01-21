@@ -1,6 +1,5 @@
 language: cpp
-dist: xenial
-sudo: required
+dist: bionic
 
 notifications:
   email:
@@ -14,7 +13,7 @@ matrix:
       addons:
         apt:
           sources:
-            - ubuntu-toolchain-r-test
+            - sourceline: "ppa:ubuntu-toolchain-r/test"
           packages:
             - gcc-9
             - g++-9
@@ -29,7 +28,7 @@ matrix:
       addons:
         apt:
           sources:
-            - ubuntu-toolchain-r-test
+            - sourceline: "ppa:ubuntu-toolchain-r/test"
           packages:
             - gcc-9
             - g++-9
@@ -44,8 +43,8 @@ matrix:
       addons:
         apt:
           sources:
-            - ubuntu-toolchain-r-test
-            - llvm-toolchain-xenial-8
+            - sourceline: "ppa:ubuntu-toolchain-r/test"
+            - llvm-toolchain-bionic-8
           packages:
             - clang-8
             - libc++-8-dev
@@ -66,8 +65,8 @@ matrix:
       addons:
         apt:
           sources:
-            - ubuntu-toolchain-r-test
-            - llvm-toolchain-xenial-8
+            - sourceline: "ppa:ubuntu-toolchain-r/test"
+            - llvm-toolchain-bionic-8
           packages:
             - clang-8
             - libc++-8-dev
@@ -89,7 +88,7 @@ matrix:
       addons:
         apt:
           sources:
-            - ubuntu-toolchain-r-test
+            - sourceline: "ppa:ubuntu-toolchain-r/test"
           packages:
             - gcc-9
             - g++-9
@@ -104,7 +103,7 @@ matrix:
       addons:
         apt:
           sources:
-            - ubuntu-toolchain-r-test
+            - sourceline: "ppa:ubuntu-toolchain-r/test"
           packages:
             - gcc-9
             - g++-9
@@ -119,8 +118,8 @@ matrix:
       addons:
         apt:
           sources:
-            - ubuntu-toolchain-r-test
-            - llvm-toolchain-xenial-8
+            - sourceline: "ppa:ubuntu-toolchain-r/test"
+            - llvm-toolchain-bionic-8
           packages:
             - clang-8
             - libc++-8-dev
@@ -141,8 +140,8 @@ matrix:
       addons:
         apt:
           sources:
-            - ubuntu-toolchain-r-test
-            - llvm-toolchain-xenial-8
+            - sourceline: "ppa:ubuntu-toolchain-r/test"
+            - llvm-toolchain-bionic-8
           packages:
             - clang-8
             - libc++-8-dev
@@ -163,8 +162,8 @@ matrix:
       addons:
         apt:
           sources:
-            - ubuntu-toolchain-r-test
-            - llvm-toolchain-xenial-8
+            - sourceline: "ppa:ubuntu-toolchain-r/test"
+            - llvm-toolchain-bionic-8
           packages:
             - clang-8
             - libc++-8-dev
@@ -185,8 +184,8 @@ matrix:
       addons:
         apt:
           sources:
-            - ubuntu-toolchain-r-test
-            - llvm-toolchain-xenial-8
+            - sourceline: "ppa:ubuntu-toolchain-r/test"
+            - llvm-toolchain-bionic-8
           packages:
             - clang-8
             - libc++-8-dev
@@ -207,8 +206,8 @@ matrix:
       addons:
         apt:
           sources:
-            - ubuntu-toolchain-r-test
-            - llvm-toolchain-xenial-8
+            - sourceline: "ppa:ubuntu-toolchain-r/test"
+            - llvm-toolchain-bionic-8
           packages:
             - clang-8
             - libc++-8-dev

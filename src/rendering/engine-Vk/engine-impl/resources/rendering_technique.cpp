@@ -46,9 +46,9 @@ namespace engine {
             std::vector<vk::Framebuffer> framebuffers(imageViews.size());
 
             for (std::uint32_t i = 0; i < imageViews.size(); i++) {
-                vk::ImageView attachments[] = {imageViews[i]};
+                const vk::ImageView attachments[] = {imageViews[i]};
 
-                vk::FramebufferCreateInfo createInfo(
+                const vk::FramebufferCreateInfo createInfo(
                     vk::FramebufferCreateFlags(), renderPass, 1, attachments, extent.width, extent.height, 1);
 
                 framebuffers[i] = device.createFramebuffer(createInfo);
@@ -61,7 +61,10 @@ namespace engine {
                                                  base::technique_settings&& techniqueSettings,
                                                  vk::Device device,
                                                  const swap_chain& swapChain)
-            : base::rendering_technique(std::move(techniqueName), std::move(techniqueSettings))
+            : base::rendering_technique(
+                  std::move(techniqueName),
+                  std::move(techniqueSettings),
+                  core::extent<std::uint32_t>{swapChain.get_extent().width, swapChain.get_extent().height})
             , m_device(device)
             , m_swapChain(swapChain)
             , m_extent(m_swapChain.get().get_extent())
@@ -71,13 +74,19 @@ namespace engine {
         }
 
         rendering_technique::rendering_technique(std::string&& techniqueName,
-                                                 const base::viewport_settings& viewport,
-                                                 const core::rectangle<std::int32_t, std::uint32_t> scissor,
-                                                 std::vector<base::color_blending_settings> framebufferBlending,
+                                                 base::viewport_callback&& viewportCallback,
+                                                 base::scissor_callback&& scissorCallback,
+                                                 std::vector<base::color_blending_settings>&& framebufferBlending,
                                                  const base::global_blending_settings& globalBlending,
                                                  vk::Device device,
                                                  const swap_chain& swapChain)
-            : base::rendering_technique(std::move(techniqueName), viewport, scissor, framebufferBlending, globalBlending)
+            : base::rendering_technique(
+                  std::move(techniqueName),
+                  std::move(viewportCallback),
+                  std::move(scissorCallback),
+                  std::move(framebufferBlending),
+                  globalBlending,
+                  core::extent<std::uint32_t>{swapChain.get_extent().width, swapChain.get_extent().height})
             , m_device(device)
             , m_swapChain(swapChain)
             , m_extent(m_swapChain.get().get_extent())
@@ -109,11 +118,12 @@ namespace engine {
             m_framebuffers = create_framebuffers(
                 m_device, m_renderPass, m_swapChain.get().get_image_views(), m_swapChain.get().get_extent());
             m_extent = m_swapChain.get().get_extent();
-            m_viewportSettings.width = m_extent.width;
-            m_viewportSettings.height = m_extent.height;
+            m_viewportSettings = m_viewportSettingsCallback({m_extent.width, m_extent.height});
+            m_scissor = m_scissorCallback({m_extent.width, m_extent.height});
         }
 
-        vk::RenderPassBeginInfo rendering_technique::generate_render_pass_info(vk::CommandBuffer buffer, vk::SubpassContents contents) const {
+        vk::RenderPassBeginInfo rendering_technique::generate_render_pass_info(vk::CommandBuffer buffer,
+                                                                               vk::SubpassContents contents) const {
             vk::ClearValue clearColor = vk::ClearValue(std::array<float, 4>{0.0f, 0.0f, 0.0f, 1.0f});
 
             vk::RenderPassBeginInfo renderPassInfo(m_renderPass,

@@ -1,0 +1,1 @@
+file(COPY ${SOURCE_DIR}/techniques/ DESTINATION "${DESTINATION_DIR}")

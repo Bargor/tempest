@@ -35,8 +35,8 @@ namespace engine {
             const vk::Format& get_format() const noexcept;
             const std::vector<vk::ImageView>& get_image_views() const noexcept;
             const vk::SwapchainKHR& get_native_swapchain() const noexcept;
-            result acquire_next_image(vk::Device device, const vk::Semaphore& imageAvailable);
-            result present_image(vk::Queue presentationQueueHandle, const vk::Semaphore& renderFinished);
+            result acquire_next_image(vk::Device device, const vk::Semaphore imageAvailable);
+            result present_image(vk::Queue presentationQueueHandle, const vk::Semaphore renderFinished);
             std::uint32_t get_image_index() const noexcept;
             settings::buffering get_buffering() const noexcept;
 

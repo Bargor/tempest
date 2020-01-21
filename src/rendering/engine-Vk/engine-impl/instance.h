@@ -13,11 +13,11 @@ namespace engine {
             friend class engine;
             friend class device;
         public:
-            static instance& get_instance();
-            static std::vector<const char*> get_validation_layers();
+            static const instance& get_instance() noexcept;
+            static std::vector<const char*> get_validation_layers() noexcept;
 
         public:
-            vk::Instance& get_instance_handle();
+            const vk::Instance& get_instance_handle() const noexcept;
 
 		private:
             instance(std::vector<const char*>&& requiredValidationLayers);

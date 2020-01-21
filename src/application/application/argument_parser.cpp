@@ -10,24 +10,21 @@ namespace tst {
 namespace application {
 
     program_params parse_arguments(const int argc, const char** argv) {
-        program_params programParams;
 
-		programParams.executionDirectory = std::filesystem::path(argv[0]).parent_path().append("");
+		const auto executionDirectory = std::filesystem::path(argv[0]).parent_path().append("");
 
         for (int i = 1; i < argc; i++) {
             std::string param(argv[i]);
 
             if (param == "-w") {
-                programParams.windowMode = main_window::fullscreen_option::windowed;
-                continue;
+                return {main_window::fullscreen_option::windowed, executionDirectory};
             }
 
             if (param == "-f") {
-                programParams.windowMode = main_window::fullscreen_option::fullscreen;
-                continue;
+                return {main_window::fullscreen_option::fullscreen, executionDirectory};
             }
         }
-        return programParams;
+        return {main_window::fullscreen_option::windowed, executionDirectory};
     }
 } // namespace application
 } // namespace tst
