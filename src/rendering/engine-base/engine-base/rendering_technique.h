@@ -23,6 +23,35 @@ namespace engine {
             bool operator==(const viewport_settings& other) const noexcept;
         };
 
+         struct depth_settings {
+            enum class compare_operation {
+                never,
+                less,
+                equal,
+                less_or_equal,
+                greater,
+                not_equal,
+                greater_or_equal,
+                always
+            };
+
+            enum class stencil_operation {
+
+            };
+
+            bool depthTestEnable;
+            bool depthWriteEnable;
+            compare_operation compareOperation;
+            bool depthBoundsTestEnable;
+            float minDepthBounds;
+            float maxDepthBounds;
+            bool stencilTestEnable;
+            stencil_operation frontOperation;
+            stencil_operation backOperation;
+
+            bool operator==(const depth_settings& other) const noexcept;
+        };
+
         struct color_blending_settings {
             enum class blend_operation {
                 add,
@@ -110,6 +139,7 @@ namespace engine {
         struct technique_settings {
             viewport_callback viewportCallback;
             scissor_callback scissorCallback;
+            depth_settings depthSettings;
             std::vector<color_blending_settings> framebufferColorBlending;
             global_blending_settings globalColorBlending;
         };
@@ -119,6 +149,7 @@ namespace engine {
             rendering_technique(std::string&& techniqueName,
                                 viewport_callback&& viewportCallback,
                                 scissor_callback&& scissorCallback,
+                                const depth_settings& depthSettings,
                                 std::vector<color_blending_settings>&& framebufferBlending,
                                 const global_blending_settings& globalBlending,
                                 core::extent<std::uint32_t> windowSize);
@@ -134,6 +165,7 @@ namespace engine {
             scissor_callback m_scissorCallback;
             viewport_settings m_viewportSettings;
             core::rectangle<std::int32_t, std::uint32_t> m_scissor;
+            depth_settings m_depthSettings;
             std::vector<color_blending_settings> m_framebufferColorBlending;
             global_blending_settings m_globalColorBlending;
         };
@@ -150,7 +182,7 @@ namespace std {
 template<>
 struct hash<tst::engine::base::viewport_settings> {
     std::size_t operator()(const tst::engine::base::viewport_settings& settings) const {
-        size_t seed = 0;
+        std::size_t seed = 0;
         hash<std::int32_t> hasher;
         tst::hash_combine(seed, hasher(settings.x));
         tst::hash_combine(seed, hasher(settings.y));
@@ -173,9 +205,24 @@ struct hash<tst::engine::base::color_blending_settings::color_component_flags> {
 };
 
 template<>
+struct hash<tst::engine::base::depth_settings> {
+    std::size_t operator()(const tst::engine::base::depth_settings& settings) const {
+        std::size_t seed = 0;
+        hash<std::int32_t> hasher;
+        tst::hash_combine(seed, hasher(settings.depthTestEnable));
+        tst::hash_combine(seed, hasher(settings.depthWriteEnable));
+        tst::hash_combine(seed, hasher(static_cast<std::int32_t>(settings.compareOperation)));
+        tst::hash_combine(seed, hasher(settings.depthBoundsTestEnable));
+        tst::hash_combine(seed, std::hash<float>{}(settings.minDepthBounds));
+        tst::hash_combine(seed, std::hash<float>{}(settings.maxDepthBounds));
+        tst::hash_combine(seed, hasher(settings.stencilTestEnable));
+    }
+};
+
+template<>
 struct hash<tst::engine::base::color_blending_settings> {
     std::size_t operator()(const tst::engine::base::color_blending_settings& settings) const {
-        size_t seed = 0;
+        std::size_t seed = 0;
         hash<std::int32_t> hasher;
         tst::hash_combine(seed, hasher(settings.enable));
         tst::hash_combine(seed, hasher(static_cast<std::int32_t>(settings.colorBlendOperation)));
@@ -194,7 +241,7 @@ struct hash<tst::engine::base::color_blending_settings> {
 template<>
 struct hash<tst::engine::base::global_blending_settings> {
     std::size_t operator()(const tst::engine::base::global_blending_settings& settings) const {
-        size_t seed = 0;
+        std::size_t seed = 0;
         hash<std::int32_t> hasher;
         tst::hash_combine(seed, hasher(settings.enable));
         tst::hash_combine(seed, hasher(static_cast<std::int32_t>(settings.logicalOperation)));

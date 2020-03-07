@@ -6,9 +6,9 @@
 #include "device.h"
 #include "physical_device.h"
 #include "queue_indices.h"
-#include "vulkan_exception.h"
-#include "resources/util.h"
 #include "resources/image.h"
+#include "resources/util.h"
+#include "vulkan_exception.h"
 
 #include <algorithm>
 #include <application/event_processor.h>
@@ -123,8 +123,8 @@ namespace engine {
                 std::vector<vk::ImageView> imageViews(images.size());
 
                 for (std::uint32_t idx = 0; idx < imageViews.size(); idx++) {
-                    imageViews[idx] = create_image_view(
-                        logicalDevice, images[idx], format, vk::ImageAspectFlagBits::eColor);
+                    imageViews[idx] =
+                        create_image_view(logicalDevice, images[idx], format, vk::ImageAspectFlagBits::eColor);
                 }
                 return imageViews;
             }
@@ -169,7 +169,8 @@ namespace engine {
                                std::uint32_t presentationQueueIndex,
                                const vk::Extent2D extent,
                                settings::buffering buffers)
-            : m_physicalDevice(physicalDevice), m_logicalDevice(device)
+            : m_physicalDevice(physicalDevice)
+            , m_logicalDevice(device)
             , m_windowSurface(windowSurface)
             , m_supportInfo(info)
             , m_surfaceFormat(choose_surface_format(m_supportInfo.formats))
@@ -185,18 +186,19 @@ namespace engine {
                                             m_presentationMode,
                                             m_extent,
                                             buffers))
+            , m_depthFormat(find_depth_format(physicalDevice))
             , m_currentImage(0) {
             m_images = m_logicalDevice.getSwapchainImagesKHR(m_swapChain);
             m_imageViews = create_image_views(m_logicalDevice, m_surfaceFormat.format, m_images);
             std::tie(m_depthImage, m_depthImageMemory) = create_image(m_logicalDevice,
-                         m_extent,
-                         find_depth_format(physicalDevice),
-                         vk::ImageTiling::eOptimal,
-                         vk::ImageUsageFlagBits::eDepthStencilAttachment,
-                         physicalDevice.get_memory_properties(),
-                         vk::MemoryPropertyFlagBits::eDeviceLocal);
-            m_depthImageView = create_image_view(
-                m_logicalDevice, m_depthImage, find_depth_format(m_physicalDevice), vk::ImageAspectFlagBits::eDepth);
+                                                                      m_extent,
+                                                                      m_depthFormat,
+                                                                      vk::ImageTiling::eOptimal,
+                                                                      vk::ImageUsageFlagBits::eDepthStencilAttachment,
+                                                                      physicalDevice.get_memory_properties(),
+                                                                      vk::MemoryPropertyFlagBits::eDeviceLocal);
+            m_depthImageView =
+                create_image_view(m_logicalDevice, m_depthImage, m_depthFormat, vk::ImageAspectFlagBits::eDepth);
         }
 
         swap_chain::~swap_chain() {

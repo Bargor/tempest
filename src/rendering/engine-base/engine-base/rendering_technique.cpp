@@ -15,6 +15,17 @@ namespace engine {
             return false;
         }
 
+        bool depth_settings::operator==(const depth_settings& other) const noexcept {
+            if (depthTestEnable == other.depthTestEnable && depthWriteEnable == other.depthWriteEnable &&
+                compareOperation == other.compareOperation && depthBoundsTestEnable == other.depthBoundsTestEnable &&
+                minDepthBounds == other.minDepthBounds && maxDepthBounds == other.maxDepthBounds &&
+                stencilTestEnable == other.stencilTestEnable && frontOperation == other.frontOperation &&
+                backOperation == other.backOperation) {
+                return true;
+            }
+            return false;
+        }
+
         bool color_blending_settings::operator==(const color_blending_settings& other) const noexcept {
             if (enable == other.enable && colorBlendOperation == other.colorBlendOperation &&
                 srcColorBlendFactor == other.srcColorBlendFactor && dstColorBlendFactor == other.dstColorBlendFactor &&
@@ -44,6 +55,7 @@ namespace engine {
         rendering_technique::rendering_technique(std::string&& techniqueName,
                                                  viewport_callback&& viewportCallback,
                                                  scissor_callback&& scissorCallback,
+                                                 const depth_settings& depthSettings,
                                                  std::vector<color_blending_settings>&& framebufferBlending,
                                                  const global_blending_settings& globalBlending,
                                                  core::extent<std::uint32_t> windowSize)
@@ -52,6 +64,7 @@ namespace engine {
             , m_scissorCallback(std::move(scissorCallback))
             , m_viewportSettings(viewportCallback(windowSize))
             , m_scissor(m_scissorCallback(windowSize))
+            , m_depthSettings(depthSettings)
             , m_framebufferColorBlending(std::move(framebufferBlending))
             , m_globalColorBlending(globalBlending) {
         }
@@ -64,6 +77,7 @@ namespace engine {
             , m_scissorCallback(std::move(techniqueSettings.scissorCallback))
             , m_viewportSettings(m_viewportSettingsCallback(windowSize))
             , m_scissor(m_scissorCallback(windowSize))
+            , m_depthSettings(techniqueSettings.depthSettings)
             , m_framebufferColorBlending(std::move(techniqueSettings.framebufferColorBlending))
             , m_globalColorBlending(std::move(techniqueSettings.globalColorBlending)) {
         }

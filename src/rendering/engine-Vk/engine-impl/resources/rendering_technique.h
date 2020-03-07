@@ -25,6 +25,7 @@ namespace engine {
             rendering_technique(std::string&& techniqueName,
                                 base::viewport_callback&& viewportCallback,
                                 base::scissor_callback&& scissorCallback,
+                                const base::depth_settings& depthSettings,
                                 std::vector<base::color_blending_settings>&& framebufferBlending,
                                 const base::global_blending_settings& globalBlending,
                                 vk::Device device,

@@ -18,6 +18,7 @@ namespace engine {
             [](core::extent<std::uint32_t>) {
                 return core::rectangle<std::int32_t, std::uint32_t>{{0, 0}, {840, 525}};
             },
+            {false, false, depth_settings::compare_operation::never, false, 0.0f, 0.0f},
             {color_blending_settings{false,
                                      color_blending_settings::blend_operation::add,
                                      color_blending_settings::blend_factor::one,
@@ -76,6 +77,19 @@ namespace engine {
             }
         }
 
+        depth_settings parse_depth_settings(const rapidjson::Value& depthSettings) {
+            const auto depthTestEnable = depthSettings["enable"].GetBool();
+            const auto depthWriteEnable = depthSettings["write_enable"].GetBool();
+            const auto compareOperation =
+                static_cast<depth_settings::compare_operation>(depthSettings["compare_op"].GetUint());
+            const auto depthBoundsTestEnable = depthSettings["bound_test_enable"].GetBool();
+            const auto minBound = depthSettings["min_bound"].GetFloat();
+            const auto maxBound = depthSettings["max_bound"].GetFloat();
+            //const auto stencilEnable = depthSettings["stencil_enable"].GetBool();
+            return depth_settings{
+                depthTestEnable, depthWriteEnable, compareOperation, depthBoundsTestEnable, minBound, maxBound, false};
+        }
+
         std::vector<color_blending_settings>
         parse_framebuffer_blending_settings(const rapidjson::Value& framebufferBlendingSettings) {
             assert(framebufferBlendingSettings.IsArray());
@@ -132,9 +146,10 @@ namespace engine {
             const auto mode = static_cast<callback_mode>(jsonModel["mode"].GetUint());
             const auto viewport = parse_viewport_settings(jsonModel["viewport"], mode);
             const auto scissor = parse_scissor_settings(jsonModel["scissor"], mode);
+            const auto depthStencil = parse_depth_settings(jsonModel["depth"]);
             const auto framebuffer_blending = parse_framebuffer_blending_settings(jsonModel["framebuffer_blending"]);
             const auto global_blending = parse_global_blending_settings(jsonModel["global_blending"]);
-            return technique_settings{viewport, scissor, framebuffer_blending, global_blending};
+            return technique_settings{viewport, scissor, depthStencil, framebuffer_blending, global_blending};
         }
 
     } // namespace base

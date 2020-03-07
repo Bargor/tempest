@@ -13,8 +13,14 @@
 		"dimensions": [1.0, 1.0]
 	},
 	"depth": {
-		"enable": true
+		"enable": true,
+		"write_enable": true,
+		"compare_op": 1,
+		"bound_test_enable": false,
+		"min_bound": 0.0,
+		"max_bound": 0.0
 	},
+	"framebuffers": [],
 	"framebuffer_blending": [
 		{ 
 			"enable": false,
