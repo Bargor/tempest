@@ -4,8 +4,11 @@
 #include "swap_chain.h"
 
 #include "device.h"
+#include "physical_device.h"
 #include "queue_indices.h"
 #include "vulkan_exception.h"
+#include "resources/util.h"
+#include "resources/image.h"
 
 #include <algorithm>
 #include <application/event_processor.h>
@@ -115,39 +118,58 @@ namespace engine {
             }
 
             std::vector<vk::ImageView> create_image_views(const vk::Device logicalDevice,
-                                                          const vk::SurfaceFormatKHR surfaceFormat,
-                                                          const std::vector<vk::Image>& m_images) {
-                std::vector<vk::ImageView> imageViews(m_images.size());
+                                                          const vk::Format format,
+                                                          const std::vector<vk::Image>& images) {
+                std::vector<vk::ImageView> imageViews(images.size());
 
                 for (std::uint32_t idx = 0; idx < imageViews.size(); idx++) {
-                    const vk::ImageAspectFlags flags = vk::ImageAspectFlagBits::eColor;
-
-                    const vk::ImageViewCreateInfo createInfo(vk::ImageViewCreateFlags(),
-                                                       m_images[idx],
-                                                       vk::ImageViewType::e2D,
-                                                       surfaceFormat.format,
-                                                       vk::ComponentMapping(),
-                                                       vk::ImageSubresourceRange(flags, 0, 1, 0, 1));
-
-                    try {
-                        imageViews[idx] = logicalDevice.createImageView(createInfo);
-                    } catch (std::runtime_error&) {
-                        throw vulkan_exception("Failed to create image views!");
-                    }
+                    imageViews[idx] = create_image_view(
+                        logicalDevice, images[idx], format, vk::ImageAspectFlagBits::eColor);
                 }
                 return imageViews;
             }
 
+            vk::Format find_supported_format(const physical_device& physicalDevice,
+                                             const std::vector<vk::Format>& candidates,
+                                             vk::ImageTiling tiling,
+                                             vk::FormatFeatureFlags features) {
+                for (const auto format : candidates) {
+                    const auto props = physicalDevice.get_format_properties(format);
+
+                    if (tiling == vk::ImageTiling::eLinear && (props.linearTilingFeatures & features) == features) {
+                        return format;
+                    } else if (tiling == vk::ImageTiling::eOptimal &&
+                               (props.optimalTilingFeatures & features) == features) {
+                        return format;
+                    }
+                }
+
+                throw std::runtime_error("failed to find supported format!");
+            }
+
+            vk::Format find_depth_format(const physical_device& physicalDevice) {
+                return find_supported_format(
+                    physicalDevice,
+                    {vk::Format::eD32Sfloat, vk::Format::eD32SfloatS8Uint, vk::Format::eD24UnormS8Uint},
+                    vk::ImageTiling::eOptimal,
+                    vk::FormatFeatureFlagBits::eDepthStencilAttachment);
+            }
+
+            bool has_stencil_component(vk::Format format) {
+                return format == vk::Format::eD32SfloatS8Uint || format == vk::Format::eD24UnormS8Uint;
+            }
+
         } // namespace
 
-        swap_chain::swap_chain(vk::Device device,
+        swap_chain::swap_chain(const physical_device& physicalDevice,
+                               vk::Device device,
                                vk::SurfaceKHR windowSurface,
                                const surface_support_info& info,
                                std::uint32_t graphicsQueueIndex,
                                std::uint32_t presentationQueueIndex,
                                const vk::Extent2D extent,
                                settings::buffering buffers)
-            : m_logicalDevice(device)
+            : m_physicalDevice(physicalDevice), m_logicalDevice(device)
             , m_windowSurface(windowSurface)
             , m_supportInfo(info)
             , m_surfaceFormat(choose_surface_format(m_supportInfo.formats))
@@ -165,10 +187,22 @@ namespace engine {
                                             buffers))
             , m_currentImage(0) {
             m_images = m_logicalDevice.getSwapchainImagesKHR(m_swapChain);
-            m_imageViews = create_image_views(m_logicalDevice, m_surfaceFormat, m_images);
+            m_imageViews = create_image_views(m_logicalDevice, m_surfaceFormat.format, m_images);
+            std::tie(m_depthImage, m_depthImageMemory) = create_image(m_logicalDevice,
+                         m_extent,
+                         find_depth_format(physicalDevice),
+                         vk::ImageTiling::eOptimal,
+                         vk::ImageUsageFlagBits::eDepthStencilAttachment,
+                         physicalDevice.get_memory_properties(),
+                         vk::MemoryPropertyFlagBits::eDeviceLocal);
+            m_depthImageView = create_image_view(
+                m_logicalDevice, m_depthImage, find_depth_format(m_physicalDevice), vk::ImageAspectFlagBits::eDepth);
         }
 
         swap_chain::~swap_chain() {
+            m_logicalDevice.destroyImageView(m_depthImageView);
+            m_logicalDevice.destroyImage(m_depthImage);
+            m_logicalDevice.freeMemory(m_depthImageMemory);
             std::for_each(m_imageViews.begin(), m_imageViews.end(), [this](vk::ImageView& view) {
                 m_logicalDevice.destroyImageView(view);
             });

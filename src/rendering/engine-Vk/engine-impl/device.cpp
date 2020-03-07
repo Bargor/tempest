@@ -122,7 +122,8 @@ namespace engine {
             , m_logicalDevice(m_physicalDevice->create_logical_device(instance::get_validation_layers(),
                                                                       {VK_KHR_SWAPCHAIN_EXTENSION_NAME}))
             , m_swapChain(
-                  std::make_unique<swap_chain>(m_logicalDevice,
+                  std::make_unique<swap_chain>(*m_physicalDevice.get(),
+                                               m_logicalDevice,
                                                m_windowSurface,
                                                m_physicalDevice->get_surface_support_info(m_windowSurface),
                                                m_physicalDevice->get_graphics_index(),
@@ -168,8 +169,7 @@ namespace engine {
         }
 
         resource_factory device::create_resource_factory(const application::data_loader& dataLoader) const {
-            return resource_factory(*this,
-                                    dataLoader);
+            return resource_factory(*this, dataLoader);
         }
 
         vk::CommandPool device::create_command_pool() {
@@ -212,7 +212,13 @@ namespace engine {
             vk::Semaphore signalSemaphores[] = {m_frameResources[currentFrame].renderFinished};
             vk::PipelineStageFlags waitStages[] = {vk::PipelineStageFlagBits::eColorAttachmentOutput};
 
-            vk::SubmitInfo submitInfo(1, waitSemaphores, waitStages, 1, commandBuffers.data(), 1, signalSemaphores);
+            vk::SubmitInfo submitInfo(1,
+                                      waitSemaphores,
+                                      waitStages,
+                                      static_cast<std::uint32_t>(commandBuffers.size()),
+                                      commandBuffers.data(),
+                                      1,
+                                      signalSemaphores);
 
             m_graphicsQueueHandle.submit(1, &submitInfo, m_frameResources[currentFrame].inFlightFences);
 
@@ -254,7 +260,8 @@ namespace engine {
 
             m_swapChain.reset();
 
-            auto newSwapChain = std::make_unique<swap_chain>(m_logicalDevice,
+            auto newSwapChain = std::make_unique<swap_chain>(*m_physicalDevice.get(),
+                                                             m_logicalDevice,
                                                              m_windowSurface,
                                                              m_physicalDevice->get_surface_support_info(m_windowSurface),
                                                              m_physicalDevice->get_graphics_index(),

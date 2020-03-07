@@ -23,7 +23,7 @@ namespace engine {
             , m_transferCommandPool(m_device.m_logicalDevice.createCommandPool(vk::CommandPoolCreateInfo(
                   vk::CommandPoolCreateFlags(), m_device.m_physicalDevice->get_graphics_index())))
             , m_transferQueue(m_device.m_graphicsQueueHandle) {
-            create_descriptor_pool(200);
+            create_descriptor_pool(400);
         }
 
         resource_factory::~resource_factory() {

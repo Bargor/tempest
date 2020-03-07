@@ -35,11 +35,6 @@ namespace engine {
             std::uint64_t m_memSize;
             vk::Buffer m_buffer;
             vk::DeviceMemory m_bufferMemory;
-
-        private:
-            std::uint32_t findMemoryType(const vk::PhysicalDeviceMemoryProperties& properties,
-                                         uint32_t typeFilter,
-                                         vk::MemoryPropertyFlags propertyFlags) const;
         };
 
     } // namespace vulkan
