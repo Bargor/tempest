@@ -18,9 +18,23 @@ namespace engine {
         bool depth_settings::operator==(const depth_settings& other) const noexcept {
             if (depthTestEnable == other.depthTestEnable && depthWriteEnable == other.depthWriteEnable &&
                 compareOperation == other.compareOperation && depthBoundsTestEnable == other.depthBoundsTestEnable &&
-                minDepthBounds == other.minDepthBounds && maxDepthBounds == other.maxDepthBounds &&
-                stencilTestEnable == other.stencilTestEnable && frontOperation == other.frontOperation &&
-                backOperation == other.backOperation) {
+                minDepthBounds == other.minDepthBounds && maxDepthBounds == other.maxDepthBounds) {
+                return true;
+            }
+            return false;
+        }
+
+        bool stencil_settings::operation_state::operator==(const stencil_settings::operation_state& other) const noexcept {
+            if (failOperation == other.failOperation && passOperation == other.failOperation &&
+                depthFailOperation == other.depthFailOperation && compareOperation == other.compareOperation &&
+                compareMask == other.compareMask && writeMask == other.writeMask && reference == other.reference) {
+                return true;
+            }
+            return false;
+        }
+
+        bool stencil_settings::operator==(const stencil_settings& other) const noexcept {
+            if (enable == other.enable && frontOperation == other.frontOperation && backOperation == other.backOperation) {
                 return true;
             }
             return false;
@@ -56,6 +70,7 @@ namespace engine {
                                                  viewport_callback&& viewportCallback,
                                                  scissor_callback&& scissorCallback,
                                                  const depth_settings& depthSettings,
+                                                 const stencil_settings& stencilSettings,
                                                  std::vector<color_blending_settings>&& framebufferBlending,
                                                  const global_blending_settings& globalBlending,
                                                  core::extent<std::uint32_t> windowSize)
@@ -65,6 +80,7 @@ namespace engine {
             , m_viewportSettings(viewportCallback(windowSize))
             , m_scissor(m_scissorCallback(windowSize))
             , m_depthSettings(depthSettings)
+            , m_stencilSettings(stencilSettings)
             , m_framebufferColorBlending(std::move(framebufferBlending))
             , m_globalColorBlending(globalBlending) {
         }
@@ -78,6 +94,7 @@ namespace engine {
             , m_viewportSettings(m_viewportSettingsCallback(windowSize))
             , m_scissor(m_scissorCallback(windowSize))
             , m_depthSettings(techniqueSettings.depthSettings)
+            , m_stencilSettings(techniqueSettings.stencilSettings)
             , m_framebufferColorBlending(std::move(techniqueSettings.framebufferColorBlending))
             , m_globalColorBlending(std::move(techniqueSettings.globalColorBlending)) {
         }

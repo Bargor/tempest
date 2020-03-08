@@ -111,6 +111,7 @@ namespace engine {
                                                  base::viewport_callback&& viewportCallback,
                                                  base::scissor_callback&& scissorCallback,
                                                  const base::depth_settings& depthSettings,
+                                                 const base::stencil_settings& stencilSettings,
                                                  std::vector<base::color_blending_settings>&& framebufferBlending,
                                                  const base::global_blending_settings& globalBlending,
                                                  vk::Device device,
@@ -119,7 +120,8 @@ namespace engine {
                   std::move(techniqueName),
                   std::move(viewportCallback),
                   std::move(scissorCallback),
-                  std::move(depthSettings),
+                  depthSettings,
+                  stencilSettings,
                   std::move(framebufferBlending),
                   globalBlending,
                   core::extent<std::uint32_t>{swapChain.get_extent().width, swapChain.get_extent().height})

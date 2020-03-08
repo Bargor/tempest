@@ -187,23 +187,23 @@ namespace engine {
             return vk::PrimitiveTopology::eTriangleList;
         }
 
-        vk::CompareOp translate_compare_operation(base::depth_settings::compare_operation compareOp) {
+        vk::CompareOp translate_compare_operation(base::compare_operation compareOp) {
             switch (compareOp) {
-            case base::depth_settings::compare_operation::never:
+            case base::compare_operation::never:
                 return vk::CompareOp::eNever;
-            case base::depth_settings::compare_operation::less:
+            case base::compare_operation::less:
                 return vk::CompareOp::eLess;
-            case base::depth_settings::compare_operation::equal:
+            case base::compare_operation::equal:
                 return vk::CompareOp::eEqual;
-            case base::depth_settings::compare_operation::less_or_equal:
+            case base::compare_operation::less_or_equal:
                 return vk::CompareOp::eLessOrEqual;
-            case base::depth_settings::compare_operation::greater:
+            case base::compare_operation::greater:
                 return vk::CompareOp::eGreater;
-            case base::depth_settings::compare_operation::not_equal:
+            case base::compare_operation::not_equal:
                 return vk::CompareOp::eNotEqual;
-            case base::depth_settings::compare_operation::greater_or_equal:
+            case base::compare_operation::greater_or_equal:
                 return vk::CompareOp::eGreaterOrEqual;
-            case base::depth_settings::compare_operation::always:
+            case base::compare_operation::always:
                 return vk::CompareOp::eAlways;
             }
 
@@ -211,9 +211,39 @@ namespace engine {
             return vk::CompareOp::eNever;
         }
 
-        vk::StencilOp translate_stencil_operation(base::depth_settings::stencil_operation) {
+        vk::StencilOp translate_stencil_operation(base::stencil_settings::stencil_operation stencilOp) {
+            switch (stencilOp) {
+            case base::stencil_settings::stencil_operation::keep:
+                return vk::StencilOp::eKeep;
+            case base::stencil_settings::stencil_operation::zero:
+                return vk::StencilOp::eZero;
+            case base::stencil_settings::stencil_operation::replace:
+                return vk::StencilOp::eReplace;
+            case base::stencil_settings::stencil_operation::increment_and_clamp:
+                return vk::StencilOp::eIncrementAndClamp;
+            case base::stencil_settings::stencil_operation::decrement_and_clamp:
+                return vk::StencilOp::eDecrementAndClamp;
+            case base::stencil_settings::stencil_operation::invert:
+                return vk::StencilOp::eInvert;
+            case base::stencil_settings::stencil_operation::increment_and_wrap:
+                return vk::StencilOp::eIncrementAndWrap;
+            case base::stencil_settings::stencil_operation::decrement_and_wrap:
+                return vk::StencilOp::eDecrementAndWrap;
+            }
             assert(false);
             return vk::StencilOp::eZero;
+        }
+
+        vk::StencilOpState create_stencil_op_state(base::stencil_settings::operation_state opState) {
+            vk::StencilOpState state(translate_stencil_operation(opState.failOperation),
+                                     translate_stencil_operation(opState.passOperation),
+                                     translate_stencil_operation(opState.depthFailOperation),
+                                     translate_compare_operation(opState.compareOperation),
+                                     opState.compareMask,
+                                     opState.writeMask,
+                                     opState.reference);
+
+            return state;
         }
 
         vk::PipelineLayout create_pipeline_layout(const vk::Device logicalDevice,
@@ -273,17 +303,19 @@ namespace engine {
             return multisampling;
         }
 
-        vk::PipelineDepthStencilStateCreateInfo create_depth_stencil_info(const base::depth_settings& settings) {
-            vk::PipelineDepthStencilStateCreateInfo depthStencil(vk::PipelineDepthStencilStateCreateFlags(),
-                                                                 settings.depthTestEnable,
-                                                                 settings.depthWriteEnable,
-                                                                 translate_compare_operation(settings.compareOperation),
-                                                                 settings.depthBoundsTestEnable,
-                                                                 settings.stencilTestEnable,
-                                                                 vk::StencilOpState(),
-                                                                 vk::StencilOpState(),
-                                                                 settings.minDepthBounds,
-                                                                 settings.maxDepthBounds);
+        vk::PipelineDepthStencilStateCreateInfo create_depth_stencil_info(const base::depth_settings& depthSettings,
+                                                                          const base::stencil_settings& stencilSettings) {
+            vk::PipelineDepthStencilStateCreateInfo depthStencil(
+                vk::PipelineDepthStencilStateCreateFlags(),
+                depthSettings.depthTestEnable,
+                depthSettings.depthWriteEnable,
+                translate_compare_operation(depthSettings.compareOperation),
+                depthSettings.depthBoundsTestEnable,
+                stencilSettings.enable,
+                create_stencil_op_state(stencilSettings.frontOperation),
+                create_stencil_op_state(stencilSettings.backOperation),
+                depthSettings.minDepthBounds,
+                depthSettings.maxDepthBounds);
 
             return depthStencil;
         }
@@ -330,7 +362,8 @@ namespace engine {
                                       const vk::RenderPass renderPass,
                                       const base::viewport_settings& viewportSettings,
                                       const core::rectangle<std::int32_t, std::uint32_t> scissorSettings,
-                                      const base::depth_settings& depthStencilSettings,
+                                      const base::depth_settings& depthSettings,
+                                      const base::stencil_settings& stencilSettings,
                                       const std::vector<base::color_blending_settings>& framebufferBlendingSettings,
                                       const base::global_blending_settings& globalBlendingSettings,
                                       const base::rasterizer_settings& rasterizerSettings,
@@ -353,7 +386,7 @@ namespace engine {
             const auto viewportInfo = create_viewport_info(viewport, scissor);
             const auto rasterizationInfo = create_rasterization_info(rasterizerSettings);
             const auto multisamplingInfo = create_multisampling_info(multisamplingSettings);
-            const auto depthStencilInfo = create_depth_stencil_info(depthStencilSettings);
+            const auto depthStencilInfo = create_depth_stencil_info(depthSettings, stencilSettings);
             const auto colorBlendAttachment = create_color_blend_attachment(framebufferBlendingSettings);
             const auto blendingInfo = create_color_blending_info(globalBlendingSettings, colorBlendAttachment);
 
@@ -395,6 +428,7 @@ namespace engine {
                                           technique.m_viewportSettings,
                                           technique.m_scissor,
                                           technique.m_depthSettings,
+                                          technique.m_stencilSettings,
                                           technique.m_framebufferColorBlending,
                                           technique.m_globalColorBlending,
                                           engineSettings.m_rasterizer,
@@ -404,6 +438,7 @@ namespace engine {
             , m_pipelineSettings(technique.m_viewportSettings,
                                  technique.m_scissor,
                                  technique.m_depthSettings,
+                                 technique.m_stencilSettings,
                                  engineSettings.m_rasterizer,
                                  engineSettings.m_multisampling,
                                  technique.m_framebufferColorBlending,
@@ -457,6 +492,7 @@ namespace engine {
                                           m_pipelineSettings.m_viewport,
                                           m_pipelineSettings.m_scissor,
                                           m_pipelineSettings.m_depthSettings,
+                                          m_pipelineSettings.m_stencilSettings,
                                           m_pipelineSettings.m_framebufferColorBlending,
                                           m_pipelineSettings.m_globalColorBlending,
                                           m_pipelineSettings.m_rasterizer,

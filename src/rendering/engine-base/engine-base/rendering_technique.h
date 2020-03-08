@@ -23,33 +23,56 @@ namespace engine {
             bool operator==(const viewport_settings& other) const noexcept;
         };
 
-         struct depth_settings {
-            enum class compare_operation {
-                never,
-                less,
-                equal,
-                less_or_equal,
-                greater,
-                not_equal,
-                greater_or_equal,
-                always
-            };
+        enum class compare_operation {
+            never,
+            less,
+            equal,
+            less_or_equal,
+            greater,
+            not_equal,
+            greater_or_equal,
+            always
+        };
 
-            enum class stencil_operation {
-
-            };
-
+        struct depth_settings {
             bool depthTestEnable;
             bool depthWriteEnable;
             compare_operation compareOperation;
             bool depthBoundsTestEnable;
             float minDepthBounds;
             float maxDepthBounds;
-            bool stencilTestEnable;
-            stencil_operation frontOperation;
-            stencil_operation backOperation;
 
             bool operator==(const depth_settings& other) const noexcept;
+        };
+
+        struct stencil_settings {
+            enum class stencil_operation {
+                keep,
+                zero,
+                replace,
+                increment_and_clamp,
+                decrement_and_clamp,
+                invert,
+                increment_and_wrap,
+                decrement_and_wrap
+            };
+            struct operation_state {
+                stencil_operation failOperation;
+                stencil_operation passOperation;
+                stencil_operation depthFailOperation;
+                compare_operation compareOperation;
+                std::uint32_t compareMask;
+                std::uint32_t writeMask;
+                std::uint32_t reference;
+
+                bool operator==(const operation_state& other) const noexcept;
+            };
+
+            bool enable;
+            operation_state frontOperation;
+            operation_state backOperation;
+
+            bool operator==(const stencil_settings& other) const noexcept;
         };
 
         struct color_blending_settings {
@@ -140,6 +163,7 @@ namespace engine {
             viewport_callback viewportCallback;
             scissor_callback scissorCallback;
             depth_settings depthSettings;
+            stencil_settings stencilSettings;
             std::vector<color_blending_settings> framebufferColorBlending;
             global_blending_settings globalColorBlending;
         };
@@ -150,6 +174,7 @@ namespace engine {
                                 viewport_callback&& viewportCallback,
                                 scissor_callback&& scissorCallback,
                                 const depth_settings& depthSettings,
+                                const stencil_settings& stencilSettings,
                                 std::vector<color_blending_settings>&& framebufferBlending,
                                 const global_blending_settings& globalBlending,
                                 core::extent<std::uint32_t> windowSize);
@@ -166,6 +191,7 @@ namespace engine {
             viewport_settings m_viewportSettings;
             core::rectangle<std::int32_t, std::uint32_t> m_scissor;
             depth_settings m_depthSettings;
+            stencil_settings m_stencilSettings;
             std::vector<color_blending_settings> m_framebufferColorBlending;
             global_blending_settings m_globalColorBlending;
         };
@@ -215,7 +241,37 @@ struct hash<tst::engine::base::depth_settings> {
         tst::hash_combine(seed, hasher(settings.depthBoundsTestEnable));
         tst::hash_combine(seed, std::hash<float>{}(settings.minDepthBounds));
         tst::hash_combine(seed, std::hash<float>{}(settings.maxDepthBounds));
-        tst::hash_combine(seed, hasher(settings.stencilTestEnable));
+        return seed;
+    }
+};
+
+template<>
+struct hash<tst::engine::base::stencil_settings::operation_state> {
+    std::size_t operator()(const tst::engine::base::stencil_settings::operation_state& settings) const {
+        std::size_t seed = 0;
+        hash<std::int32_t> hasher;
+        tst::hash_combine(seed, hasher(static_cast<std::int32_t>(settings.failOperation)));
+        tst::hash_combine(seed, hasher(static_cast<std::int32_t>(settings.passOperation)));
+        tst::hash_combine(seed, hasher(static_cast<std::int32_t>(settings.depthFailOperation)));
+        tst::hash_combine(seed, hasher(static_cast<std::int32_t>(settings.compareOperation)));
+        tst::hash_combine(seed, hasher(settings.compareMask));
+        tst::hash_combine(seed, hasher(settings.writeMask));
+        tst::hash_combine(seed, hasher(settings.reference));
+        return seed;
+    }
+};
+
+template<>
+struct hash<tst::engine::base::stencil_settings> {
+    std::size_t operator()(const tst::engine::base::stencil_settings& settings) const {
+        std::size_t seed = 0;
+        hash<std::int32_t> hasher;
+        tst::hash_combine(seed, hasher(settings.enable));
+        tst::hash_combine(seed,
+                          std::hash<tst::engine::base::stencil_settings::operation_state>()(settings.frontOperation));
+        tst::hash_combine(seed,
+                          std::hash<tst::engine::base::stencil_settings::operation_state>()(settings.backOperation));
+
         return seed;
     }
 };
