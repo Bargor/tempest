@@ -2,8 +2,7 @@
 // Author: Karol Kontny
 
 #include "buffer.h"
-
-#include "../vulkan_exception.h"
+#include "util.h"
 
 namespace tst {
 namespace engine {
@@ -22,9 +21,9 @@ namespace engine {
             const vk::BufferCreateInfo createInfo(vk::BufferCreateFlags(), size, usageFlags, vk::SharingMode::eExclusive);
 
             m_buffer = m_logicalDevice.createBuffer(createInfo);
-            const vk::MemoryRequirements requirements = m_logicalDevice.getBufferMemoryRequirements(m_buffer);
+            const auto requirements = m_logicalDevice.getBufferMemoryRequirements(m_buffer);
             const vk::MemoryAllocateInfo allocateInfo(
-                requirements.size, findMemoryType(memoryProperties, requirements.memoryTypeBits, memoryFlags));
+                requirements.size, find_memory_type(memoryProperties, requirements.memoryTypeBits, memoryFlags));
 
             m_bufferMemory = m_logicalDevice.allocateMemory(allocateInfo);
             m_logicalDevice.bindBufferMemory(m_buffer, m_bufferMemory, 0);
@@ -75,19 +74,6 @@ namespace engine {
             vk::SubmitInfo submitInfo(0, nullptr, nullptr, 1, &cmdBuffer[0]);
             m_queueHandle.submit({submitInfo}, vk::Fence());
             m_queueHandle.waitIdle();
-        }
-
-        std::uint32_t buffer::findMemoryType(const vk::PhysicalDeviceMemoryProperties& properties,
-                                             uint32_t typeFilter,
-                                             vk::MemoryPropertyFlags propertyFlags) const {
-            for (uint32_t i = 0; i < properties.memoryTypeCount; i++) {
-                if ((typeFilter & (1 << i)) &&
-                    (properties.memoryTypes[i].propertyFlags & propertyFlags) == propertyFlags) {
-                    return i;
-                }
-            }
-
-            throw vulkan_exception("failed to find suitable memory type!");
         }
 
     } // namespace vulkan

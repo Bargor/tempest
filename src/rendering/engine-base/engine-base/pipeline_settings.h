@@ -22,6 +22,8 @@ namespace engine {
 
             pipeline_settings(const viewport_settings& viewportSettings,
                               const core::rectangle<std::int32_t, std::uint32_t>& scissor,
+                              const depth_settings& depthSettings,
+                              const stencil_settings& stencilSettings,
                               const rasterizer_settings& rasterizerSettings,
                               const multisampling_settings& multisamplingSettings,
                               const std::vector<color_blending_settings>& blendingSettings,
@@ -32,6 +34,8 @@ namespace engine {
         public:
             viewport_settings m_viewport;
             core::rectangle<std::int32_t, std::uint32_t> m_scissor;
+            depth_settings m_depthSettings;
+            stencil_settings m_stencilSettings;
             rasterizer_settings m_rasterizer;
             multisampling_settings m_multisampling;
             std::vector<color_blending_settings> m_framebufferColorBlending;

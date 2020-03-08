@@ -12,6 +12,36 @@
 		"offset": [0, 0],
 		"dimensions": [1.0, 1.0]
 	},
+	"depth": {
+		"enable": true,
+		"write_enable": true,
+		"compare_op": 1,
+		"bound_test_enable": false,
+		"min_bound": 0.0,
+		"max_bound": 0.0
+	},
+	"stencil": {
+		"enable": false,
+		"front_op": {
+			"fail_op": 0,
+			"pass_op": 0,
+			"depth_fail_op": 0,
+			"compare_op": 1,
+			"compare_mask": 0,
+			"write_mask": 0,
+			"reference": 0
+		},
+		"back_op": {
+			"fail_op": 0,
+			"pass_op": 0,
+			"depth_fail_op": 0,
+			"compare_op": 1,
+			"compare_mask": 0,
+			"write_mask": 0,
+			"reference": 0
+		}
+	},
+	"framebuffers": [],
 	"framebuffer_blending": [
 		{ 
 			"enable": false,

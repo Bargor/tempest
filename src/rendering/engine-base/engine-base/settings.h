@@ -46,8 +46,10 @@ namespace engine {
         class settings {
         public:
             constexpr static settings get_default_settings();
+
         public:
-            constexpr settings(const rasterizer_settings& rasterizerSettings, const multisampling_settings& multisamplingSettings);
+            constexpr settings(const rasterizer_settings& rasterizerSettings,
+                               const multisampling_settings& multisamplingSettings);
 
         public:
             rasterizer_settings m_rasterizer;

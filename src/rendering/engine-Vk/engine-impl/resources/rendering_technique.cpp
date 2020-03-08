@@ -9,7 +9,7 @@ namespace tst {
 namespace engine {
     namespace vulkan {
 
-        vk::RenderPass create_render_pass(vk::Device device, vk::Format format) {
+        vk::RenderPass create_render_pass(vk::Device device, vk::Format format, vk::Format depthFormat) {
             vk::AttachmentDescription colorAttachment(vk::AttachmentDescriptionFlags(),
                                                       format,
                                                       vk::SampleCountFlagBits::e1,
@@ -20,10 +20,28 @@ namespace engine {
                                                       vk::ImageLayout::eUndefined,
                                                       vk::ImageLayout::ePresentSrcKHR);
 
+            vk::AttachmentDescription depthAttachment(vk::AttachmentDescriptionFlags(),
+                                                      depthFormat,
+                                                      vk::SampleCountFlagBits::e1,
+                                                      vk::AttachmentLoadOp::eClear,
+                                                      vk::AttachmentStoreOp::eDontCare,
+                                                      vk::AttachmentLoadOp::eDontCare,
+                                                      vk::AttachmentStoreOp::eDontCare,
+                                                      vk::ImageLayout::eUndefined,
+                                                      vk::ImageLayout::eDepthStencilAttachmentOptimal);
+
             vk::AttachmentReference colorAttachmentRef(0, vk::ImageLayout::eColorAttachmentOptimal);
 
-            vk::SubpassDescription subpass(
-                vk::SubpassDescriptionFlags(), vk::PipelineBindPoint::eGraphics, 0, nullptr, 1, &colorAttachmentRef);
+            vk::AttachmentReference depthAttachmentRef(1, vk::ImageLayout::eDepthStencilAttachmentOptimal);
+
+            vk::SubpassDescription subpass(vk::SubpassDescriptionFlags(),
+                                           vk::PipelineBindPoint::eGraphics,
+                                           0,
+                                           nullptr,
+                                           1,
+                                           &colorAttachmentRef,
+                                           nullptr,
+                                           &depthAttachmentRef);
 
             vk::SubpassDependency dependency(VK_SUBPASS_EXTERNAL,
                                              0,
@@ -34,7 +52,13 @@ namespace engine {
                                                  vk::AccessFlagBits::eColorAttachmentWrite);
 
             vk::RenderPassCreateInfo renderPassInfo(
-                vk::RenderPassCreateFlags(), 1, &colorAttachment, 1, &subpass, 1, &dependency);
+                vk::RenderPassCreateFlags(),
+                2,
+                std::array<vk::AttachmentDescription, 2>{colorAttachment, depthAttachment}.data(),
+                1,
+                &subpass,
+                1,
+                &dependency);
 
             return device.createRenderPass(renderPassInfo);
         }
@@ -42,14 +66,20 @@ namespace engine {
         std::vector<vk::Framebuffer> create_framebuffers(vk::Device device,
                                                          vk::RenderPass renderPass,
                                                          const std::vector<vk::ImageView>& imageViews,
+                                                         vk::ImageView depthImageView,
                                                          vk::Extent2D extent) {
             std::vector<vk::Framebuffer> framebuffers(imageViews.size());
 
             for (std::uint32_t i = 0; i < imageViews.size(); i++) {
-                const vk::ImageView attachments[] = {imageViews[i]};
+                const std::array<vk::ImageView, 2> attachments = {imageViews[i], depthImageView};
 
-                const vk::FramebufferCreateInfo createInfo(
-                    vk::FramebufferCreateFlags(), renderPass, 1, attachments, extent.width, extent.height, 1);
+                const vk::FramebufferCreateInfo createInfo(vk::FramebufferCreateFlags(),
+                                                           renderPass,
+                                                           static_cast<std::uint32_t>(attachments.size()),
+                                                           attachments.data(),
+                                                           extent.width,
+                                                           extent.height,
+                                                           1);
 
                 framebuffers[i] = device.createFramebuffer(createInfo);
             }
@@ -68,14 +98,20 @@ namespace engine {
             , m_device(device)
             , m_swapChain(swapChain)
             , m_extent(m_swapChain.get().get_extent())
-            , m_renderPass(create_render_pass(device, m_swapChain.get().get_format()))
-            , m_framebuffers(create_framebuffers(
-                  device, m_renderPass, m_swapChain.get().get_image_views(), m_swapChain.get().get_extent())) {
+            , m_renderPass(
+                  create_render_pass(device, m_swapChain.get().get_format(), m_swapChain.get().get_depth_format()))
+            , m_framebuffers(create_framebuffers(device,
+                                                 m_renderPass,
+                                                 m_swapChain.get().get_image_views(),
+                                                 m_swapChain.get().get_depth_image_view(),
+                                                 m_swapChain.get().get_extent())) {
         }
 
         rendering_technique::rendering_technique(std::string&& techniqueName,
                                                  base::viewport_callback&& viewportCallback,
                                                  base::scissor_callback&& scissorCallback,
+                                                 const base::depth_settings& depthSettings,
+                                                 const base::stencil_settings& stencilSettings,
                                                  std::vector<base::color_blending_settings>&& framebufferBlending,
                                                  const base::global_blending_settings& globalBlending,
                                                  vk::Device device,
@@ -84,15 +120,21 @@ namespace engine {
                   std::move(techniqueName),
                   std::move(viewportCallback),
                   std::move(scissorCallback),
+                  depthSettings,
+                  stencilSettings,
                   std::move(framebufferBlending),
                   globalBlending,
                   core::extent<std::uint32_t>{swapChain.get_extent().width, swapChain.get_extent().height})
             , m_device(device)
             , m_swapChain(swapChain)
             , m_extent(m_swapChain.get().get_extent())
-            , m_renderPass(create_render_pass(device, m_swapChain.get().get_format()))
-            , m_framebuffers(create_framebuffers(
-                  device, m_renderPass, m_swapChain.get().get_image_views(), m_swapChain.get().get_extent())) {
+            , m_renderPass(
+                  create_render_pass(device, m_swapChain.get().get_format(), m_swapChain.get().get_depth_format()))
+            , m_framebuffers(create_framebuffers(device,
+                                                 m_renderPass,
+                                                 m_swapChain.get().get_image_views(),
+                                                 m_swapChain.get().get_depth_image_view(),
+                                                 m_swapChain.get().get_extent())) {
         }
 
         rendering_technique::rendering_technique(rendering_technique&& technique) noexcept
@@ -114,9 +156,13 @@ namespace engine {
 
             m_swapChain = newSwapChain;
 
-            m_renderPass = create_render_pass(m_device, m_swapChain.get().get_format());
-            m_framebuffers = create_framebuffers(
-                m_device, m_renderPass, m_swapChain.get().get_image_views(), m_swapChain.get().get_extent());
+            m_renderPass =
+                create_render_pass(m_device, m_swapChain.get().get_format(), m_swapChain.get().get_depth_format());
+            m_framebuffers = create_framebuffers(m_device,
+                                                 m_renderPass,
+                                                 m_swapChain.get().get_image_views(),
+                                                 m_swapChain.get().get_depth_image_view(),
+                                                 m_swapChain.get().get_extent());
             m_extent = m_swapChain.get().get_extent();
             m_viewportSettings = m_viewportSettingsCallback({m_extent.width, m_extent.height});
             m_scissor = m_scissorCallback({m_extent.width, m_extent.height});
@@ -124,13 +170,14 @@ namespace engine {
 
         vk::RenderPassBeginInfo rendering_technique::generate_render_pass_info(vk::CommandBuffer buffer,
                                                                                vk::SubpassContents contents) const {
-            vk::ClearValue clearColor = vk::ClearValue(std::array<float, 4>{0.0f, 0.0f, 0.0f, 1.0f});
+            std::array<vk::ClearValue, 2> clearValues = {vk::ClearValue(std::array<float, 4>{0.0f, 0.0f, 0.0f, 1.0f}),
+                                                         vk::ClearValue(vk::ClearDepthStencilValue(1.0f, 0))};
 
             vk::RenderPassBeginInfo renderPassInfo(m_renderPass,
                                                    m_framebuffers[m_swapChain.get().get_image_index()],
                                                    vk::Rect2D({0, 0}, m_extent),
-                                                   1,
-                                                   &clearColor);
+                                                   static_cast<std::uint32_t>(clearValues.size()),
+                                                   clearValues.data());
 
             buffer.beginRenderPass(renderPassInfo, contents);
 

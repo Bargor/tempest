@@ -29,6 +29,7 @@ namespace engine {
             gpu_info& get_GPU_info() const noexcept;
 
             vk::PhysicalDeviceMemoryProperties get_memory_properties() const noexcept;
+            vk::FormatProperties get_format_properties(vk::Format format) const noexcept;
             surface_support_info get_surface_support_info(vk::SurfaceKHR windowSurface) const;
             vk::Device create_logical_device(const std::vector<const char*>& validationLayers,
                                              const std::vector<const char*>& extensions);
@@ -61,6 +62,11 @@ namespace engine {
 
         TST_INLINE vk::PhysicalDeviceMemoryProperties physical_device::get_memory_properties() const noexcept {
             return m_physicalDevice.getMemoryProperties();
+        }
+
+        TST_INLINE vk::FormatProperties physical_device::get_format_properties(vk::Format format) const noexcept
+        {
+            return m_physicalDevice.getFormatProperties(format);
         }
 
     } // namespace vulkan

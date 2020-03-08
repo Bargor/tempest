@@ -18,6 +18,22 @@ namespace engine {
             [](core::extent<std::uint32_t>) {
                 return core::rectangle<std::int32_t, std::uint32_t>{{0, 0}, {840, 525}};
             },
+            {false, false, compare_operation::never, false, 0.0f, 0.0f},
+            {false,
+             {stencil_settings::stencil_operation::keep,
+              stencil_settings::stencil_operation::keep,
+              stencil_settings::stencil_operation::keep,
+              compare_operation::never,
+              0,
+              0,
+              0},
+             {stencil_settings::stencil_operation::keep,
+              stencil_settings::stencil_operation::keep,
+              stencil_settings::stencil_operation::keep,
+              compare_operation::never,
+              0,
+              0,
+              0}},
             {color_blending_settings{false,
                                      color_blending_settings::blend_operation::add,
                                      color_blending_settings::blend_factor::one,
@@ -76,6 +92,40 @@ namespace engine {
             }
         }
 
+        depth_settings parse_depth_settings(const rapidjson::Value& depthSettings) {
+            const auto testEnable = depthSettings["enable"].GetBool();
+            const auto writeEnable = depthSettings["write_enable"].GetBool();
+            const auto compareOperation = static_cast<compare_operation>(depthSettings["compare_op"].GetUint());
+            const auto boundsTestEnable = depthSettings["bound_test_enable"].GetBool();
+            const auto minBound = depthSettings["min_bound"].GetFloat();
+            const auto maxBound = depthSettings["max_bound"].GetFloat();
+            return depth_settings{testEnable, writeEnable, compareOperation, boundsTestEnable, minBound, maxBound};
+        }
+
+        stencil_settings::operation_state parse_stencil_operation_state_settings(const rapidjson::Value& stateOpSettings) {
+            const auto failOperation =
+                static_cast<stencil_settings::stencil_operation>(stateOpSettings["fail_op"].GetUint());
+            const auto passOperation =
+                static_cast<stencil_settings::stencil_operation>(stateOpSettings["pass_op"].GetUint());
+            const auto depthFailOperation =
+                static_cast<stencil_settings::stencil_operation>(stateOpSettings["depth_fail_op"].GetUint());
+            const auto compareOperation = static_cast<compare_operation>(stateOpSettings["compare_op"].GetUint());
+            const auto compareMask = stateOpSettings["compare_mask"].GetUint();
+            const auto writeMask = stateOpSettings["write_mask"].GetUint();
+            const auto reference = stateOpSettings["reference"].GetUint();
+
+            return stencil_settings::operation_state{
+                failOperation, passOperation, depthFailOperation, compareOperation, compareMask, writeMask, reference};
+        }
+
+        stencil_settings parse_stencil_settings(const rapidjson::Value& stencilSettings) {
+            const auto enable = stencilSettings["enable"].GetBool();
+            const auto frontOperation = parse_stencil_operation_state_settings(stencilSettings["front_op"]);
+            const auto backOperation = parse_stencil_operation_state_settings(stencilSettings["back_op"]);
+
+            return stencil_settings{enable, frontOperation, backOperation};
+        }
+
         std::vector<color_blending_settings>
         parse_framebuffer_blending_settings(const rapidjson::Value& framebufferBlendingSettings) {
             assert(framebufferBlendingSettings.IsArray());
@@ -132,9 +182,11 @@ namespace engine {
             const auto mode = static_cast<callback_mode>(jsonModel["mode"].GetUint());
             const auto viewport = parse_viewport_settings(jsonModel["viewport"], mode);
             const auto scissor = parse_scissor_settings(jsonModel["scissor"], mode);
+            const auto depth = parse_depth_settings(jsonModel["depth"]);
+            const auto stencil = parse_stencil_settings(jsonModel["stencil"]);
             const auto framebuffer_blending = parse_framebuffer_blending_settings(jsonModel["framebuffer_blending"]);
             const auto global_blending = parse_global_blending_settings(jsonModel["global_blending"]);
-            return technique_settings{viewport, scissor, framebuffer_blending, global_blending};
+            return technique_settings{viewport, scissor, depth, stencil, framebuffer_blending, global_blending};
         }
 
     } // namespace base
