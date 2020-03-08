@@ -155,7 +155,7 @@ namespace engine {
                     vk::FormatFeatureFlagBits::eDepthStencilAttachment);
             }
 
-            bool has_stencil_component(vk::Format format) {
+            [[maybe_unused]] bool has_stencil_component(vk::Format format) {
                 return format == vk::Format::eD32SfloatS8Uint || format == vk::Format::eD24UnormS8Uint;
             }
 
@@ -186,7 +186,7 @@ namespace engine {
                                             m_presentationMode,
                                             m_extent,
                                             buffers))
-            , m_depthFormat(find_depth_format(physicalDevice))
+            , m_depthFormat(find_depth_format(m_physicalDevice))
             , m_currentImage(0) {
             m_images = m_logicalDevice.getSwapchainImagesKHR(m_swapChain);
             m_imageViews = create_image_views(m_logicalDevice, m_surfaceFormat.format, m_images);
@@ -195,7 +195,7 @@ namespace engine {
                                                                       m_depthFormat,
                                                                       vk::ImageTiling::eOptimal,
                                                                       vk::ImageUsageFlagBits::eDepthStencilAttachment,
-                                                                      physicalDevice.get_memory_properties(),
+                                                                      m_physicalDevice.get_memory_properties(),
                                                                       vk::MemoryPropertyFlagBits::eDeviceLocal);
             m_depthImageView =
                 create_image_view(m_logicalDevice, m_depthImage, m_depthFormat, vk::ImageAspectFlagBits::eDepth);
