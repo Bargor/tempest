@@ -405,8 +405,8 @@ namespace engine {
         void pipeline::recreate() {
             destroy();
             m_pipelineLayout = create_pipeline_layout(m_logicalDevice, m_layouts);
-            m_pipelineSettings.m_viewport.width = m_technique.m_viewportSettings.width;
-            m_pipelineSettings.m_viewport.height = m_technique.m_viewportSettings.height;
+            m_pipelineSettings.m_viewport = m_technique.m_viewportSettings;
+            m_pipelineSettings.m_scissor = m_technique.m_scissor;
 
             m_pipeline = compile_pipeline(m_logicalDevice,
                                           m_pipelineLayout,
