@@ -216,6 +216,7 @@ struct hash<tst::engine::base::depth_settings> {
         tst::hash_combine(seed, std::hash<float>{}(settings.minDepthBounds));
         tst::hash_combine(seed, std::hash<float>{}(settings.maxDepthBounds));
         tst::hash_combine(seed, hasher(settings.stencilTestEnable));
+        return seed;
     }
 };
 
