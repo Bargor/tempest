@@ -18,7 +18,7 @@ namespace engine {
 
         public:
             rendering_technique(std::string&& techniqueName,
-                                base::technique_settings&& techniqueSettings,
+                                base::draw_settings&& drawSettings,
                                 vk::Device device,
                                 const swap_chain& swapChain);
 

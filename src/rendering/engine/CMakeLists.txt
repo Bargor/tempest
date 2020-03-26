@@ -43,19 +43,19 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
 		copy_technique_files
 		${CMAKE_COMMAND}
 		-D SOURCE_DIR=${CMAKE_CURRENT_SOURCE_DIR}
-		-D DESTINATION_DIR=${RUNTIME_OUTPUT_PATH}/$<CONFIG>/techniques/
+		-D DESTINATION_DIR=${RUNTIME_OUTPUT_PATH}/$<CONFIG>/
 		-P ${PROJECT_SOURCE_DIR}/cmake/CopyTechniques.cmake
 		COMMENT "Copying technique files for target: test" VERBATIM
-		)
+	)
 else()
 	add_custom_target(
 		copy_technique_files
 		${CMAKE_COMMAND}
 		-D SOURCE_DIR=${CMAKE_CURRENT_SOURCE_DIR}
-		-D DESTINATION_DIR=${RUNTIME_OUTPUT_PATH}/techniques/
+		-D DESTINATION_DIR=${RUNTIME_OUTPUT_PATH}/
 		-P ${PROJECT_SOURCE_DIR}/cmake/CopyTechniques.cmake
 		COMMENT "Copying technique files for target: test" VERBATIM
-		)
+	)
 endif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
 
 add_dependencies(engine-base copy_technique_files)

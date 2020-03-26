@@ -88,12 +88,12 @@ namespace engine {
         }
 
         rendering_technique::rendering_technique(std::string&& techniqueName,
-                                                 base::technique_settings&& techniqueSettings,
+                                                 base::draw_settings&& drawSettings,
                                                  vk::Device device,
                                                  const swap_chain& swapChain)
             : base::rendering_technique(
                   std::move(techniqueName),
-                  std::move(techniqueSettings),
+                  std::move(drawSettings),
                   core::extent<std::uint32_t>{swapChain.get_extent().width, swapChain.get_extent().height})
             , m_device(device)
             , m_swapChain(swapChain)

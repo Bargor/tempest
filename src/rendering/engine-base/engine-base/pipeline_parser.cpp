@@ -1,7 +1,7 @@
 // This file is part of Tempest-engine project
 // Author: Karol Kontny
 
-#include "technique_parser.h"
+#include "pipeline_parser.h"
 
 #include <application/data_loader.h>
 #include <rapidjson/document.h>
@@ -11,7 +11,7 @@ namespace tst {
 namespace engine {
     namespace base {
 
-        technique_settings default_settings{
+        draw_settings default_settings{
             [](core::extent<std::uint32_t>) {
                 return viewport_settings{0, 0, 840, 525, 0.0f, 1.0f};
             },
@@ -166,8 +166,8 @@ namespace engine {
             return global_blending_settings{enable, logicOperation, blendConstants};
         }
 
-        technique_settings parse_rendering_technique(const application::data_loader& dataLoader, const std::string& name) {
-            const auto techniqueFile = dataLoader.find_file(std::filesystem::path("techniques") / (name + ".json"));
+        draw_settings parse_draw_settings(const application::data_loader& dataLoader, const std::string& name) {
+            const auto techniqueFile = dataLoader.find_file(std::filesystem::path("pipelines") / (name + ".json"));
             if (!techniqueFile) {
                 return default_settings;
             }
@@ -176,6 +176,8 @@ namespace engine {
             assert(jsonModel.HasMember("mode"));
             assert(jsonModel.HasMember("viewport"));
             assert(jsonModel.HasMember("scissor"));
+            assert(jsonModel.HasMember("depth"));
+            assert(jsonModel.HasMember("stencil"));
             assert(jsonModel.HasMember("framebuffer_blending"));
             assert(jsonModel.HasMember("global_blending"));
 
@@ -186,7 +188,7 @@ namespace engine {
             const auto stencil = parse_stencil_settings(jsonModel["stencil"]);
             const auto framebuffer_blending = parse_framebuffer_blending_settings(jsonModel["framebuffer_blending"]);
             const auto global_blending = parse_global_blending_settings(jsonModel["global_blending"]);
-            return technique_settings{viewport, scissor, depth, stencil, framebuffer_blending, global_blending};
+            return draw_settings{viewport, scissor, depth, stencil, framebuffer_blending, global_blending};
         }
 
     } // namespace base

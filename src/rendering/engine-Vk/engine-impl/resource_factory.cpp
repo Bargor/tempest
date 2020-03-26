@@ -9,7 +9,7 @@
 #include "shader_compiler.h"
 #include "swap_chain.h"
 
-#include <engine-base/technique_parser.h>
+#include <engine-base/pipeline_parser.h>
 
 namespace tst {
 namespace engine {
@@ -89,7 +89,7 @@ namespace engine {
 
             m_device.m_resourceCache->add_rendering_technique(
                 rendering_technique(std::move(name),
-                                    base::parse_rendering_technique(m_dataLoader, name),
+                                    base::parse_draw_settings(m_dataLoader, name),
                                     m_device.m_logicalDevice,
                                     *m_device.m_swapChain));
         }

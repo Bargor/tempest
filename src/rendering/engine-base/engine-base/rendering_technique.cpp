@@ -86,17 +86,17 @@ namespace engine {
         }
 
         rendering_technique::rendering_technique(std::string&& techniqueName,
-                                                 technique_settings&& techniqueSettings,
+                                                 draw_settings&& drawSettings,
                                                  core::extent<std::uint32_t> windowSize)
             : m_techniqueName(std::move(techniqueName))
-            , m_viewportSettingsCallback(std::move(techniqueSettings.viewportCallback))
-            , m_scissorCallback(std::move(techniqueSettings.scissorCallback))
+            , m_viewportSettingsCallback(std::move(drawSettings.viewportCallback))
+            , m_scissorCallback(std::move(drawSettings.scissorCallback))
             , m_viewportSettings(m_viewportSettingsCallback(windowSize))
             , m_scissor(m_scissorCallback(windowSize))
-            , m_depthSettings(techniqueSettings.depthSettings)
-            , m_stencilSettings(techniqueSettings.stencilSettings)
-            , m_framebufferColorBlending(std::move(techniqueSettings.framebufferColorBlending))
-            , m_globalColorBlending(std::move(techniqueSettings.globalColorBlending)) {
+            , m_depthSettings(drawSettings.depthSettings)
+            , m_stencilSettings(drawSettings.stencilSettings)
+            , m_framebufferColorBlending(std::move(drawSettings.framebufferColorBlending))
+            , m_globalColorBlending(std::move(drawSettings.globalColorBlending)) {
         }
     } // namespace base
 } // namespace engine

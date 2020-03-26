@@ -159,7 +159,7 @@ namespace engine {
         using viewport_callback = std::function<viewport_settings(core::extent<std::uint32_t>)>;
         using scissor_callback = std::function<core::rectangle<std::int32_t, std::uint32_t>(core::extent<std::uint32_t>)>;
 
-        struct technique_settings {
+        struct draw_settings {
             viewport_callback viewportCallback;
             scissor_callback scissorCallback;
             depth_settings depthSettings;
@@ -179,7 +179,7 @@ namespace engine {
                                 const global_blending_settings& globalBlending,
                                 core::extent<std::uint32_t> windowSize);
             rendering_technique(std::string&& techniqueName,
-                                technique_settings&& techniqueSettings,
+                                draw_settings&& drawSettings,
                                 core::extent<std::uint32_t> windowSize);
 
             const std::string& get_name() const;

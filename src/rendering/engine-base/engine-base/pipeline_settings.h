@@ -13,7 +13,6 @@ namespace tst {
 namespace engine {
     namespace base {
 
-        class rendering_technique;
         class settings;
 
         struct pipeline_settings {

@@ -13,7 +13,7 @@ namespace application {
 namespace engine {
     namespace base {
 
-        technique_settings parse_rendering_technique(const application::data_loader& dataLoader, const std::string& name);
+        draw_settings parse_draw_settings(const application::data_loader& dataLoader, const std::string& name);
 
     }
 } // namespace engine
