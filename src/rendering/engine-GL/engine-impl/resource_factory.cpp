@@ -19,7 +19,7 @@ namespace engine {
             : m_dataLoader(factory.m_dataLoader), m_shaderCompiler(std::move(factory.m_shaderCompiler)) {
         }
 
-        const pipeline& resource_factory::create_pipeline(const std::string&, const std::string&, const vertex_format&) {
+        const pipeline& resource_factory::create_pipeline(const std::string&, const std::string&, const std::string&, const vertex_format&) {
             std::vector<pipeline> m_pipe;
             pipeline p{};
             m_pipe.push_back(p);
