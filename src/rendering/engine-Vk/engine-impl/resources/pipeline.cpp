@@ -455,9 +455,11 @@ namespace engine {
         }
 
         pipeline::pipeline(pipeline&& pipeline) noexcept
-            : m_pipelineLayout(pipeline.m_pipelineLayout)
-            , m_pipeline(pipeline.m_pipeline)
+            : m_viewportSettingsCallback(std::move(pipeline.m_viewportSettingsCallback))
+            , m_scissorCallback(std::move(pipeline.m_scissorCallback))
             , m_pipelineSettings(std::move(pipeline.m_pipelineSettings))
+            , m_pipelineLayout(pipeline.m_pipelineLayout)
+            , m_pipeline(pipeline.m_pipeline)
             , m_technique(pipeline.m_technique)
             , m_shaders(pipeline.m_shaders)
             , m_vertexFormat(pipeline.m_vertexFormat)
