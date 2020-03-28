@@ -9,6 +9,10 @@
 
 namespace tst {
 namespace engine {
+    namespace base {
+        struct draw_settings;
+    }
+
     namespace vulkan {
 
         class rendering_technique;
@@ -20,10 +24,12 @@ namespace engine {
         public:
             pipeline(const vk::Device logicalDevice,
                      const settings& engineSettings,
+                     const base::draw_settings& drawSettings,
                      const vertex_format& format,
                      const shader_set& shaders,
                      const rendering_technique& technique,
-                     std::vector<vk::DescriptorSetLayout>&& layouts);
+                     std::vector<vk::DescriptorSetLayout>&& layouts,
+                     vk::Extent2D extent);
             pipeline(const pipeline&) = delete;
             pipeline(pipeline&& pipeline) noexcept;
 
@@ -38,10 +44,13 @@ namespace engine {
 
         private:
             void destroy();
+
         private:
+            base::viewport_callback m_viewportSettingsCallback;
+            base::scissor_callback m_scissorCallback;
+            base::pipeline_settings m_pipelineSettings;
             vk::PipelineLayout m_pipelineLayout;
             vk::Pipeline m_pipeline;
-            base::pipeline_settings m_pipelineSettings;
             const rendering_technique& m_technique;
             const shader_set& m_shaders;
             const vertex_format m_vertexFormat;

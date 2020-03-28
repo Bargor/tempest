@@ -72,8 +72,14 @@ namespace engine {
                     }
                 }
 
-                pipeline pipeline(
-                    m_device.m_logicalDevice, m_device.m_engineSettings, format, *shaders, *technique, std::move(layouts));
+                pipeline pipeline(m_device.m_logicalDevice,
+                                  m_device.m_engineSettings,
+                                  base::parse_draw_settings(m_dataLoader, techniqueName),
+                                  format,
+                                  *shaders,
+                                  *technique,
+                                  std::move(layouts),
+                                  technique->get_extent());
 
                 auto hash = m_device.m_resourceCache->add_pipeline(std::move(pipeline));
 
@@ -88,10 +94,7 @@ namespace engine {
             }
 
             m_device.m_resourceCache->add_rendering_technique(
-                rendering_technique(std::move(name),
-                                    base::parse_draw_settings(m_dataLoader, name),
-                                    m_device.m_logicalDevice,
-                                    *m_device.m_swapChain));
+                rendering_technique(std::move(name), m_device.m_logicalDevice, *m_device.m_swapChain));
         }
 
         vertex_buffer resource_factory::create_vertex_buffer(const vertex_format& format, std::vector<vertex>&& vertices) {

@@ -8,6 +8,7 @@ namespace tst {
 namespace engine {
     namespace vulkan {
 
+        //TODO: Make this struct
         class settings : public base::settings {
             using super = base::settings;
         public:

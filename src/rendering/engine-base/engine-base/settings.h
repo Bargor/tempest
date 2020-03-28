@@ -43,6 +43,7 @@ namespace engine {
             bool operator==(const multisampling_settings& other) const noexcept;
         };
 
+        //TODO: Make this struct
         class settings {
         public:
             constexpr static settings get_default_settings();

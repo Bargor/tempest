@@ -15,22 +15,8 @@ namespace engine {
 
         class rendering_technique : public base::rendering_technique {
             friend class pipeline;
-
         public:
-            rendering_technique(std::string&& techniqueName,
-                                base::draw_settings&& drawSettings,
-                                vk::Device device,
-                                const swap_chain& swapChain);
-
-            rendering_technique(std::string&& techniqueName,
-                                base::viewport_callback&& viewportCallback,
-                                base::scissor_callback&& scissorCallback,
-                                const base::depth_settings& depthSettings,
-                                const base::stencil_settings& stencilSettings,
-                                std::vector<base::color_blending_settings>&& framebufferBlending,
-                                const base::global_blending_settings& globalBlending,
-                                vk::Device device,
-                                const swap_chain& swapChain);
+            rendering_technique(std::string&& techniqueName, vk::Device device, const swap_chain& swapChain);
 
             rendering_technique(const rendering_technique& technique) = delete;
             rendering_technique(rendering_technique&& technique) noexcept;
@@ -42,6 +28,8 @@ namespace engine {
             vk::RenderPassBeginInfo generate_render_pass_info(vk::CommandBuffer buffer,
                                                               vk::SubpassContents contents) const;
 
+            vk::Extent2D get_extent() const noexcept;
+
         private:
             void destroy();
 
@@ -52,6 +40,11 @@ namespace engine {
             vk::RenderPass m_renderPass;
             std::vector<vk::Framebuffer> m_framebuffers;
         };
+
+        TST_INLINE vk::Extent2D rendering_technique::get_extent() const noexcept
+        {
+            return m_extent;
+        }
 
     } // namespace vulkan
 } // namespace engine

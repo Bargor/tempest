@@ -2,7 +2,7 @@
 // Author: Karol Kontny
 #pragma once
 
-#include "rendering_technique.h"
+#include "pipeline_settings.h"
 
 namespace tst {
 

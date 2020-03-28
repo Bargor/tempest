@@ -417,32 +417,36 @@ namespace engine {
 
         pipeline::pipeline(const vk::Device logicalDevice,
                            const settings& engineSettings,
+                           const base::draw_settings& drawSettings,
                            const vertex_format& format,
                            const shader_set& shaders,
                            const rendering_technique& technique,
-                           std::vector<vk::DescriptorSetLayout>&& layouts)
-            : m_pipelineLayout(create_pipeline_layout(logicalDevice, layouts))
+                           std::vector<vk::DescriptorSetLayout>&& layouts,
+                           vk::Extent2D extent)
+            : m_viewportSettingsCallback(drawSettings.viewportCallback)
+            , m_scissorCallback(drawSettings.scissorCallback)
+            , m_pipelineSettings(m_viewportSettingsCallback({extent.width, extent.height}),
+                                 m_scissorCallback({extent.width, extent.height}),
+                                 drawSettings.depthSettings,
+                                 drawSettings.stencilSettings,
+                                 engineSettings.m_rasterizer,
+                                 engineSettings.m_multisampling,
+                                 drawSettings.framebufferColorBlending,
+                                 drawSettings.globalColorBlending)
+            , m_pipelineLayout(create_pipeline_layout(logicalDevice, layouts))
             , m_pipeline(compile_pipeline(logicalDevice,
                                           m_pipelineLayout,
                                           technique.m_renderPass,
-                                          technique.m_viewportSettings,
-                                          technique.m_scissor,
-                                          technique.m_depthSettings,
-                                          technique.m_stencilSettings,
-                                          technique.m_framebufferColorBlending,
-                                          technique.m_globalColorBlending,
+                                          m_pipelineSettings.m_viewport,
+                                          m_pipelineSettings.m_scissor,
+                                          drawSettings.depthSettings,
+                                          drawSettings.stencilSettings,
+                                          drawSettings.framebufferColorBlending,
+                                          drawSettings.globalColorBlending,
                                           engineSettings.m_rasterizer,
                                           engineSettings.m_multisampling,
                                           format,
                                           shaders))
-            , m_pipelineSettings(technique.m_viewportSettings,
-                                 technique.m_scissor,
-                                 technique.m_depthSettings,
-                                 technique.m_stencilSettings,
-                                 engineSettings.m_rasterizer,
-                                 engineSettings.m_multisampling,
-                                 technique.m_framebufferColorBlending,
-                                 technique.m_globalColorBlending)
             , m_technique(technique)
             , m_shaders(shaders)
             , m_vertexFormat(format)
@@ -482,9 +486,10 @@ namespace engine {
 
         void pipeline::recreate() {
             destroy();
+            const auto newExtent = m_technique.get_extent();
             m_pipelineLayout = create_pipeline_layout(m_logicalDevice, m_layouts);
-            m_pipelineSettings.m_viewport = m_technique.m_viewportSettings;
-            m_pipelineSettings.m_scissor = m_technique.m_scissor;
+            m_pipelineSettings.m_viewport = m_viewportSettingsCallback({newExtent.width, newExtent.height});
+            m_pipelineSettings.m_scissor = m_scissorCallback({newExtent.width, newExtent.height});
 
             m_pipeline = compile_pipeline(m_logicalDevice,
                                           m_pipelineLayout,

@@ -88,43 +88,10 @@ namespace engine {
         }
 
         rendering_technique::rendering_technique(std::string&& techniqueName,
-                                                 base::draw_settings&& drawSettings,
                                                  vk::Device device,
                                                  const swap_chain& swapChain)
             : base::rendering_technique(
-                  std::move(techniqueName),
-                  std::move(drawSettings),
-                  core::extent<std::uint32_t>{swapChain.get_extent().width, swapChain.get_extent().height})
-            , m_device(device)
-            , m_swapChain(swapChain)
-            , m_extent(m_swapChain.get().get_extent())
-            , m_renderPass(
-                  create_render_pass(device, m_swapChain.get().get_format(), m_swapChain.get().get_depth_format()))
-            , m_framebuffers(create_framebuffers(device,
-                                                 m_renderPass,
-                                                 m_swapChain.get().get_image_views(),
-                                                 m_swapChain.get().get_depth_image_view(),
-                                                 m_swapChain.get().get_extent())) {
-        }
-
-        rendering_technique::rendering_technique(std::string&& techniqueName,
-                                                 base::viewport_callback&& viewportCallback,
-                                                 base::scissor_callback&& scissorCallback,
-                                                 const base::depth_settings& depthSettings,
-                                                 const base::stencil_settings& stencilSettings,
-                                                 std::vector<base::color_blending_settings>&& framebufferBlending,
-                                                 const base::global_blending_settings& globalBlending,
-                                                 vk::Device device,
-                                                 const swap_chain& swapChain)
-            : base::rendering_technique(
-                  std::move(techniqueName),
-                  std::move(viewportCallback),
-                  std::move(scissorCallback),
-                  depthSettings,
-                  stencilSettings,
-                  std::move(framebufferBlending),
-                  globalBlending,
-                  core::extent<std::uint32_t>{swapChain.get_extent().width, swapChain.get_extent().height})
+                  std::move(techniqueName))
             , m_device(device)
             , m_swapChain(swapChain)
             , m_extent(m_swapChain.get().get_extent())
@@ -164,8 +131,6 @@ namespace engine {
                                                  m_swapChain.get().get_depth_image_view(),
                                                  m_swapChain.get().get_extent());
             m_extent = m_swapChain.get().get_extent();
-            m_viewportSettings = m_viewportSettingsCallback({m_extent.width, m_extent.height});
-            m_scissor = m_scissorCallback({m_extent.width, m_extent.height});
         }
 
         vk::RenderPassBeginInfo rendering_technique::generate_render_pass_info(vk::CommandBuffer buffer,
