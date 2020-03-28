@@ -4,6 +4,7 @@
 
 #include "shader.h"
 #include "vertex_format.h"
+#include "rendering_technique.h"
 
 #include <engine-base/pipeline_settings.h>
 
@@ -15,7 +16,6 @@ namespace engine {
 
     namespace vulkan {
 
-        class rendering_technique;
         class settings;
 
         class pipeline {
@@ -67,7 +67,11 @@ namespace std {
 template<>
 struct hash<tst::engine::vulkan::pipeline> {
     std::size_t operator()(const tst::engine::vulkan::pipeline& pipeline) const {
-        return std::hash<tst::engine::base::pipeline_settings>{}(pipeline.m_pipelineSettings);
+        std::size_t seed = 0;
+        hash<std::string> hasher;
+        tst::hash_combine(seed, hasher(pipeline.m_technique.get_name()));
+        tst::hash_combine(seed, std::hash<tst::engine::base::pipeline_settings>{}(pipeline.m_pipelineSettings));
+        return seed;
     }
 };
 

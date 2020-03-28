@@ -54,6 +54,7 @@ namespace engine {
         }
 
         const pipeline& resource_factory::create_pipeline(const std::string& techniqueName,
+                                                          const std::string& pipelineName,
                                                           const std::string& shadersName,
                                                           const vertex_format& format) {
             auto shaders = m_device.m_resourceCache->find_shaders(shadersName);
@@ -74,7 +75,7 @@ namespace engine {
 
                 pipeline pipeline(m_device.m_logicalDevice,
                                   m_device.m_engineSettings,
-                                  base::parse_draw_settings(m_dataLoader, techniqueName),
+                                  base::parse_draw_settings(m_dataLoader, pipelineName),
                                   format,
                                   *shaders,
                                   *technique,
