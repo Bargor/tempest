@@ -38,7 +38,7 @@ namespace engine {
         multisampling_settings parse_multisampling_settings(const rapidjson::Value& multisamplingSettings) {
             const auto enable = multisamplingSettings["enable"].GetBool();
             const auto samples =
-                static_cast<base::multisampling_settings::sample_count>(multisamplingSettings["samples"].GetUint());
+                static_cast<base::sample_count>(multisamplingSettings["samples"].GetUint());
             return multisampling_settings{enable, samples};
         }
 

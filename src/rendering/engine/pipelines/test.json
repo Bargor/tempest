@@ -41,7 +41,6 @@
 			"reference": 0
 		}
 	},
-	"framebuffers": [],
 	"framebuffer_blending": [
 		{ 
 			"enable": false,

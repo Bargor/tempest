@@ -34,9 +34,9 @@ namespace engine {
             bool operator==(const rasterizer_settings& other) const noexcept;
         };
 
-        struct multisampling_settings {
-            enum class sample_count { samples_1 = 1, samples_2 = 2, samples_4 = 4, samples_8 = 8, samples_16 = 16 };
+        enum class sample_count { samples_1 = 1, samples_2 = 2, samples_4 = 4, samples_8 = 8, samples_16 = 16 };
 
+        struct multisampling_settings {
             bool enable;
             sample_count samples;
 
@@ -66,7 +66,7 @@ namespace engine {
                                           base::rasterizer_settings::front_face::counter_clockwise,
                                           1.0f,
                                           {false, 0.0f, 0.0f, 0.0f}},
-                base::multisampling_settings{false, base::multisampling_settings::sample_count::samples_1}};
+                base::multisampling_settings{false, base::sample_count::samples_1}};
         }
 
         constexpr settings::settings(const rasterizer_settings& rasterizerSettings,
