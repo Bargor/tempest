@@ -10,6 +10,7 @@
 #include "swap_chain.h"
 
 #include <engine-base/pipeline_parser.h>
+#include <engine-base/technique_parser.h>
 
 namespace tst {
 namespace engine {
@@ -89,13 +90,13 @@ namespace engine {
             throw std::runtime_error("Can't find pipeline");
         }
 
-        void resource_factory::create_technique(std::string&& name) {
+        void resource_factory::create_technique(const std::string& name) {
             if (m_device.m_resourceCache->find_technique(name) != nullptr) {
                 return;
             }
 
             m_device.m_resourceCache->add_rendering_technique(
-                rendering_technique(std::move(name), m_device.m_logicalDevice, *m_device.m_swapChain));
+                rendering_technique(name, base::parse_technique_settings(m_dataLoader, name), m_device.m_logicalDevice, *m_device.m_swapChain));
         }
 
         vertex_buffer resource_factory::create_vertex_buffer(const vertex_format& format, std::vector<vertex>&& vertices) {

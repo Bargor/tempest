@@ -32,7 +32,7 @@ namespace engine {
                                                    const std::string& pipelineName,
                                                    const std::string& shadersName,
                                                    const vertex_format& format);
-        void create_technique(std::string&& name);
+        void create_technique(const std::string& name);
         resources::vertex_buffer create_vertex_buffer(const vertex_format& format, std::vector<vertex>&& vertices);
         resources::uniform_buffer create_uniform_buffer(const std::string& shaderName,
                                                         api::shader_type type,

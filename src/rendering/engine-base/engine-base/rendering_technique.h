@@ -21,10 +21,12 @@ namespace engine {
         };
 
         struct framebuffer_settings {
-            enum class type { color, depth };
+            enum class attachment_type { color, depth };
             enum class load_operation { load, clear, dont_care };
             enum class store_operation { store, dont_care };
 
+            std::uint32_t id;
+            attachment_type type;
             sample_count samples;
             load_operation attachmentLoadOperation;
             store_operation attachementStoreOperation;
@@ -59,12 +61,13 @@ namespace engine {
 
         class rendering_technique {
         public:
-            rendering_technique(std::string&& techniqueName);
+            rendering_technique(const std::string& techniqueName, technique_settings&& settings);
 
             const std::string& get_name() const;
 
         protected:
             std::string m_techniqueName;
+            technique_settings m_settings;
         };
 
         TST_INLINE const std::string& rendering_technique::get_name() const {

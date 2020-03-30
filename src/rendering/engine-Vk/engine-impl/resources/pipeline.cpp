@@ -417,7 +417,7 @@ namespace engine {
 
         pipeline::pipeline(const vk::Device logicalDevice,
                            const settings& engineSettings,
-                           const base::draw_settings& drawSettings,
+                           base::draw_settings&& drawSettings,
                            const vertex_format& format,
                            const shader_set& shaders,
                            const rendering_technique& technique,

@@ -15,8 +15,12 @@ namespace engine {
 
         class rendering_technique : public base::rendering_technique {
             friend class pipeline;
+
         public:
-            rendering_technique(std::string&& techniqueName, vk::Device device, const swap_chain& swapChain);
+            rendering_technique(const std::string& techniqueName,
+                                base::technique_settings&& techniqueSettings,
+                                vk::Device device,
+                                const swap_chain& swapChain);
 
             rendering_technique(const rendering_technique& technique) = delete;
             rendering_technique(rendering_technique&& technique) noexcept;
@@ -41,8 +45,7 @@ namespace engine {
             std::vector<vk::Framebuffer> m_framebuffers;
         };
 
-        TST_INLINE vk::Extent2D rendering_technique::get_extent() const noexcept
-        {
+        TST_INLINE vk::Extent2D rendering_technique::get_extent() const noexcept {
             return m_extent;
         }
 

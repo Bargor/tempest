@@ -31,8 +31,8 @@ namespace engine {
             super::create_pipeline(techniqueName, pipelineName, shadersName, format.to_super()));
     }
 
-    void resource_factory::create_technique(std::string&& name) {
-        super::create_technique(std::move(name));
+    void resource_factory::create_technique(const std::string& name) {
+        super::create_technique(name);
     }
 
     resources::vertex_buffer resource_factory::create_vertex_buffer(const engine::vertex_format& format,
