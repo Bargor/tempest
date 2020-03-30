@@ -5,8 +5,9 @@
 #include "settings.h"
 
 #include <core.h>
-#include <string>
 #include <optional>
+#include <string>
+#include <vector>
 
 namespace tst {
 namespace engine {
@@ -37,7 +38,7 @@ namespace engine {
         };
 
         struct subpass_settings {
-            enum class bind_point {graphics, compute};
+            enum class bind_point { graphics, compute };
 
             bind_point bindPoint;
             std::vector<std::uint32_t> colorAttachments;

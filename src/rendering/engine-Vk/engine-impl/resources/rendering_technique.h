@@ -3,8 +3,6 @@
 #pragma once
 
 #include <engine-base/rendering_technique.h>
-#include <functional>
-#include <optional>
 #include <vulkan/vulkan.hpp>
 
 namespace tst {

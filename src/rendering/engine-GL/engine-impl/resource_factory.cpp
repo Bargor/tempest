@@ -34,7 +34,7 @@ namespace engine {
             return uniform_buffer();
         }
 
-        void resource_factory::create_technique(std::string&& name) {
+        void resource_factory::create_technique(const std::string& name) {
             m_shaderCompiler->compile_program(name, shaderTypesSet{});
         }
     } // namespace opengl
