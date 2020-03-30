@@ -11,17 +11,20 @@ namespace tst {
 namespace engine {
     namespace base {
 
-        technique_settings default_settings{{framebuffer_settings{0,
-                                                                  framebuffer_settings::attachment_type::color,
-                                                                  sample_count::samples_1,
-                                                                  framebuffer_settings::load_operation::clear,
-                                                                  framebuffer_settings::store_operation::store,
-                                                                  framebuffer_settings::load_operation::dont_care,
-                                                                  framebuffer_settings::store_operation::dont_care,
-                                                                  image_layout::undefined,
-                                                                  image_layout::present}},
-                                            {subpass_settings{subpass_settings::bind_point::graphics, {0}, std::nullopt}},
-                                            {dependency{0, 1, 1024, 1024, 0, 384}}};
+        namespace {
+            technique_settings default_settings{
+                {framebuffer_settings{0,
+                                      framebuffer_settings::attachment_type::color,
+                                      sample_count::samples_1,
+                                      framebuffer_settings::load_operation::clear,
+                                      framebuffer_settings::store_operation::store,
+                                      framebuffer_settings::load_operation::dont_care,
+                                      framebuffer_settings::store_operation::dont_care,
+                                      image_layout::undefined,
+                                      image_layout::present}},
+                {subpass_settings{subpass_settings::bind_point::graphics, {0}, std::nullopt}},
+                {dependency{0, 1, 1024, 1024, 0, 384}}};
+        }
 
         std::vector<framebuffer_settings> parse_framebuffers(const rapidjson::Value& framebuffersSettings) {
             assert(framebuffersSettings.IsArray());

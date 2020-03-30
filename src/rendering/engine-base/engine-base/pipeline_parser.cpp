@@ -11,39 +11,41 @@ namespace tst {
 namespace engine {
     namespace base {
 
-        draw_settings default_settings{
-            [](core::extent<std::uint32_t>) {
-                return viewport_settings{0, 0, 840, 525, 0.0f, 1.0f};
-            },
-            [](core::extent<std::uint32_t>) {
-                return core::rectangle<std::int32_t, std::uint32_t>{{0, 0}, {840, 525}};
-            },
-            {false, false, compare_operation::never, false, 0.0f, 0.0f},
-            {false,
-             {stencil_settings::stencil_operation::keep,
-              stencil_settings::stencil_operation::keep,
-              stencil_settings::stencil_operation::keep,
-              compare_operation::never,
-              0,
-              0,
-              0},
-             {stencil_settings::stencil_operation::keep,
-              stencil_settings::stencil_operation::keep,
-              stencil_settings::stencil_operation::keep,
-              compare_operation::never,
-              0,
-              0,
-              0}},
-            {color_blending_settings{false,
-                                     color_blending_settings::blend_operation::add,
-                                     color_blending_settings::blend_factor::one,
-                                     color_blending_settings::blend_factor::zero,
-                                     color_blending_settings::blend_operation::add,
-                                     color_blending_settings::blend_factor::one,
-                                     color_blending_settings::blend_factor::zero,
-                                     {true, true, true, true}}},
-            global_blending_settings{
-                false, engine::base::global_blending_settings::logic_operation::copy, {0.0f, 0.0f, 0.0f, 0.0f}}};
+        namespace {
+            draw_settings default_settings{
+                [](core::extent<std::uint32_t>) {
+                    return viewport_settings{0, 0, 840, 525, 0.0f, 1.0f};
+                },
+                [](core::extent<std::uint32_t>) {
+                    return core::rectangle<std::int32_t, std::uint32_t>{{0, 0}, {840, 525}};
+                },
+                {false, false, compare_operation::never, false, 0.0f, 0.0f},
+                {false,
+                 {stencil_settings::stencil_operation::keep,
+                  stencil_settings::stencil_operation::keep,
+                  stencil_settings::stencil_operation::keep,
+                  compare_operation::never,
+                  0,
+                  0,
+                  0},
+                 {stencil_settings::stencil_operation::keep,
+                  stencil_settings::stencil_operation::keep,
+                  stencil_settings::stencil_operation::keep,
+                  compare_operation::never,
+                  0,
+                  0,
+                  0}},
+                {color_blending_settings{false,
+                                         color_blending_settings::blend_operation::add,
+                                         color_blending_settings::blend_factor::one,
+                                         color_blending_settings::blend_factor::zero,
+                                         color_blending_settings::blend_operation::add,
+                                         color_blending_settings::blend_factor::one,
+                                         color_blending_settings::blend_factor::zero,
+                                         {true, true, true, true}}},
+                global_blending_settings{
+                    false, engine::base::global_blending_settings::logic_operation::copy, {0.0f, 0.0f, 0.0f, 0.0f}}};
+        }
 
         viewport_callback parse_viewport_settings(const rapidjson::Value& viewportSettings, callback_mode mode) {
             const auto minDepth = viewportSettings["min_depth"].GetFloat();
