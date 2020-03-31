@@ -32,8 +32,8 @@
 	],
 	"dependencies": [
 		{
-			"src_subpass": 0,
-			"dst_subpass": 1,
+			"src_subpass": -1,
+			"dst_subpass": 0,
 			"src_stage_mask": 1024,
 			"dst_stage_mask": 1024,
 			"src_access_mask": 0,

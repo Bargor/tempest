@@ -73,14 +73,14 @@ namespace engine {
             std::vector<dependency> dependencies;
             dependencies.reserve(dependenciesSettings.GetArray().Size());
             for (const auto& dep : dependenciesSettings.GetArray()) {
-                const auto srcSubpass = dep["src_subpass"].GetUint();
+                const auto srcSubpass = dep["src_subpass"].GetInt();
                 const auto dstSubpass = dep["dst_subpass"].GetUint();
                 const auto srcStageMask = dep["src_stage_mask"].GetUint();
                 const auto dstStageMask = dep["dst_stage_mask"].GetUint();
                 const auto srcAccessMask = dep["src_access_mask"].GetUint();
                 const auto dstAccessMask = dep["dst_access_mask"].GetUint();
                 dependencies.emplace_back(
-                    dependency{srcSubpass, dstSubpass, srcStageMask, dstStageMask, srcAccessMask, dstAccessMask});
+                    dependency{static_cast<std::uint32_t>(srcSubpass), dstSubpass, srcStageMask, dstStageMask, srcAccessMask, dstAccessMask});
             }
             return dependencies;
         }

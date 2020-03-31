@@ -48,10 +48,10 @@ namespace engine {
         struct dependency {
             std::uint32_t srcSubpassId;
             std::uint32_t dstSubpassId;
-            std::size_t srcStageMask;
-            std::size_t dstStageMask;
-            std::size_t srcAccessMask;
-            std::size_t dstAccessMask;
+            std::uint32_t srcStageMask;
+            std::uint32_t dstStageMask;
+            std::uint32_t srcAccessMask;
+            std::uint32_t dstAccessMask;
         };
 
         struct technique_settings {
