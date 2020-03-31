@@ -8,8 +8,7 @@ namespace tst {
 namespace engine {
     namespace vulkan {
 
-        //TODO: Make this struct
-        class settings : public base::settings {
+        struct settings : public base::settings {
             using super = base::settings;
         public:
             enum class buffering { double_buf = 2, triple_buf = 3 };

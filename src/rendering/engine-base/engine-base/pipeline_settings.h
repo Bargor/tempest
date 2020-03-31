@@ -13,7 +13,7 @@ namespace tst {
 namespace engine {
     namespace base {
 
-        class settings;
+        struct settings;
 
         struct viewport_settings {
             std::int32_t x;

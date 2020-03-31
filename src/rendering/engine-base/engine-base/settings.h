@@ -43,14 +43,13 @@ namespace engine {
             bool operator==(const multisampling_settings& other) const noexcept;
         };
 
-        //TODO: Make this struct
-        class settings {
+        struct settings {
         public:
             constexpr static settings get_default_settings();
 
         public:
             constexpr settings(const rasterizer_settings& rasterizerSettings,
-                               const multisampling_settings& multisamplingSettings);
+                               const multisampling_settings& multisamplingSettings) noexcept;
 
         public:
             rasterizer_settings m_rasterizer;
@@ -70,7 +69,7 @@ namespace engine {
         }
 
         constexpr settings::settings(const rasterizer_settings& rasterizerSettings,
-                                     const multisampling_settings& multisamplingSettings)
+                                     const multisampling_settings& multisamplingSettings) noexcept
             : m_rasterizer(rasterizerSettings), m_multisampling(multisamplingSettings) {
         }
 

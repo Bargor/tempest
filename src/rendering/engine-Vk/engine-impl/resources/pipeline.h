@@ -16,7 +16,7 @@ namespace engine {
 
     namespace vulkan {
 
-        class settings;
+        struct settings;
 
         class pipeline {
             friend std::hash<tst::engine::vulkan::pipeline>;
