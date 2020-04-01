@@ -9,6 +9,7 @@
 #include "shader_compiler.h"
 #include "swap_chain.h"
 
+#include <engine-base/pipeline_parser.h>
 #include <engine-base/technique_parser.h>
 
 namespace tst {
@@ -54,6 +55,7 @@ namespace engine {
         }
 
         const pipeline& resource_factory::create_pipeline(const std::string& techniqueName,
+                                                          const std::string& pipelineName,
                                                           const std::string& shadersName,
                                                           const vertex_format& format) {
             auto shaders = m_device.m_resourceCache->find_shaders(shadersName);
@@ -72,8 +74,14 @@ namespace engine {
                     }
                 }
 
-                pipeline pipeline(
-                    m_device.m_logicalDevice, m_device.m_engineSettings, format, *shaders, *technique, std::move(layouts));
+                pipeline pipeline(m_device.m_logicalDevice,
+                                  m_device.m_engineSettings,
+                                  base::parse_draw_settings(m_dataLoader, pipelineName),
+                                  format,
+                                  *shaders,
+                                  *technique,
+                                  std::move(layouts),
+                                  technique->get_extent());
 
                 auto hash = m_device.m_resourceCache->add_pipeline(std::move(pipeline));
 
@@ -82,16 +90,13 @@ namespace engine {
             throw std::runtime_error("Can't find pipeline");
         }
 
-        void resource_factory::create_technique(std::string&& name) {
+        void resource_factory::create_technique(const std::string& name) {
             if (m_device.m_resourceCache->find_technique(name) != nullptr) {
                 return;
             }
 
             m_device.m_resourceCache->add_rendering_technique(
-                rendering_technique(std::move(name),
-                                    base::parse_rendering_technique(m_dataLoader, name),
-                                    m_device.m_logicalDevice,
-                                    *m_device.m_swapChain));
+                rendering_technique(name, base::parse_technique_settings(m_dataLoader, name), m_device.m_logicalDevice, *m_device.m_swapChain));
         }
 
         vertex_buffer resource_factory::create_vertex_buffer(const vertex_format& format, std::vector<vertex>&& vertices) {

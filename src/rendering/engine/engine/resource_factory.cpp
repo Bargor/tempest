@@ -24,14 +24,15 @@ namespace engine {
     }
 
     const resources::pipeline& resource_factory::create_pipeline(const std::string& techniqueName,
+                                                                 const std::string& pipelineName,
                                                                  const std::string& shadersName,
                                                                  const vertex_format& format) {
         return (const resources::pipeline&)(
-            super::create_pipeline(techniqueName, shadersName, format.to_super()));
+            super::create_pipeline(techniqueName, pipelineName, shadersName, format.to_super()));
     }
 
-    void resource_factory::create_technique(std::string&& name) {
-        super::create_technique(std::move(name));
+    void resource_factory::create_technique(const std::string& name) {
+        super::create_technique(name);
     }
 
     resources::vertex_buffer resource_factory::create_vertex_buffer(const engine::vertex_format& format,

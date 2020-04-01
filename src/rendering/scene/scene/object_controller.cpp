@@ -35,7 +35,7 @@ namespace scene {
                                    0);
 
         m_resourceFactory.create_technique("test");
-        const auto& pipeline = m_resourceFactory.create_pipeline("test", "test", vertexFormat);
+        const auto& pipeline = m_resourceFactory.create_pipeline("test", "test", "test", vertexFormat);
 
         auto vertexBuffer = m_resourceFactory.create_vertex_buffer(
             vertexFormat,

@@ -2,7 +2,7 @@
 // Author: Karol Kontny
 #pragma once
 
-#include "rendering_technique.h"
+#include "pipeline_settings.h"
 
 namespace tst {
 
@@ -13,7 +13,8 @@ namespace application {
 namespace engine {
     namespace base {
 
-        technique_settings parse_technique_settings(const application::data_loader& dataLoader, const std::string& name);
+        draw_settings parse_draw_settings(const application::data_loader& dataLoader, const std::string& name);
+
     }
 } // namespace engine
 } // namespace tst

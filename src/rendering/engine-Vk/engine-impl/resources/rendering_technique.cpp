@@ -9,39 +9,145 @@ namespace tst {
 namespace engine {
     namespace vulkan {
 
-        vk::RenderPass create_render_pass(vk::Device device, vk::Format format, vk::Format depthFormat) {
-            vk::AttachmentDescription colorAttachment(vk::AttachmentDescriptionFlags(),
-                                                      format,
-                                                      vk::SampleCountFlagBits::e1,
-                                                      vk::AttachmentLoadOp::eClear,
-                                                      vk::AttachmentStoreOp::eStore,
-                                                      vk::AttachmentLoadOp::eDontCare,
-                                                      vk::AttachmentStoreOp::eDontCare,
-                                                      vk::ImageLayout::eUndefined,
-                                                      vk::ImageLayout::ePresentSrcKHR);
+        vk::AttachmentLoadOp translate_attachment_load_operation(base::framebuffer_settings::load_operation loadOp) {
+            switch (loadOp) {
+            case base::framebuffer_settings::load_operation::load:
+                return vk::AttachmentLoadOp::eLoad;
+            case base::framebuffer_settings::load_operation::clear:
+                return vk::AttachmentLoadOp::eClear;
+            case base::framebuffer_settings::load_operation::dont_care:
+                return vk::AttachmentLoadOp::eDontCare;
+            }
+            assert(false);
+            return vk::AttachmentLoadOp::eDontCare;
+        }
 
-            vk::AttachmentDescription depthAttachment(vk::AttachmentDescriptionFlags(),
-                                                      depthFormat,
-                                                      vk::SampleCountFlagBits::e1,
-                                                      vk::AttachmentLoadOp::eClear,
-                                                      vk::AttachmentStoreOp::eDontCare,
-                                                      vk::AttachmentLoadOp::eDontCare,
-                                                      vk::AttachmentStoreOp::eDontCare,
-                                                      vk::ImageLayout::eUndefined,
-                                                      vk::ImageLayout::eDepthStencilAttachmentOptimal);
+        vk::AttachmentStoreOp translate_attachment_store_operation(base::framebuffer_settings::store_operation storeOp) {
+            switch (storeOp) {
+            case base::framebuffer_settings::store_operation::store:
+                return vk::AttachmentStoreOp::eStore;
+            case base::framebuffer_settings::store_operation::dont_care:
+                return vk::AttachmentStoreOp::eDontCare;
+            }
+            assert(false);
+            return vk::AttachmentStoreOp::eDontCare;
+        }
 
-            vk::AttachmentReference colorAttachmentRef(0, vk::ImageLayout::eColorAttachmentOptimal);
+        vk::ImageLayout translate_image_layout(base::image_layout layout) {
+            switch (layout) {
+            case base::image_layout::undefined:
+                return vk::ImageLayout::eUndefined;
+            case base::image_layout::general:
+                return vk::ImageLayout::eGeneral;
+            case base::image_layout::color_attachment_optimal:
+                return vk::ImageLayout::eColorAttachmentOptimal;
+            case base::image_layout::depth_stencil_attachment_optimal:
+                return vk::ImageLayout::eDepthStencilAttachmentOptimal;
+            case base::image_layout::present:
+                return vk::ImageLayout::ePresentSrcKHR;
+            }
+            assert(false);
+            return vk::ImageLayout::eUndefined;
+        }
 
-            vk::AttachmentReference depthAttachmentRef(1, vk::ImageLayout::eDepthStencilAttachmentOptimal);
+        vk::PipelineBindPoint translate_bind_point(base::subpass_settings::bind_point bindPoint) {
+            switch (bindPoint) {
+            case base::subpass_settings::bind_point::graphics:
+                return vk::PipelineBindPoint::eGraphics;
+            case base::subpass_settings::bind_point::compute:
+                return vk::PipelineBindPoint::eCompute;
+            }
+            assert(false);
+            return vk::PipelineBindPoint::eGraphics;
+        }
 
-            vk::SubpassDescription subpass(vk::SubpassDescriptionFlags(),
-                                           vk::PipelineBindPoint::eGraphics,
-                                           0,
-                                           nullptr,
-                                           1,
-                                           &colorAttachmentRef,
-                                           nullptr,
-                                           &depthAttachmentRef);
+        std::vector<vk::AttachmentDescription> create_attachment_descriptions(
+            const std::vector<base::framebuffer_settings>& framebufferSettings, vk::Format format, vk::Format depthFormat) {
+            std::vector<vk::AttachmentDescription> attachments;
+            attachments.reserve(framebufferSettings.size());
+
+            for (const auto& framebuffer : framebufferSettings) {
+                vk::AttachmentDescription attachment(
+                    vk::AttachmentDescriptionFlags(),
+                    framebuffer.type == base::framebuffer_settings::attachment_type::color ? format : depthFormat,
+                    static_cast<vk::SampleCountFlagBits>(framebuffer.samples),
+                    translate_attachment_load_operation(framebuffer.attachmentLoadOperation),
+                    translate_attachment_store_operation(framebuffer.attachementStoreOperation),
+                    translate_attachment_load_operation(framebuffer.stencilLoadOperation),
+                    translate_attachment_store_operation(framebuffer.stencilStoreOperation),
+                    translate_image_layout(framebuffer.initialLayout),
+                    translate_image_layout(framebuffer.finalLayout));
+                attachments.emplace_back(attachment);
+            }
+
+            return attachments;
+        }
+
+        std::vector<std::vector<vk::AttachmentReference>>
+        create_attachment_references(const std::vector<base::subpass_settings>& subpassSettings) {
+            std::vector<std::vector<vk::AttachmentReference>> references(subpassSettings.size());
+            auto it = references.begin();
+            for (const auto& subpass : subpassSettings) {
+                for (const auto id : subpass.colorAttachments) {
+                    it->emplace_back(vk::AttachmentReference(id, vk::ImageLayout::eColorAttachmentOptimal));
+                }
+
+                if (subpass.depthAttachment) {
+                    it->emplace_back(vk::AttachmentReference(subpass.depthAttachment.value(),
+                                                             vk::ImageLayout::eDepthStencilAttachmentOptimal));
+                }
+                ++it;
+            }
+            return references;
+        }
+
+        std::vector<vk::SubpassDescription>
+        create_subpass_descriptions(const std::vector<base::subpass_settings>& subpassSettings,
+                                    const std::vector<std::vector<vk::AttachmentReference>>& references) {
+            std::vector<vk::SubpassDescription> subpasses;
+            subpasses.reserve(subpassSettings.size());
+            auto it = references.begin();
+            for (const auto& subpass : subpassSettings) {
+                const vk::AttachmentReference* depthAttachment =
+                    subpass.depthAttachment.has_value() ? &(*(it->rbegin())) : nullptr;
+                vk::SubpassDescription description(vk::SubpassDescriptionFlags(),
+                                                   translate_bind_point(subpass.bindPoint),
+                                                   0,
+                                                   nullptr,
+                                                   static_cast<std::uint32_t>(subpass.colorAttachments.size()),
+                                                   it->data(),
+                                                   nullptr,
+                                                   depthAttachment);
+                subpasses.emplace_back(description);
+                ++it;
+            }
+            return subpasses;
+        }
+
+        std::vector<vk::SubpassDependency>
+        create_subpass_dependencies(const std::vector<base::dependency>& dependenciesSettings) {
+            std::vector<vk::SubpassDependency> dependencies;
+            dependencies.reserve(dependenciesSettings.size());
+            for (const auto& dependency : dependenciesSettings) {
+                dependencies.emplace_back(
+                    vk::SubpassDependency(dependency.srcSubpassId,
+                                          dependency.dstSubpassId,
+                                          static_cast<vk::PipelineStageFlags>(dependency.srcStageMask),
+                                          static_cast<vk::PipelineStageFlags>(dependency.dstStageMask),
+                                          static_cast<vk::AccessFlags>(dependency.srcAccessMask),
+                                          static_cast<vk::AccessFlags>(dependency.dstAccessMask)));
+            }
+            return dependencies;
+        }
+
+        vk::RenderPass create_render_pass(vk::Device device,
+                                          const base::technique_settings& settings,
+                                          vk::Format format,
+                                          vk::Format depthFormat) {
+            const auto attachments = create_attachment_descriptions(settings.m_framebuffers, format, depthFormat);
+            const auto references = create_attachment_references(settings.m_subpasses);
+            const auto subpasses = create_subpass_descriptions(settings.m_subpasses, references);
+            const auto dependencies = create_subpass_dependencies(settings.m_depencencies);;
 
             vk::SubpassDependency dependency(VK_SUBPASS_EXTERNAL,
                                              0,
@@ -51,14 +157,13 @@ namespace engine {
                                              vk::AccessFlagBits::eColorAttachmentRead |
                                                  vk::AccessFlagBits::eColorAttachmentWrite);
 
-            vk::RenderPassCreateInfo renderPassInfo(
-                vk::RenderPassCreateFlags(),
-                2,
-                std::array<vk::AttachmentDescription, 2>{colorAttachment, depthAttachment}.data(),
-                1,
-                &subpass,
-                1,
-                &dependency);
+            vk::RenderPassCreateInfo renderPassInfo(vk::RenderPassCreateFlags(),
+                                                    static_cast<std::uint32_t>(attachments.size()),
+                                                    attachments.data(),
+                                                    static_cast<std::uint32_t>(subpasses.size()),
+                                                    subpasses.data(),
+                                                    static_cast<std::uint32_t>(dependencies.size()),
+                                                    dependencies.data());
 
             return device.createRenderPass(renderPassInfo);
         }
@@ -87,49 +192,16 @@ namespace engine {
             return framebuffers;
         }
 
-        rendering_technique::rendering_technique(std::string&& techniqueName,
-                                                 base::technique_settings&& techniqueSettings,
+        rendering_technique::rendering_technique(const std::string& techniqueName,
+                                                 base::technique_settings&& settings,
                                                  vk::Device device,
                                                  const swap_chain& swapChain)
-            : base::rendering_technique(
-                  std::move(techniqueName),
-                  std::move(techniqueSettings),
-                  core::extent<std::uint32_t>{swapChain.get_extent().width, swapChain.get_extent().height})
+            : base::rendering_technique(techniqueName, std::move(settings))
             , m_device(device)
             , m_swapChain(swapChain)
             , m_extent(m_swapChain.get().get_extent())
-            , m_renderPass(
-                  create_render_pass(device, m_swapChain.get().get_format(), m_swapChain.get().get_depth_format()))
-            , m_framebuffers(create_framebuffers(device,
-                                                 m_renderPass,
-                                                 m_swapChain.get().get_image_views(),
-                                                 m_swapChain.get().get_depth_image_view(),
-                                                 m_swapChain.get().get_extent())) {
-        }
-
-        rendering_technique::rendering_technique(std::string&& techniqueName,
-                                                 base::viewport_callback&& viewportCallback,
-                                                 base::scissor_callback&& scissorCallback,
-                                                 const base::depth_settings& depthSettings,
-                                                 const base::stencil_settings& stencilSettings,
-                                                 std::vector<base::color_blending_settings>&& framebufferBlending,
-                                                 const base::global_blending_settings& globalBlending,
-                                                 vk::Device device,
-                                                 const swap_chain& swapChain)
-            : base::rendering_technique(
-                  std::move(techniqueName),
-                  std::move(viewportCallback),
-                  std::move(scissorCallback),
-                  depthSettings,
-                  stencilSettings,
-                  std::move(framebufferBlending),
-                  globalBlending,
-                  core::extent<std::uint32_t>{swapChain.get_extent().width, swapChain.get_extent().height})
-            , m_device(device)
-            , m_swapChain(swapChain)
-            , m_extent(m_swapChain.get().get_extent())
-            , m_renderPass(
-                  create_render_pass(device, m_swapChain.get().get_format(), m_swapChain.get().get_depth_format()))
+            , m_renderPass(create_render_pass(
+                  device, m_settings, m_swapChain.get().get_format(), m_swapChain.get().get_depth_format()))
             , m_framebuffers(create_framebuffers(device,
                                                  m_renderPass,
                                                  m_swapChain.get().get_image_views(),
@@ -156,16 +228,14 @@ namespace engine {
 
             m_swapChain = newSwapChain;
 
-            m_renderPass =
-                create_render_pass(m_device, m_swapChain.get().get_format(), m_swapChain.get().get_depth_format());
+            m_renderPass = create_render_pass(
+                m_device, m_settings, m_swapChain.get().get_format(), m_swapChain.get().get_depth_format());
             m_framebuffers = create_framebuffers(m_device,
                                                  m_renderPass,
                                                  m_swapChain.get().get_image_views(),
                                                  m_swapChain.get().get_depth_image_view(),
                                                  m_swapChain.get().get_extent());
             m_extent = m_swapChain.get().get_extent();
-            m_viewportSettings = m_viewportSettingsCallback({m_extent.width, m_extent.height});
-            m_scissor = m_scissorCallback({m_extent.width, m_extent.height});
         }
 
         vk::RenderPassBeginInfo rendering_technique::generate_render_pass_info(vk::CommandBuffer buffer,
