@@ -20,6 +20,7 @@ set(ENGINE_HDRS
 	engine-impl/resources/rendering_technique.h
 	engine-impl/resources/settings.h
 	engine-impl/resources/shader.h
+	engine-impl/resources/texture.h
 	engine-impl/resources/uniform_buffer.h
 	engine-impl/resources/vertex_buffer.h
 	engine-impl/resources/vertex_format.h
@@ -48,6 +49,7 @@ set(ENGINE_SRCS
 	engine-impl/resources/rendering_technique.cpp
 	engine-impl/resources/settings.cpp
 	engine-impl/resources/shader.cpp
+	engine-impl/resources/texture.cpp
 	engine-impl/resources/uniform_buffer.cpp
 	engine-impl/resources/vertex_buffer.cpp
 	engine-impl/resources/vertex_format.cpp

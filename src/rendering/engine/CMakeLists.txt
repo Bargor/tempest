@@ -10,6 +10,7 @@ set(ENGINE_HDRS
 	engine/resources/material.h
 	engine/resources/pipeline.h
 	engine/resources/shader.h
+	engine/resources/texture.h
 	engine/resources/uniform_buffer.h
 	engine/resources/vertex_buffer.h
 	engine/resources/vertex_format.h
@@ -25,6 +26,7 @@ set(ENGINE_SRCS
 	engine/resources/material.cpp
 	engine/resources/pipeline.cpp
 	engine/resources/shader.cpp
+	engine/resources/texture.cpp
 	engine/resources/uniform_buffer.cpp
 	engine/resources/vertex_buffer.cpp
 	engine/resources/vertex_format.cpp

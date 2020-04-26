@@ -95,8 +95,8 @@ namespace engine {
                 return;
             }
 
-            m_device.m_resourceCache->add_rendering_technique(
-                rendering_technique(name, base::parse_technique_settings(m_dataLoader, name), m_device.m_logicalDevice, *m_device.m_swapChain));
+            m_device.m_resourceCache->add_rendering_technique(rendering_technique(
+                name, base::parse_technique_settings(m_dataLoader, name), m_device.m_logicalDevice, *m_device.m_swapChain));
         }
 
         vertex_buffer resource_factory::create_vertex_buffer(const vertex_format& format, std::vector<vertex>&& vertices) {
@@ -127,6 +127,19 @@ namespace engine {
             }
             assert(false);
             throw;
+        }
+
+        texture resource_factory::create_texture(const std::string&) {
+            // m_dataLoader.
+            return texture(m_device.m_logicalDevice,
+                           m_transferQueue,
+                           m_transferCommandPool,
+                           vk::BufferUsageFlagBits::eTransferSrc,
+                           m_device.m_physicalDevice->get_memory_properties(),
+                           vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent,
+                           0,
+                           {0, 0},
+                           nullptr);
         }
 
         vk::DescriptorPool resource_factory::create_descriptor_pool(std::uint32_t size) {
