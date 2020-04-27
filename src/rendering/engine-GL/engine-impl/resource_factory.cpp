@@ -6,6 +6,7 @@
 #include "shader_compiler.h"
 
 #include <application/data_loader.h>
+#include <fmt/format.h>
 
 namespace tst {
 namespace engine {
