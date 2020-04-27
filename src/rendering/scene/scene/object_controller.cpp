@@ -51,11 +51,12 @@ namespace scene {
             m_resourceFactory.create_index_buffer(std::vector<std::uint16_t>({0, 1, 2, 2, 3, 0, 4, 5, 6, 6, 7, 4,}));
 
         auto uniformBuffer = m_resourceFactory.create_uniform_buffer("test", engine::shader::shader_type::vertex, 0);
+        auto texture = m_resourceFactory.create_texture("texture.jpg");
 
         auto material = m_resourceFactory.create_material();
 
         scene_object object(
-            std::move(vertexBuffer), std::move(indexBuffer), std::move(material), std::move(uniformBuffer), pipeline);
+            std::move(vertexBuffer), std::move(indexBuffer), std::move(material), std::move(uniformBuffer), std::move(texture), pipeline);
         m_scene.add_object(std::move(object));
     }
 

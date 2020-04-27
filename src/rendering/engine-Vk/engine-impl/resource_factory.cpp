@@ -9,8 +9,10 @@
 #include "shader_compiler.h"
 #include "swap_chain.h"
 
+#include <application/data_loader.h>
 #include <engine-base/pipeline_parser.h>
 #include <engine-base/technique_parser.h>
+#include <fmt/format.h>
 
 namespace tst {
 namespace engine {
@@ -129,17 +131,18 @@ namespace engine {
             throw;
         }
 
-        texture resource_factory::create_texture(const std::string&) {
-            // m_dataLoader.
+        texture resource_factory::create_texture(const std::string& textureName) {
+            const auto textureFile = m_dataLoader.find_file(std::filesystem::path("textures") / (textureName));
+            if (!textureFile) {
+                throw std::runtime_error(fmt::format("Wrong texture path: so such file: %s", "textures/" + textureName));
+            }
             return texture(m_device.m_logicalDevice,
                            m_transferQueue,
                            m_transferCommandPool,
                            vk::BufferUsageFlagBits::eTransferSrc,
                            m_device.m_physicalDevice->get_memory_properties(),
                            vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent,
-                           0,
-                           {0, 0},
-                           nullptr);
+                           m_dataLoader.load_image(textureFile.value()));
         }
 
         vk::DescriptorPool resource_factory::create_descriptor_pool(std::uint32_t size) {

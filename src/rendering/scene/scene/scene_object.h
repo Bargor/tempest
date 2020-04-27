@@ -6,6 +6,7 @@
 #include <engine/resources/index_buffer.h>
 #include <engine/resources/material.h>
 #include <engine/resources/pipeline.h>
+#include <engine/resources/texture.h>
 #include <engine/resources/uniform_buffer.h>
 #include <engine/resources/vertex_buffer.h>
 
@@ -18,6 +19,7 @@ namespace scene {
             const engine::resources::vertex_buffer* vertices;
             const engine::resources::index_buffer* indices;
             const engine::resources::uniform_buffer& uniform;
+            const engine::resources::texture& texture;
             const engine::resources::pipeline& pipeline;
             const scene_object& object;
         };
@@ -27,6 +29,7 @@ namespace scene {
                      engine::resources::index_buffer&& indexBuffer,
                      engine::resources::material&& material,
                      engine::resources::uniform_buffer&& uniformBuffer,
+                     engine::resources::texture&& texture,
                      const engine::resources::pipeline& pipeline) noexcept;
         scene_object(const scene_object&) = delete;
         scene_object(scene_object&& object) noexcept;
@@ -39,6 +42,7 @@ namespace scene {
         engine::resources::index_buffer m_indices;
         engine::resources::material m_material;
         engine::resources::uniform_buffer m_uniforms;
+        engine::resources::texture m_texture;
         const engine::resources::pipeline& m_pipeline;
 
         state m_objectState;

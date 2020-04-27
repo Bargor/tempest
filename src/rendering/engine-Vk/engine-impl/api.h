@@ -4,8 +4,8 @@
 
 #include <memory>
 
-template<typename T>
-using ptr = std::unique_ptr<T>;
+template<typename T, typename Deleter = std::default_delete<T>>
+using ptr = std::unique_ptr<T, Deleter>;
 
 namespace tst {
 namespace engine {

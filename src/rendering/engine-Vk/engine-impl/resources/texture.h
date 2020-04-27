@@ -2,6 +2,7 @@
 // Author: Karol Kontny
 #pragma once
 
+#include <application/image_data.h>
 #include <common/rectangle.h>
 #include <cstddef>
 #include <vulkan/vulkan.hpp>
@@ -18,9 +19,7 @@ namespace engine {
                     vk::BufferUsageFlags flags,
                     const vk::PhysicalDeviceMemoryProperties& memoryProperties,
                     vk::MemoryPropertyFlags memoryFlags,
-                    std::size_t bytesCount,
-                    core::extent<std::uint32_t> imageSize,
-                    void* imageData);
+                    const application::image_data& imageData);
             ~texture();
 
             texture(texture&& other) noexcept;
@@ -29,6 +28,7 @@ namespace engine {
             vk::Device m_logicalDevice;
             vk::Image m_textureImage;
             vk::DeviceMemory m_textureMemory;
+            vk::ImageView m_textureView;
         };
 
     } // namespace vulkan

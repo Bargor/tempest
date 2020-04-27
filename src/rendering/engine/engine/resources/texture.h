@@ -27,7 +27,7 @@ namespace engine {
         };
 
         static_assert(!std::is_polymorphic_v<texture>);
-        static_assert(sizeof(vertex_buffer) == sizeof(api::texture));
+        static_assert(sizeof(texture) == sizeof(api::texture));
     } // namespace resources
 } // namespace engine
 } // namespace tst

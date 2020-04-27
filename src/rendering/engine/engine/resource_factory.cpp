@@ -27,8 +27,8 @@ namespace engine {
                                                                  const std::string& pipelineName,
                                                                  const std::string& shadersName,
                                                                  const vertex_format& format) {
-        return (const resources::pipeline&)(
-            super::create_pipeline(techniqueName, pipelineName, shadersName, format.to_super()));
+        return (const resources::pipeline&)(super::create_pipeline(
+            techniqueName, pipelineName, shadersName, format.to_super()));
     }
 
     void resource_factory::create_technique(const std::string& name) {
@@ -38,6 +38,10 @@ namespace engine {
     resources::vertex_buffer resource_factory::create_vertex_buffer(const engine::vertex_format& format,
                                                                     std::vector<vertex>&& vertices) {
         return super::create_vertex_buffer(format.to_super(), std::move(vertices));
+    }
+
+    resources::texture resource_factory::create_texture(const std::string& textureName) {
+        return super::create_texture(textureName);
     }
 
     resources::uniform_buffer resource_factory::create_uniform_buffer(const std::string& shaderName,
