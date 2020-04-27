@@ -5,6 +5,8 @@
 
 #include "shader_compiler.h"
 
+#include <application/data_loader.h>
+
 namespace tst {
 namespace engine {
     namespace opengl {
