@@ -12,7 +12,7 @@ namespace engine {
         texture ::~texture() {
         }
 
-        texture::texture(texture&& other) noexcept {
+        texture::texture(texture&&) noexcept {
         }
 
     } // namespace opengl
