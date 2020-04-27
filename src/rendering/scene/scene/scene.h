@@ -8,9 +8,6 @@
 #include <chrono>
 #include <engine/draw_info.h>
 
-template<typename T, typename Deleter = std::default_delete<T>>
-using ptr = std::unique_ptr<T, Deleter>;
-
 namespace tst {
 
 namespace application {

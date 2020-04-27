@@ -1,7 +1,7 @@
 // This file is part of Tempest-engine project
 // Author: Karol Kontny
 
-#include "texture.h
+#include "texture.h"
 
 namespace tst {
 namespace engine {

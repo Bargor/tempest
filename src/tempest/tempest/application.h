@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include <memory>
+#include <core.h>
 #include <thread>
 #include <string>
 
@@ -26,8 +26,6 @@ namespace application {
     struct program_params;
 
     class application {
-        template<typename T>
-        using ptr = std::unique_ptr<T>;
 
     public:
         application(const program_params& params, ptr<device::monitor> monitor, std::string&& name);
