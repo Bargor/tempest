@@ -3,7 +3,6 @@
 #pragma once
 
 #include <application/image_data.h>
-#include <common/rectangle.h>
 #include <cstddef>
 #include <vulkan/vulkan.hpp>
 
