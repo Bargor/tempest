@@ -30,7 +30,11 @@ namespace engine {
         }
 
         texture resource_factory::create_texture(const std::string& textureName) {
-            return texture();
+            const auto textureFile = m_dataLoader.find_file(std::filesystem::path("textures") / (textureName));
+            if (!textureFile) {
+                throw std::runtime_error(fmt::format("Wrong texture path: so such file: %s", "textures/" + textureName));
+            }
+            return texture(m_dataLoader.load_image(textureFile.value()));
         }
 
         vertex_buffer resource_factory::create_vertex_buffer(const vertex_format& format, std::vector<vertex>&& vertices) {
