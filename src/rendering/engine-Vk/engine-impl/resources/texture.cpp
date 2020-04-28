@@ -86,7 +86,7 @@ namespace engine {
         }
 
         void texture::bind_texture(const std::string& shaderName, shader_type type, std::uint32_t binding) {
-            const auto descLayout = [this, &shaderName, type, binding]() {
+            const auto descLayout = [this, &shaderName, type]() {
                 const auto shaders = m_resourceCache.find_shaders(shaderName);
                 for (const auto& shader : *shaders) {
                     if (shader.get_stage() == type) {
