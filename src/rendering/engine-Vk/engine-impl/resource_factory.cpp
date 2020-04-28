@@ -139,6 +139,8 @@ namespace engine {
             return texture(m_device.m_logicalDevice,
                            m_transferQueue,
                            m_transferCommandPool,
+                           m_descriptorPools[0],
+                           *m_device.m_resourceCache,
                            vk::BufferUsageFlagBits::eTransferSrc,
                            m_device.m_physicalDevice->get_memory_properties(),
                            vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent,
@@ -151,7 +153,7 @@ namespace engine {
 
             vk::DescriptorPoolCreateInfo poolCreateInfo(
                 vk::DescriptorPoolCreateFlags(),
-                settings::m_inFlightFrames,
+                settings::m_inFlightFrames * 3,
                 2,
                 std::array<vk::DescriptorPoolSize, 2>{uniformPoolSize, samplerPoolSize}.data());
 

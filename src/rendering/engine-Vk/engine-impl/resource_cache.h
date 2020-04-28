@@ -29,7 +29,7 @@ namespace engine {
             const pipeline* find_pipeline(std::size_t pipelineHash) const;
             const rendering_technique* find_technique(const std::string& name) const;
             const shader_set* find_shaders(const std::string& name) const;
-            const vk::DescriptorSetLayout* find_descriptor_layout(const shader::descriptor_layout& layout);
+            const vk::DescriptorSetLayout* find_descriptor_layout(const shader::descriptor_layout& layout) const;
 
             void clear();
             void rebuild_techniques(const swap_chain& newSwapChain);

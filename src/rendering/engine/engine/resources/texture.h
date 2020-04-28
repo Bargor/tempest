@@ -2,6 +2,8 @@
 // Author: Karol Kontny
 #pragma once
 
+#include "shader.h"
+
 #include <engine-impl/api.h>
 #include <engine-impl/resources/texture.h>
 
@@ -17,6 +19,9 @@ namespace engine {
             ~texture();
 
             texture(texture&& other) noexcept;
+
+        public:
+            void bind_texture(const std::string shaderName, api::shader_type type, std::uint32_t binding);
 
         public:
             const api::texture& to_super() const noexcept {

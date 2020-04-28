@@ -8,8 +8,13 @@ namespace engine {
     draw_info::draw_info(const resources::vertex_buffer* vertices,
                          const resources::index_buffer* indices,
                          const resources::pipeline& pipeline,
-                         const resources::uniform_buffer* uniforms)
-        : api::draw_info(&vertices->to_super(), &indices->to_super(), pipeline.to_super(), &uniforms->to_super()) {
+                         const resources::uniform_buffer* uniforms,
+                         const resources::texture* textures)
+        : api::draw_info(&vertices->to_super(),
+                         &indices->to_super(),
+                         pipeline.to_super(),
+                         &uniforms->to_super(),
+                         &textures->to_super()) {
     }
 
     draw_info::draw_info(api::draw_info&& impl) : api::draw_info(std::move(impl)) {
