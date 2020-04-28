@@ -33,6 +33,7 @@ namespace engine {
         public:
             void bind_texture(const std::string& shaderName, shader_type type, std::uint32_t binding);
 
+        public:
             vk::DescriptorSet get_descriptor_set() const noexcept;
 
         private:

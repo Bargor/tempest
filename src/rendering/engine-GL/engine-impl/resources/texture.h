@@ -15,6 +15,9 @@ namespace engine {
 
             texture(texture&& other) noexcept;
 
+        public:
+            void bind_texture(const std::string& shaderName, shader_type type, std::uint32_t binding);
+
         private:
         };
 

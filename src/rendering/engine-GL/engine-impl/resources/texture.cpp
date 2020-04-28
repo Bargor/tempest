@@ -15,6 +15,9 @@ namespace engine {
         texture::texture(texture&&) noexcept {
         }
 
+        void texture::bind_texture(const std::string&, shader_type, std::uint32_t) {
+        }
+
     } // namespace opengl
 } // namespace engine
 } // namespace tst
