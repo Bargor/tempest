@@ -43,9 +43,6 @@ namespace engine {
             }
         }
 
-        uniform_buffer::~uniform_buffer() {
-        }
-
         uniform_buffer::uniform_buffer(uniform_buffer&& other) noexcept
             : buffer(std::move(other))
             , m_data(std::move(other.m_data))

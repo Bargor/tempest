@@ -5,6 +5,9 @@
 
 #include "shader_compiler.h"
 
+#include <application/data_loader.h>
+#include <fmt/format.h>
+
 namespace tst {
 namespace engine {
     namespace opengl {
@@ -19,11 +22,22 @@ namespace engine {
             : m_dataLoader(factory.m_dataLoader), m_shaderCompiler(std::move(factory.m_shaderCompiler)) {
         }
 
-        const pipeline& resource_factory::create_pipeline(const std::string&, const std::string&, const std::string&, const vertex_format&) {
+        const pipeline& resource_factory::create_pipeline(const std::string&,
+                                                          const std::string&,
+                                                          const std::string&,
+                                                          const vertex_format&) {
             std::vector<pipeline> m_pipe;
             pipeline p{};
             m_pipe.push_back(p);
             return m_pipe[0];
+        }
+
+        texture resource_factory::create_texture(const std::string& textureName) {
+            const auto textureFile = m_dataLoader.find_file(std::filesystem::path("textures") / (textureName));
+            if (!textureFile) {
+                throw std::runtime_error(fmt::format("Wrong texture path: so such file: %s", "textures/" + textureName));
+            }
+            return texture(m_dataLoader.load_image(textureFile.value()));
         }
 
         vertex_buffer resource_factory::create_vertex_buffer(const vertex_format& format, std::vector<vertex>&& vertices) {

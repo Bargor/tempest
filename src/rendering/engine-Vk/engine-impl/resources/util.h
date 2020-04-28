@@ -11,8 +11,9 @@ namespace engine {
                                        uint32_t typeFilter,
                                        vk::MemoryPropertyFlags propertyFlags);
 
-        vk::ImageView
-        create_image_view(vk::Device device, vk::Image image, vk::Format format, vk::ImageAspectFlags aspectFlags);
+        vk::CommandBuffer create_one_time_buffer(vk::Device device, vk::CommandPool cmdPool);
+        void submit_one_time_buffer(vk::Device device, vk::CommandPool cmdPool, vk::Queue queue, vk::CommandBuffer cmdBuffer);
+
     } // namespace vulkan
 } // namespace engine
 } // namespace tst

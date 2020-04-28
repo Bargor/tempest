@@ -6,6 +6,7 @@
 #include "resources/material.h"
 #include "resources/pipeline.h"
 #include "resources/shader.h"
+#include "resources/texture.h"
 #include "resources/uniform_buffer.h"
 #include "resources/vertex_buffer.h"
 #include "resources/vertex_format.h"
@@ -34,6 +35,7 @@ namespace engine {
                                                    const vertex_format& format);
         void create_technique(const std::string& name);
         resources::vertex_buffer create_vertex_buffer(const vertex_format& format, std::vector<vertex>&& vertices);
+        resources::texture create_texture(const std::string& textureName);
         resources::uniform_buffer create_uniform_buffer(const std::string& shaderName,
                                                         api::shader_type type,
                                                         std::uint32_t binding);

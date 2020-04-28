@@ -9,13 +9,12 @@ namespace engine {
     namespace vulkan {
 
         class buffer {
-            friend class engine;
 
         public:
             buffer(vk::Device logicalDevice,
                    vk::Queue queueHandle,
                    vk::CommandPool cmdPool,
-                   std::uint64_t size,
+                   std::size_t size,
                    vk::BufferUsageFlags flags,
                    const vk::PhysicalDeviceMemoryProperties& memoryProperties,
                    vk::MemoryPropertyFlags memoryFlags);

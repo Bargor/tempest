@@ -8,9 +8,6 @@
 #include <chrono>
 #include <engine/draw_info.h>
 
-template<typename T>
-using ptr = std::unique_ptr<T>;
-
 namespace tst {
 
 namespace application {

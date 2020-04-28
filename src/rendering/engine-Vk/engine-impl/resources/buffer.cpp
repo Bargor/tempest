@@ -2,6 +2,7 @@
 // Author: Karol Kontny
 
 #include "buffer.h"
+
 #include "util.h"
 
 namespace tst {
@@ -13,7 +14,7 @@ namespace engine {
         buffer::buffer(vk::Device logicalDevice,
                        vk::Queue queueHandle,
                        vk::CommandPool cmdPool,
-                       std::uint64_t size,
+                       std::size_t size,
                        vk::BufferUsageFlags usageFlags,
                        const vk::PhysicalDeviceMemoryProperties& memoryProperties,
                        vk::MemoryPropertyFlags memoryFlags)
@@ -58,22 +59,15 @@ namespace engine {
         }
 
         void buffer::copy_buffer(vk::Buffer& dstBuffer, std::uint64_t size) const {
-            vk::CommandBufferAllocateInfo allocInfo(m_cmdPool, vk::CommandBufferLevel::ePrimary, 1);
+            
+            const auto cmdBuffer = create_one_time_buffer(m_logicalDevice, m_cmdPool);
 
-            auto cmdBuffer = m_logicalDevice.allocateCommandBuffers(allocInfo);
-
-            vk::CommandBufferBeginInfo cmdBufferInfo(vk::CommandBufferUsageFlagBits::eOneTimeSubmit);
-
-            cmdBuffer[0].begin(cmdBufferInfo);
             {
                 vk::BufferCopy copyInfo(0, 0, size);
-                cmdBuffer[0].copyBuffer(m_buffer, dstBuffer, copyInfo);
+                cmdBuffer.copyBuffer(m_buffer, dstBuffer, copyInfo);
             }
-            cmdBuffer[0].end();
-
-            vk::SubmitInfo submitInfo(0, nullptr, nullptr, 1, &cmdBuffer[0]);
-            m_queueHandle.submit({submitInfo}, vk::Fence());
-            m_queueHandle.waitIdle();
+            
+            submit_one_time_buffer(m_logicalDevice, m_cmdPool, m_queueHandle, cmdBuffer);
         }
 
     } // namespace vulkan

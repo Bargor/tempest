@@ -1,9 +1,9 @@
 // This file is part of Tempest-engine project
 // Author: Karol Kontny
 #pragma once
-#include "api.h"
 #include "queue_indices.h"
 
+#include <core.h>
 #include <vulkan/vulkan.hpp>
 
 namespace tst {

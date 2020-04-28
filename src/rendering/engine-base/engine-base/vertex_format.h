@@ -13,6 +13,7 @@ namespace engine {
     struct vertex {
         glm::vec3 pos;
         glm::vec3 color;
+        glm::vec2 texCoord;
     };
 
     namespace base {
@@ -35,7 +36,7 @@ namespace engine {
                 uint4
             };
 
-            enum class location { position, normal, texcoord, binormal };
+            enum class location { position, normal, texcoord, binormal, color };
 
             enum class primitive_topology {
                 point_list,

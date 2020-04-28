@@ -20,20 +20,27 @@ namespace engine {
             throw vulkan_exception("failed to find suitable memory type!");
         }
 
-        vk::ImageView
-        create_image_view(vk::Device device, vk::Image image, vk::Format format, vk::ImageAspectFlags aspectFlags) {
-            const vk::ImageViewCreateInfo createInfo(vk::ImageViewCreateFlags(),
-                                                     image,
-                                                     vk::ImageViewType::e2D,
-                                                     format,
-                                                     vk::ComponentMapping(),
-                                                     vk::ImageSubresourceRange(aspectFlags, 0, 1, 0, 1));
+        vk::CommandBuffer create_one_time_buffer(vk::Device device, vk::CommandPool cmdPool) {
+            vk::CommandBufferAllocateInfo allocInfo(cmdPool, vk::CommandBufferLevel::ePrimary, 1);
 
-            try {
-                return device.createImageView(createInfo);
-            } catch (std::runtime_error&) {
-                throw vulkan_exception("Failed to create image views!");
-            }
+            auto cmdBuffer = device.allocateCommandBuffers(allocInfo);
+
+            vk::CommandBufferBeginInfo cmdBufferInfo(vk::CommandBufferUsageFlagBits::eOneTimeSubmit);
+
+            cmdBuffer[0].begin(cmdBufferInfo);
+
+            return cmdBuffer[0];
+        }
+
+        void submit_one_time_buffer(vk::Device device, vk::CommandPool cmdPool, vk::Queue queue, vk::CommandBuffer cmdBuffer)
+        {
+            cmdBuffer.end();
+
+            vk::SubmitInfo submitInfo(0, nullptr, nullptr, 1, &cmdBuffer);
+            queue.submit({submitInfo}, vk::Fence());
+            queue.waitIdle();
+
+            device.freeCommandBuffers(cmdPool, cmdBuffer);
         }
 
     } // namespace vulkan

@@ -61,7 +61,7 @@ namespace engine {
             return nullptr;
         }
 
-        const vk::DescriptorSetLayout* resource_cache::find_descriptor_layout(const shader::descriptor_layout& layout) {
+        const vk::DescriptorSetLayout* resource_cache::find_descriptor_layout(const shader::descriptor_layout& layout) const {
             const auto& flayout = m_descriptorLayouts.find(layout);
             if (flayout != m_descriptorLayouts.end()) {
                 return &flayout->second;

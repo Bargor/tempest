@@ -2,7 +2,7 @@
 // Author: Karol Kontny
 #pragma once
 
-#include <memory>
+#include <core.h>
 #include <time/timer.h>
 
 namespace tst {
@@ -28,8 +28,6 @@ namespace application {
     struct app_event;
 
     class simulation_engine {
-        template<typename T>
-        using ptr = std::unique_ptr<T>;
 
     public:
         simulation_engine(time_source& timeSource,

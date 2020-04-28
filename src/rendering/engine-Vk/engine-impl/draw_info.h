@@ -6,6 +6,7 @@
 #include "resources/pipeline.h"
 #include "resources/uniform_buffer.h"
 #include "resources/vertex_buffer.h"
+#include "resources/texture.h"
 
 #include <vulkan/vulkan.hpp>
 
@@ -17,7 +18,8 @@ namespace engine {
             draw_info(const vertex_buffer* vertices,
                       const index_buffer<std::uint16_t>* indices,
                       const pipeline& pipeline,
-                      const uniform_buffer* uniforms);
+                      const uniform_buffer* uniforms,
+                      const texture* textures);
 
             ~draw_info() = default;
 
@@ -26,6 +28,7 @@ namespace engine {
             const index_buffer<std::uint16_t>* indices;
             const pipeline& pipelineState;
             const uniform_buffer* uniforms;
+            const texture* textures;
         };
     } // namespace vulkan
 } // namespace engine

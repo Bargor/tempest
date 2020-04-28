@@ -11,11 +11,6 @@ namespace tst {
 namespace engine {
     namespace vulkan {
 
-        struct vertex_buffer_draw_info {
-            vk::Buffer buffer;
-            std::uint32_t count;
-        };
-
         class vertex_buffer : public buffer {
             using super = buffer;
         public:
