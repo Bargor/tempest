@@ -8,7 +8,7 @@ project (Tempest CXX)
 # The project version number.
 set(VERSION_MAJOR   0   CACHE STRING "Project major version number.")
 set(VERSION_MINOR   0   CACHE STRING "Project minor version number.")
-set(VERSION_PATCH   3   CACHE STRING "Project patch version number.")
+set(VERSION_PATCH   4   CACHE STRING "Project patch version number.")
 
 #Get build number
 execute_process(COMMAND git -C ${CMAKE_SOURCE_DIR} rev-parse --short HEAD OUTPUT_VARIABLE VERSION_REVISION)
