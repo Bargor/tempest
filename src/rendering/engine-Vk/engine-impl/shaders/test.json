@@ -1,7 +1,10 @@
 {
 	"vert": [{
-		"type": "uniform",
+		"type": 6,
 		"binding": 0
 	}],
-	"frag": []
+	"frag": [{
+		"type": 1,
+		"binding": 1
+	}]
 }
