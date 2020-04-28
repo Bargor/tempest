@@ -34,9 +34,10 @@ namespace engine {
 
             for (const auto& descriptor : descriptors.GetArray()) {
                 auto binding = descriptor["binding"].GetUint();
+                auto descriptorType = descriptor["type"].GetUint();
 
                 layouts.emplace_back(shader::descriptor_layout{
-                    binding, vk::DescriptorType::eUniformBuffer, shader::get_native_shader_type(type)});
+                    binding, static_cast<vk::DescriptorType>(descriptorType), shader::get_native_shader_type(type)});
             }
             return layouts;
         }

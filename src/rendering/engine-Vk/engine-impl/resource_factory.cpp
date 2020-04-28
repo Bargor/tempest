@@ -145,10 +145,15 @@ namespace engine {
                            m_dataLoader.load_image(textureFile.value()));
         }
 
-        vk::DescriptorPool resource_factory::create_descriptor_pool(std::uint32_t size) {
-            vk::DescriptorPoolSize poolSize(vk::DescriptorType::eUniformBuffer, size);
+        vk::DescriptorPool resource_factory::create_descriptor_pool(std::uint32_t) {
+            vk::DescriptorPoolSize uniformPoolSize(vk::DescriptorType::eUniformBuffer, settings::m_inFlightFrames);
+            vk::DescriptorPoolSize samplerPoolSize(vk::DescriptorType::eCombinedImageSampler, settings::m_inFlightFrames);
 
-            vk::DescriptorPoolCreateInfo poolCreateInfo(vk::DescriptorPoolCreateFlags(), size, 1, &poolSize);
+            vk::DescriptorPoolCreateInfo poolCreateInfo(
+                vk::DescriptorPoolCreateFlags(),
+                settings::m_inFlightFrames,
+                2,
+                std::array<vk::DescriptorPoolSize, 2>{uniformPoolSize, samplerPoolSize}.data());
 
             m_descriptorPools.emplace_back(m_device.m_logicalDevice.createDescriptorPool(poolCreateInfo));
 
