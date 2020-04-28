@@ -2,6 +2,8 @@
 // Author: Karol Kontny
 #pragma once
 
+#include "shader.h"
+
 #include <application/image_data.h>
 
 namespace tst {
