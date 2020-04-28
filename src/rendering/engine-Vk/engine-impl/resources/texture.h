@@ -18,7 +18,8 @@ namespace engine {
                     vk::BufferUsageFlags flags,
                     const vk::PhysicalDeviceMemoryProperties& memoryProperties,
                     vk::MemoryPropertyFlags memoryFlags,
-                    const application::image_data& imageData);
+                    const application::image_data& imageData,
+                    vk::Sampler = nullptr);
             ~texture();
 
             texture(texture&& other) noexcept;
@@ -28,6 +29,7 @@ namespace engine {
             vk::Image m_textureImage;
             vk::DeviceMemory m_textureMemory;
             vk::ImageView m_textureView;
+            vk::Sampler m_sampler;
         };
 
     } // namespace vulkan

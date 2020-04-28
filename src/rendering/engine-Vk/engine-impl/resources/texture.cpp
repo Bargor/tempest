@@ -10,14 +10,36 @@ namespace tst {
 namespace engine {
     namespace vulkan {
 
+        vk::Sampler create_default_sampler(vk::Device device) {
+            vk::SamplerCreateInfo samplerInfo(vk::SamplerCreateFlags(),
+                                              vk::Filter::eLinear,
+                                              vk::Filter::eLinear,
+                                              vk::SamplerMipmapMode::eLinear,
+                                              vk::SamplerAddressMode::eRepeat,
+                                              vk::SamplerAddressMode::eRepeat,
+                                              vk::SamplerAddressMode::eRepeat,
+                                              0.0f,
+                                              true,
+                                              16,
+                                              false,
+                                              vk::CompareOp::eAlways,
+                                              0.0f,
+                                              0.0f,
+                                              vk::BorderColor::eIntOpaqueBlack,
+                                              false);
+
+            return device.createSampler(samplerInfo);
+        }
+
         texture::texture(vk::Device logicalDevice,
                          vk::Queue queueHandle,
                          vk::CommandPool cmdPool,
                          vk::BufferUsageFlags flags,
                          const vk::PhysicalDeviceMemoryProperties& memoryProperties,
                          vk::MemoryPropertyFlags memoryFlags,
-                         const application::image_data& imageData)
-            : m_logicalDevice(logicalDevice) {
+                         const application::image_data& imageData,
+                         vk::Sampler sampler)
+            : m_logicalDevice(logicalDevice), m_sampler(sampler ? create_default_sampler(m_logicalDevice) : sampler) {
             buffer stagingBuffer(
                 logicalDevice, queueHandle, cmdPool, imageData.memorySize, flags, memoryProperties, memoryFlags);
 
@@ -48,12 +70,15 @@ namespace engine {
 
             m_textureView = create_image_view(
                 logicalDevice, m_textureImage, vk::Format::eR8G8B8Srgb, vk::ImageAspectFlagBits::eColor);
+
+            vk::DescriptorImageInfo(m_sampler, m_textureView, vk::ImageLayout::eShaderReadOnlyOptimal);
         }
 
         texture::~texture() {
             m_logicalDevice.destroyImageView(m_textureView);
             m_logicalDevice.destroyImage(m_textureImage);
             m_logicalDevice.freeMemory(m_textureMemory);
+            m_logicalDevice.destroySampler(m_sampler);
         }
 
         texture::texture(texture&& other) noexcept
