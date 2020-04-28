@@ -70,6 +70,7 @@ target_link_libraries(engine-impl PUBLIC
 	${Vulkan_LIBRARIES}
 	PRIVATE
 	tinyobjloader
+	fmt::fmt
 )
 
 #Compiler specific options

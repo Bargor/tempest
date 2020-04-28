@@ -48,6 +48,7 @@ namespace engine {
             , m_sampler(sampler ? sampler : create_default_sampler(m_logicalDevice)) {
             buffer stagingBuffer(
                 logicalDevice, queueHandle, cmdPool, imageData.memorySize, flags, memoryProperties, memoryFlags);
+            stagingBuffer.copy_data(imageData.data.get(), imageData.memorySize);
 
             std::tie(m_textureImage, m_textureMemory) =
                 create_image(logicalDevice,
@@ -62,7 +63,7 @@ namespace engine {
                                     queueHandle,
                                     cmdPool,
                                     m_textureImage,
-                                    vk::Format::eR8G8B8Srgb,
+                                    vk::Format::eR8G8B8A8Srgb,
                                     vk::ImageLayout::eUndefined,
                                     vk::ImageLayout::eTransferDstOptimal);
             copy_buffer_to_image(logicalDevice, cmdPool, queueHandle, stagingBuffer, m_textureImage, imageData.imageSize);
@@ -70,12 +71,12 @@ namespace engine {
                                     queueHandle,
                                     cmdPool,
                                     m_textureImage,
-                                    vk::Format::eR8G8B8Srgb,
+                                    vk::Format::eR8G8B8A8Srgb,
                                     vk::ImageLayout::eTransferDstOptimal,
                                     vk::ImageLayout::eShaderReadOnlyOptimal);
 
             m_textureView = create_image_view(
-                logicalDevice, m_textureImage, vk::Format::eR8G8B8Srgb, vk::ImageAspectFlagBits::eColor);
+                logicalDevice, m_textureImage, vk::Format::eR8G8B8A8Srgb, vk::ImageAspectFlagBits::eColor);
         }
 
         texture::~texture() {
@@ -117,7 +118,7 @@ namespace engine {
             , m_textureMemory(other.m_textureMemory)
             , m_textureView(other.m_textureView)
             , m_sampler(other.m_sampler)
-            , m_descriptorSet (other.m_descriptorSet){
+            , m_descriptorSet(other.m_descriptorSet) {
             other.m_textureImage = nullptr;
             other.m_textureMemory = nullptr;
             other.m_textureView = nullptr;
