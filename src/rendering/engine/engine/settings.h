@@ -9,7 +9,7 @@
 namespace tst {
 namespace engine {
 
-    class settings final : public api::settings {
+    struct settings final : public api::settings {
         using super = api::settings;
 
     public:

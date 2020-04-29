@@ -1,5 +1,6 @@
 // This file is part of Tempest project
 // Author: Karol Kontny
+#pragma once
 
 #include "engine-impl/api.h"
 #include "engine-impl/resources/shader.h"

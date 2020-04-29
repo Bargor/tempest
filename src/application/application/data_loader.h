@@ -2,6 +2,8 @@
 // Author: Karol Kontny
 #pragma once
 
+#include "image_data.h"
+
 #include <filesystem>
 #include <optional>
 #include <rapidjson/document.h>
@@ -23,6 +25,7 @@ namespace application {
         virtual std::vector<char> load_shader_bytecode(const std::filesystem::path& path) const;
         virtual void load_obj_model(const std::string_view& name) const;
         virtual rapidjson::Document load_json(const std::filesystem::path& path) const;
+        virtual image_data load_image(const std::filesystem::path& path) const;
         virtual std::optional<std::filesystem::path> find_file(const std::string& name) const;
         virtual std::optional<std::filesystem::path> find_file(const std::filesystem::path& name) const;
 

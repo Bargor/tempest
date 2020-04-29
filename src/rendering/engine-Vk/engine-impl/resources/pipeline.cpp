@@ -187,13 +187,69 @@ namespace engine {
             return vk::PrimitiveTopology::eTriangleList;
         }
 
+        vk::CompareOp translate_compare_operation(base::compare_operation compareOp) {
+            switch (compareOp) {
+            case base::compare_operation::never:
+                return vk::CompareOp::eNever;
+            case base::compare_operation::less:
+                return vk::CompareOp::eLess;
+            case base::compare_operation::equal:
+                return vk::CompareOp::eEqual;
+            case base::compare_operation::less_or_equal:
+                return vk::CompareOp::eLessOrEqual;
+            case base::compare_operation::greater:
+                return vk::CompareOp::eGreater;
+            case base::compare_operation::not_equal:
+                return vk::CompareOp::eNotEqual;
+            case base::compare_operation::greater_or_equal:
+                return vk::CompareOp::eGreaterOrEqual;
+            case base::compare_operation::always:
+                return vk::CompareOp::eAlways;
+            }
+
+            assert(false);
+            return vk::CompareOp::eNever;
+        }
+
+        vk::StencilOp translate_stencil_operation(base::stencil_settings::stencil_operation stencilOp) {
+            switch (stencilOp) {
+            case base::stencil_settings::stencil_operation::keep:
+                return vk::StencilOp::eKeep;
+            case base::stencil_settings::stencil_operation::zero:
+                return vk::StencilOp::eZero;
+            case base::stencil_settings::stencil_operation::replace:
+                return vk::StencilOp::eReplace;
+            case base::stencil_settings::stencil_operation::increment_and_clamp:
+                return vk::StencilOp::eIncrementAndClamp;
+            case base::stencil_settings::stencil_operation::decrement_and_clamp:
+                return vk::StencilOp::eDecrementAndClamp;
+            case base::stencil_settings::stencil_operation::invert:
+                return vk::StencilOp::eInvert;
+            case base::stencil_settings::stencil_operation::increment_and_wrap:
+                return vk::StencilOp::eIncrementAndWrap;
+            case base::stencil_settings::stencil_operation::decrement_and_wrap:
+                return vk::StencilOp::eDecrementAndWrap;
+            }
+            assert(false);
+            return vk::StencilOp::eZero;
+        }
+
+        vk::StencilOpState create_stencil_op_state(base::stencil_settings::operation_state opState) {
+            vk::StencilOpState state(translate_stencil_operation(opState.failOperation),
+                                     translate_stencil_operation(opState.passOperation),
+                                     translate_stencil_operation(opState.depthFailOperation),
+                                     translate_compare_operation(opState.compareOperation),
+                                     opState.compareMask,
+                                     opState.writeMask,
+                                     opState.reference);
+
+            return state;
+        }
+
         vk::PipelineLayout create_pipeline_layout(const vk::Device logicalDevice,
                                                   const std::vector<vk::DescriptorSetLayout>& layouts) {
-
-            vk::PipelineLayoutCreateInfo pipelineLayoutInfo(vk::PipelineLayoutCreateFlags(),
-                                                            static_cast<std::uint32_t>(layouts.size()), layouts.data(),
-                                                            0,
-                                                            nullptr);
+            vk::PipelineLayoutCreateInfo pipelineLayoutInfo(
+                vk::PipelineLayoutCreateFlags(), static_cast<std::uint32_t>(layouts.size()), layouts.data(), 0, nullptr);
             return logicalDevice.createPipelineLayout(pipelineLayoutInfo);
         }
 
@@ -247,6 +303,23 @@ namespace engine {
             return multisampling;
         }
 
+        vk::PipelineDepthStencilStateCreateInfo create_depth_stencil_info(const base::depth_settings& depthSettings,
+                                                                          const base::stencil_settings& stencilSettings) {
+            vk::PipelineDepthStencilStateCreateInfo depthStencil(
+                vk::PipelineDepthStencilStateCreateFlags(),
+                depthSettings.depthTestEnable,
+                depthSettings.depthWriteEnable,
+                translate_compare_operation(depthSettings.compareOperation),
+                depthSettings.depthBoundsTestEnable,
+                stencilSettings.enable,
+                create_stencil_op_state(stencilSettings.frontOperation),
+                create_stencil_op_state(stencilSettings.backOperation),
+                depthSettings.minDepthBounds,
+                depthSettings.maxDepthBounds);
+
+            return depthStencil;
+        }
+
         std::vector<vk::PipelineColorBlendAttachmentState>
         create_color_blend_attachment(const std::vector<base::color_blending_settings>& framebufferColorBlending) {
             std::vector<vk::PipelineColorBlendAttachmentState> colorBlendAttachments;
@@ -287,8 +360,10 @@ namespace engine {
         vk::Pipeline compile_pipeline(const vk::Device logicalDevice,
                                       const vk::PipelineLayout pipelineLayout,
                                       const vk::RenderPass renderPass,
-                                      const base::viewport_settings viewportSettings,
+                                      const base::viewport_settings& viewportSettings,
                                       const core::rectangle<std::int32_t, std::uint32_t> scissorSettings,
+                                      const base::depth_settings& depthSettings,
+                                      const base::stencil_settings& stencilSettings,
                                       const std::vector<base::color_blending_settings>& framebufferBlendingSettings,
                                       const base::global_blending_settings& globalBlendingSettings,
                                       const base::rasterizer_settings& rasterizerSettings,
@@ -311,14 +386,14 @@ namespace engine {
             const auto viewportInfo = create_viewport_info(viewport, scissor);
             const auto rasterizationInfo = create_rasterization_info(rasterizerSettings);
             const auto multisamplingInfo = create_multisampling_info(multisamplingSettings);
+            const auto depthStencilInfo = create_depth_stencil_info(depthSettings, stencilSettings);
             const auto colorBlendAttachment = create_color_blend_attachment(framebufferBlendingSettings);
             const auto blendingInfo = create_color_blending_info(globalBlendingSettings, colorBlendAttachment);
 
             std::vector<vk::PipelineShaderStageCreateInfo> shaderInfos;
-            std::transform(shaders.cbegin(),
-                           shaders.cend(),
-                           std::back_inserter(shaderInfos),
-                           [](const shader& shader) { return shader.get_pipeline_info(); });
+            std::transform(shaders.cbegin(), shaders.cend(), std::back_inserter(shaderInfos), [](const shader& shader) {
+                return shader.get_pipeline_info();
+            });
 
             vk::GraphicsPipelineCreateInfo pipelineInfo(vk::PipelineCreateFlags(),
                                                         static_cast<std::uint32_t>(shaderInfos.size()),
@@ -329,7 +404,7 @@ namespace engine {
                                                         &viewportInfo,
                                                         &rasterizationInfo,
                                                         &multisamplingInfo,
-                                                        nullptr,
+                                                        &depthStencilInfo,
                                                         &blendingInfo,
                                                         nullptr,
                                                         pipelineLayout,
@@ -342,40 +417,49 @@ namespace engine {
 
         pipeline::pipeline(const vk::Device logicalDevice,
                            const settings& engineSettings,
+                           base::draw_settings&& drawSettings,
                            const vertex_format& format,
                            const shader_set& shaders,
                            const rendering_technique& technique,
-                           std::vector<vk::DescriptorSetLayout>&& layouts)
-            : m_pipelineLayout(create_pipeline_layout(logicalDevice, layouts))
+                           std::vector<vk::DescriptorSetLayout>&& layouts,
+                           vk::Extent2D extent)
+            : m_viewportSettingsCallback(drawSettings.viewportCallback)
+            , m_scissorCallback(drawSettings.scissorCallback)
+            , m_pipelineSettings(m_viewportSettingsCallback({extent.width, extent.height}),
+                                 m_scissorCallback({extent.width, extent.height}),
+                                 drawSettings.depthSettings,
+                                 drawSettings.stencilSettings,
+                                 engineSettings.m_rasterizer,
+                                 engineSettings.m_multisampling,
+                                 drawSettings.framebufferColorBlending,
+                                 drawSettings.globalColorBlending)
+            , m_pipelineLayout(create_pipeline_layout(logicalDevice, layouts))
             , m_pipeline(compile_pipeline(logicalDevice,
                                           m_pipelineLayout,
                                           technique.m_renderPass,
-                                          technique.m_viewportSettings,
-                                          technique.m_scissor,
-                                          technique.m_framebufferColorBlending,
-                                          technique.m_globalColorBlending,
+                                          m_pipelineSettings.m_viewport,
+                                          m_pipelineSettings.m_scissor,
+                                          drawSettings.depthSettings,
+                                          drawSettings.stencilSettings,
+                                          drawSettings.framebufferColorBlending,
+                                          drawSettings.globalColorBlending,
                                           engineSettings.m_rasterizer,
                                           engineSettings.m_multisampling,
                                           format,
                                           shaders))
-            , m_pipelineSettings(technique.m_viewportSettings,
-                                 technique.m_scissor,
-                                 engineSettings.m_rasterizer,
-                                 engineSettings.m_multisampling,
-                                 technique.m_framebufferColorBlending,
-                                 technique.m_globalColorBlending)
             , m_technique(technique)
             , m_shaders(shaders)
             , m_vertexFormat(format)
             , m_logicalDevice(logicalDevice)
-            , m_layouts(std::move(layouts))
-        {
+            , m_layouts(std::move(layouts)) {
         }
 
         pipeline::pipeline(pipeline&& pipeline) noexcept
-            : m_pipelineLayout(pipeline.m_pipelineLayout)
-            , m_pipeline(pipeline.m_pipeline)
+            : m_viewportSettingsCallback(std::move(pipeline.m_viewportSettingsCallback))
+            , m_scissorCallback(std::move(pipeline.m_scissorCallback))
             , m_pipelineSettings(std::move(pipeline.m_pipelineSettings))
+            , m_pipelineLayout(pipeline.m_pipelineLayout)
+            , m_pipeline(pipeline.m_pipeline)
             , m_technique(pipeline.m_technique)
             , m_shaders(pipeline.m_shaders)
             , m_vertexFormat(pipeline.m_vertexFormat)
@@ -404,15 +488,18 @@ namespace engine {
 
         void pipeline::recreate() {
             destroy();
+            const auto newExtent = m_technique.get_extent();
             m_pipelineLayout = create_pipeline_layout(m_logicalDevice, m_layouts);
-            m_pipelineSettings.m_viewport.width = m_technique.m_viewportSettings.width;
-            m_pipelineSettings.m_viewport.height = m_technique.m_viewportSettings.height;
+            m_pipelineSettings.m_viewport = m_viewportSettingsCallback({newExtent.width, newExtent.height});
+            m_pipelineSettings.m_scissor = m_scissorCallback({newExtent.width, newExtent.height});
 
             m_pipeline = compile_pipeline(m_logicalDevice,
                                           m_pipelineLayout,
                                           m_technique.m_renderPass,
                                           m_pipelineSettings.m_viewport,
                                           m_pipelineSettings.m_scissor,
+                                          m_pipelineSettings.m_depthSettings,
+                                          m_pipelineSettings.m_stencilSettings,
                                           m_pipelineSettings.m_framebufferColorBlending,
                                           m_pipelineSettings.m_globalColorBlending,
                                           m_pipelineSettings.m_rasterizer,

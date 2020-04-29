@@ -3,8 +3,6 @@
 #pragma once
 
 #include <engine-base/rendering_technique.h>
-#include <functional>
-#include <optional>
 #include <vulkan/vulkan.hpp>
 
 namespace tst {
@@ -17,16 +15,8 @@ namespace engine {
             friend class pipeline;
 
         public:
-            rendering_technique(std::string&& techniqueName,
+            rendering_technique(const std::string& techniqueName,
                                 base::technique_settings&& techniqueSettings,
-                                vk::Device device,
-                                const swap_chain& swapChain);
-
-            rendering_technique(std::string&& techniqueName,
-                                base::viewport_callback&& viewportCallback,
-                                base::scissor_callback&& scissorCallback,
-                                std::vector<base::color_blending_settings>&& framebufferBlending,
-                                const base::global_blending_settings& globalBlending,
                                 vk::Device device,
                                 const swap_chain& swapChain);
 
@@ -40,6 +30,8 @@ namespace engine {
             vk::RenderPassBeginInfo generate_render_pass_info(vk::CommandBuffer buffer,
                                                               vk::SubpassContents contents) const;
 
+            vk::Extent2D get_extent() const noexcept;
+
         private:
             void destroy();
 
@@ -50,6 +42,10 @@ namespace engine {
             vk::RenderPass m_renderPass;
             std::vector<vk::Framebuffer> m_framebuffers;
         };
+
+        TST_INLINE vk::Extent2D rendering_technique::get_extent() const noexcept {
+            return m_extent;
+        }
 
     } // namespace vulkan
 } // namespace engine

@@ -4,6 +4,7 @@
 
 #include "resources/index_buffer.h"
 #include "resources/pipeline.h"
+#include "resources/texture.h"
 #include "resources/uniform_buffer.h"
 #include "resources/vertex_buffer.h"
 
@@ -12,7 +13,11 @@ namespace engine {
     namespace opengl {
         class draw_info {
         public:
-            draw_info(const vertex_buffer* vertices, const index_buffer<std::uint16_t>* indices, const pipeline& pipeline, const uniform_buffer* uniforms);
+            draw_info(const vertex_buffer* vertices,
+                      const index_buffer<std::uint16_t>* indices,
+                      const pipeline& pipeline,
+                      const uniform_buffer* uniforms,
+                      const texture* texture);
 
             ~draw_info() = default;
 
@@ -21,6 +26,7 @@ namespace engine {
             const index_buffer<std::uint16_t>* indices;
             const pipeline& pipelineState;
             const uniform_buffer* uniforms;
+            const texture* textures;
         };
     } // namespace opengl
 } // namespace engine

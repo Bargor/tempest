@@ -10,6 +10,8 @@
 #include <fstream>
 #include <rapidjson/istreamwrapper.h>
 #include <rapidjson/rapidjson.h>
+#define STB_IMAGE_IMPLEMENTATION
+#include <stb_image.h>
 
 namespace tst {
 namespace application {
@@ -62,6 +64,15 @@ namespace application {
         rapidjson::Document jsonDocument;
         jsonDocument.ParseStream(inputStreamWrapper);
         return jsonDocument;
+    }
+
+    image_data data_loader::load_image(const std::filesystem::path& path) const {
+        std::int32_t texWidth, texHeight, texChannels;
+        stbi_uc* pixels = stbi_load(path.string().c_str(), &texWidth, &texHeight, &texChannels, STBI_rgb_alpha);
+        return {{static_cast<std::uint32_t>(texWidth), static_cast<std::uint32_t>(texHeight)},
+                texChannels,
+                static_cast<std::size_t>(texWidth) * texHeight * STBI_rgb_alpha,
+                ptr<unsigned char, void (*)(void*)>(pixels, stbi_image_free)};
     }
 
     std::optional<std::filesystem::path> data_loader::find_file(const std::string& name) const {

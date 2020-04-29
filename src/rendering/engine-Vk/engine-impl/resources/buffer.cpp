@@ -3,7 +3,7 @@
 
 #include "buffer.h"
 
-#include "../vulkan_exception.h"
+#include "util.h"
 
 namespace tst {
 namespace engine {
@@ -14,7 +14,7 @@ namespace engine {
         buffer::buffer(vk::Device logicalDevice,
                        vk::Queue queueHandle,
                        vk::CommandPool cmdPool,
-                       std::uint64_t size,
+                       std::size_t size,
                        vk::BufferUsageFlags usageFlags,
                        const vk::PhysicalDeviceMemoryProperties& memoryProperties,
                        vk::MemoryPropertyFlags memoryFlags)
@@ -22,9 +22,9 @@ namespace engine {
             const vk::BufferCreateInfo createInfo(vk::BufferCreateFlags(), size, usageFlags, vk::SharingMode::eExclusive);
 
             m_buffer = m_logicalDevice.createBuffer(createInfo);
-            const vk::MemoryRequirements requirements = m_logicalDevice.getBufferMemoryRequirements(m_buffer);
+            const auto requirements = m_logicalDevice.getBufferMemoryRequirements(m_buffer);
             const vk::MemoryAllocateInfo allocateInfo(
-                requirements.size, findMemoryType(memoryProperties, requirements.memoryTypeBits, memoryFlags));
+                requirements.size, find_memory_type(memoryProperties, requirements.memoryTypeBits, memoryFlags));
 
             m_bufferMemory = m_logicalDevice.allocateMemory(allocateInfo);
             m_logicalDevice.bindBufferMemory(m_buffer, m_bufferMemory, 0);
@@ -59,35 +59,15 @@ namespace engine {
         }
 
         void buffer::copy_buffer(vk::Buffer& dstBuffer, std::uint64_t size) const {
-            vk::CommandBufferAllocateInfo allocInfo(m_cmdPool, vk::CommandBufferLevel::ePrimary, 1);
+            
+            const auto cmdBuffer = create_one_time_buffer(m_logicalDevice, m_cmdPool);
 
-            auto cmdBuffer = m_logicalDevice.allocateCommandBuffers(allocInfo);
-
-            vk::CommandBufferBeginInfo cmdBufferInfo(vk::CommandBufferUsageFlagBits::eOneTimeSubmit);
-
-            cmdBuffer[0].begin(cmdBufferInfo);
             {
                 vk::BufferCopy copyInfo(0, 0, size);
-                cmdBuffer[0].copyBuffer(m_buffer, dstBuffer, copyInfo);
+                cmdBuffer.copyBuffer(m_buffer, dstBuffer, copyInfo);
             }
-            cmdBuffer[0].end();
-
-            vk::SubmitInfo submitInfo(0, nullptr, nullptr, 1, &cmdBuffer[0]);
-            m_queueHandle.submit({submitInfo}, vk::Fence());
-            m_queueHandle.waitIdle();
-        }
-
-        std::uint32_t buffer::findMemoryType(const vk::PhysicalDeviceMemoryProperties& properties,
-                                             uint32_t typeFilter,
-                                             vk::MemoryPropertyFlags propertyFlags) const {
-            for (uint32_t i = 0; i < properties.memoryTypeCount; i++) {
-                if ((typeFilter & (1 << i)) &&
-                    (properties.memoryTypes[i].propertyFlags & propertyFlags) == propertyFlags) {
-                    return i;
-                }
-            }
-
-            throw vulkan_exception("failed to find suitable memory type!");
+            
+            submit_one_time_buffer(m_logicalDevice, m_cmdPool, m_queueHandle, cmdBuffer);
         }
 
     } // namespace vulkan

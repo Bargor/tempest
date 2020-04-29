@@ -9,7 +9,10 @@
 #include "shader_compiler.h"
 #include "swap_chain.h"
 
+#include <application/data_loader.h>
+#include <engine-base/pipeline_parser.h>
 #include <engine-base/technique_parser.h>
+#include <fmt/format.h>
 
 namespace tst {
 namespace engine {
@@ -23,7 +26,7 @@ namespace engine {
             , m_transferCommandPool(m_device.m_logicalDevice.createCommandPool(vk::CommandPoolCreateInfo(
                   vk::CommandPoolCreateFlags(), m_device.m_physicalDevice->get_graphics_index())))
             , m_transferQueue(m_device.m_graphicsQueueHandle) {
-            create_descriptor_pool(200);
+            create_descriptor_pool(400);
         }
 
         resource_factory::~resource_factory() {
@@ -54,6 +57,7 @@ namespace engine {
         }
 
         const pipeline& resource_factory::create_pipeline(const std::string& techniqueName,
+                                                          const std::string& pipelineName,
                                                           const std::string& shadersName,
                                                           const vertex_format& format) {
             auto shaders = m_device.m_resourceCache->find_shaders(shadersName);
@@ -72,8 +76,14 @@ namespace engine {
                     }
                 }
 
-                pipeline pipeline(
-                    m_device.m_logicalDevice, m_device.m_engineSettings, format, *shaders, *technique, std::move(layouts));
+                pipeline pipeline(m_device.m_logicalDevice,
+                                  m_device.m_engineSettings,
+                                  base::parse_draw_settings(m_dataLoader, pipelineName),
+                                  format,
+                                  *shaders,
+                                  *technique,
+                                  std::move(layouts),
+                                  technique->get_extent());
 
                 auto hash = m_device.m_resourceCache->add_pipeline(std::move(pipeline));
 
@@ -82,16 +92,13 @@ namespace engine {
             throw std::runtime_error("Can't find pipeline");
         }
 
-        void resource_factory::create_technique(std::string&& name) {
+        void resource_factory::create_technique(const std::string& name) {
             if (m_device.m_resourceCache->find_technique(name) != nullptr) {
                 return;
             }
 
-            m_device.m_resourceCache->add_rendering_technique(
-                rendering_technique(std::move(name),
-                                    base::parse_rendering_technique(m_dataLoader, name),
-                                    m_device.m_logicalDevice,
-                                    *m_device.m_swapChain));
+            m_device.m_resourceCache->add_rendering_technique(rendering_technique(
+                name, base::parse_technique_settings(m_dataLoader, name), m_device.m_logicalDevice, *m_device.m_swapChain));
         }
 
         vertex_buffer resource_factory::create_vertex_buffer(const vertex_format& format, std::vector<vertex>&& vertices) {
@@ -124,10 +131,31 @@ namespace engine {
             throw;
         }
 
-        vk::DescriptorPool resource_factory::create_descriptor_pool(std::uint32_t size) {
-            vk::DescriptorPoolSize poolSize(vk::DescriptorType::eUniformBuffer, size);
+        texture resource_factory::create_texture(const std::string& textureName) {
+            const auto textureFile = m_dataLoader.find_file(std::filesystem::path("textures") / (textureName));
+            if (!textureFile) {
+                throw std::runtime_error(fmt::format("Wrong texture path: so such file: %s", "textures/" + textureName));
+            }
+            return texture(m_device.m_logicalDevice,
+                           m_transferQueue,
+                           m_transferCommandPool,
+                           m_descriptorPools[0],
+                           *m_device.m_resourceCache,
+                           vk::BufferUsageFlagBits::eTransferSrc,
+                           m_device.m_physicalDevice->get_memory_properties(),
+                           vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent,
+                           m_dataLoader.load_image(textureFile.value()));
+        }
 
-            vk::DescriptorPoolCreateInfo poolCreateInfo(vk::DescriptorPoolCreateFlags(), size, 1, &poolSize);
+        vk::DescriptorPool resource_factory::create_descriptor_pool(std::uint32_t) {
+            vk::DescriptorPoolSize uniformPoolSize(vk::DescriptorType::eUniformBuffer, settings::m_inFlightFrames);
+            vk::DescriptorPoolSize samplerPoolSize(vk::DescriptorType::eCombinedImageSampler, settings::m_inFlightFrames);
+
+            vk::DescriptorPoolCreateInfo poolCreateInfo(
+                vk::DescriptorPoolCreateFlags(),
+                settings::m_inFlightFrames * 3,
+                2,
+                std::array<vk::DescriptorPoolSize, 2>{uniformPoolSize, samplerPoolSize}.data());
 
             m_descriptorPools.emplace_back(m_device.m_logicalDevice.createDescriptorPool(poolCreateInfo));
 

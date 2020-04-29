@@ -5,48 +5,27 @@ set(ENGINE_BASE_HDRS
 	engine-base/gpu_info.h
 	engine-base/rendering_technique.h
 	engine-base/material.h
+	engine-base/pipeline_parser.h
 	engine-base/pipeline_settings.h
-	engine-base/vertex_format.h
 	engine-base/settings.h
 	engine-base/shader.h
 	engine-base/settings_parser.h
 	engine-base/technique_parser.h
+	engine-base/vertex_format.h
 )
 
 set(ENGINE_BASE_SRCS
 	engine-base/gpu_info.cpp
 	engine-base/rendering_technique.cpp
 	engine-base/material.cpp
+	engine-base/pipeline_parser.cpp
 	engine-base/pipeline_settings.cpp
-	engine-base/vertex_format.cpp
 	engine-base/settings.cpp
 	engine-base/settings_parser.cpp
 	engine-base/technique_parser.cpp
+	engine-base/vertex_format.cpp
 )
 
 tst_add_library(engine-base "${ENGINE_BASE_HDRS}" "${ENGINE_BASE_SRCS}")
 
 target_link_libraries(engine-base PUBLIC glm tst::core rapidjson::rapidjson PRIVATE tst::application fmt::fmt)
-
-#Compiler specific options
-if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-	add_custom_target(
-		copy_technique_files
-		${CMAKE_COMMAND}
-		-D SOURCE_DIR=${CMAKE_CURRENT_SOURCE_DIR}
-		-D DESTINATION_DIR=${RUNTIME_OUTPUT_PATH}/$<CONFIG>/techniques/
-		-P ${PROJECT_SOURCE_DIR}/cmake/CopyTechniques.cmake
-		COMMENT "Copying technique files for target: test" VERBATIM
-		)
-else()
-	add_custom_target(
-		copy_technique_files
-		${CMAKE_COMMAND}
-		-D SOURCE_DIR=${CMAKE_CURRENT_SOURCE_DIR}
-		-D DESTINATION_DIR=${RUNTIME_OUTPUT_PATH}/techniques/
-		-P ${PROJECT_SOURCE_DIR}/cmake/CopyTechniques.cmake
-		COMMENT "Copying technique files for target: test" VERBATIM
-		)
-endif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-
-add_dependencies(engine-base copy_technique_files)

@@ -33,7 +33,7 @@ namespace engine {
             uniform_buffer(uniform_buffer&& other) noexcept;
             uniform_buffer(const uniform_buffer& other) = delete;
 
-            ~uniform_buffer();
+            ~uniform_buffer() = default;
 
             void update_buffer(const uniform_buffer_object& ubo);
             vk::DescriptorSet get_descriptor_set() const noexcept;

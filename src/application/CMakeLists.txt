@@ -2,35 +2,38 @@
 # Author: Karol Kontny
 
 set(APPLICATION_HDRS
-	application/window.h
-	application/glfw_window.h
-	application/main_window.h
-	application/argument_parser.h
-	application/event_processor.h
-	application/app_event.h
-	application/input_processor.h
-	application/glfw_exception.h
+    application/app_event.h
+    application/argument_parser.h
 	application/data_exception.h
 	application/data_loader.h
-	application/time_source.h
+	application/event_processor.h
+	application/glfw_window.h
+	application/glfw_exception.h
+	application/image_data.h
+	application/input_processor.h
+	application/main_window.h
 	application/object_id.h
+	application/time_source.h
+	application/window.h
 )
 
 set(APPLICATION_SRCS 
-	application/window.cpp
-	application/glfw_window.cpp
-	application/main_window.cpp
-	application/argument_parser.cpp
-	application/event_processor.cpp
 	application/app_event.cpp
-	application/input_processor.cpp
+	application/argument_parser.cpp
 	application/data_loader.cpp
+	application/event_processor.cpp	
+	application/glfw_window.cpp	
+	application/input_processor.cpp	
+	application/main_window.cpp
 	application/time_source.cpp
+	application/window.cpp
 )
 
 include(${PROJECT_SOURCE_DIR}/cmake/TstAddLibrary.cmake)
 
 tst_add_library(application "${APPLICATION_HDRS}" "${APPLICATION_SRCS}")
+
+target_include_directories(application PRIVATE ${PROJECT_SOURCE_DIR}/libs/stb)
 
 target_link_libraries(application PUBLIC tst::core rapidjson::rapidjson PRIVATE glfw tst::device)
 

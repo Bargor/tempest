@@ -117,7 +117,7 @@ namespace engine {
 
             startFrame();
 
-            auto commandBuffers = m_engineFrontend->prepare_draw(first, last);
+            const auto commandBuffers = m_engineFrontend->prepare_draw(first, last);
 
             draw(commandBuffers);
             endFrame();

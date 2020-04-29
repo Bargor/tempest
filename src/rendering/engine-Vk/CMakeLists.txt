@@ -13,15 +13,18 @@ set(ENGINE_HDRS
 	engine-impl/resource_cache.h
 	engine-impl/resource_factory.h
 	engine-impl/resources/buffer.h
+	engine-impl/resources/image.h
 	engine-impl/resources/index_buffer.h
 	engine-impl/resources/material.h
 	engine-impl/resources/pipeline.h
 	engine-impl/resources/rendering_technique.h
 	engine-impl/resources/settings.h
 	engine-impl/resources/shader.h
+	engine-impl/resources/texture.h
 	engine-impl/resources/uniform_buffer.h
 	engine-impl/resources/vertex_buffer.h
 	engine-impl/resources/vertex_format.h
+	engine-impl/resources/util.h
 	engine-impl/settings_parser.h
 	engine-impl/shader_compiler.h
 	engine-impl/swap_chain.h
@@ -39,15 +42,18 @@ set(ENGINE_SRCS
 	engine-impl/resource_cache.cpp
 	engine-impl/resource_factory.cpp
 	engine-impl/resources/buffer.cpp
+	engine-impl/resources/image.cpp
 	engine-impl/resources/index_buffer.cpp
 	engine-impl/resources/material.cpp
 	engine-impl/resources/pipeline.cpp
 	engine-impl/resources/rendering_technique.cpp
 	engine-impl/resources/settings.cpp
 	engine-impl/resources/shader.cpp
+	engine-impl/resources/texture.cpp
 	engine-impl/resources/uniform_buffer.cpp
 	engine-impl/resources/vertex_buffer.cpp
 	engine-impl/resources/vertex_format.cpp
+	engine-impl/resources/util.cpp
 	engine-impl/settings_parser.cpp
 	engine-impl/shader_compiler.cpp
 	engine-impl/swap_chain.cpp
@@ -64,6 +70,7 @@ target_link_libraries(engine-impl PUBLIC
 	${Vulkan_LIBRARIES}
 	PRIVATE
 	tinyobjloader
+	fmt::fmt
 )
 
 #Compiler specific options
