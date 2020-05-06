@@ -11,7 +11,9 @@ namespace tst {
 namespace engine {
     namespace vulkan {
 
-        physical_device::physical_device(vk::PhysicalDevice device, ptr<gpu_info> info, queue_family_indices& indices)
+        physical_device::physical_device(vk::PhysicalDevice device,
+                                         ptr<gpu_info> info,
+                                         queue_family_indices& indices)
             : m_physicalDevice(device), m_gpuInfo(std::move(info)), m_queueIndices(indices) {
         }
 
@@ -26,7 +28,8 @@ namespace engine {
         }
 
         vk::Device physical_device::create_logical_device(const std::vector<const char*>& validationLayers,
-                                                          const std::vector<const char*>& extensions) {
+                                                          const std::vector<const char*>& extensions,
+                                                          const vk::PhysicalDeviceFeatures& requiredFeatures) {
             std::vector<vk::DeviceQueueCreateInfo> queueCreateInfos;
 
             std::set<std::uint32_t> uniqueQueueFamilies = {m_queueIndices.graphicsIndex.value(),
@@ -47,7 +50,7 @@ namespace engine {
                                             validationLayers.data(),
                                             static_cast<uint32_t>(extensions.size()),
                                             extensions.data(),
-                                            nullptr);
+                                            &requiredFeatures);
 
             try {
                 return m_physicalDevice.createDevice(createInfo);
