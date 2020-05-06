@@ -5,6 +5,11 @@
 
 namespace tst {
 namespace engine {
-    namespace vulkan {} // namespace vulkan
+    namespace vulkan {
+
+        material::material() : base::material() {
+        }
+
+    } // namespace vulkan
 } // namespace engine
 } // namespace tst

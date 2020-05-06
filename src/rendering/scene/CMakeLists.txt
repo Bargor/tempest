@@ -2,12 +2,14 @@
 # Author: Karol Kontny
 
 set(SCENE_HDRS
+	scene/camera.h
 	scene/object_controller.h
 	scene/scene.h
 	scene/scene_object.h
 )
 
 set(SCENE_SRCS 
+	scene/camera.cpp
 	scene/object_controller.cpp
 	scene/scene.cpp
 	scene/scene_object.cpp

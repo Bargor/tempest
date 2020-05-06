@@ -4,6 +4,11 @@
 
 namespace tst {
 namespace engine {
-    namespace resources {} // namespace resources
+    namespace resources {
+
+        material::material() : super::material() {
+        }
+
+    } // namespace resources
 } // namespace engine
 } // namespace tst

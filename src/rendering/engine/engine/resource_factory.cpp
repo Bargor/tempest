@@ -20,7 +20,7 @@ namespace engine {
     }
 
     resources::material resource_factory::create_material() {
-        return resources::material{};
+        return resources::material();
     }
 
     const resources::pipeline& resource_factory::create_pipeline(const std::string& techniqueName,

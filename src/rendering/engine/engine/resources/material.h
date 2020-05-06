@@ -14,6 +14,8 @@ namespace engine {
             using super = api::material;
 
         public:
+            material();
+
         public:
             const api::material& to_super() const noexcept {
                 return *this;

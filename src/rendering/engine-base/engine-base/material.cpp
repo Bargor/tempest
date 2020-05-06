@@ -4,6 +4,10 @@
 
 namespace tst {
 namespace engine {
-    namespace base {} // namespace base
+    namespace base {
+
+        material::material() {
+        }
+    } // namespace base
 } // namespace engine
 } // namespace tst
