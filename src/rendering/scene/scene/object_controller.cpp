@@ -57,7 +57,7 @@ namespace scene {
 
         auto uniformBuffer = m_resourceFactory.create_uniform_buffer("test", engine::shader::shader_type::vertex, 0);
         auto texture = m_resourceFactory.create_texture("texture.jpg");
-        texture.bind_texture("test", engine::shader::shader_type::fragment, 1);
+        texture.bind_texture("test", engine::shader::shader_type::fragment, 0);
 
         auto material = m_resourceFactory.create_material();
 
