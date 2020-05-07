@@ -22,11 +22,11 @@ namespace engine {
 
             vk::SurfaceFormatKHR choose_surface_format(const std::vector<vk::SurfaceFormatKHR>& availableFormats) {
                 if (availableFormats.size() == 1 && availableFormats[0].format == vk::Format::eUndefined) {
-                    return {vk::Format::eB8G8R8A8Unorm, vk::ColorSpaceKHR::eSrgbNonlinear};
+                    return {vk::Format::eB8G8R8A8Srgb, vk::ColorSpaceKHR::eSrgbNonlinear};
                 }
 
                 for (const auto& availableFormat : availableFormats) {
-                    if (availableFormat.format == vk::Format::eB8G8R8A8Unorm &&
+                    if (availableFormat.format == vk::Format::eB8G8R8A8Srgb &&
                         availableFormat.colorSpace == vk::ColorSpaceKHR::eSrgbNonlinear) {
                         return availableFormat;
                     }
