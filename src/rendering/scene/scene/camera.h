@@ -2,8 +2,7 @@
 // Author: Karol Kontny
 #pragma once
 
-#include <glm/glm.hpp>
-#include <glm/gtc/quaternion.hpp>
+#include <glm.h>
 
 namespace tst {
 namespace scene {

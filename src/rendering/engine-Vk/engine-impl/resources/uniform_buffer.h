@@ -5,7 +5,7 @@
 #include "buffer.h"
 #include "settings.h"
 
-#include <glm/glm.hpp>
+#include <glm.h>
 #include <vector>
 
 namespace tst {

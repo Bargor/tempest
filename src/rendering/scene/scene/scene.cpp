@@ -1,8 +1,5 @@
 #include "scene.h"
 
-#include "engine/resource_factory.h"
-#include "object_controller.h"
-
 namespace tst {
 namespace scene {
     std::vector<scene_object::state> update_scene(scene& scene,
@@ -27,11 +24,8 @@ namespace scene {
     }
 
     scene::scene(std::string&& sceneName,
-                 application::data_loader& dataLoader,
-                 application::event_processor<application::app_event>&,
-                 engine::resource_factory& resourceFactory)
-        : m_sceneName(std::move(sceneName))
-        , m_sceneObjectController(std::make_unique<object_controller>(*this, dataLoader, resourceFactory)) {
+                 application::event_processor<application::app_event>&)
+        : m_sceneName(std::move(sceneName)) {
     }
 
     scene::~scene() {
@@ -39,10 +33,6 @@ namespace scene {
 
     void scene::add_object(scene_object&& object) {
         m_objects.emplace_back(std::move(object));
-    }
-
-    object_controller& scene::get_object_controller() const noexcept {
-        return *m_sceneObjectController;
     }
 } // namespace scene
 } // namespace tst

@@ -21,18 +21,13 @@ namespace engine {
 
 namespace scene {
 
-    class scene;
-
     class object_controller {
     public:
-        object_controller(scene& scene,
-                          const application::data_loader& dataLoader,
-                          engine::resource_factory& resourceFactory);
+        object_controller(const application::data_loader& dataLoader, engine::resource_factory& resourceFactory);
 
-        void load_object(const std::string& shaderName);
+        scene_object load_object(const std::string& shaderName);
 
     private:
-        scene& m_scene;
         const application::data_loader& m_dataLoader;
         engine::resource_factory& m_resourceFactory;
     };

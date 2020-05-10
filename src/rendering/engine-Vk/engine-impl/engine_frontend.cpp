@@ -19,7 +19,6 @@
 #include <application/app_event.h>
 #include <application/event_processor.h>
 #include <application/main_window.h>
-#include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <util/variant.h>
 

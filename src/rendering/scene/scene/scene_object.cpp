@@ -3,8 +3,7 @@
 
 #include "scene_object.h"
 
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
+#include <glm.h>
 
 namespace tst {
 namespace scene {

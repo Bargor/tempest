@@ -11,10 +11,11 @@
 #include <application/main_window.h>
 #include <engine/resource_factory.h>
 #include <engine/settings.h>
-#include <fmt/printf.h>
 #include <scene/scene.h>
 #include <scene/object_controller.h>
 #include <util/variant.h>
+
+#include <fmt/printf.h>
 // clang-format on
 
 namespace tst {
@@ -32,7 +33,8 @@ namespace application {
         , m_dataLoader(dataLoader)
         , m_renderingDevice(std::make_unique<engine::device>(m_mainWindow, m_eventProcessor, engine::api::parse_engine_settings(dataLoader)))
         , m_resourceFactory(std::make_unique<engine::resource_factory>(*m_renderingDevice, m_dataLoader))
-        , m_scene(std::make_unique<scene::scene>("world", dataLoader, eventProcessor, *m_resourceFactory))
+        , m_scene(std::make_unique<scene::scene>("world", eventProcessor))
+        , m_objectController(std::make_unique<scene::object_controller>(dataLoader, *m_resourceFactory))
         , m_frameCounter(0)
         , m_lastSecondFrames(0)
         , m_shouldClose(false)
@@ -56,7 +58,7 @@ namespace application {
                                    this,
                                    std::move(time_callback),
                                    std::chrono::seconds(1));
-        m_scene->get_object_controller().load_object("test");  
+        m_scene->add_object(m_objectController->load_object("test"));  
     }
 
     simulation_engine::~simulation_engine() {
