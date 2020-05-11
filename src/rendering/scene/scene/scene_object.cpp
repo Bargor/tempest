@@ -8,13 +8,15 @@
 namespace tst {
 namespace scene {
 
-    scene_object::scene_object(engine::resources::vertex_buffer&& vertexBuffer,
+    scene_object::scene_object(const std::string& objectName,
+                               engine::resources::vertex_buffer&& vertexBuffer,
                                engine::resources::index_buffer&& indexBuffer,
                                engine::resources::material&& material,
                                engine::resources::uniform_buffer&& uniformBuffer,
                                engine::resources::texture&& texture,
                                const engine::resources::pipeline& pipeline) noexcept
-        : m_vertices(std::move(vertexBuffer))
+        : m_name(objectName)
+        , m_vertices(std::move(vertexBuffer))
         , m_indices(std::move(indexBuffer))
         , m_material(std::move(material))
         , m_uniforms(std::move(uniformBuffer))
@@ -25,7 +27,8 @@ namespace scene {
     }
 
     scene_object::scene_object(scene_object&& object) noexcept
-        : m_vertices(std::move(object.m_vertices))
+        : m_name(std::move(object.m_name))
+        , m_vertices(std::move(object.m_vertices))
         , m_indices(std::move(object.m_indices))
         , m_material(std::move(object.m_material))
         , m_uniforms(std::move(object.m_uniforms))

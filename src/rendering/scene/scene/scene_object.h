@@ -25,7 +25,8 @@ namespace scene {
         };
 
     public:
-        scene_object(engine::resources::vertex_buffer&& vertexBuffer,
+        scene_object(const std::string& objectName,
+                     engine::resources::vertex_buffer&& vertexBuffer,
                      engine::resources::index_buffer&& indexBuffer,
                      engine::resources::material&& material,
                      engine::resources::uniform_buffer&& uniformBuffer,
@@ -38,6 +39,7 @@ namespace scene {
         state update_object(std::chrono::duration<std::uint64_t, std::micro> elapsedTime);
 
     private:
+        std::string m_name;
         engine::resources::vertex_buffer m_vertices;
         engine::resources::index_buffer m_indices;
         engine::resources::material m_material;

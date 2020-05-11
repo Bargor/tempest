@@ -17,7 +17,7 @@ namespace scene {
         : m_dataLoader(dataLoader), m_resourceFactory(resourceFactory) {
     }
 
-    scene_object object_controller::load_object(const std::string& path) {
+    scene_object object_controller::load_object(const std::string& objectName, const std::string& path) {
         m_dataLoader.find_file(path);
         auto vertexFormat = engine::vertex_format(engine::vertex_format::primitive_topology::triangle_list);
         vertexFormat.add_attribute(engine::vertex_format::location::position,
@@ -58,7 +58,8 @@ namespace scene {
 
         auto material = m_resourceFactory.create_material();
 
-        return scene_object(std::move(vertexBuffer),
+        return scene_object(objectName,
+                            std::move(vertexBuffer),
                             std::move(indexBuffer),
                             std::move(material),
                             std::move(uniformBuffer),

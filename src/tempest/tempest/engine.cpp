@@ -58,7 +58,7 @@ namespace application {
                                    this,
                                    std::move(time_callback),
                                    std::chrono::seconds(1));
-        m_scene->add_object(m_objectController->load_object("test"));  
+        m_scene->add_object(m_objectController->load_object("test", "test"));  
     }
 
     simulation_engine::~simulation_engine() {
