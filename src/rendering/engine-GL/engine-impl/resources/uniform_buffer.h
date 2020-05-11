@@ -4,7 +4,7 @@
 
 #include "buffer.h"
 
-#include <glm/glm.hpp>
+#include <glm/glm.h>
 
 namespace tst {
 namespace engine {
