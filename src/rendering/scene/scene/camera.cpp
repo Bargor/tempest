@@ -5,6 +5,8 @@
 
 #include <application/app_event.h>
 #include <application/event_processor.h>
+#include <device/keyboard.h>
+
 #include <util/variant.h>
 
 namespace tst {
@@ -12,10 +14,29 @@ namespace scene {
 
     camera::camera(application::event_processor<application::app_event>& eventProcessor,
                    const glm::vec3& position,
-                   const glm::vec4& lookAt, const glm::vec3& up)
-        : m_eventProcessor(eventProcessor), m_position(glm::vec4(position, 0.0f)), m_orientation(glm::quatLookAt(glm::normalize(lookAt - m_position).xyz(), up)) {
-        auto key_callback = [](const application::app_event::arguments& args) {
+                   const glm::vec4& lookAt,
+                   const glm::vec3& up)
+        : m_eventProcessor(eventProcessor)
+        , m_position(glm::vec4(position, 0.0f))
+        , m_orientation(glm::quatLookAt(glm::normalize(lookAt - m_position).xyz(), up))
+        , m_input() {
+        auto key_callback = [&](const application::app_event::arguments& args) {
             assert(std::holds_alternative<application::app_event::keyboard>(args));
+            input_delta::keyboard keyboardInput;
+            if (std::get<application::app_event::keyboard>(args).key == static_cast<std::uint32_t>(device::keys::key_w)) {
+                keyboardInput.moveForward = true;
+            }
+            if (std::get<application::app_event::keyboard>(args).key == static_cast<std::uint32_t>(device::keys::key_s)) {
+                keyboardInput.moveBackward = true;
+            }
+            if (std::get<application::app_event::keyboard>(args).key == static_cast<std::uint32_t>(device::keys::key_a)) {
+                keyboardInput.moveLeft = true;
+            }
+            if (std::get<application::app_event::keyboard>(args).key == static_cast<std::uint32_t>(device::keys::key_d)) {
+                keyboardInput.moveRight = true;
+            }
+            m_input.keyboardInput = keyboardInput;
+
         };
 
         m_eventProcessor.subscribe(
