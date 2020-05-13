@@ -31,10 +31,11 @@ namespace application {
         , m_inputProcessor(inputProcessor)
         , m_mainWindow(mainWindow)
         , m_dataLoader(dataLoader)
-        , m_renderingDevice(std::make_unique<engine::device>(m_mainWindow, m_eventProcessor, engine::api::parse_engine_settings(dataLoader)))
+        , m_renderingDevice(std::make_unique<engine::device>(
+              m_mainWindow, m_eventProcessor, engine::api::parse_engine_settings(dataLoader)))
         , m_resourceFactory(std::make_unique<engine::resource_factory>(*m_renderingDevice, m_dataLoader))
         , m_scene(std::make_unique<scene::scene>("world", eventProcessor))
-        , m_objectController(std::make_unique<scene::object_controller>(dataLoader, *m_resourceFactory))
+        , m_objectController(std::make_unique<scene::object_controller>(dataLoader, eventProcessor, *m_resourceFactory))
         , m_frameCounter(0)
         , m_lastSecondFrames(0)
         , m_shouldClose(false)
@@ -58,7 +59,9 @@ namespace application {
                                    this,
                                    std::move(time_callback),
                                    std::chrono::seconds(1));
-        m_scene->add_object(m_objectController->load_object("test", "test"));  
+        m_scene->add_object(m_objectController->load_object("test", "test"));
+        m_scene->add_camera(m_objectController->create_camera(
+            glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f)));
     }
 
     simulation_engine::~simulation_engine() {

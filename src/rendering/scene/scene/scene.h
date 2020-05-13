@@ -41,11 +41,13 @@ namespace scene {
         scene(std::string&& sceneName, application::event_processor<application::app_event>& eventProcessor);
         ~scene();
 
+        void add_camera(camera&& camera);
         void add_object(scene_object&& object);
-        camera& add_camera();
+        
 
     private:
         std::string m_sceneName;
+        application::event_processor<application::app_event>& m_eventProcessor;
         std::vector<scene_object> m_objects;
         std::vector<camera> m_cameras;
     };

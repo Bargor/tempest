@@ -13,8 +13,9 @@ namespace tst {
 namespace scene {
 
     object_controller::object_controller(const application::data_loader& dataLoader,
+                                         application::event_processor<application::app_event>& eventProcessor,
                                          engine::resource_factory& resourceFactory)
-        : m_dataLoader(dataLoader), m_resourceFactory(resourceFactory) {
+        : m_dataLoader(dataLoader), m_eventProcessor(eventProcessor), m_resourceFactory(resourceFactory) {
     }
 
     scene_object object_controller::load_object(const std::string& objectName, const std::string& path) {
@@ -65,6 +66,11 @@ namespace scene {
                             std::move(uniformBuffer),
                             std::move(texture),
                             pipeline);
+    }
+
+    camera object_controller::create_camera(const glm::vec3& position, const glm::vec3& lookAt, const glm::vec3& up) {
+        auto buffer = m_resourceFactory.create_uniform_buffer("test", engine::shader::shader_type::vertex, 0);
+        return camera(m_eventProcessor, std::move(buffer), position, lookAt, up);
     }
 
 } // namespace scene

@@ -24,11 +24,15 @@ namespace scene {
     }
 
     scene::scene(std::string&& sceneName,
-                 application::event_processor<application::app_event>&)
-        : m_sceneName(std::move(sceneName)) {
+                 application::event_processor<application::app_event>& eventProcessor)
+        : m_sceneName(std::move(sceneName)), m_eventProcessor(eventProcessor) {
     }
 
     scene::~scene() {
+    }
+
+    void scene::add_camera(camera&& camera) {
+        m_cameras.emplace_back(std::move(camera));
     }
 
     void scene::add_object(scene_object&& object) {
