@@ -36,12 +36,20 @@ namespace engine {
         void create_technique(const std::string& name);
         resources::vertex_buffer create_vertex_buffer(const vertex_format& format, std::vector<vertex>&& vertices);
         resources::texture create_texture(const std::string& textureName);
+        template<typename StorageType>
         resources::uniform_buffer create_uniform_buffer(const std::string& shaderName,
                                                         api::shader_type type,
                                                         std::uint32_t binding);
 
     private:
     };
+
+    template<typename StorageType>
+    resources::uniform_buffer resource_factory::create_uniform_buffer(const std::string& shaderName,
+                                                                      shader::shader_type type,
+                                                                      std::uint32_t binding) {
+        return super::create_uniform_buffer(shaderName, type, binding, sizeof(StorageType));
+    }
 
     static_assert(!std::is_polymorphic_v<resource_factory>);
     static_assert(sizeof(resource_factory) == sizeof(api::resource_factory));

@@ -28,8 +28,7 @@ namespace engine {
 
         class resource_factory {
         public:
-            resource_factory(const device& device,
-                             const application::data_loader& dataLoader);
+            resource_factory(const device& device, const application::data_loader& dataLoader);
             ~resource_factory();
 
             resource_factory(const resource_factory&) = delete;
@@ -44,7 +43,10 @@ namespace engine {
                                             const vertex_format& format);
             void create_technique(const std::string& name);
             vertex_buffer create_vertex_buffer(const vertex_format& format, std::vector<vertex>&& vertices);
-            uniform_buffer create_uniform_buffer(const std::string& shaderName, shader_type type, std::uint32_t binding);
+            uniform_buffer create_uniform_buffer(const std::string& shaderName,
+                                                 shader_type type,
+                                                 std::uint32_t binding,
+                                                 std::size_t storageSize);
             texture create_texture(const std::string& textureName);
 
         public: // vulkan internal

@@ -3,6 +3,7 @@
 #pragma once
 
 #include <glm.h>
+#include <chrono>
 
 #include <engine/resources/uniform_buffer.h>
 

@@ -112,7 +112,8 @@ namespace engine {
 
         uniform_buffer resource_factory::create_uniform_buffer(const std::string& shaderName,
                                                                shader_type type,
-                                                               std::uint32_t binding) {
+                                                               std::uint32_t binding,
+                                                               std::size_t storageSize) {
             const auto shaders = m_device.m_resourceCache->find_shaders(shaderName);
             assert(shaders);
             for (const auto& shader : *shaders) {
@@ -124,7 +125,8 @@ namespace engine {
                                           m_descriptorPools[0],
                                           *layout,
                                           m_device.m_physicalDevice->get_memory_properties(),
-                                          m_device.m_resourceIndex);
+                                          m_device.m_resourceIndex,
+                                          storageSize);
                 }
             }
             assert(false);
