@@ -10,22 +10,16 @@ namespace tst {
 namespace engine {
     namespace opengl {
 		
-		struct uniform_buffer_object {
-            glm::mat4 model;
-            glm::mat4 view;
-            glm::mat4 proj;
-        };
-		
         class uniform_buffer : public buffer {
         public:
-            uniform_buffer();
+            uniform_buffer(const std::size_t storageSize);
             
             uniform_buffer(uniform_buffer&& other) noexcept;
             uniform_buffer(const uniform_buffer& other) = delete;
 
             ~uniform_buffer();
 
-            void update_buffer(const uniform_buffer_object& ubo);
+            void update_buffer(const void* data, const std::size_t dataSize);
         private:
 		};
 	}

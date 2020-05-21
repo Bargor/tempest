@@ -9,13 +9,6 @@ namespace tst {
 namespace engine {
     namespace resources {
 
-        struct uniform_buffer_object {
-            glm::mat4 model;
-            glm::mat4 view;
-            glm::mat4 proj;
-            glm::mat4 asd;
-        };
-
         class uniform_buffer : private api::uniform_buffer {
             using super = api::uniform_buffer;
 

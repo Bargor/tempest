@@ -42,7 +42,8 @@ namespace engine {
             vertex_buffer create_vertex_buffer(const vertex_format& format, std::vector<vertex>&& vertices);
             uniform_buffer create_uniform_buffer(const std::string& shaderName,
                                                  shader_type type,
-                                                 std::uint32_t binding);
+                                                 std::uint32_t binding,
+                                                 std::size_t storageSize);
 
         private:
             const application::data_loader& m_dataLoader;

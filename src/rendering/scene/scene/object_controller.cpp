@@ -42,10 +42,10 @@ namespace scene {
 
         auto vertexBuffer = m_resourceFactory.create_vertex_buffer(
             vertexFormat,
-            std::vector<engine::vertex>({{{-0.5f, -0.5f, 0.0f}, {1.0f, 0.0f, 0.0f}, {0.0f, 0.0f}},
-                                         {{0.5f, -0.5f, 0.0f}, {0.0f, 1.0f, 0.0f}, {1.0f, 0.0f}},
-                                         {{0.5f, 0.5f, 0.0f}, {0.0f, 0.0f, 1.0f}, {1.0f, 1.0f}},
-                                         {{-0.5f, 0.5f, 0.0f}, {1.0f, 1.0f, 1.0f}, {0.0f, 1.0f}},
+            std::vector<engine::vertex>({{{-0.5f, -0.5f, 0.0f}, {1.0f, 0.0f, 0.0f}, {0.0f, 1.0f}},
+                                         {{0.5f, -0.5f, 0.0f}, {0.0f, 1.0f, 0.0f}, {1.0f, 1.0f}},
+                                         {{0.5f, 0.5f, 0.0f}, {0.0f, 0.0f, 1.0f}, {1.0f, 0.0f}},
+                                         {{-0.5f, 0.5f, 0.0f}, {1.0f, 1.0f, 1.0f}, {0.0f, 0.0f}},
                                          {{-0.5f, -0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}, {0.0f, 0.0f}},
                                          {{0.5f, -0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}, {1.0f, 0.0f}},
                                          {{0.5f, 0.5f, -0.5f}, {0.0f, 0.0f, 1.0f}, {1.0f, 1.0f}},
@@ -53,7 +53,7 @@ namespace scene {
         auto indexBuffer =
             m_resourceFactory.create_index_buffer(std::vector<std::uint16_t>({0, 1, 2, 2, 3, 0, 4, 5, 6, 6, 7, 4}));
 
-        auto uniformBuffer = m_resourceFactory.create_uniform_buffer<engine::resources::uniform_buffer_object>(
+        auto uniformBuffer = m_resourceFactory.create_uniform_buffer<uniform_buffer_object>(
             "test", engine::shader::shader_type::vertex, 0);
         auto texture = m_resourceFactory.create_texture("texture.jpg");
         texture.bind_texture("test", engine::shader::shader_type::fragment, 0);

@@ -41,10 +41,10 @@ namespace scene {
     scene_object::state scene_object::update_object(std::chrono::duration<std::uint64_t, std::micro> elapsedTime) {
         float time = std::chrono::duration<float, std::chrono::seconds::period>(elapsedTime).count();
         m_time += time;
-        engine::resources::uniform_buffer_object ubo;
+        uniform_buffer_object ubo;
 
         ubo.model = glm::rotate(glm::mat4(1.0f), m_time * glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-        ubo.view = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+        ubo.view = glm::lookAt(glm::vec3(0.0f, 0.0f, 3.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
         ubo.proj = glm::perspective(glm::radians(45.0f), 1.0f, 0.1f, 10.0f);
         ubo.proj[1][1] *= -1;
 

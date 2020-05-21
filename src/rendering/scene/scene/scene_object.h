@@ -13,6 +13,13 @@
 namespace tst {
 namespace scene {
 
+    struct uniform_buffer_object {
+        glm::mat4 model;
+        glm::mat4 view;
+        glm::mat4 proj;
+        glm::mat4 asd;
+    };
+
     class scene_object {
     public:
         struct state {
