@@ -9,7 +9,7 @@ namespace tst {
 namespace core {
 
     template<typename To, typename From>
-    std::vector<To>& vector_cast(std::vector<From> vector) {
+    std::vector<To>& vector_cast(const std::vector<From>& vector) {
         return *(std::vector<To>*)&vector;
     }
 
