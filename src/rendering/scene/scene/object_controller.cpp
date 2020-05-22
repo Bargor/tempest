@@ -54,7 +54,7 @@ namespace scene {
             m_resourceFactory.create_index_buffer(std::vector<std::uint16_t>({0, 1, 2, 2, 3, 0, 4, 5, 6, 6, 7, 4}));
 
         auto uniformBuffer = m_resourceFactory.create_uniform_buffer<uniform_buffer_object>(
-            "test", engine::shader::shader_type::vertex, 0);
+            "test", engine::shader::shader_type::vertex, engine::resources::uniform_buffer::uniform_bind_point::global_static, 0);
         auto texture = m_resourceFactory.create_texture("texture.jpg");
         texture.bind_texture("test", engine::shader::shader_type::fragment, 0);
 
@@ -69,9 +69,15 @@ namespace scene {
                             pipeline);
     }
 
-    camera object_controller::create_camera(const glm::vec3& position, const glm::vec3& lookAt, const glm::vec3& up) {
-        auto buffer = m_resourceFactory.create_uniform_buffer<glm::mat4>("test", engine::shader::shader_type::vertex, 0);
-        return camera(m_eventProcessor, std::move(buffer), position, lookAt, up);
+    camera object_controller::create_camera(const std::string& cameraName,
+                                            const glm::vec3& position,
+                                            const glm::vec3& lookAt,
+                                            const glm::vec3& up) {
+        auto buffer = m_resourceFactory.create_uniform_buffer<camera::uniforms>(
+            "test",
+            engine::shader::shader_type::vertex,
+            engine::resources::uniform_buffer::uniform_bind_point::frame_static, 0);
+        return camera(cameraName, m_eventProcessor, std::move(buffer), position, lookAt, up);
     }
 
 } // namespace scene

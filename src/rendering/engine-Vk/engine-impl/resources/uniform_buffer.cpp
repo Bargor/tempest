@@ -15,9 +15,11 @@ namespace engine {
                                        vk::CommandPool cmdPool,
                                        vk::DescriptorPool descPool,
                                        vk::DescriptorSetLayout descLayout,
+                                       base::uniform_bind_point bindPoint,
+                                       std::uint32_t binding,
                                        vk::PhysicalDeviceMemoryProperties memoryProperties,
                                        const std::uint32_t& resourceIndex,
-                                       const std::size_t storageSize)
+                                       std::size_t storageSize)
             : buffer(logicalDevice,
                      queueHandle,
                      cmdPool,
@@ -25,6 +27,8 @@ namespace engine {
                      vk::BufferUsageFlagBits::eUniformBuffer,
                      memoryProperties,
                      vk::MemoryPropertyFlagBits::eHostCoherent | vk::MemoryPropertyFlagBits::eHostVisible)
+            , m_setNumber(bindPoint)
+            , m_binding(binding)
             , m_resourceIndex(resourceIndex) {
             std::vector<vk::DescriptorSetLayout> layouts(settings::m_inFlightFrames, descLayout);
             const vk::DescriptorSetAllocateInfo allocInfo(descPool, settings::m_inFlightFrames, layouts.data());
@@ -50,8 +54,7 @@ namespace engine {
         }
 
         void uniform_buffer::update_buffer(const void* data, const std::size_t dataSize) {
-            const auto dataPtr =
-                m_logicalDevice.mapMemory(m_bufferMemory, m_resourceIndex * dataSize, dataSize);
+            const auto dataPtr = m_logicalDevice.mapMemory(m_bufferMemory, m_resourceIndex * dataSize, dataSize);
             std::memcpy(dataPtr, data, dataSize);
             m_logicalDevice.unmapMemory(m_bufferMemory);
         }

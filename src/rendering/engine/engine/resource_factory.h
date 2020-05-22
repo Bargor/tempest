@@ -39,6 +39,7 @@ namespace engine {
         template<typename StorageType>
         resources::uniform_buffer create_uniform_buffer(const std::string& shaderName,
                                                         api::shader_type type,
+                                                        resources::uniform_buffer::uniform_bind_point bindPoint,
                                                         std::uint32_t binding);
 
     private:
@@ -47,8 +48,9 @@ namespace engine {
     template<typename StorageType>
     resources::uniform_buffer resource_factory::create_uniform_buffer(const std::string& shaderName,
                                                                       shader::shader_type type,
+                                                                      resources::uniform_buffer::uniform_bind_point bindPoint,
                                                                       std::uint32_t binding) {
-        return super::create_uniform_buffer(shaderName, type, binding, sizeof(StorageType));
+        return super::create_uniform_buffer(shaderName, type, bindPoint, binding, sizeof(StorageType));
     }
 
     static_assert(!std::is_polymorphic_v<resource_factory>);

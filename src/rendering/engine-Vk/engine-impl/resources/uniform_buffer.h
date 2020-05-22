@@ -2,6 +2,7 @@
 // Author: Karol Kontny
 #pragma once
 
+#include "engine-base/uniform_buffer.h"
 #include "buffer.h"
 #include "settings.h"
 
@@ -21,9 +22,11 @@ namespace engine {
                            vk::CommandPool cmdPool,
                            vk::DescriptorPool descPool,
                            vk::DescriptorSetLayout descLayout,
+                           base::uniform_bind_point bindPoint,
+                           std::uint32_t binding, 
                            vk::PhysicalDeviceMemoryProperties memoryProperties,
                            const std::uint32_t& resourceIndex,
-                           const std::size_t storageSize);
+                           std::size_t storageSize);
             uniform_buffer(uniform_buffer&& other) noexcept;
             uniform_buffer(const uniform_buffer& other) = delete;
 
@@ -33,8 +36,11 @@ namespace engine {
             vk::DescriptorSet get_descriptor_set() const noexcept;
 
         private:
+            base::uniform_bind_point m_setNumber;
+            std::uint32_t m_binding;
             const std::uint32_t& m_resourceIndex;
             std::array<vk::DescriptorSet, settings::m_inFlightFrames> m_descriptorSets;
+
         };
 
     } // namespace vulkan

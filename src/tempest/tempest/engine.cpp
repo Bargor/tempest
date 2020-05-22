@@ -61,7 +61,7 @@ namespace application {
                                    std::chrono::seconds(1));
         m_scene->add_object(m_objectController->load_object("test", "test"));
         m_scene->add_camera(m_objectController->create_camera(
-            glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f)));
+            "main", glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f)));
     }
 
     simulation_engine::~simulation_engine() {
@@ -82,7 +82,7 @@ namespace application {
         const auto frameStart = m_timeSource.now();
         if (!m_windowMinimized) {
             const auto newSceneState = scene::update_scene(*m_scene, m_lastFrameDuration);
-            const auto drawInfo = scene::prepare_draw_info(newSceneState);
+            const auto drawInfo = scene::prepare_draw_info(m_scene->get_camera("main"), newSceneState);
             m_renderingDevice->draw_frame(drawInfo.begin(), drawInfo.end());
             m_mainWindow.end_frame();
             m_lastSecondFrames++;

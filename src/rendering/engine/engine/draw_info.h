@@ -23,8 +23,8 @@ namespace engine {
         draw_info(const resources::vertex_buffer* vertices,
                   const resources::index_buffer* indices,
                   const resources::pipeline& pipelineState,
-                  const resources::uniform_buffer* uniforms,
-                  const resources::texture* textures);
+                  const std::vector<resources::uniform_buffer*>& uniforms,
+                  const std::vector<resources::texture*>& textures);
 
         draw_info(api::draw_info&& impl);
         draw_info(draw_info&& other) noexcept;

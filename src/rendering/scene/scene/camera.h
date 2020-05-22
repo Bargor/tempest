@@ -2,10 +2,10 @@
 // Author: Karol Kontny
 #pragma once
 
-#include <glm.h>
 #include <chrono>
-
 #include <engine/resources/uniform_buffer.h>
+#include <glm.h>
+#include <string>
 
 namespace tst {
 namespace application {
@@ -16,6 +16,7 @@ namespace application {
 } // namespace application
 namespace scene {
     class camera {
+
         struct input_delta {
             struct keyboard {
                 bool moveForward = false;
@@ -26,21 +27,44 @@ namespace scene {
 
             keyboard keyboardInput;
         };
+
     public:
-        camera(application::event_processor<application::app_event>& eventProcessor,
+        struct uniforms {
+            glm::mat4 view;
+            glm::mat4 perspective;
+            glm::mat4 viewPerspective;
+            glm::mat4 asd;
+        };
+
+    public:
+        camera(const std::string& cameraName,
+               application::event_processor<application::app_event>& eventProcessor,
                engine::resources::uniform_buffer&& buffer,
                const glm::vec3& position,
                const glm::vec3& lookAt,
                const glm::vec3& up);
 
+        std::string_view get_name() const noexcept;
+        const engine::resources::uniform_buffer& get_uniforms() const;
+
         void update(std::chrono::duration<std::uint64_t, std::micro> elapsedTime);
 
     private:
+        std::string m_name;
         application::event_processor<application::app_event>& m_eventProcessor;
         engine::resources::uniform_buffer m_buffer;
         glm::vec4 m_position;
         glm::quat m_orientation;
+        glm::mat4 m_perspective;
         input_delta m_input;
     };
+
+    TST_INLINE std::string_view camera::get_name() const noexcept {
+        return m_name;
+    }
+
+    TST_INLINE const engine::resources::uniform_buffer& camera::get_uniforms() const {
+        return m_buffer;
+    }
 } // namespace scene
 } // namespace tst

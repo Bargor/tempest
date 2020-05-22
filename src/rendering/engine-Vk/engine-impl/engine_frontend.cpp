@@ -59,8 +59,8 @@ namespace engine {
 
             std::vector<vk::Buffer> vertexBuffers = {drawInfo.vertices->get_handle()};
             std::vector<vk::DeviceSize> offsets = {0};
-            const auto uniformDescriptorSet = drawInfo.uniforms->get_descriptor_set();
-            const auto textureDescriptor = drawInfo.textures->get_descriptor_set();
+            const auto uniformDescriptorSet = drawInfo.uniforms[0]->get_descriptor_set();
+            const auto textureDescriptor = drawInfo.textures[0]->get_descriptor_set();
             std::array<vk::DescriptorSet, 2> descriptorSets{uniformDescriptorSet, textureDescriptor};
             commandBuffer.bindVertexBuffers(0, vertexBuffers, offsets);
             commandBuffer.bindIndexBuffer(drawInfo.indices->get_handle(), 0, vk::IndexType::eUint16);

@@ -6,18 +6,19 @@
 #include <application/app_event.h>
 #include <application/event_processor.h>
 #include <device/keyboard.h>
-
 #include <util/variant.h>
 
 namespace tst {
 namespace scene {
 
-    camera::camera(application::event_processor<application::app_event>& eventProcessor,
+    camera::camera(const std::string& cameraName,
+                   application::event_processor<application::app_event>& eventProcessor,
                    engine::resources::uniform_buffer&& buffer,
                    const glm::vec3& position,
                    const glm::vec3& lookAt,
                    const glm::vec3& up)
-        : m_eventProcessor(eventProcessor)
+        : m_name(cameraName)
+        , m_eventProcessor(eventProcessor)
         , m_buffer(std::move(buffer))
         , m_position(glm::vec4(position, 0.0f))
         , m_orientation(glm::quatLookAt(glm::normalize(lookAt - m_position.xyz()), up))
@@ -38,7 +39,6 @@ namespace scene {
                 keyboardInput.moveRight = true;
             }
             m_input.keyboardInput = keyboardInput;
-
         };
 
         m_eventProcessor.subscribe(
@@ -48,7 +48,8 @@ namespace scene {
     }
 
     void camera::update(std::chrono::duration<std::uint64_t, std::micro>) {
-    
+        m_buffer.update_buffer<uniforms>(
+            {glm::toMat4(m_orientation), m_perspective, glm::toMat4(m_orientation) * m_perspective, glm::mat4()});
     }
 } // namespace scene
 } // namespace tst

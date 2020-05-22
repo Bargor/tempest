@@ -17,6 +17,7 @@ set(CORE_HDRS
 	time/timer.h
 	thread/main_thread.h
 	util/bitpack.h
+    util/cast.h
 	util/hash.h
 	util/variant.h
 )
