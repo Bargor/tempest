@@ -19,11 +19,10 @@ namespace scene {
         std::vector<engine::draw_info> drawInfos;
         drawInfos.reserve(sceneState.size());
 
-        for (const auto& state : sceneState) {
-            std::vector<engine::resources::uniform_buffer*> uniforms{&camera.get_uniforms(), &state.uniform};
-            std::vector<engine::resources::texture*> textures{&state.texture};
+        for (auto& state : sceneState) {
 
-            engine::draw_info info(state.vertices, state.indices, state.pipeline, uniforms, textures);
+            engine::draw_info info(
+                state.vertices, state.indices, state.pipeline, {&state.uniform, &camera.get_uniforms()}, {&state.texture});
             drawInfos.emplace_back(std::move(info));
         }
 

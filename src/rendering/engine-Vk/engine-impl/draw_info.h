@@ -18,8 +18,8 @@ namespace engine {
             draw_info(const vertex_buffer* vertices,
                       const index_buffer<std::uint16_t>* indices,
                       const pipeline& pipeline,
-                      const std::vector<uniform_buffer*>& uniforms,
-                      const std::vector<texture*>& textures);
+                      const std::vector<const uniform_buffer*>& uniforms,
+                      const std::vector<const texture*>& textures);
 
             ~draw_info() = default;
 
@@ -27,8 +27,8 @@ namespace engine {
             const vertex_buffer* vertices;
             const index_buffer<std::uint16_t>* indices;
             const pipeline& pipelineState;
-            const std::vector<uniform_buffer*> uniforms;
-            const std::vector<texture*> textures;
+            const std::vector<const uniform_buffer*> uniforms;
+            const std::vector<const texture*> textures;
         };
     } // namespace vulkan
 } // namespace engine
