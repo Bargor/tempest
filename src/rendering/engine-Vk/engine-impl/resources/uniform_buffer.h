@@ -34,6 +34,7 @@ namespace engine {
 
             void update_buffer(const void* data, const std::size_t dataSize);
             vk::DescriptorSet get_descriptor_set() const noexcept;
+            std::uint32_t get_binding() const noexcept;
 
         private:
             base::uniform_bind_point m_setNumber;
@@ -42,6 +43,10 @@ namespace engine {
             std::array<vk::DescriptorSet, settings::m_inFlightFrames> m_descriptorSets;
 
         };
+
+        TST_INLINE std::uint32_t uniform_buffer::get_binding() const noexcept {
+            return m_binding;
+        }
 
     } // namespace vulkan
 } // namespace engine
