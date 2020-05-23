@@ -46,6 +46,7 @@ namespace engine {
 
         uniform_buffer resource_factory::create_uniform_buffer(const std::string&,
                                                                shader_type,
+                                                               base::uniform_bind_point,
                                                                std::uint32_t,
                                                                std::size_t storageSize) {
             return uniform_buffer(storageSize);
