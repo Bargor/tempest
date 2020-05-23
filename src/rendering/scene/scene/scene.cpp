@@ -50,8 +50,8 @@ namespace scene {
             if (cameraName == camera.get_name()) {
                 return camera;
             }
-            throw;
         }
+        throw;
     }
 } // namespace scene
 } // namespace tst
