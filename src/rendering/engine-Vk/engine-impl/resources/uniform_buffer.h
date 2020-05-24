@@ -2,8 +2,8 @@
 // Author: Karol Kontny
 #pragma once
 
-#include "engine-base/uniform_buffer.h"
 #include "buffer.h"
+#include "engine-base/uniform_buffer.h"
 #include "settings.h"
 
 #include <glm.h>
@@ -23,7 +23,7 @@ namespace engine {
                            vk::DescriptorPool descPool,
                            vk::DescriptorSetLayout descLayout,
                            base::uniform_bind_point bindPoint,
-                           std::uint32_t binding, 
+                           std::uint32_t binding,
                            vk::PhysicalDeviceMemoryProperties memoryProperties,
                            const std::uint32_t& resourceIndex,
                            std::size_t storageSize);
@@ -42,7 +42,6 @@ namespace engine {
             std::uint32_t m_binding;
             const std::uint32_t& m_resourceIndex;
             std::array<vk::DescriptorSet, settings::m_inFlightFrames> m_descriptorSets;
-
         };
 
         TST_INLINE std::uint32_t uniform_buffer::get_binding() const noexcept {

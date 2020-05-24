@@ -33,7 +33,9 @@ namespace scene {
         camera create_camera(const std::string& cameraName,
                              const glm::vec3& position,
                              const glm::vec3& lookAt,
-                             const glm::vec3& up);
+                             const glm::vec3& up,
+                             const float fov,
+                             const float aspectRatio);
 
     private:
         const application::data_loader& m_dataLoader;

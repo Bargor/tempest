@@ -139,7 +139,7 @@ namespace engine {
         texture resource_factory::create_texture(const std::string& textureName) {
             const auto textureFile = m_dataLoader.find_file(std::filesystem::path("textures") / (textureName));
             if (!textureFile) {
-                throw std::runtime_error(fmt::format("Wrong texture path: so such file: %s", "textures/" + textureName));
+                throw std::runtime_error(fmt::format("Wrong texture path: no such file: %s", "textures/" + textureName));
             }
             return texture(m_device.m_logicalDevice,
                            m_transferQueue,

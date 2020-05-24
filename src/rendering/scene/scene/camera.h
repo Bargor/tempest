@@ -16,7 +16,6 @@ namespace application {
 } // namespace application
 namespace scene {
     class camera {
-
         struct input_delta {
             struct keyboard {
                 bool moveForward = false;
@@ -42,7 +41,9 @@ namespace scene {
                engine::resources::uniform_buffer&& buffer,
                const glm::vec3& position,
                const glm::vec3& lookAt,
-               const glm::vec3& up);
+               const glm::vec3& up,
+               const float fov,
+               const float aspect);
 
         std::string_view get_name() const noexcept;
         const engine::resources::uniform_buffer& get_uniforms() const;

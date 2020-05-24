@@ -21,7 +21,8 @@ namespace engine {
                                       framebuffer_settings::load_operation::dont_care,
                                       framebuffer_settings::store_operation::dont_care,
                                       image_layout::undefined,
-                                      image_layout::present}},
+                                      image_layout::present,
+                                      {0.0f, 0.0f, 0.0f, 1.0f}}},
                 {subpass_settings{subpass_settings::bind_point::graphics, {0}, std::nullopt}},
                 {dependency{0, 1, 1024, 1024, 0, 384}}};
         }
