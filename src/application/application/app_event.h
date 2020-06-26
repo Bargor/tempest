@@ -9,6 +9,8 @@
 #include <chrono>
 #include <variant>
 
+#include <device/keyboard.h>
+
 namespace tst {
 namespace application {
 
@@ -30,9 +32,9 @@ namespace application {
         };
 
         struct keyboard {
-            std::int32_t key;
+            device::keys key;
             std::int32_t scancode;
-            std::int32_t action;
+            device::key_action action;
             std::int32_t mods;
         };
 

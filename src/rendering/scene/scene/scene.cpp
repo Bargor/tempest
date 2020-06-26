@@ -20,7 +20,6 @@ namespace scene {
         drawInfos.reserve(sceneState.size());
 
         for (auto& state : sceneState) {
-
             engine::draw_info info(
                 state.vertices, state.indices, state.pipeline, {&state.uniform, &camera.get_uniforms()}, {&state.texture});
             drawInfos.emplace_back(std::move(info));

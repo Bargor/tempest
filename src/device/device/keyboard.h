@@ -34,7 +34,13 @@ namespace device {
         key_w = GLFW_KEY_W,
         key_x = GLFW_KEY_X,
         key_y = GLFW_KEY_Y,
-        key_z = GLFW_KEY_Z,
+        key_z = GLFW_KEY_Z
+    };
+
+    enum class key_action : std::uint8_t {
+        release = GLFW_RELEASE,
+        press = GLFW_PRESS,
+        repeat = GLFW_REPEAT
     };
 } // namespace device
 } // namespace tst

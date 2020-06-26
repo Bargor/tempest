@@ -23,8 +23,13 @@ namespace scene {
                 bool moveLeft = false;
                 bool moveRight = false;
             };
+            struct mouse {
+                std::uint32_t xPos;
+                std::uint32_t yPos;
+            };
 
             keyboard keyboardInput;
+            mouse mouseInput;
         };
 
     public:
@@ -32,7 +37,7 @@ namespace scene {
             glm::mat4 view;
             glm::mat4 perspective;
             glm::mat4 viewPerspective;
-            glm::mat4 asd;
+            glm::mat4 position;
         };
 
     public:
@@ -45,10 +50,17 @@ namespace scene {
                const float fov,
                const float aspect);
 
+        camera(const camera&) = delete;
+        camera(camera&& camera);
+
         std::string_view get_name() const noexcept;
         const engine::resources::uniform_buffer& get_uniforms() const;
 
         void update(std::chrono::duration<std::uint64_t, std::micro> elapsedTime);
+
+    private: 
+        glm::vec4 caclulate_position(std::chrono::duration<std::uint64_t, std::micro> elapsedTime) const;
+        glm::quat calculate_orientation(std::chrono::duration<std::uint64_t, std::micro> elapsedTime) const;
 
     private:
         std::string m_name;
@@ -57,6 +69,8 @@ namespace scene {
         glm::vec4 m_position;
         glm::quat m_orientation;
         glm::mat4 m_perspective;
+        float m_moveSensitivity;
+        float m_rotateSensitivity;
         input_delta m_input;
     };
 

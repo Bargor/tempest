@@ -49,6 +49,8 @@ namespace engine {
 
         uniform_buffer::uniform_buffer(uniform_buffer&& other) noexcept
             : buffer(std::move(other))
+            , m_setNumber(other.m_setNumber)
+            , m_binding(other.m_binding)
             , m_resourceIndex(other.m_resourceIndex)
             , m_descriptorSets(std::move(other.m_descriptorSets)) {
         }

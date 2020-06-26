@@ -61,10 +61,10 @@ namespace application {
                                    std::chrono::seconds(1));
         m_scene->add_object(m_objectController->load_object("test", "test"));
         m_scene->add_camera(m_objectController->create_camera("main",
-                                                              glm::vec3(2.0f, 2.0f, 2.0f),
+                                                              glm::vec3(0.0f, 0.0f, 5.0f),
                                                               glm::vec3(0.0f, 0.0f, 0.0f),
-                                                              glm::vec3(0.0f, 0.0f, 1.0f),
-                                                              60.0f,
+                                                              glm::vec3(0.0f, 1.0f, 0.0f),
+                                                              90.0f,
                                                               m_mainWindow.get_aspect()));
     }
 
