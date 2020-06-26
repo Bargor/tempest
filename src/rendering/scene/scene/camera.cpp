@@ -78,7 +78,7 @@ namespace scene {
             std::move(mouse_callback));
     }
 
-    camera::camera(camera&& other)
+    camera::camera(camera&& other) noexcept
         : m_name(std::move(other.m_name))
         , m_eventProcessor(other.m_eventProcessor)
         , m_buffer(std::move(other.m_buffer))
