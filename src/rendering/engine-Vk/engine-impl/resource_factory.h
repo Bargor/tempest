@@ -44,8 +44,7 @@ namespace engine {
             void create_technique(const std::string& name);
             vertex_buffer create_vertex_buffer(const vertex_format& format, std::vector<vertex>&& vertices);
             uniform_buffer create_uniform_buffer(const std::string& shaderName,
-                                                 shader_type type,
-                                                 base::uniform_bind_point bindPoint,
+                                                 base::resource_bind_point bindPoint,
                                                  std::uint32_t binding,
                                                  std::size_t storageSize);
             texture create_texture(const std::string& textureName);
@@ -63,7 +62,6 @@ namespace engine {
             ptr<shader_compiler> m_shaderCompiler;
             vk::CommandPool m_transferCommandPool;
             vk::Queue m_transferQueue;
-            std::vector<vk::DescriptorPool> m_descriptorPools;
         };
 
     } // namespace vulkan

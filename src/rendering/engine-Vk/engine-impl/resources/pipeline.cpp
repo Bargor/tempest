@@ -391,7 +391,7 @@ namespace engine {
             const auto blendingInfo = create_color_blending_info(globalBlendingSettings, colorBlendAttachment);
 
             std::vector<vk::PipelineShaderStageCreateInfo> shaderInfos;
-            std::transform(shaders.cbegin(), shaders.cend(), std::back_inserter(shaderInfos), [](const shader& shader) {
+            std::transform(shaders.shaders.cbegin(), shaders.shaders.cend(), std::back_inserter(shaderInfos), [](const shader& shader) {
                 return shader.get_pipeline_info();
             });
 

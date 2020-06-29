@@ -6,6 +6,7 @@
 
 #include <application/image_data.h>
 #include <cstddef>
+#include <engine-base/texture.h>
 #include <vulkan/vulkan.hpp>
 
 namespace tst {
@@ -19,7 +20,6 @@ namespace engine {
             texture(vk::Device logicalDevice,
                     vk::Queue queueHandle,
                     vk::CommandPool cmdPool,
-                    vk::DescriptorPool descPool,
                     const resource_cache& resourceCache,
                     vk::BufferUsageFlags flags,
                     const vk::PhysicalDeviceMemoryProperties& memoryProperties,
@@ -31,20 +31,18 @@ namespace engine {
             texture(texture&& other) noexcept;
 
         public:
-            void bind_texture(const std::string& shaderName, shader_type type, std::uint32_t binding);
+            void bind_texture(const std::string& shaderName, base::resource_bind_point bindPoint, std::uint32_t binding);
 
         public:
             vk::DescriptorSet get_descriptor_set() const noexcept;
 
         private:
             vk::Device m_logicalDevice;
-            vk::DescriptorPool m_descPool;
             const resource_cache& m_resourceCache;
             vk::Image m_textureImage;
             vk::DeviceMemory m_textureMemory;
             vk::ImageView m_textureView;
             vk::Sampler m_sampler;
-            vk::DescriptorSet m_descriptorSet;
         };
 
     } // namespace vulkan

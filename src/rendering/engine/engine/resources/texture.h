@@ -15,13 +15,15 @@ namespace engine {
             using super = api::texture;
 
         public:
+            using bind_point = base::resource_bind_point;
+
             texture(api::texture&& textureImpl);
             ~texture();
 
             texture(texture&& other) noexcept;
 
         public:
-            void bind_texture(const std::string shaderName, api::shader_type type, std::uint32_t binding);
+            void bind_texture(const std::string shaderName, bind_point set, std::uint32_t binding);
 
         public:
             const api::texture& to_super() const noexcept {

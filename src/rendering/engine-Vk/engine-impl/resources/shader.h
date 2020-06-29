@@ -3,7 +3,6 @@
 #pragma once
 
 #include <engine-base/shader.h>
-
 #include <string>
 #include <util/hash.h>
 #include <vector>
@@ -19,20 +18,8 @@ namespace engine {
         public:
             static vk::ShaderStageFlagBits get_native_shader_type(shader_type type);
 
-            struct descriptor_layout {
-                std::uint32_t binding;
-                vk::DescriptorType type;
-                vk::ShaderStageFlagBits stages;
-
-                bool operator==(const descriptor_layout& other) const noexcept;
-            };
-
         public:
-            shader(vk::Device device,
-                   shader_type type,
-                   std::vector<char>&& source,
-                   const std::string& name,
-                   std::vector<shader::descriptor_layout>&& layouts);
+            shader(vk::Device device, shader_type type, std::vector<char>&& source, const std::string& name);
             shader(const shader&) = delete;
             shader(shader&& shader) noexcept;
             ~shader();
@@ -42,7 +29,6 @@ namespace engine {
 
         public:
             vk::PipelineShaderStageCreateInfo get_pipeline_info() const noexcept;
-            const std::vector<shader::descriptor_layout>& get_layouts() const noexcept;
             shader_type get_stage() const noexcept;
 
         private:
@@ -52,27 +38,14 @@ namespace engine {
             shader_type m_type;
             vk::ShaderModule m_shader;
             vk::PipelineShaderStageCreateInfo m_pipelineInfo;
-            std::vector<descriptor_layout> m_descriptorLayouts;
         };
 
-        using shader_set = std::vector<shader>;
+        struct shader_set {
+            std::vector<shader> shaders;
+            std::vector<vk::DescriptorSetLayout> layouts;
+            std::vector<std::vector<vk::DescriptorSetLayoutBinding>> bindings;
+        };
+
     } // namespace vulkan
 } // namespace engine
 } // namespace tst
-
-namespace std {
-
-template<>
-struct hash<tst::engine::vulkan::shader::descriptor_layout> {
-    std::size_t operator()(const tst::engine::vulkan::shader::descriptor_layout& layout) const {
-        size_t seed = 0;
-
-        tst::hash_combine(seed, std::hash<std::uint32_t>{}(layout.binding));
-        tst::hash_combine(seed, std::hash<std::uint32_t>{}(static_cast<std::uint32_t>(layout.type)));
-        tst::hash_combine(seed, std::hash<std::uint32_t>{}(static_cast<std::uint32_t>(layout.stages)));
-
-        return seed;
-    }
-};
-
-} // namespace std

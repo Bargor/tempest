@@ -35,7 +35,6 @@ namespace engine {
         texture::texture(vk::Device logicalDevice,
                          vk::Queue queueHandle,
                          vk::CommandPool cmdPool,
-                         vk::DescriptorPool descPool,
                          const resource_cache& resourceCache,
                          vk::BufferUsageFlags flags,
                          const vk::PhysicalDeviceMemoryProperties& memoryProperties,
@@ -43,7 +42,6 @@ namespace engine {
                          const application::image_data& imageData,
                          vk::Sampler sampler)
             : m_logicalDevice(logicalDevice)
-            , m_descPool(descPool)
             , m_resourceCache(resourceCache)
             , m_sampler(sampler ? sampler : create_default_sampler(m_logicalDevice)) {
             buffer stagingBuffer(
@@ -86,16 +84,12 @@ namespace engine {
             m_logicalDevice.destroySampler(m_sampler);
         }
 
-        void texture::bind_texture(const std::string& shaderName, shader_type type, std::uint32_t binding) {
-            const auto descLayout = [this, &shaderName, type]() {
+        void texture::bind_texture(const std::string& shaderName,
+                                   base::resource_bind_point bindPoint,
+                                   std::uint32_t binding) {
+            const auto descLayout = [this, &shaderName, bindPoint]() {
                 const auto shaders = m_resourceCache.find_shaders(shaderName);
-                for (const auto& shader : *shaders) {
-                    if (shader.get_stage() == type) {
-                        return m_resourceCache.find_descriptor_layout(shader.get_layouts()[0]);
-                    } else
-                        continue;
-                }
-                throw;
+                return m_descriptorSetCache.find_descriptor_layout(shaders->layouts[static_cast<std::uint32_t>(bindPoint)]);
             }();
 
             const vk::DescriptorSetAllocateInfo allocInfo(m_descPool, 1, descLayout);
@@ -112,18 +106,16 @@ namespace engine {
 
         texture::texture(texture&& other) noexcept
             : m_logicalDevice(other.m_logicalDevice)
-            , m_descPool(other.m_descPool)
             , m_resourceCache(other.m_resourceCache)
+            , m_descriptorSetCache(other.m_descriptorSetCache)
             , m_textureImage(other.m_textureImage)
             , m_textureMemory(other.m_textureMemory)
             , m_textureView(other.m_textureView)
-            , m_sampler(other.m_sampler)
-            , m_descriptorSet(other.m_descriptorSet) {
+            , m_sampler(other.m_sampler) {
             other.m_textureImage = nullptr;
             other.m_textureMemory = nullptr;
             other.m_textureView = nullptr;
             other.m_sampler = nullptr;
-            other.m_descriptorSet = nullptr;
         }
 
         vk::DescriptorSet texture::get_descriptor_set() const noexcept {
