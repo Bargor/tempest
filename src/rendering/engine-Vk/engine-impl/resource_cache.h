@@ -7,6 +7,7 @@
 #include "resources/settings.h"
 #include "resources/shader.h"
 
+#include <engine-base/resource_bind_point.h>
 #include <unordered_map>
 #include <unordered_set>
 
@@ -15,6 +16,7 @@ namespace engine {
     namespace vulkan {
 
         class swap_chain;
+        using descriptor_set = std::array<vk::DescriptorSet, settings::m_inFlightFrames>;
 
         class resource_cache {
         public:
@@ -30,8 +32,9 @@ namespace engine {
             const pipeline* find_pipeline(std::size_t pipelineHash) const;
             const rendering_technique* find_technique(const std::string& name) const;
             const shader_set* find_shaders(const std::string& name) const;
-            const std::vector<vk::DescriptorSetLayout>*
-            find_descriptor_layouts(const std::string& shadersName) const noexcept;
+            const std::vector<vk::DescriptorSetLayout>* find_descriptor_layouts(const std::string& shadersName) const noexcept;
+            const descriptor_set* find_descriptor_sets(const std::string& shadersName,
+                                                       base::resource_bind_point bindPoint) const;
 
             void clear();
             void rebuild_techniques(const swap_chain& newSwapChain);
@@ -46,6 +49,7 @@ namespace engine {
             std::unordered_map<std::size_t, pipeline> m_pipelines;
             std::vector<rendering_technique> m_techniques;
             std::unordered_map<std::string, shader_set> m_shaders;
+            std::unordered_map<std::string, std::vector<descriptor_set>> m_descriptorSets;
         };
 
     } // namespace vulkan

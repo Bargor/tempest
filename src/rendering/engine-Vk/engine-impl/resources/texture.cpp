@@ -40,10 +40,12 @@ namespace engine {
                          const vk::PhysicalDeviceMemoryProperties& memoryProperties,
                          vk::MemoryPropertyFlags memoryFlags,
                          const application::image_data& imageData,
+                         const std::uint32_t& resourceIndex,
                          vk::Sampler sampler)
             : m_logicalDevice(logicalDevice)
             , m_resourceCache(resourceCache)
-            , m_sampler(sampler ? sampler : create_default_sampler(m_logicalDevice)) {
+            , m_sampler(sampler ? sampler : create_default_sampler(m_logicalDevice))
+            , m_resourceIndex(resourceIndex) {
             buffer stagingBuffer(
                 logicalDevice, queueHandle, cmdPool, imageData.memorySize, flags, memoryProperties, memoryFlags);
             stagingBuffer.copy_data(imageData.data.get(), imageData.memorySize);
@@ -87,39 +89,32 @@ namespace engine {
         void texture::bind_texture(const std::string& shaderName,
                                    base::resource_bind_point bindPoint,
                                    std::uint32_t binding) {
-            const auto descLayout = [this, &shaderName, bindPoint]() {
-                const auto shaders = m_resourceCache.find_shaders(shaderName);
-                return m_descriptorSetCache.find_descriptor_layout(shaders->layouts[static_cast<std::uint32_t>(bindPoint)]);
-            }();
+            m_descriptorSets = m_resourceCache.find_descriptor_sets(shaderName, bindPoint);
 
-            const vk::DescriptorSetAllocateInfo allocInfo(m_descPool, 1, descLayout);
+            for (const auto set : *m_descriptorSets) {
+                vk::DescriptorImageInfo imageInfo(m_sampler, m_textureView, vk::ImageLayout::eShaderReadOnlyOptimal);
 
-            m_descriptorSet = m_logicalDevice.allocateDescriptorSets(allocInfo)[0];
+                vk::WriteDescriptorSet descriptorWrite(
+                    set, binding, 0, 1, vk::DescriptorType::eCombinedImageSampler, &imageInfo, nullptr, nullptr);
 
-            vk::DescriptorImageInfo imageInfo(m_sampler, m_textureView, vk::ImageLayout::eShaderReadOnlyOptimal);
-
-            vk::WriteDescriptorSet descriptorWrite(
-                m_descriptorSet, binding, 0, 1, vk::DescriptorType::eCombinedImageSampler, &imageInfo, nullptr, nullptr);
-
-            m_logicalDevice.updateDescriptorSets({descriptorWrite}, {});
+                m_logicalDevice.updateDescriptorSets({descriptorWrite}, {});
+            }
         }
 
         texture::texture(texture&& other) noexcept
             : m_logicalDevice(other.m_logicalDevice)
             , m_resourceCache(other.m_resourceCache)
-            , m_descriptorSetCache(other.m_descriptorSetCache)
             , m_textureImage(other.m_textureImage)
             , m_textureMemory(other.m_textureMemory)
             , m_textureView(other.m_textureView)
-            , m_sampler(other.m_sampler) {
+            , m_sampler(other.m_sampler)
+            , m_resourceIndex(other.m_resourceIndex)
+            , m_descriptorSets(other.m_descriptorSets) {
             other.m_textureImage = nullptr;
             other.m_textureMemory = nullptr;
             other.m_textureView = nullptr;
             other.m_sampler = nullptr;
-        }
-
-        vk::DescriptorSet texture::get_descriptor_set() const noexcept {
-            return m_descriptorSet;
+            other.m_descriptorSets = nullptr;
         }
 
     } // namespace vulkan

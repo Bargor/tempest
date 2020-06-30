@@ -5,13 +5,14 @@
 #include "buffer.h"
 #include "settings.h"
 
-#include <engine-base/uniform_buffer.h>
 #include <glm.h>
 #include <vector>
 
 namespace tst {
 namespace engine {
     namespace vulkan {
+
+        using descriptor_set = std::array<vk::DescriptorSet, settings::m_inFlightFrames>;
 
         class uniform_buffer : public buffer {
             using super = buffer;
@@ -20,8 +21,7 @@ namespace engine {
             uniform_buffer(vk::Device logicalDevice,
                            vk::Queue m_queueHandle,
                            vk::CommandPool cmdPool,
-                           vk::DescriptorSetLayout descLayout,
-                           base::resource_bind_point bindPoint,
+                           const descriptor_set& descriptorSets,
                            std::uint32_t binding,
                            vk::PhysicalDeviceMemoryProperties memoryProperties,
                            const std::uint32_t& resourceIndex,
@@ -33,23 +33,12 @@ namespace engine {
 
             void update_buffer(const void* data, const std::size_t dataSize);
             vk::DescriptorSet get_descriptor_set() const noexcept;
-            std::uint32_t get_binding() const noexcept;
-            base::resource_bind_point get_bind_point() const noexcept;
 
         private:
-            base::resource_bind_point m_setNumber;
-            std::uint32_t m_binding;
             const std::uint32_t& m_resourceIndex;
-            std::array<vk::DescriptorSet, settings::m_inFlightFrames> m_descriptorSets;
+            const std::array<vk::DescriptorSet, settings::m_inFlightFrames>& m_descriptorSets;
+            std::uint32_t m_binding;
         };
-
-        TST_INLINE std::uint32_t uniform_buffer::get_binding() const noexcept {
-            return m_binding;
-        }
-
-        TST_INLINE base::resource_bind_point uniform_buffer::get_bind_point() const noexcept {
-            return m_setNumber;
-        }
 
     } // namespace vulkan
 } // namespace engine

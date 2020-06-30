@@ -54,9 +54,9 @@ namespace scene {
             m_resourceFactory.create_index_buffer(std::vector<std::uint16_t>({0, 1, 2, 2, 3, 0, 4, 5, 6, 6, 7, 4}));
 
         auto uniformBuffer = m_resourceFactory.create_uniform_buffer<uniform_buffer_object>(
-            "test", engine::resources::uniform_buffer::bind_point::global_static, 0);
+            "test", engine::bind_point::global_static, 0);
         auto texture = m_resourceFactory.create_texture("texture.jpg");
-        texture.bind_texture("test", engine::resources::uniform_buffer::bind_point::global_static, 1);
+        texture.bind_texture("test", engine::bind_point::global_static, 1);
 
         auto material = m_resourceFactory.create_material();
 
@@ -76,7 +76,7 @@ namespace scene {
                                             const float fov,
                                             const float aspectRatio) {
         auto buffer = m_resourceFactory.create_uniform_buffer<camera::uniforms>(
-            "test", engine::resources::uniform_buffer::bind_point::frame_static, 0);
+            "test", engine::bind_point::frame_static, 0);
         return camera(cameraName, m_eventProcessor, std::move(buffer), position, lookAt, up, fov, aspectRatio);
     }
 

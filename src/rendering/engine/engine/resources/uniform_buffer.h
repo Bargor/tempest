@@ -13,7 +13,6 @@ namespace engine {
             using super = api::uniform_buffer;
 
         public:
-            using bind_point = base::resource_bind_point;
 
             uniform_buffer(api::uniform_buffer&& bufferImpl);
             ~uniform_buffer();

@@ -22,7 +22,7 @@ namespace engine {
 
         std::size_t resource_cache::add_pipeline(pipeline&& newPipeline) {
             auto hash = std::hash<pipeline>{}(newPipeline);
-            m_pipelines.insert(std::make_pair(hash, std::move(newPipeline)));
+            m_pipelines.insert({hash, std::move(newPipeline)});
             return hash;
         }
 
@@ -31,7 +31,21 @@ namespace engine {
         }
 
         void resource_cache::add_shaders(const std::string& name, shader_set&& shaders) {
-            m_shaders.insert(std::make_pair(name, std::move(shaders)));
+            m_shaders.insert({name, std::move(shaders)});
+
+            for (const auto layout : shaders.layouts) {
+                std::vector<vk::DescriptorSetLayout> layouts(settings::m_inFlightFrames, layout);
+                const vk::DescriptorSetAllocateInfo allocInfo(
+                    m_descriptorPools[0], settings::m_inFlightFrames, layouts.data());
+
+                const auto sets = m_device.allocateDescriptorSets(allocInfo);
+
+                descriptor_set descSets;
+
+                std::copy_n(sets.begin(), settings::m_inFlightFrames, descSets.begin());
+
+                m_descriptorSets[name].push_back(descSets);
+            }
         }
 
         vk::DescriptorPool resource_cache::create_descriptor_pool(std::uint32_t) {
@@ -84,6 +98,12 @@ namespace engine {
                 return &shaders->second.layouts;
             }
             return nullptr;
+        }
+
+        const descriptor_set* resource_cache::find_descriptor_sets(const std::string& shadersName,
+                                                                   base::resource_bind_point bindPoint) const {
+            const auto descriptors = m_descriptorSets.find(shadersName);
+            return &descriptors->second[static_cast<std::uint32_t>(bindPoint)];
         }
 
         void resource_cache::clear() {

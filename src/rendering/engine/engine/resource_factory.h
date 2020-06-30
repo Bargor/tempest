@@ -19,6 +19,8 @@ namespace engine {
 
     class device;
 
+    using bind_point = base::resource_bind_point;
+
     class resource_factory final : private api::resource_factory {
         using super = api::resource_factory;
 
@@ -38,15 +40,16 @@ namespace engine {
         resources::texture create_texture(const std::string& textureName);
         template<typename StorageType>
         resources::uniform_buffer create_uniform_buffer(const std::string& shaderName,
-                                                        resources::uniform_buffer::bind_point bindPoint,
+                                                        api::bind_point bindPoint,
                                                         std::uint32_t binding);
 
     private:
     };
 
     template<typename StorageType>
-    resources::uniform_buffer resource_factory::create_uniform_buffer(
-        const std::string& shaderName, resources::uniform_buffer::bind_point bindPoint, std::uint32_t binding) {
+    resources::uniform_buffer resource_factory::create_uniform_buffer(const std::string& shaderName,
+                                                                      api::bind_point bindPoint,
+                                                                      std::uint32_t binding) {
         return super::create_uniform_buffer(shaderName, bindPoint, binding, sizeof(StorageType));
     }
 

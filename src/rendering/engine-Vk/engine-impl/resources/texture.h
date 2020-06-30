@@ -2,11 +2,11 @@
 // Author: Karol Kontny
 #pragma once
 
-#include "shader.h"
+#include "settings.h"
 
 #include <application/image_data.h>
 #include <cstddef>
-#include <engine-base/texture.h>
+#include <engine-base/resource_bind_point.h>
 #include <vulkan/vulkan.hpp>
 
 namespace tst {
@@ -14,6 +14,8 @@ namespace engine {
     namespace vulkan {
 
         class resource_cache;
+
+        using descriptor_set = std::array<vk::DescriptorSet, settings::m_inFlightFrames>;
 
         class texture {
         public:
@@ -25,6 +27,7 @@ namespace engine {
                     const vk::PhysicalDeviceMemoryProperties& memoryProperties,
                     vk::MemoryPropertyFlags memoryFlags,
                     const application::image_data& imageData,
+                    const std::uint32_t& resourceIndex,
                     vk::Sampler = nullptr);
             ~texture();
 
@@ -33,9 +36,6 @@ namespace engine {
         public:
             void bind_texture(const std::string& shaderName, base::resource_bind_point bindPoint, std::uint32_t binding);
 
-        public:
-            vk::DescriptorSet get_descriptor_set() const noexcept;
-
         private:
             vk::Device m_logicalDevice;
             const resource_cache& m_resourceCache;
@@ -43,6 +43,8 @@ namespace engine {
             vk::DeviceMemory m_textureMemory;
             vk::ImageView m_textureView;
             vk::Sampler m_sampler;
+            const std::uint32_t& m_resourceIndex;
+            const descriptor_set* m_descriptorSets;
         };
 
     } // namespace vulkan

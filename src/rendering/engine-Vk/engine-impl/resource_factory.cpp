@@ -21,12 +21,11 @@ namespace engine {
         resource_factory::resource_factory(const device& device, const application::data_loader& dataLoader)
             : m_device(device)
             , m_dataLoader(dataLoader)
-            , m_shaderCompiler(std::make_unique<shader_compiler>(
-                  m_dataLoader, m_device.m_logicalDevice, *m_device.m_resourceCache))
+            , m_shaderCompiler(
+                  std::make_unique<shader_compiler>(m_dataLoader, m_device.m_logicalDevice, *m_device.m_resourceCache))
             , m_transferCommandPool(m_device.m_logicalDevice.createCommandPool(vk::CommandPoolCreateInfo(
                   vk::CommandPoolCreateFlags(), m_device.m_physicalDevice->get_graphics_index())))
             , m_transferQueue(m_device.m_graphicsQueueHandle) {
-            create_descriptor_pool(400);
         }
 
         resource_factory::~resource_factory() {
@@ -64,7 +63,8 @@ namespace engine {
             }
 
             if (shaders && technique) {
-                std::vector<vk::DescriptorSetLayout> layouts = *m_device.m_resourceCache->find_descriptor_layouts(shadersName);
+                std::vector<vk::DescriptorSetLayout> layouts =
+                    *m_device.m_resourceCache->find_descriptor_layouts(shadersName);
 
                 pipeline pipeline(m_device.m_logicalDevice,
                                   m_device.m_engineSettings,
@@ -104,15 +104,12 @@ namespace engine {
                                                                base::resource_bind_point bindPoint,
                                                                std::uint32_t binding,
                                                                std::size_t storageSize) {
-            const auto shaders = m_device.m_resourceCache->find_shaders(shaderName);
-            assert(shaders);
-            const auto layout =
-                m_device.m_descriptorSetCache->find_descriptor_layout(shaders->layouts[static_cast<std::uint32_t>(bindPoint)]);
+            const auto descriptorSets = m_device.m_resourceCache->find_descriptor_sets(shaderName, bindPoint);
+            assert(descriptorSets);
             return uniform_buffer(m_device.m_logicalDevice,
                                   m_transferQueue,
                                   m_transferCommandPool,
-                                  *layout,
-                                  bindPoint,
+                                  *descriptorSets,
                                   binding,
                                   m_device.m_physicalDevice->get_memory_properties(),
                                   m_device.m_resourceIndex,
@@ -131,7 +128,8 @@ namespace engine {
                            vk::BufferUsageFlagBits::eTransferSrc,
                            m_device.m_physicalDevice->get_memory_properties(),
                            vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent,
-                           m_dataLoader.load_image(textureFile.value()));
+                           m_dataLoader.load_image(textureFile.value()),
+                           m_device.m_resourceIndex);
         }
 
         const shader_set* resource_factory::load_shaders(const std::string& shadersName) {

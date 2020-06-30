@@ -13,8 +13,7 @@ namespace engine {
         uniform_buffer::uniform_buffer(vk::Device logicalDevice,
                                        vk::Queue queueHandle,
                                        vk::CommandPool cmdPool,
-                                       vk::DescriptorSetLayout descLayout,
-                                       base::resource_bind_point bindPoint,
+                                       const descriptor_set& descriptorSets,
                                        std::uint32_t binding,
                                        vk::PhysicalDeviceMemoryProperties memoryProperties,
                                        const std::uint32_t& resourceIndex,
@@ -26,32 +25,24 @@ namespace engine {
                      vk::BufferUsageFlagBits::eUniformBuffer,
                      memoryProperties,
                      vk::MemoryPropertyFlagBits::eHostCoherent | vk::MemoryPropertyFlagBits::eHostVisible)
-            , m_setNumber(bindPoint)
-            , m_binding(binding)
-            , m_resourceIndex(resourceIndex) {
-            std::vector<vk::DescriptorSetLayout> layouts(settings::m_inFlightFrames, descLayout);
-            const vk::DescriptorSetAllocateInfo allocInfo(descPool, settings::m_inFlightFrames, layouts.data());
-
-            const auto descriptorSets = logicalDevice.allocateDescriptorSets(allocInfo);
-
+            , m_resourceIndex(resourceIndex)
+            , m_descriptorSets(descriptorSets)
+            , m_binding(binding) {
             for (std::size_t i = 0; i < settings::m_inFlightFrames; ++i) {
                 const vk::DescriptorBufferInfo bufferInfo(m_buffer, i * storageSize, storageSize);
 
                 const vk::WriteDescriptorSet descriptorWrite(
-                    descriptorSets[i], 0, 0, 1, vk::DescriptorType::eUniformBuffer, nullptr, &bufferInfo, nullptr);
+                    m_descriptorSets[i], binding, 0, 1, vk::DescriptorType::eUniformBuffer, nullptr, &bufferInfo, nullptr);
 
                 logicalDevice.updateDescriptorSets({descriptorWrite}, {});
-
-                m_descriptorSets[i] = descriptorSets[i];
             }
         }
 
         uniform_buffer::uniform_buffer(uniform_buffer&& other) noexcept
             : buffer(std::move(other))
-            , m_setNumber(other.m_setNumber)
-            , m_binding(other.m_binding)
             , m_resourceIndex(other.m_resourceIndex)
-            , m_descriptorSets(std::move(other.m_descriptorSets)) {
+            , m_descriptorSets(other.m_descriptorSets)
+            , m_binding(other.m_binding) {
         }
 
         void uniform_buffer::update_buffer(const void* data, const std::size_t dataSize) {

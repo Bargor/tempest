@@ -10,6 +10,8 @@
 #include "resources/vertex_buffer.h"
 #include "resources/vertex_format.h"
 
+#include <engine-base/resource_bind_point.h>
+
 namespace tst {
 
 namespace application {
@@ -25,6 +27,8 @@ namespace engine {
         class resource_cache;
         class shader_compiler;
         class swap_chain;
+
+        using bind_point = base::resource_bind_point;
 
         class resource_factory {
         public:
@@ -51,9 +55,6 @@ namespace engine {
 
         public: // vulkan internal
             const shader_set* load_shaders(const std::string& shadersName);
-
-        private:
-            vk::DescriptorPool create_descriptor_pool(std::uint32_t size);
 
         private:
             const device& m_device;
