@@ -37,6 +37,7 @@ namespace engine {
                                                        base::resource_bind_point bindPoint) const;
 
             void clear();
+            void destroy();
             void rebuild_techniques(const swap_chain& newSwapChain);
             void rebuild_pipelines();
 

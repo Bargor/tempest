@@ -26,7 +26,6 @@ namespace engine {
 
         std::vector<vk::DescriptorSetLayoutBinding> parse_descriptor_layouts_binding(const rapidjson::Value& set) {
             std::vector<vk::DescriptorSetLayoutBinding> bindings;
-            bindings.reserve(set.GetArray().Size());
 
             for (std::int32_t idx = 0; idx < static_cast<std::int32_t>(shader_type::enum_size); ++idx) {
                 if (!set.HasMember(get_shader_format(static_cast<shader_type>(idx)).c_str())) {

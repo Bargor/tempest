@@ -75,8 +75,7 @@ namespace scene {
                                             const glm::vec3& up,
                                             const float fov,
                                             const float aspectRatio) {
-        auto buffer = m_resourceFactory.create_uniform_buffer<camera::uniforms>(
-            "test", engine::bind_point::frame_static, 0);
+        auto buffer = m_resourceFactory.create_uniform_buffer<camera::uniforms>("test", engine::bind_point::global_static, 0);
         return camera(cameraName, m_eventProcessor, std::move(buffer), position, lookAt, up, fov, aspectRatio);
     }
 

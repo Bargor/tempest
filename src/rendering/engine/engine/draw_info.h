@@ -18,7 +18,6 @@ namespace engine {
         using super = api::draw_info;
 
     public:
-        ~draw_info() = default;
 
         draw_info(const resources::vertex_buffer* vertices,
                   const resources::index_buffer* indices,
@@ -26,8 +25,12 @@ namespace engine {
                   const std::vector<const resources::uniform_buffer*>& uniforms,
                   const std::vector<const resources::texture*>& textures);
 
+        draw_info(const draw_info&) = delete;
+
         draw_info(api::draw_info&& impl);
         draw_info(draw_info&& other) noexcept;
+
+        ~draw_info() = default;
 
     private:
     };

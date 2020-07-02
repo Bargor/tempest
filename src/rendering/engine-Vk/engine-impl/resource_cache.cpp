@@ -14,10 +14,7 @@ namespace engine {
         }
 
         resource_cache::~resource_cache() {
-            clear();
-            for (auto& descriptorPool : m_descriptorPools) {
-                m_device.destroyDescriptorPool(descriptorPool);
-            }
+            destroy();
         }
 
         std::size_t resource_cache::add_pipeline(pipeline&& newPipeline) {
@@ -31,8 +28,6 @@ namespace engine {
         }
 
         void resource_cache::add_shaders(const std::string& name, shader_set&& shaders) {
-            m_shaders.insert({name, std::move(shaders)});
-
             for (const auto layout : shaders.layouts) {
                 std::vector<vk::DescriptorSetLayout> layouts(settings::m_inFlightFrames, layout);
                 const vk::DescriptorSetAllocateInfo allocInfo(
@@ -46,6 +41,8 @@ namespace engine {
 
                 m_descriptorSets[name].push_back(descSets);
             }
+
+            m_shaders.insert({name, std::move(shaders)});
         }
 
         vk::DescriptorPool resource_cache::create_descriptor_pool(std::uint32_t) {
@@ -109,7 +106,19 @@ namespace engine {
         void resource_cache::clear() {
             m_pipelines.clear();
             m_techniques.clear();
+            for (const auto& shader : m_shaders) {
+                for (const auto layout : shader.second.layouts) {
+                    m_device.destroyDescriptorSetLayout(layout);
+                }
+            }
             m_shaders.clear();
+        }
+
+        void resource_cache::destroy() {
+            clear();
+            for (auto& descriptorPool : m_descriptorPools) {
+                m_device.destroyDescriptorPool(descriptorPool);
+            }
         }
 
         void resource_cache::rebuild_techniques(const swap_chain& newSwapChain) {
