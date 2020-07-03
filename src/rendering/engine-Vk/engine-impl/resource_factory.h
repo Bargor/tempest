@@ -28,8 +28,6 @@ namespace engine {
         class shader_compiler;
         class swap_chain;
 
-        using bind_point = base::resource_bind_point;
-
         class resource_factory {
         public:
             resource_factory(const device& device, const application::data_loader& dataLoader);

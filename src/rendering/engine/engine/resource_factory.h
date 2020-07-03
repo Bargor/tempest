@@ -40,7 +40,7 @@ namespace engine {
         resources::texture create_texture(const std::string& textureName);
         template<typename StorageType>
         resources::uniform_buffer create_uniform_buffer(const std::string& shaderName,
-                                                        api::bind_point bindPoint,
+                                                        bind_point bindPoint,
                                                         std::uint32_t binding);
 
     private:
@@ -48,7 +48,7 @@ namespace engine {
 
     template<typename StorageType>
     resources::uniform_buffer resource_factory::create_uniform_buffer(const std::string& shaderName,
-                                                                      api::bind_point bindPoint,
+                                                                      bind_point bindPoint,
                                                                       std::uint32_t binding) {
         return super::create_uniform_buffer(shaderName, bindPoint, binding, sizeof(StorageType));
     }

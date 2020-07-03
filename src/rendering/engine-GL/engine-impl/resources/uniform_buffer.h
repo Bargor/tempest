@@ -2,7 +2,6 @@
 // Author: Karol Kontny
 #pragma once
 
-#include "engine-base/uniform_buffer.h"
 #include "buffer.h"
 
 #include <glm.h>

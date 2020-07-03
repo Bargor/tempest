@@ -11,6 +11,8 @@
 #include "resources/vertex_buffer.h"
 #include "resources/vertex_format.h"
 
+#include <engine-base/resource_bind_point.h>
+
 namespace tst {
 
 namespace application {
@@ -41,8 +43,7 @@ namespace engine {
             texture create_texture(const std::string& textureName);
             vertex_buffer create_vertex_buffer(const vertex_format& format, std::vector<vertex>&& vertices);
             uniform_buffer create_uniform_buffer(const std::string& shaderName,
-                                                 shader_type type,
-                                                 base::uniform_bind_point bindPoint,
+                                                 base::resource_bind_point bindPoint,
                                                  std::uint32_t binding,
                                                  std::size_t storageSize);
 

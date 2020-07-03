@@ -44,11 +44,8 @@ namespace engine {
             return vertex_buffer(format, std::move(vertices));
         }
 
-        uniform_buffer resource_factory::create_uniform_buffer(const std::string&,
-                                                               shader_type,
-                                                               base::uniform_bind_point,
-                                                               std::uint32_t,
-                                                               std::size_t storageSize) {
+        uniform_buffer resource_factory::create_uniform_buffer(
+            const std::string&, base::resource_bind_point, std::uint32_t, std::size_t storageSize) {
             return uniform_buffer(storageSize);
         }
 
