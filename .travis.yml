@@ -233,7 +233,7 @@ before_install:
     - export PATH=/usr/bin:$PATH
     - if [ "${ENGINE}" == "Vk" ]; then
         wget -qO - http://packages.lunarg.com/lunarg-signing-key-pub.asc | sudo apt-key add -;
-        sudo wget -qO /etc/apt/sources.list.d/lunarg-vulkan-1.2.141-bionic.list http://packages.lunarg.com/vulkan/1.2.141/lunarg-vulkan-1.2.141-xenial.list;
+        sudo wget -qO /etc/apt/sources.list.d/lunarg-vulkan-1.2.141-bionic.list http://packages.lunarg.com/vulkan/1.2.141/lunarg-vulkan-1.2.141-bionic.list;
         sudo apt update;
         sudo apt install lunarg-vulkan-sdk;
       fi
