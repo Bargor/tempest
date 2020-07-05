@@ -119,6 +119,7 @@ namespace engine {
             for (auto& descriptorPool : m_descriptorPools) {
                 m_device.destroyDescriptorPool(descriptorPool);
             }
+            m_descriptorPools.clear();
         }
 
         void resource_cache::rebuild_techniques(const swap_chain& newSwapChain) {
