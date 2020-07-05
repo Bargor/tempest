@@ -10,6 +10,8 @@
 #include "resources/vertex_buffer.h"
 #include "resources/vertex_format.h"
 
+#include <engine-base/resource_bind_point.h>
+
 namespace tst {
 
 namespace application {
@@ -28,8 +30,7 @@ namespace engine {
 
         class resource_factory {
         public:
-            resource_factory(const device& device,
-                             const application::data_loader& dataLoader);
+            resource_factory(const device& device, const application::data_loader& dataLoader);
             ~resource_factory();
 
             resource_factory(const resource_factory&) = delete;
@@ -44,14 +45,14 @@ namespace engine {
                                             const vertex_format& format);
             void create_technique(const std::string& name);
             vertex_buffer create_vertex_buffer(const vertex_format& format, std::vector<vertex>&& vertices);
-            uniform_buffer create_uniform_buffer(const std::string& shaderName, shader_type type, std::uint32_t binding);
+            uniform_buffer create_uniform_buffer(const std::string& shaderName,
+                                                 base::resource_bind_point bindPoint,
+                                                 std::uint32_t binding,
+                                                 std::size_t storageSize);
             texture create_texture(const std::string& textureName);
 
         public: // vulkan internal
             const shader_set* load_shaders(const std::string& shadersName);
-
-        private:
-            vk::DescriptorPool create_descriptor_pool(std::uint32_t size);
 
         private:
             const device& m_device;
@@ -60,7 +61,6 @@ namespace engine {
             ptr<shader_compiler> m_shaderCompiler;
             vk::CommandPool m_transferCommandPool;
             vk::Queue m_transferQueue;
-            std::vector<vk::DescriptorPool> m_descriptorPools;
         };
 
     } // namespace vulkan

@@ -11,10 +11,11 @@
 #include <application/main_window.h>
 #include <engine/resource_factory.h>
 #include <engine/settings.h>
-#include <fmt/printf.h>
 #include <scene/scene.h>
 #include <scene/object_controller.h>
 #include <util/variant.h>
+
+#include <fmt/printf.h>
 // clang-format on
 
 namespace tst {
@@ -30,9 +31,11 @@ namespace application {
         , m_inputProcessor(inputProcessor)
         , m_mainWindow(mainWindow)
         , m_dataLoader(dataLoader)
-        , m_renderingDevice(std::make_unique<engine::device>(m_mainWindow, m_eventProcessor, engine::api::parse_engine_settings(dataLoader)))
+        , m_renderingDevice(std::make_unique<engine::device>(
+              m_mainWindow, m_eventProcessor, engine::api::parse_engine_settings(dataLoader)))
         , m_resourceFactory(std::make_unique<engine::resource_factory>(*m_renderingDevice, m_dataLoader))
-        , m_scene(std::make_unique<scene::scene>("world", dataLoader, eventProcessor, *m_resourceFactory))
+        , m_scene(std::make_unique<scene::scene>("world"))
+        , m_objectController(std::make_unique<scene::object_controller>(dataLoader, eventProcessor, *m_resourceFactory))
         , m_frameCounter(0)
         , m_lastSecondFrames(0)
         , m_shouldClose(false)
@@ -56,7 +59,13 @@ namespace application {
                                    this,
                                    std::move(time_callback),
                                    std::chrono::seconds(1));
-        m_scene->get_object_controller().load_object("test");  
+        m_scene->add_object(m_objectController->load_object("test", "test"));
+        m_scene->add_camera(m_objectController->create_camera("main",
+                                                              glm::vec3(0.0f, 0.0f, 5.0f),
+                                                              glm::vec3(0.0f, 0.0f, 0.0f),
+                                                              glm::vec3(0.0f, 1.0f, 0.0f),
+                                                              90.0f,
+                                                              m_mainWindow.get_aspect()));
     }
 
     simulation_engine::~simulation_engine() {
@@ -77,7 +86,7 @@ namespace application {
         const auto frameStart = m_timeSource.now();
         if (!m_windowMinimized) {
             const auto newSceneState = scene::update_scene(*m_scene, m_lastFrameDuration);
-            const auto drawInfo = scene::prepare_draw_info(newSceneState);
+            const auto drawInfo = scene::prepare_draw_info(m_scene->get_camera("main"), newSceneState);
             m_renderingDevice->draw_frame(drawInfo.begin(), drawInfo.end());
             m_mainWindow.end_frame();
             m_lastSecondFrames++;

@@ -153,7 +153,7 @@ namespace engine {
 
         std::vector<const char*> instance::get_validation_layers() noexcept {
             if (enableValidationLayers) {
-                return {"VK_LAYER_LUNARG_standard_validation"};
+                return {"VK_LAYER_KHRONOS_validation"};
             } else
                 return {};
         }

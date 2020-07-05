@@ -7,6 +7,7 @@ set(ENGINE_BASE_HDRS
 	engine-base/material.h
 	engine-base/pipeline_parser.h
 	engine-base/pipeline_settings.h
+    engine-base/resource_bind_point.h
 	engine-base/settings.h
 	engine-base/shader.h
 	engine-base/settings_parser.h

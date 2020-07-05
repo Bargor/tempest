@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include "camera.h"
 #include "scene_object.h"
 
 namespace tst {
@@ -21,19 +22,24 @@ namespace engine {
 
 namespace scene {
 
-    class scene;
-
     class object_controller {
     public:
-        object_controller(scene& scene,
-                          const application::data_loader& dataLoader,
+        object_controller(const application::data_loader& dataLoader,
+                          application::event_processor<application::app_event>& eventProcessor,
                           engine::resource_factory& resourceFactory);
 
-        void load_object(const std::string& shaderName);
+        scene_object load_object(const std::string& objectName, const std::string& shaderName);
+
+        camera create_camera(const std::string& cameraName,
+                             const glm::vec3& position,
+                             const glm::vec3& lookAt,
+                             const glm::vec3& up,
+                             const float fov,
+                             const float aspectRatio);
 
     private:
-        scene& m_scene;
         const application::data_loader& m_dataLoader;
+        application::event_processor<application::app_event>& m_eventProcessor;
         engine::resource_factory& m_resourceFactory;
     };
 

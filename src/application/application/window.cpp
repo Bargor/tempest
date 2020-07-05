@@ -31,6 +31,10 @@ namespace application {
         return m_size;
     }
 
+    float window::get_aspect() const noexcept {
+        return static_cast<float>(m_size.width) / m_size.height;
+    }
+
     window::visible_option window::is_visible() const noexcept {
         return m_visible;
     }

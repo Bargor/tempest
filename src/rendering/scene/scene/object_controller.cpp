@@ -3,8 +3,6 @@
 
 #include "object_controller.h"
 
-#include "scene.h"
-
 #include <application/app_event.h>
 #include <application/data_loader.h>
 #include <application/event_processor.h>
@@ -14,13 +12,13 @@
 namespace tst {
 namespace scene {
 
-    object_controller::object_controller(scene& scene,
-                                         const application::data_loader& dataLoader,
+    object_controller::object_controller(const application::data_loader& dataLoader,
+                                         application::event_processor<application::app_event>& eventProcessor,
                                          engine::resource_factory& resourceFactory)
-        : m_scene(scene), m_dataLoader(dataLoader), m_resourceFactory(resourceFactory) {
+        : m_dataLoader(dataLoader), m_eventProcessor(eventProcessor), m_resourceFactory(resourceFactory) {
     }
 
-    void object_controller::load_object(const std::string& path) {
+    scene_object object_controller::load_object(const std::string& objectName, const std::string& path) {
         m_dataLoader.find_file(path);
         auto vertexFormat = engine::vertex_format(engine::vertex_format::primitive_topology::triangle_list);
         vertexFormat.add_attribute(engine::vertex_format::location::position,
@@ -44,10 +42,10 @@ namespace scene {
 
         auto vertexBuffer = m_resourceFactory.create_vertex_buffer(
             vertexFormat,
-            std::vector<engine::vertex>({{{-0.5f, -0.5f, 0.0f}, {1.0f, 0.0f, 0.0f}, {0.0f, 0.0f}},
-                                         {{0.5f, -0.5f, 0.0f}, {0.0f, 1.0f, 0.0f}, {1.0f, 0.0f}},
-                                         {{0.5f, 0.5f, 0.0f}, {0.0f, 0.0f, 1.0f}, {1.0f, 1.0f}},
-                                         {{-0.5f, 0.5f, 0.0f}, {1.0f, 1.0f, 1.0f}, {0.0f, 1.0f}},
+            std::vector<engine::vertex>({{{-0.5f, -0.5f, 0.0f}, {1.0f, 0.0f, 0.0f}, {0.0f, 1.0f}},
+                                         {{0.5f, -0.5f, 0.0f}, {0.0f, 1.0f, 0.0f}, {1.0f, 1.0f}},
+                                         {{0.5f, 0.5f, 0.0f}, {0.0f, 0.0f, 1.0f}, {1.0f, 0.0f}},
+                                         {{-0.5f, 0.5f, 0.0f}, {1.0f, 1.0f, 1.0f}, {0.0f, 0.0f}},
                                          {{-0.5f, -0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}, {0.0f, 0.0f}},
                                          {{0.5f, -0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}, {1.0f, 0.0f}},
                                          {{0.5f, 0.5f, -0.5f}, {0.0f, 0.0f, 1.0f}, {1.0f, 1.0f}},
@@ -55,19 +53,30 @@ namespace scene {
         auto indexBuffer =
             m_resourceFactory.create_index_buffer(std::vector<std::uint16_t>({0, 1, 2, 2, 3, 0, 4, 5, 6, 6, 7, 4}));
 
-        auto uniformBuffer = m_resourceFactory.create_uniform_buffer("test", engine::shader::shader_type::vertex, 0);
+        auto uniformBuffer = m_resourceFactory.create_uniform_buffer<uniform_buffer_object>(
+            "test", engine::bind_point::global_static, 0);
         auto texture = m_resourceFactory.create_texture("texture.jpg");
-        texture.bind_texture("test", engine::shader::shader_type::fragment, 0);
+        texture.bind_texture("test", engine::bind_point::global_static, 1);
 
         auto material = m_resourceFactory.create_material();
 
-        scene_object object(std::move(vertexBuffer),
+        return scene_object(objectName,
+                            std::move(vertexBuffer),
                             std::move(indexBuffer),
                             std::move(material),
                             std::move(uniformBuffer),
                             std::move(texture),
                             pipeline);
-        m_scene.add_object(std::move(object));
+    }
+
+    camera object_controller::create_camera(const std::string& cameraName,
+                                            const glm::vec3& position,
+                                            const glm::vec3& lookAt,
+                                            const glm::vec3& up,
+                                            const float fov,
+                                            const float aspectRatio) {
+        auto buffer = m_resourceFactory.create_uniform_buffer<camera::uniforms>("test", engine::bind_point::global_static, 2);
+        return camera(cameraName, m_eventProcessor, std::move(buffer), position, lookAt, up, fov, aspectRatio);
     }
 
 } // namespace scene

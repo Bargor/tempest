@@ -6,18 +6,18 @@
 namespace tst {
 namespace engine {
     namespace opengl {
-        uniform_buffer::uniform_buffer() : buffer(sizeof(uniform_buffer_object), nullptr, GL_STREAM_DRAW) {        
+        uniform_buffer::uniform_buffer(const std::size_t storageSize)
+            : buffer(storageSize, nullptr, GL_STREAM_DRAW) {
         }
 
-        uniform_buffer::~uniform_buffer() {          
+        uniform_buffer::~uniform_buffer() {
         }
 
         uniform_buffer::uniform_buffer(uniform_buffer&& other) noexcept : buffer(std::move(other)) {
-
         }
 
-        void uniform_buffer::update_buffer(const uniform_buffer_object&) {
+        void uniform_buffer::update_buffer(const void*, const std::size_t) {
         }
-    }
-}
-}
+    } // namespace opengl
+} // namespace engine
+} // namespace tst

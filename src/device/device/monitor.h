@@ -2,8 +2,7 @@
 // Author: Karol Kontny
 
 #pragma once
-#include "GLFW/glfw3.h"
-
+#include <GLFW/glfw3.h>
 #include <common/position.h>
 #include <common/rectangle.h>
 #include <cstdint>

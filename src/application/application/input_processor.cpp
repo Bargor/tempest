@@ -109,7 +109,8 @@ namespace application {
                                        const std::int32_t action,
                                        const std::int32_t mods) {
         assert(std::this_thread::get_id() == core::main_thread::get_id());
-        m_eventProcessor.create_event(app_event{this, app_event::keyboard{key, scancode, action, mods}});
+        m_eventProcessor.create_event(app_event{
+            this, app_event::keyboard{static_cast<device::keys>(key), scancode, static_cast<device::key_action>(action), mods}});
     }
 
     void input_processor::window_iconify_callback(GLFWwindow*, const std::int32_t iconified) {

@@ -22,18 +22,14 @@ namespace engine {
             : m_device(device)
             , m_dataLoader(dataLoader)
             , m_shaderCompiler(
-                  std::make_unique<shader_compiler>(m_dataLoader, m_device.m_logicalDevice, *m_device.m_resourceCache))
+                  std::make_unique<shader_compiler>(m_dataLoader, m_device.m_logicalDevice))
             , m_transferCommandPool(m_device.m_logicalDevice.createCommandPool(vk::CommandPoolCreateInfo(
                   vk::CommandPoolCreateFlags(), m_device.m_physicalDevice->get_graphics_index())))
             , m_transferQueue(m_device.m_graphicsQueueHandle) {
-            create_descriptor_pool(400);
         }
 
         resource_factory::~resource_factory() {
             m_device.m_logicalDevice.destroyCommandPool(m_transferCommandPool);
-            for (auto& descriptorPool : m_descriptorPools) {
-                m_device.m_logicalDevice.destroyDescriptorPool(descriptorPool);
-            }
         }
 
         resource_factory::resource_factory(resource_factory&& factory) noexcept
@@ -41,8 +37,7 @@ namespace engine {
             , m_dataLoader(factory.m_dataLoader)
             , m_shaderCompiler(std::move(factory.m_shaderCompiler))
             , m_transferCommandPool(factory.m_transferCommandPool)
-            , m_transferQueue(factory.m_transferQueue)
-            , m_descriptorPools(std::move(factory.m_descriptorPools)) {
+            , m_transferQueue(factory.m_transferQueue) {
             factory.m_transferCommandPool = vk::CommandPool();
         }
 
@@ -68,13 +63,8 @@ namespace engine {
             }
 
             if (shaders && technique) {
-                std::vector<vk::DescriptorSetLayout> layouts;
-                for (const auto& shader : *shaders) {
-                    auto shaderLayouts = shader.get_layouts();
-                    for (const auto& layout : shaderLayouts) {
-                        layouts.emplace_back(*m_device.m_resourceCache->find_descriptor_layout(layout));
-                    }
-                }
+                std::vector<vk::DescriptorSetLayout> layouts =
+                    *m_device.m_resourceCache->find_descriptor_layouts(shadersName);
 
                 pipeline pipeline(m_device.m_logicalDevice,
                                   m_device.m_engineSettings,
@@ -111,55 +101,35 @@ namespace engine {
         }
 
         uniform_buffer resource_factory::create_uniform_buffer(const std::string& shaderName,
-                                                               shader_type type,
-                                                               std::uint32_t binding) {
-            const auto shaders = m_device.m_resourceCache->find_shaders(shaderName);
-            assert(shaders);
-            for (const auto& shader : *shaders) {
-                if (shader.get_stage() == type) {
-                    const auto layout = m_device.m_resourceCache->find_descriptor_layout(shader.get_layouts()[binding]);
-                    return uniform_buffer(m_device.m_logicalDevice,
-                                          m_transferQueue,
-                                          m_transferCommandPool,
-                                          m_descriptorPools[0],
-                                          *layout,
-                                          m_device.m_physicalDevice->get_memory_properties(),
-                                          m_device.m_resourceIndex);
-                }
-            }
-            assert(false);
-            throw;
+                                                               base::resource_bind_point bindPoint,
+                                                               std::uint32_t binding,
+                                                               std::size_t storageSize) {
+            const auto descriptorSets = m_device.m_resourceCache->find_descriptor_sets(shaderName, bindPoint);
+            assert(descriptorSets);
+            return uniform_buffer(m_device.m_logicalDevice,
+                                  m_transferQueue,
+                                  m_transferCommandPool,
+                                  *descriptorSets,
+                                  binding,
+                                  m_device.m_physicalDevice->get_memory_properties(),
+                                  m_device.m_resourceIndex,
+                                  storageSize);
         }
 
         texture resource_factory::create_texture(const std::string& textureName) {
             const auto textureFile = m_dataLoader.find_file(std::filesystem::path("textures") / (textureName));
             if (!textureFile) {
-                throw std::runtime_error(fmt::format("Wrong texture path: so such file: %s", "textures/" + textureName));
+                throw std::runtime_error(fmt::format("Wrong texture path: no such file: %s", "textures/" + textureName));
             }
             return texture(m_device.m_logicalDevice,
                            m_transferQueue,
                            m_transferCommandPool,
-                           m_descriptorPools[0],
                            *m_device.m_resourceCache,
                            vk::BufferUsageFlagBits::eTransferSrc,
                            m_device.m_physicalDevice->get_memory_properties(),
                            vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent,
-                           m_dataLoader.load_image(textureFile.value()));
-        }
-
-        vk::DescriptorPool resource_factory::create_descriptor_pool(std::uint32_t) {
-            vk::DescriptorPoolSize uniformPoolSize(vk::DescriptorType::eUniformBuffer, settings::m_inFlightFrames);
-            vk::DescriptorPoolSize samplerPoolSize(vk::DescriptorType::eCombinedImageSampler, settings::m_inFlightFrames);
-
-            vk::DescriptorPoolCreateInfo poolCreateInfo(
-                vk::DescriptorPoolCreateFlags(),
-                settings::m_inFlightFrames * 3,
-                2,
-                std::array<vk::DescriptorPoolSize, 2>{uniformPoolSize, samplerPoolSize}.data());
-
-            m_descriptorPools.emplace_back(m_device.m_logicalDevice.createDescriptorPool(poolCreateInfo));
-
-            return m_descriptorPools.back();
+                           m_dataLoader.load_image(textureFile.value()),
+                           m_device.m_resourceIndex);
         }
 
         const shader_set* resource_factory::load_shaders(const std::string& shadersName) {

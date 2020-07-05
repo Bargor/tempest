@@ -184,7 +184,7 @@ namespace engine {
                 m_logicalDevice.destroyCommandPool(commandPool);
             }
 
-            m_resourceCache->clear();
+            m_resourceCache->destroy();
             m_swapChain.reset();
             instance::get_instance().m_instance.destroySurfaceKHR(m_windowSurface);
             m_logicalDevice.destroy();

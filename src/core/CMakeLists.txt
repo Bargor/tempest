@@ -2,8 +2,9 @@
 # Author: Karol Kontny
 
 set(CORE_HDRS
+    assert.h
 	core.h
-	assert.h
+	glm.h
 	platform.h
 	macros.h
 	algorithm/algorithm.h
@@ -16,6 +17,7 @@ set(CORE_HDRS
 	time/timer.h
 	thread/main_thread.h
 	util/bitpack.h
+    util/cast.h
 	util/hash.h
 	util/variant.h
 )

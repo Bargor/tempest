@@ -19,7 +19,6 @@
 #include <application/app_event.h>
 #include <application/event_processor.h>
 #include <application/main_window.h>
-#include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <util/variant.h>
 
@@ -60,13 +59,10 @@ namespace engine {
 
             std::vector<vk::Buffer> vertexBuffers = {drawInfo.vertices->get_handle()};
             std::vector<vk::DeviceSize> offsets = {0};
-            const auto uniformDescriptorSet = drawInfo.uniforms->get_descriptor_set();
-            const auto textureDescriptor = drawInfo.textures->get_descriptor_set();
-            std::array<vk::DescriptorSet, 2> descriptorSets{uniformDescriptorSet, textureDescriptor};
             commandBuffer.bindVertexBuffers(0, vertexBuffers, offsets);
             commandBuffer.bindIndexBuffer(drawInfo.indices->get_handle(), 0, vk::IndexType::eUint16);
             commandBuffer.bindDescriptorSets(
-                vk::PipelineBindPoint::eGraphics, drawInfo.pipelineState.get_layout(), 0, descriptorSets, {});
+                vk::PipelineBindPoint::eGraphics, drawInfo.pipelineState.get_layout(), 0, drawInfo.descriptorSets, {});
             commandBuffer.drawIndexed(drawInfo.indices->get_index_count(), 1, 0, 0, 0);
             commandBuffer.endRenderPass();
             commandBuffer.end();
