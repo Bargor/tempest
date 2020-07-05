@@ -37,7 +37,7 @@ matrix:
             - libxcursor-dev
             - xorg-dev
       env:
-        - MATRIX_EVAL="CC=gcc-9 && CXX=g++-10" BUILD_TYPE=Release ENGINE=Vk
+        - MATRIX_EVAL="CC=gcc-10 && CXX=g++-10" BUILD_TYPE=Release ENGINE=Vk
     # Clang Debug Vk
     - os: linux
       addons:
