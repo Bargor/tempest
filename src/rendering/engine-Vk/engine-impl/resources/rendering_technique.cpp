@@ -149,14 +149,6 @@ namespace engine {
             const auto subpasses = create_subpass_descriptions(settings.m_subpasses, references);
             const auto dependencies = create_subpass_dependencies(settings.m_depencencies);
 
-            vk::SubpassDependency dependency(VK_SUBPASS_EXTERNAL,
-                                             0,
-                                             vk::PipelineStageFlagBits::eColorAttachmentOutput,
-                                             vk::PipelineStageFlagBits::eColorAttachmentOutput,
-                                             vk::AccessFlags(),
-                                             vk::AccessFlagBits::eColorAttachmentRead |
-                                                 vk::AccessFlagBits::eColorAttachmentWrite);
-
             vk::RenderPassCreateInfo renderPassInfo(vk::RenderPassCreateFlags(),
                                                     static_cast<std::uint32_t>(attachments.size()),
                                                     attachments.data(),

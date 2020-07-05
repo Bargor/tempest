@@ -412,7 +412,7 @@ namespace engine {
                                                         0,
                                                         vk::Pipeline(),
                                                         0);
-            return logicalDevice.createGraphicsPipeline(vk::PipelineCache(), pipelineInfo);
+            return logicalDevice.createGraphicsPipeline(vk::PipelineCache(), pipelineInfo).value;
         }
 
         pipeline::pipeline(const vk::Device logicalDevice,

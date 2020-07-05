@@ -50,6 +50,7 @@ namespace engine {
         private:
             const application::data_loader& m_dataLoader;
             ptr<shader_compiler> m_shaderCompiler;
+            std::vector<pipeline> m_pipelines;
         };
 
         template<typename IndexType>

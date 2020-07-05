@@ -26,10 +26,9 @@ namespace engine {
                                                           const std::string&,
                                                           const std::string&,
                                                           const vertex_format&) {
-            std::vector<pipeline> m_pipe;
             pipeline p{};
-            m_pipe.push_back(p);
-            return m_pipe[0];
+            m_pipelines.push_back(p);
+            return m_pipelines[0];
         }
 
         texture resource_factory::create_texture(const std::string& textureName) {
