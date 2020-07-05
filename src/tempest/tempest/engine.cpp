@@ -34,7 +34,7 @@ namespace application {
         , m_renderingDevice(std::make_unique<engine::device>(
               m_mainWindow, m_eventProcessor, engine::api::parse_engine_settings(dataLoader)))
         , m_resourceFactory(std::make_unique<engine::resource_factory>(*m_renderingDevice, m_dataLoader))
-        , m_scene(std::make_unique<scene::scene>("world", eventProcessor))
+        , m_scene(std::make_unique<scene::scene>("world"))
         , m_objectController(std::make_unique<scene::object_controller>(dataLoader, eventProcessor, *m_resourceFactory))
         , m_frameCounter(0)
         , m_lastSecondFrames(0)

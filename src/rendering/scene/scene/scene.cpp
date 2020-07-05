@@ -28,8 +28,8 @@ namespace scene {
         return drawInfos;
     }
 
-    scene::scene(std::string&& sceneName, application::event_processor<application::app_event>& eventProcessor)
-        : m_sceneName(std::move(sceneName)), m_eventProcessor(eventProcessor) {
+    scene::scene(std::string&& sceneName)
+        : m_sceneName(std::move(sceneName)) {
     }
 
     scene::~scene() {
