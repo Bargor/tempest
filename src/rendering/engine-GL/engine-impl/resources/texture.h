@@ -2,9 +2,8 @@
 // Author: Karol Kontny
 #pragma once
 
-#include "shader.h"
-
 #include <application/image_data.h>
+#include <engine-base/resource_bind_point.h>
 
 namespace tst {
 namespace engine {
@@ -18,7 +17,7 @@ namespace engine {
             texture(texture&& other) noexcept;
 
         public:
-            void bind_texture(const std::string& shaderName, shader_type type, std::uint32_t binding);
+            void bind_texture(const std::string& shaderName, base::resource_bind_point type, std::uint32_t binding);
 
         private:
         };

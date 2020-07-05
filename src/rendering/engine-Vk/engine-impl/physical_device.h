@@ -32,7 +32,8 @@ namespace engine {
             vk::FormatProperties get_format_properties(vk::Format format) const noexcept;
             surface_support_info get_surface_support_info(vk::SurfaceKHR windowSurface) const;
             vk::Device create_logical_device(const std::vector<const char*>& validationLayers,
-                                             const std::vector<const char*>& extensions);
+                                             const std::vector<const char*>& extensions,
+                                             const vk::PhysicalDeviceFeatures& requiredFeatures);
 
         private:
             vk::PhysicalDevice m_physicalDevice;

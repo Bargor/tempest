@@ -24,28 +24,31 @@ namespace engine {
             return std::system(command.c_str());
         }
 
-        std::vector<shader::descriptor_layout> parse_descriptor_layouts(const rapidjson::Document& jsonModel,
-                                                                        shader_type type) {
-            assert(jsonModel.HasMember(get_shader_format(type).c_str()));
-            const auto& descriptors = jsonModel[get_shader_format(type).c_str()];
-            assert(descriptors.IsArray());
-            std::vector<shader::descriptor_layout> layouts;
-            layouts.reserve(descriptors.GetArray().Size());
+        std::vector<vk::DescriptorSetLayoutBinding> parse_descriptor_layouts_binding(const rapidjson::Value& set) {
+            std::vector<vk::DescriptorSetLayoutBinding> bindings;
 
-            for (const auto& descriptor : descriptors.GetArray()) {
-                auto binding = descriptor["binding"].GetUint();
-                auto descriptorType = descriptor["type"].GetUint();
+            for (std::int32_t idx = 0; idx < static_cast<std::int32_t>(shader_type::enum_size); ++idx) {
+                if (!set.HasMember(get_shader_format(static_cast<shader_type>(idx)).c_str())) {
+                    continue;
+                }
+                const auto& descriptors = set[get_shader_format(static_cast<shader_type>(idx)).c_str()];
 
-                layouts.emplace_back(shader::descriptor_layout{
-                    binding, static_cast<vk::DescriptorType>(descriptorType), shader::get_native_shader_type(type)});
+                for (const auto& descriptor : descriptors.GetArray()) {
+                    const auto binding = descriptor["binding"].GetUint();
+                    const auto descriptorType = descriptor["type"].GetUint();
+                    bindings.emplace_back(binding,
+                                          static_cast<vk::DescriptorType>(descriptorType),
+                                          1,
+                                          shader::get_native_shader_type(static_cast<shader_type>(idx)),
+                                          nullptr);
+                }
             }
-            return layouts;
+            return bindings;
         }
 
         shader_compiler::shader_compiler(const application::data_loader& dataLoader,
-                                         const vk::Device device,
-                                         resource_cache& resourceCache)
-            : m_dataLoader(dataLoader), m_device(device), m_resourceCache(resourceCache) {
+                                         const vk::Device device)
+            : m_dataLoader(dataLoader), m_device(device) {
         }
 
         shader_compiler::~shader_compiler() {
@@ -71,16 +74,12 @@ namespace engine {
                     continue;
                 }
 
-                auto descriptorLayouts = create_descriptor_layouts(jsonModel, idx);
+                shader shaderModule(m_device, static_cast<shader_type>(idx), std::move(bytecode.value()), name);
 
-                shader shaderModule(m_device,
-                                    static_cast<shader_type>(idx),
-                                    std::move(bytecode.value()),
-                                    name,
-                                    std::move(descriptorLayouts));
-
-                shaders.emplace_back(std::move(shaderModule));
+                shaders.shaders.emplace_back(std::move(shaderModule));
             }
+
+            std::tie(shaders.layouts, shaders.bindings) = create_descriptor_layouts(jsonModel);
 
             return shaders;
         }
@@ -113,21 +112,30 @@ namespace engine {
             return m_dataLoader.load_shader_bytecode(shaderBytecodeFile.value());
         }
 
-        std::vector<shader::descriptor_layout>
-        shader_compiler::create_descriptor_layouts(const rapidjson::Document& jsonModel, std::int32_t idx) const {
-            auto descriptorLayouts = parse_descriptor_layouts(jsonModel, static_cast<shader_type>(idx));
+        std::tuple<std::vector<vk::DescriptorSetLayout>, std::vector<std::vector<vk::DescriptorSetLayoutBinding>>>
+        shader_compiler::create_descriptor_layouts(const rapidjson::Document& jsonModel) const {
+            const auto& sets = jsonModel["sets"];
+            assert(sets.IsArray());
+            std::vector<vk::DescriptorSetLayout> layouts;
+            std::vector<std::vector<vk::DescriptorSetLayoutBinding>> bindings;
+            layouts.reserve(sets.GetArray().Size());
+            bindings.reserve(sets.GetArray().Size());
 
-            for (auto& layout : descriptorLayouts) {
-                const vk::DescriptorSetLayoutBinding descriptorBinding(
-                    layout.binding, layout.type, 1, layout.stages, nullptr);
+            for (const auto& set : sets.GetArray()) {
+                auto descriptorLayoutsBindings = parse_descriptor_layouts_binding(set);
 
                 vk::DescriptorSetLayoutCreateInfo setLayoutInfo(
-                    vk::DescriptorSetLayoutCreateFlags(), 1, &descriptorBinding);
+                    vk::DescriptorSetLayoutCreateFlags(),
+                    static_cast<std::uint32_t>(descriptorLayoutsBindings.size()),
+                    descriptorLayoutsBindings.data());
 
                 const auto vkLayout = m_device.createDescriptorSetLayout(setLayoutInfo, nullptr);
-                m_resourceCache.add_descritptor_set_layout(std::move(layout), vkLayout);
+
+                layouts.emplace_back(vkLayout);
+                bindings.emplace_back(std::move(descriptorLayoutsBindings));
             }
-            return descriptorLayouts;
+
+            return std::tie(layouts, bindings);
         }
 
     } // namespace vulkan

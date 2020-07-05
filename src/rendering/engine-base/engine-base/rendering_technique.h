@@ -4,6 +4,7 @@
 
 #include "settings.h"
 
+#include <array>
 #include <core.h>
 #include <optional>
 #include <string>
@@ -35,6 +36,7 @@ namespace engine {
             store_operation stencilStoreOperation;
             image_layout initialLayout;
             image_layout finalLayout;
+            std::array<float, 4> clearValue;
         };
 
         struct subpass_settings {

@@ -7,6 +7,7 @@
 #include <filesystem>
 #include <optional>
 #include <rapidjson/document.h>
+#include <tuple>
 
 namespace tst {
 
@@ -18,13 +19,11 @@ namespace engine {
     namespace vulkan {
 
         class device;
-        class resource_cache;
 
         class shader_compiler {
         public:
             shader_compiler(const application::data_loader& dataLoader,
-                            const vk::Device device,
-                            resource_cache& resourceCache);
+                            const vk::Device device);
             ~shader_compiler();
 
             shader_set compile_shaders(const std::string& name) const;
@@ -34,13 +33,12 @@ namespace engine {
                                                            const std::optional<std::filesystem::path>& shaderBytecodeFile,
                                                            const std::string& bytecodeFileName) const;
 
-            std::vector<shader::descriptor_layout> create_descriptor_layouts(const rapidjson::Document& jsonModel,
-                                                                             std::int32_t idx) const;
+            std::tuple<std::vector<vk::DescriptorSetLayout>, std::vector<std::vector<vk::DescriptorSetLayoutBinding>>>
+            create_descriptor_layouts(const rapidjson::Document& jsonModel) const;
 
         private:
             const application::data_loader& m_dataLoader;
             const vk::Device m_device;
-            resource_cache& m_resourceCache;
 
             static constexpr char m_shaderExtension[] = ".spv";
         };

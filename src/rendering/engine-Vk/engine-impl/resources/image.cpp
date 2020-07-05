@@ -28,7 +28,7 @@ namespace engine {
                                            tiling,
                                            usage,
                                            vk::SharingMode::eExclusive,
-                                           0,
+                                           {},
                                            nullptr,
                                            vk::ImageLayout::eUndefined);
             auto image = device.createImage(createInfo);

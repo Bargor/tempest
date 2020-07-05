@@ -10,11 +10,16 @@ namespace engine {
     namespace vulkan {
 
         resource_cache::resource_cache(const vk::Device device) : m_device(device) {
+            create_descriptor_pool(400);
+        }
+
+        resource_cache::~resource_cache() {
+            destroy();
         }
 
         std::size_t resource_cache::add_pipeline(pipeline&& newPipeline) {
             auto hash = std::hash<pipeline>{}(newPipeline);
-            m_pipelines.insert(std::make_pair(hash, std::move(newPipeline)));
+            m_pipelines.insert({hash, std::move(newPipeline)});
             return hash;
         }
 
@@ -23,14 +28,36 @@ namespace engine {
         }
 
         void resource_cache::add_shaders(const std::string& name, shader_set&& shaders) {
-            m_shaders.insert(std::make_pair(name, std::move(shaders)));
+            for (const auto layout : shaders.layouts) {
+                std::vector<vk::DescriptorSetLayout> layouts(settings::m_inFlightFrames, layout);
+                const vk::DescriptorSetAllocateInfo allocInfo(
+                    m_descriptorPools[0], settings::m_inFlightFrames, layouts.data());
+
+                const auto sets = m_device.allocateDescriptorSets(allocInfo);
+
+                descriptor_set descSets;
+
+                std::copy_n(sets.begin(), settings::m_inFlightFrames, descSets.begin());
+
+                m_descriptorSets[name].push_back(descSets);
+            }
+
+            m_shaders.insert({name, std::move(shaders)});
         }
 
-        void resource_cache::add_descritptor_set_layout(shader::descriptor_layout&& layout,
-                                                        vk::DescriptorSetLayout vkLayout) {
-            if (m_descriptorLayouts.find(layout) == m_descriptorLayouts.cend()) {
-                m_descriptorLayouts[layout] = vkLayout;
-            }
+        vk::DescriptorPool resource_cache::create_descriptor_pool(std::uint32_t) {
+            vk::DescriptorPoolSize uniformPoolSize(vk::DescriptorType::eUniformBuffer, settings::m_inFlightFrames);
+            vk::DescriptorPoolSize samplerPoolSize(vk::DescriptorType::eCombinedImageSampler, settings::m_inFlightFrames);
+
+            vk::DescriptorPoolCreateInfo poolCreateInfo(
+                vk::DescriptorPoolCreateFlags(),
+                settings::m_inFlightFrames * 3,
+                2,
+                std::array<vk::DescriptorPoolSize, 2>{uniformPoolSize, samplerPoolSize}.data());
+
+            m_descriptorPools.emplace_back(m_device.createDescriptorPool(poolCreateInfo));
+
+            return m_descriptorPools.back();
         }
 
         const pipeline* resource_cache::find_pipeline(std::size_t pipelineHash) const {
@@ -39,7 +66,7 @@ namespace engine {
         }
 
         const shader_set* resource_cache::find_shaders(const std::string& name) const {
-            auto shaders = m_shaders.find(name);
+            const auto shaders = m_shaders.find(name);
             if (shaders != m_shaders.end()) {
                 return &(shaders->second);
             }
@@ -47,7 +74,7 @@ namespace engine {
         }
 
         const rendering_technique* resource_cache::find_technique(const std::string& techniqueName) const {
-            auto technique =
+            const auto technique =
                 std::find_if(m_techniques.begin(), m_techniques.end(), [&](const rendering_technique& technique) {
                     if (technique.get_name() == techniqueName) {
                         return true;
@@ -61,22 +88,38 @@ namespace engine {
             return nullptr;
         }
 
-        const vk::DescriptorSetLayout* resource_cache::find_descriptor_layout(const shader::descriptor_layout& layout) const {
-            const auto& flayout = m_descriptorLayouts.find(layout);
-            if (flayout != m_descriptorLayouts.end()) {
-                return &flayout->second;
+        const std::vector<vk::DescriptorSetLayout>*
+        resource_cache::find_descriptor_layouts(const std::string& shadersName) const noexcept {
+            const auto shaders = m_shaders.find(shadersName);
+            if (shaders != m_shaders.end()) {
+                return &shaders->second.layouts;
             }
             return nullptr;
+        }
+
+        const descriptor_set* resource_cache::find_descriptor_sets(const std::string& shadersName,
+                                                                   base::resource_bind_point bindPoint) const {
+            const auto descriptors = m_descriptorSets.find(shadersName);
+            return &descriptors->second[static_cast<std::uint32_t>(bindPoint)];
         }
 
         void resource_cache::clear() {
             m_pipelines.clear();
             m_techniques.clear();
-            m_shaders.clear();
-            for (const auto& layout : m_descriptorLayouts) {
-                m_device.destroyDescriptorSetLayout(layout.second);
+            for (const auto& shader : m_shaders) {
+                for (const auto layout : shader.second.layouts) {
+                    m_device.destroyDescriptorSetLayout(layout);
+                }
             }
-            m_descriptorLayouts.clear();
+            m_shaders.clear();
+        }
+
+        void resource_cache::destroy() {
+            clear();
+            for (auto& descriptorPool : m_descriptorPools) {
+                m_device.destroyDescriptorPool(descriptorPool);
+            }
+            m_descriptorPools.clear();
         }
 
         void resource_cache::rebuild_techniques(const swap_chain& newSwapChain) {

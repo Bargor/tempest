@@ -46,6 +46,14 @@ namespace engine {
                                  });
         }
 
+        bool check_features_support(const vk::PhysicalDevice& handle, const vk::PhysicalDeviceFeatures& requiredFeatures) {
+            const auto supportedFeatures = handle.getFeatures();
+            if (supportedFeatures.samplerAnisotropy != requiredFeatures.samplerAnisotropy) {
+                return false;
+            }
+            return true;
+        }
+
         std::uint32_t rate_device(gpu_info info) {
             std::uint32_t score = 0;
 
@@ -66,8 +74,16 @@ namespace engine {
             return score;
         }
 
+        vk::PhysicalDeviceFeatures get_required_features() {
+            vk::PhysicalDeviceFeatures requiredFeatures;
+            requiredFeatures.samplerAnisotropy = true;
+
+            return requiredFeatures;
+        }
+
         ptr<physical_device> select_physical_device(vk::SurfaceKHR& surface,
-                                                    const std::vector<const char*>& requiredExtensions) {
+                                                    const std::vector<const char*>& requiredExtensions,
+                                                    const vk::PhysicalDeviceFeatures& requiredFeatures) {
             const auto& instance = instance::get_instance();
             std::vector<vk::PhysicalDevice> devices = instance.get_instance_handle().enumeratePhysicalDevices();
 
@@ -83,6 +99,11 @@ namespace engine {
                     if (!check_extensions_support(device, requiredExtensions)) {
                         throw vulkan_exception("Device is not supporting required extenstions");
                     }
+
+                    if (!check_features_support(device, requiredFeatures)) {
+                        throw vulkan_exception("Device is not supporting required features");
+                    }
+
                     auto indices = compute_queue_indices(surface, device);
                     ptr<gpu_info> info = std::make_unique<gpu_info>(device);
 
@@ -118,9 +139,10 @@ namespace engine {
             , m_eventProcessor(eventProcessor)
             , m_engineSettings(std::move(engineSettings))
             , m_windowSurface(create_window_surface(mainWindow.get_handle()))
-            , m_physicalDevice(select_physical_device(m_windowSurface, {VK_KHR_SWAPCHAIN_EXTENSION_NAME}))
-            , m_logicalDevice(m_physicalDevice->create_logical_device(instance::get_validation_layers(),
-                                                                      {VK_KHR_SWAPCHAIN_EXTENSION_NAME}))
+            , m_physicalDevice(
+                  select_physical_device(m_windowSurface, {VK_KHR_SWAPCHAIN_EXTENSION_NAME}, get_required_features()))
+            , m_logicalDevice(m_physicalDevice->create_logical_device(
+                  instance::get_validation_layers(), {VK_KHR_SWAPCHAIN_EXTENSION_NAME}, get_required_features()))
             , m_swapChain(
                   std::make_unique<swap_chain>(*m_physicalDevice.get(),
                                                m_logicalDevice,
@@ -162,7 +184,7 @@ namespace engine {
                 m_logicalDevice.destroyCommandPool(commandPool);
             }
 
-            m_resourceCache->clear();
+            m_resourceCache->destroy();
             m_swapChain.reset();
             instance::get_instance().m_instance.destroySurfaceKHR(m_windowSurface);
             m_logicalDevice.destroy();

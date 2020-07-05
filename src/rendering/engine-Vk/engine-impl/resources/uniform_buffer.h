@@ -5,43 +5,39 @@
 #include "buffer.h"
 #include "settings.h"
 
-#include <glm/glm.hpp>
+#include <glm.h>
 #include <vector>
 
 namespace tst {
 namespace engine {
     namespace vulkan {
 
-        struct uniform_buffer_object {
-            glm::mat4 model;
-            glm::mat4 view;
-            glm::mat4 proj;
-            glm::mat4 asd;
-        };
+        using descriptor_set = std::array<vk::DescriptorSet, settings::m_inFlightFrames>;
 
         class uniform_buffer : public buffer {
             using super = buffer;
-        public:
 
+        public:
             uniform_buffer(vk::Device logicalDevice,
                            vk::Queue m_queueHandle,
                            vk::CommandPool cmdPool,
-                           vk::DescriptorPool descPool,
-                           vk::DescriptorSetLayout descLayout,
+                           const descriptor_set& descriptorSets,
+                           std::uint32_t binding,
                            vk::PhysicalDeviceMemoryProperties memoryProperties,
-                           const std::uint32_t& resourceIndex);
+                           const std::uint32_t& resourceIndex,
+                           std::size_t storageSize);
             uniform_buffer(uniform_buffer&& other) noexcept;
             uniform_buffer(const uniform_buffer& other) = delete;
 
             ~uniform_buffer() = default;
 
-            void update_buffer(const uniform_buffer_object& ubo);
+            void update_buffer(const void* data, const std::size_t dataSize);
             vk::DescriptorSet get_descriptor_set() const noexcept;
 
         private:
-            uniform_buffer_object m_data;
             const std::uint32_t& m_resourceIndex;
-            std::array<vk::DescriptorSet, settings::m_inFlightFrames> m_descriptorSets;
+            const std::array<vk::DescriptorSet, settings::m_inFlightFrames>& m_descriptorSets;
+            std::uint32_t m_binding;
         };
 
     } // namespace vulkan

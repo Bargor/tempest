@@ -125,7 +125,7 @@ namespace engine {
             auto extensions = get_required_extensions();
 
             vk::ApplicationInfo appInfo(
-                "Tempest", VK_MAKE_VERSION(1, 0, 0), "Tempest", VK_MAKE_VERSION(1, 0, 0), VK_API_VERSION_1_1);
+                "Tempest", VK_MAKE_VERSION(1, 0, 0), "Tempest", VK_MAKE_VERSION(1, 0, 0), VK_API_VERSION_1_2);
 
             vk::InstanceCreateInfo createInfo(vk::InstanceCreateFlags(),
                                               &appInfo,
@@ -153,7 +153,7 @@ namespace engine {
 
         std::vector<const char*> instance::get_validation_layers() noexcept {
             if (enableValidationLayers) {
-                return {"VK_LAYER_LUNARG_standard_validation"};
+                return {"VK_LAYER_KHRONOS_validation"};
             } else
                 return {};
         }

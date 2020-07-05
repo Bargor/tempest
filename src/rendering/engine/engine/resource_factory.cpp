@@ -20,7 +20,7 @@ namespace engine {
     }
 
     resources::material resource_factory::create_material() {
-        return resources::material{};
+        return resources::material();
     }
 
     const resources::pipeline& resource_factory::create_pipeline(const std::string& techniqueName,
@@ -42,12 +42,6 @@ namespace engine {
 
     resources::texture resource_factory::create_texture(const std::string& textureName) {
         return super::create_texture(textureName);
-    }
-
-    resources::uniform_buffer resource_factory::create_uniform_buffer(const std::string& shaderName,
-                                                                      shader::shader_type type,
-                                                                      std::uint32_t binding) {
-        return super::create_uniform_buffer(shaderName, type, binding);
     }
 } // namespace engine
 } // namespace tst

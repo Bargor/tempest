@@ -147,15 +147,7 @@ namespace engine {
             const auto attachments = create_attachment_descriptions(settings.m_framebuffers, format, depthFormat);
             const auto references = create_attachment_references(settings.m_subpasses);
             const auto subpasses = create_subpass_descriptions(settings.m_subpasses, references);
-            const auto dependencies = create_subpass_dependencies(settings.m_depencencies);;
-
-            vk::SubpassDependency dependency(VK_SUBPASS_EXTERNAL,
-                                             0,
-                                             vk::PipelineStageFlagBits::eColorAttachmentOutput,
-                                             vk::PipelineStageFlagBits::eColorAttachmentOutput,
-                                             vk::AccessFlags(),
-                                             vk::AccessFlagBits::eColorAttachmentRead |
-                                                 vk::AccessFlagBits::eColorAttachmentWrite);
+            const auto dependencies = create_subpass_dependencies(settings.m_depencencies);
 
             vk::RenderPassCreateInfo renderPassInfo(vk::RenderPassCreateFlags(),
                                                     static_cast<std::uint32_t>(attachments.size()),
@@ -240,13 +232,26 @@ namespace engine {
 
         vk::RenderPassBeginInfo rendering_technique::generate_render_pass_info(vk::CommandBuffer buffer,
                                                                                vk::SubpassContents contents) const {
-            std::array<vk::ClearValue, 2> clearValues = {vk::ClearValue(std::array<float, 4>{0.0f, 0.0f, 0.0f, 1.0f}),
-                                                         vk::ClearValue(vk::ClearDepthStencilValue(1.0f, 0))};
+            auto collectClearValues = [this]() {
+                std::vector<vk::ClearValue> clearValues;
+                clearValues.reserve(m_settings.m_framebuffers.size());
+                for (const auto& framebuffer : m_settings.m_framebuffers) {
+                    if (framebuffer.type == base::framebuffer_settings::attachment_type::color) {
+                        clearValues.emplace_back(vk::ClearValue(framebuffer.clearValue));
+                    } else {
+                        clearValues.emplace_back(vk::ClearDepthStencilValue(
+                            framebuffer.clearValue[0], static_cast<std::uint32_t>(framebuffer.clearValue[1])));
+                    }
+                }
+                return clearValues;
+            };
+
+            const auto clearValues = collectClearValues();
 
             vk::RenderPassBeginInfo renderPassInfo(m_renderPass,
                                                    m_framebuffers[m_swapChain.get().get_image_index()],
                                                    vk::Rect2D({0, 0}, m_extent),
-                                                   static_cast<std::uint32_t>(clearValues.size()),
+                                                   static_cast<std::uint32_t>(m_settings.m_framebuffers.size()),
                                                    clearValues.data());
 
             buffer.beginRenderPass(renderPassInfo, contents);

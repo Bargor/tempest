@@ -19,7 +19,6 @@
 #include <application/app_event.h>
 #include <application/event_processor.h>
 #include <application/main_window.h>
-#include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <util/variant.h>
 
@@ -56,19 +55,14 @@ namespace engine {
             vk::CommandBufferBeginInfo commandBufferInfo(vk::CommandBufferUsageFlagBits::eSimultaneousUse, nullptr);
             commandBuffer.begin(commandBufferInfo);
             drawInfo.pipelineState.get_technique().generate_render_pass_info(commandBuffer, vk::SubpassContents::eInline);
-
             drawInfo.pipelineState.bind_command_buffer(commandBuffer, vk::PipelineBindPoint::eGraphics);
 
             std::vector<vk::Buffer> vertexBuffers = {drawInfo.vertices->get_handle()};
             std::vector<vk::DeviceSize> offsets = {0};
-            const auto uniformDescriptorSet = drawInfo.uniforms->get_descriptor_set();
-            const auto textureDescriptor =
-                drawInfo.textures->get_descriptor_set();
-            std::array<vk::DescriptorSet, 2> descriptorSets{uniformDescriptorSet, textureDescriptor};
             commandBuffer.bindVertexBuffers(0, vertexBuffers, offsets);
             commandBuffer.bindIndexBuffer(drawInfo.indices->get_handle(), 0, vk::IndexType::eUint16);
             commandBuffer.bindDescriptorSets(
-                vk::PipelineBindPoint::eGraphics, drawInfo.pipelineState.get_layout(), 0, descriptorSets, {});
+                vk::PipelineBindPoint::eGraphics, drawInfo.pipelineState.get_layout(), 0, drawInfo.descriptorSets, {});
             commandBuffer.drawIndexed(drawInfo.indices->get_index_count(), 1, 0, 0, 0);
             commandBuffer.endRenderPass();
             commandBuffer.end();

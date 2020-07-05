@@ -21,7 +21,8 @@ namespace engine {
                                       framebuffer_settings::load_operation::dont_care,
                                       framebuffer_settings::store_operation::dont_care,
                                       image_layout::undefined,
-                                      image_layout::present}},
+                                      image_layout::present,
+                                      {0.0f, 0.0f, 0.0f, 1.0f}}},
                 {subpass_settings{subpass_settings::bind_point::graphics, {0}, std::nullopt}},
                 {dependency{0, 1, 1024, 1024, 0, 384}}};
         }
@@ -44,8 +45,30 @@ namespace engine {
                     static_cast<framebuffer_settings::store_operation>(framebuffer["stencil_store_op"].GetUint());
                 const auto initialLayout = static_cast<image_layout>(framebuffer["initial_layout"].GetUint());
                 const auto finalLayout = static_cast<image_layout>(framebuffer["final_layout"].GetUint());
-                framebuffers.emplace_back(framebuffer_settings{
-                    id, type, samples, loadOp, storeOp, stencilLoadOp, stencolStoreOp, initialLayout, finalLayout});
+                auto parseClearValues = [type, &framebuffer]() {
+                    if (type == framebuffer_settings::attachment_type::color) {
+                        return std::array<float, 4>{framebuffer["clear_value"][0].GetFloat(),
+                                                    framebuffer["clear_value"][1].GetFloat(),
+                                                    framebuffer["clear_value"][2].GetFloat(),
+                                                    framebuffer["clear_value"][3].GetFloat()};
+                    } else {
+                        return std::array<float, 4>{framebuffer["clear_value"][0].GetFloat(),
+                                                    framebuffer["clear_value"][1].GetFloat(),
+                                                    0.0f,
+                                                    0.0f};
+                    }
+                };
+
+                framebuffers.emplace_back(framebuffer_settings{id,
+                                                               type,
+                                                               samples,
+                                                               loadOp,
+                                                               storeOp,
+                                                               stencilLoadOp,
+                                                               stencolStoreOp,
+                                                               initialLayout,
+                                                               finalLayout,
+                                                               parseClearValues()});
             }
             return framebuffers;
         }
@@ -79,8 +102,12 @@ namespace engine {
                 const auto dstStageMask = dep["dst_stage_mask"].GetUint();
                 const auto srcAccessMask = dep["src_access_mask"].GetUint();
                 const auto dstAccessMask = dep["dst_access_mask"].GetUint();
-                dependencies.emplace_back(
-                    dependency{static_cast<std::uint32_t>(srcSubpass), dstSubpass, srcStageMask, dstStageMask, srcAccessMask, dstAccessMask});
+                dependencies.emplace_back(dependency{static_cast<std::uint32_t>(srcSubpass),
+                                                     dstSubpass,
+                                                     srcStageMask,
+                                                     dstStageMask,
+                                                     srcAccessMask,
+                                                     dstAccessMask});
             }
             return dependencies;
         }

@@ -16,8 +16,8 @@ namespace engine {
             draw_info(const vertex_buffer* vertices,
                       const index_buffer<std::uint16_t>* indices,
                       const pipeline& pipeline,
-                      const uniform_buffer* uniforms,
-                      const texture* texture);
+                      const std::vector<const uniform_buffer*>& uniforms,
+                      const std::vector<const texture*>& textures);
 
             ~draw_info() = default;
 
@@ -25,8 +25,8 @@ namespace engine {
             const vertex_buffer* vertices;
             const index_buffer<std::uint16_t>* indices;
             const pipeline& pipelineState;
-            const uniform_buffer* uniforms;
-            const texture* textures;
+            const std::vector<const uniform_buffer*> uniforms;
+            const std::vector<const texture*> textures;
         };
     } // namespace opengl
 } // namespace engine

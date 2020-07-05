@@ -2,10 +2,12 @@
 # Author: Karol Kontny
 
 set(DEVICE_HDRS
+    device/keyboard.h
 	device/monitor.h
 )
 
 set(DEVICE_SRCS 
+    device/keyboard.cpp
 	device/monitor.cpp
 )
 
