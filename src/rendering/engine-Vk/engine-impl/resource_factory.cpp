@@ -22,7 +22,7 @@ namespace engine {
             : m_device(device)
             , m_dataLoader(dataLoader)
             , m_shaderCompiler(
-                  std::make_unique<shader_compiler>(m_dataLoader, m_device.m_logicalDevice, *m_device.m_resourceCache))
+                  std::make_unique<shader_compiler>(m_dataLoader, m_device.m_logicalDevice))
             , m_transferCommandPool(m_device.m_logicalDevice.createCommandPool(vk::CommandPoolCreateInfo(
                   vk::CommandPoolCreateFlags(), m_device.m_physicalDevice->get_graphics_index())))
             , m_transferQueue(m_device.m_graphicsQueueHandle) {

@@ -47,9 +47,8 @@ namespace engine {
         }
 
         shader_compiler::shader_compiler(const application::data_loader& dataLoader,
-                                         const vk::Device device,
-                                         resource_cache& resourceCache)
-            : m_dataLoader(dataLoader), m_device(device), m_resourceCache(resourceCache) {
+                                         const vk::Device device)
+            : m_dataLoader(dataLoader), m_device(device) {
         }
 
         shader_compiler::~shader_compiler() {

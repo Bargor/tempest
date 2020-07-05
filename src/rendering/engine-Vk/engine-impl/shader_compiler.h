@@ -19,13 +19,11 @@ namespace engine {
     namespace vulkan {
 
         class device;
-        class resource_cache;
 
         class shader_compiler {
         public:
             shader_compiler(const application::data_loader& dataLoader,
-                            const vk::Device device,
-                            resource_cache& resourceCache);
+                            const vk::Device device);
             ~shader_compiler();
 
             shader_set compile_shaders(const std::string& name) const;
@@ -41,7 +39,6 @@ namespace engine {
         private:
             const application::data_loader& m_dataLoader;
             const vk::Device m_device;
-            resource_cache& m_resourceCache;
 
             static constexpr char m_shaderExtension[] = ".spv";
         };
