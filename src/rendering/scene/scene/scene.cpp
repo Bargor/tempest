@@ -1,5 +1,7 @@
 #include "scene.h"
 
+#include "object_controller.h"
+
 namespace tst {
 namespace scene {
     std::vector<scene_object::state> update_scene(scene& scene,
@@ -28,19 +30,28 @@ namespace scene {
         return drawInfos;
     }
 
-    scene::scene(std::string&& sceneName)
-        : m_sceneName(std::move(sceneName)) {
+    scene::scene(std::string&& sceneName,
+                 const application::data_loader& dataLoader,
+                 application::event_processor<application::app_event>& eventProcessor,
+                 engine::resource_factory& resourceFactory)
+        : m_sceneName(std::move(sceneName))
+        , m_objectController(std::make_unique<object_controller>(dataLoader, eventProcessor, resourceFactory)) {
     }
 
     scene::~scene() {
     }
 
-    void scene::add_camera(camera&& camera) {
-        m_cameras.emplace_back(std::move(camera));
+    void scene::add_camera(const std::string& cameraName,
+                           const glm::vec3& position,
+                           const glm::vec3& lookAt,
+                           const glm::vec3& up,
+                           const float fov,
+                           const float aspectRatio) {
+        m_cameras.emplace_back(m_objectController->create_camera(cameraName, position, lookAt, up, fov, aspectRatio));
     }
 
-    void scene::add_object(scene_object&& object) {
-        m_objects.emplace_back(std::move(object));
+    void scene::add_object(const std::string& objectName, const std::string& path) {
+        m_objects.emplace_back(m_objectController->load_object(objectName, path));
     }
 
     camera& scene::get_camera(std::string_view cameraName) {

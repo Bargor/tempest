@@ -52,7 +52,6 @@ namespace application {
         ptr<engine::device> m_renderingDevice;
         ptr<engine::resource_factory> m_resourceFactory;
         ptr<scene::scene> m_scene;
-        ptr<scene::object_controller> m_objectController;
         std::size_t m_frameCounter;
         std::uint32_t m_lastSecondFrames;
         bool m_shouldClose;
