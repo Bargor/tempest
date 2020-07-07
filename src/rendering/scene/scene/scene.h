@@ -57,6 +57,8 @@ namespace scene {
 
     private:
         std::string m_sceneName;
+        application::event_processor<application::app_event>& m_eventProcessor;
+        engine::resource_factory& m_resourceFactory;
         ptr<object_controller> m_objectController;
         std::vector<scene_object> m_objects;
         std::vector<camera> m_cameras;

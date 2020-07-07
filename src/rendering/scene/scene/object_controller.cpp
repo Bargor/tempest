@@ -69,15 +69,5 @@ namespace scene {
                             pipeline);
     }
 
-    camera object_controller::create_camera(const std::string& cameraName,
-                                            const glm::vec3& position,
-                                            const glm::vec3& lookAt,
-                                            const glm::vec3& up,
-                                            const float fov,
-                                            const float aspectRatio) {
-        auto buffer = m_resourceFactory.create_uniform_buffer<camera::uniforms>("test", engine::bind_point::global_static, 2);
-        return camera(cameraName, m_eventProcessor, std::move(buffer), position, lookAt, up, fov, aspectRatio);
-    }
-
 } // namespace scene
 } // namespace tst

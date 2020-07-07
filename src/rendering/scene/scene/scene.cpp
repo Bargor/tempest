@@ -1,5 +1,8 @@
 #include "scene.h"
 
+#include <application/event_processor.h>
+#include <engine/resource_factory.h>
+
 #include "object_controller.h"
 
 namespace tst {
@@ -35,6 +38,8 @@ namespace scene {
                  application::event_processor<application::app_event>& eventProcessor,
                  engine::resource_factory& resourceFactory)
         : m_sceneName(std::move(sceneName))
+        , m_eventProcessor(eventProcessor)
+        , m_resourceFactory(resourceFactory)
         , m_objectController(std::make_unique<object_controller>(dataLoader, eventProcessor, resourceFactory)) {
     }
 
@@ -47,7 +52,9 @@ namespace scene {
                            const glm::vec3& up,
                            const float fov,
                            const float aspectRatio) {
-        m_cameras.emplace_back(m_objectController->create_camera(cameraName, position, lookAt, up, fov, aspectRatio));
+        auto buffer =
+            m_resourceFactory.create_uniform_buffer<camera::uniforms>("test", engine::bind_point::global_static, 2);
+        m_cameras.emplace_back(cameraName, m_eventProcessor, std::move(buffer), position, lookAt, up, fov, aspectRatio);
     }
 
     void scene::add_object(const std::string& objectName, const std::string& path) {

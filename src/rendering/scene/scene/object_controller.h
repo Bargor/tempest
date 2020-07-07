@@ -30,13 +30,6 @@ namespace scene {
 
         scene_object load_object(const std::string& objectName, const std::string& shaderName);
 
-        camera create_camera(const std::string& cameraName,
-                             const glm::vec3& position,
-                             const glm::vec3& lookAt,
-                             const glm::vec3& up,
-                             const float fov,
-                             const float aspectRatio);
-
     private:
         const application::data_loader& m_dataLoader;
         application::event_processor<application::app_event>& m_eventProcessor;
