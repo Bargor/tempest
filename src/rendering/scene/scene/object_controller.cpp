@@ -3,9 +3,7 @@
 
 #include "object_controller.h"
 
-#include <application/app_event.h>
 #include <application/data_loader.h>
-#include <application/event_processor.h>
 #include <engine/resource_factory.h>
 #include <util/variant.h>
 
@@ -13,9 +11,8 @@ namespace tst {
 namespace scene {
 
     object_controller::object_controller(const application::data_loader& dataLoader,
-                                         application::event_processor<application::app_event>& eventProcessor,
                                          engine::resource_factory& resourceFactory)
-        : m_dataLoader(dataLoader), m_eventProcessor(eventProcessor), m_resourceFactory(resourceFactory) {
+        : m_dataLoader(dataLoader), m_resourceFactory(resourceFactory) {
     }
 
     scene_object object_controller::load_object(const std::string& objectName, const std::string& path) {
