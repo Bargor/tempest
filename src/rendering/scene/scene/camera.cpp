@@ -93,8 +93,9 @@ namespace scene {
     void camera::update(std::chrono::duration<std::uint64_t, std::micro> elapsedTime) {
         m_position = caclulate_position(elapsedTime);
         m_orientation = calculate_orientation(elapsedTime);
+        m_perspective = glm::perspective(glm::radians(60.0f), 1.0f, 0.01f, 10.0f);
 
-        const auto orientationMartix = glm::translate(glm::toMat4(m_orientation), m_position.xyz());
+        const auto orientationMartix = glm::translate(glm::toMat4(m_orientation), -m_position.xyz());
 
         m_buffer.update_buffer<uniforms>(
             {orientationMartix, m_perspective, orientationMartix * m_perspective, glm::mat4(1.0f)});
