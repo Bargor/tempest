@@ -17,14 +17,14 @@ namespace application {
             std::string param(argv[i]);
 
             if (param == "-w") {
-                return {main_window::fullscreen_option::windowed, executionDirectory};
+                return {main_window::fullscreen_mode::windowed, executionDirectory};
             }
 
             if (param == "-f") {
-                return {main_window::fullscreen_option::fullscreen, executionDirectory};
+                return {main_window::fullscreen_mode::fullscreen, executionDirectory};
             }
         }
-        return {main_window::fullscreen_option::windowed, executionDirectory};
+        return {main_window::fullscreen_mode::windowed, executionDirectory};
     }
 } // namespace application
 } // namespace tst

@@ -85,7 +85,7 @@ namespace application {
 
     void input_processor::window_focus_callback(GLFWwindow*, const std::int32_t focused) {
         assert(std::this_thread::get_id() == core::main_thread::get_id());
-        m_eventProcessor.create_event(app_event{this, app_event::focus{static_cast<window::focus_option>(focused)}});
+        m_eventProcessor.create_event(app_event{this, app_event::focus{static_cast<window::focus_mode>(focused)}});
     }
 
     void input_processor::cursor_pos_callback(GLFWwindow*, double xpos, double ypos) {
@@ -115,7 +115,7 @@ namespace application {
 
     void input_processor::window_iconify_callback(GLFWwindow*, const std::int32_t iconified) {
         assert(std::this_thread::get_id() == core::main_thread::get_id());
-        m_eventProcessor.create_event(app_event{this, app_event::iconify{static_cast<window::open_option>(iconified)}});
+        m_eventProcessor.create_event(app_event{this, app_event::iconify{static_cast<window::open_mode>(iconified)}});
     }
 
     void input_processor::window_close_callback(GLFWwindow*) {

@@ -44,7 +44,7 @@ namespace application {
         auto iconify_callback = [&](const app_event::arguments& args) {
             assert(std::holds_alternative<application::app_event::iconify>(args));
             m_windowMinimized =
-                std::get<application::app_event::iconify>(args).open == window::open_option::iconified ? true : false;
+                std::get<application::app_event::iconify>(args).open == window::open_mode::iconified ? true : false;
         };
         auto time_callback = [&](const app_event::arguments&) {
             fmt::printf("FPS: %d\n", m_lastSecondFrames);

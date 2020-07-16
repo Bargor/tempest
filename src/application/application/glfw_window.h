@@ -13,7 +13,7 @@ namespace application {
         using super = window;
 
     public:
-        enum class vsync_option { vsync_off = 0, vsync_on = 1 };
+        enum class vsync_mode { vsync_off = 0, vsync_on = 1 };
 
         struct window_hint {
             std::int32_t hint;
@@ -25,6 +25,7 @@ namespace application {
         core::position<std::int32_t> get_position() const noexcept override;
         void set_position(const core::position<std::int32_t>& pos) noexcept override;
         void set_title(const std::string&) noexcept override;
+        void set_cursor_mode(cursor_mode cursor) noexcept override;
         void focus() noexcept override;
         void unfocus() noexcept override;
         void show() noexcept override;
@@ -35,8 +36,8 @@ namespace application {
         void close() noexcept override;
 
     public: // new fuctions
-        vsync_option get_vsync() const noexcept;
-        void set_vsync(vsync_option option) noexcept;
+        vsync_mode get_vsync() const noexcept;
+        void set_vsync(vsync_mode option) noexcept;
         void end_frame() noexcept;
         GLFWwindow* get_handle() const noexcept;
 
@@ -44,16 +45,17 @@ namespace application {
         glfw_window(std::string&& name,
                     event_processor<app_event>& eventProcessor,
                     const core::extent<std::uint32_t>& size,
-                    fullscreen_option windowMode,
-                    visible_option visibility,
-                    open_option open,
-                    focus_option focus,
-                    vsync_option vsync,
+                    fullscreen_mode windowMode,
+                    visible_mode visibility,
+                    open_mode open,
+                    focus_mode focus,
+                    cursor_mode cursor,
+                    vsync_mode vsync,
                     const device::monitor* monitor,
                     const std::array<window_hint, 31>& hints);
         virtual ~glfw_window();
 
-        vsync_option m_vsync;
+        vsync_mode m_vsync;
         const device::monitor* m_monitor;
         GLFWwindow* m_windowHandle;
 
