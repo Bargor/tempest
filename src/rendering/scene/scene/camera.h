@@ -51,7 +51,6 @@ namespace scene {
                const float aspect);
 
         camera(const camera&) = delete;
-        camera(camera&& camera) noexcept;
 
         std::string_view get_name() const noexcept;
         const engine::resources::uniform_buffer& get_uniforms() const;

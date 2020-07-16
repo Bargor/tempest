@@ -25,14 +25,14 @@ namespace scene {
         , m_position(glm::vec4(position, 0.0f))
         , m_orientation(glm::quatLookAt(glm::normalize(lookAt - m_position.xyz()), up))
         , m_perspective(glm::perspective(glm::radians(fov), aspect, 0.01f, 10.0f))
-        , m_moveSensitivity(1.0f)
+        , m_moveSensitivity(3.0f)
         , m_rotateSensitivity(0.01f)
         , m_input() {
         auto key_callback = [this](const application::app_event::arguments& args) {
             assert(std::holds_alternative<application::app_event::keyboard>(args));
             input_delta::keyboard keyboardInput;
             application::app_event::keyboard key_action = std::get<application::app_event::keyboard>(args);
-            if (key_action.action == device::key_action::press) {
+            if (key_action.action == device::key_action::press || key_action.action == device::key_action::repeat) {
                 if (key_action.key == device::keys::key_w) {
                     keyboardInput.moveForward = true;
                 }
@@ -78,22 +78,9 @@ namespace scene {
             std::move(mouse_callback));
     }
 
-    camera::camera(camera&& other) noexcept
-        : m_name(std::move(other.m_name))
-        , m_eventProcessor(other.m_eventProcessor)
-        , m_buffer(std::move(other.m_buffer))
-        , m_position(other.m_position)
-        , m_orientation(other.m_orientation)
-        , m_perspective(other.m_perspective)
-        , m_moveSensitivity(other.m_moveSensitivity)
-        , m_rotateSensitivity(other.m_rotateSensitivity)
-        , m_input(other.m_input)
-    {}
-
     void camera::update(std::chrono::duration<std::uint64_t, std::micro> elapsedTime) {
         m_position = caclulate_position(elapsedTime);
         m_orientation = calculate_orientation(elapsedTime);
-        m_perspective = glm::perspective(glm::radians(60.0f), 1.0f, 0.01f, 10.0f);
 
         const auto orientationMartix = glm::translate(glm::toMat4(m_orientation), -m_position.xyz());
 
