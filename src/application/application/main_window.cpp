@@ -26,7 +26,7 @@ namespace application {
                       visible_mode::visible,
                       open_mode::opened,
                       focus_mode::focused,
-                      cursor_mode::disable,
+                      cursor_mode::disabled,
                       vsync_mode::vsync_off,
                       monitor,
                       hints) {

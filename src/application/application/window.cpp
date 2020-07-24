@@ -37,6 +37,10 @@ namespace application {
         return static_cast<float>(m_size.width) / m_size.height;
     }
 
+    window::cursor_mode window::get_cursor_mode() const noexcept {
+        return m_cursor;
+    }
+
     window::visible_mode window::is_visible() const noexcept {
         return m_visible;
     }

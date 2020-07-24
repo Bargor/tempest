@@ -24,12 +24,13 @@ namespace scene {
                 bool moveRight = false;
             };
             struct mouse {
-                std::uint32_t xPos;
-                std::uint32_t yPos;
+                std::int32_t xPos = 0;
+                std::int32_t yPos = 0;
             };
 
             keyboard keyboardInput;
             mouse mouseInput;
+            bool newMousePos = true;
         };
 
     public:
@@ -51,6 +52,7 @@ namespace scene {
                const float aspect);
 
         camera(const camera&) = delete;
+        camera(camera&& camera) noexcept;
 
         std::string_view get_name() const noexcept;
         const engine::resources::uniform_buffer& get_uniforms() const;
@@ -58,14 +60,15 @@ namespace scene {
         void update(std::chrono::duration<std::uint64_t, std::micro> elapsedTime);
 
     private: 
-        glm::vec4 caclulate_position(std::chrono::duration<std::uint64_t, std::micro> elapsedTime) const;
-        glm::quat calculate_orientation(std::chrono::duration<std::uint64_t, std::micro> elapsedTime) const;
+        glm::vec4 caclulate_position(float elapsedTime) const;
+        glm::quat calculate_orientation(float elapsedTime) const;
 
     private:
         std::string m_name;
         application::event_processor<application::app_event>& m_eventProcessor;
         engine::resources::uniform_buffer m_buffer;
         glm::vec4 m_position;
+        glm::vec3 m_direction;
         glm::quat m_orientation;
         glm::mat4 m_perspective;
         float m_moveSensitivity;

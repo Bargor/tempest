@@ -3,7 +3,6 @@
 
 #include "input_processor.h"
 
-#include "app_event.h"
 #include "glfw_exception.h"
 #include "glfw_window.h"
 
@@ -15,9 +14,11 @@ namespace tst {
 namespace application {
 
     input_processor::input_processor(event_processor<app_event>& event_processor, const glfw_window& window)
-        : m_eventProcessor(event_processor), m_window(window.get_handle()) {
+        : m_eventProcessor(event_processor), m_window(window), m_lastMousePosition({0, 0}) {
         assert(std::this_thread::get_id() == core::main_thread::get_id());
-        glfwSetWindowUserPointer(m_window, this);
+        const auto glfwWindow = m_window.get_handle();
+        glfwSetWindowUserPointer(glfwWindow, this);
+        glfwGetCursorPos(glfwWindow, &m_lastMousePosition.xpos, &m_lastMousePosition.ypos);
 
         auto focus_callback = [](GLFWwindow* window, const std::int32_t focused) {
             static_cast<input_processor*>(glfwGetWindowUserPointer(window))->window_focus_callback(window, focused);
@@ -52,28 +53,28 @@ namespace application {
                                             {static_cast<std::uint32_t>(width), static_cast<std::uint32_t>(height)});
         };
 
-        if (glfwSetWindowFocusCallback(m_window, focus_callback) != nullptr) {
+        if (glfwSetWindowFocusCallback(glfwWindow, focus_callback) != nullptr) {
             throw glfw_exception("Can't set focus callback");
         }
-        if (glfwSetCursorPosCallback(m_window, cursor_callback) != nullptr) {
+        if (glfwSetCursorPosCallback(glfwWindow, cursor_callback) != nullptr) {
             throw glfw_exception("Can't set cursor callback");
         }
-        if (glfwSetMouseButtonCallback(m_window, mouse_button_callback) != nullptr) {
+        if (glfwSetMouseButtonCallback(glfwWindow, mouse_button_callback) != nullptr) {
             throw glfw_exception("Can't set mouse button callback");
         }
-        if (glfwSetScrollCallback(m_window, scroll_callback) != nullptr) {
+        if (glfwSetScrollCallback(glfwWindow, scroll_callback) != nullptr) {
             throw glfw_exception("Can't set mouse scroll callback");
         }
-        if (glfwSetKeyCallback(m_window, key_callback) != nullptr) {
+        if (glfwSetKeyCallback(glfwWindow, key_callback) != nullptr) {
             throw glfw_exception("Can't set key callback");
         }
-        if (glfwSetWindowIconifyCallback(m_window, iconify_callback) != nullptr) {
+        if (glfwSetWindowIconifyCallback(glfwWindow, iconify_callback) != nullptr) {
             throw glfw_exception("Can't set window iconify callback");
         }
-        if (glfwSetWindowCloseCallback(m_window, close_callback) != nullptr) {
+        if (glfwSetWindowCloseCallback(glfwWindow, close_callback) != nullptr) {
             throw glfw_exception("Can't set window close callback");
         }
-        if (glfwSetFramebufferSizeCallback(m_window, framebuffer_size_callback) != nullptr) {
+        if (glfwSetFramebufferSizeCallback(glfwWindow, framebuffer_size_callback) != nullptr) {
             throw glfw_exception("Can't set framebuffer size callback");
         }
     }
@@ -90,7 +91,14 @@ namespace application {
 
     void input_processor::cursor_pos_callback(GLFWwindow*, double xpos, double ypos) {
         assert(std::this_thread::get_id() == core::main_thread::get_id());
-        m_eventProcessor.create_event(app_event{this, app_event::mouse_pos{xpos, ypos}});
+        const auto newMousePos = [this](double xpos, double ypos) {
+            return m_window.get_cursor_mode() == window::cursor_mode::disabled ?
+                app_event::mouse_pos{xpos - m_lastMousePosition.xpos, ypos - m_lastMousePosition.ypos} :
+                app_event::mouse_pos{xpos, ypos};
+        }(xpos, ypos);
+        m_lastMousePosition = app_event::mouse_pos{xpos, ypos};
+
+        m_eventProcessor.create_event(app_event{this, newMousePos});
     }
 
     void input_processor::mouse_button_callback(GLFWwindow*, std::int32_t button, std::int32_t action, std::int32_t mods) {
@@ -110,7 +118,8 @@ namespace application {
                                        const std::int32_t mods) {
         assert(std::this_thread::get_id() == core::main_thread::get_id());
         m_eventProcessor.create_event(app_event{
-            this, app_event::keyboard{static_cast<device::keys>(key), scancode, static_cast<device::key_action>(action), mods}});
+            this,
+            app_event::keyboard{static_cast<device::keys>(key), scancode, static_cast<device::key_action>(action), mods}});
     }
 
     void input_processor::window_iconify_callback(GLFWwindow*, const std::int32_t iconified) {

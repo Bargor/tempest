@@ -23,7 +23,7 @@ namespace application {
                 return GLFW_CURSOR_NORMAL;
             case window::cursor_mode::hidden:
                 return GLFW_CURSOR_HIDDEN;
-            case window::cursor_mode::disable:
+            case window::cursor_mode::disabled:
                 return GLFW_CURSOR_DISABLED;
             }
             throw;

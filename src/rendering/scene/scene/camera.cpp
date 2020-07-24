@@ -6,6 +6,7 @@
 #include <application/app_event.h>
 #include <application/event_processor.h>
 #include <device/keyboard.h>
+#include <fmt/printf.h>
 #include <util/variant.h>
 
 namespace tst {
@@ -23,11 +24,13 @@ namespace scene {
         , m_eventProcessor(eventProcessor)
         , m_buffer(std::move(buffer))
         , m_position(glm::vec4(position, 0.0f))
-        , m_orientation(glm::quatLookAt(glm::normalize(lookAt - m_position.xyz()), up))
+        , m_direction(glm::normalize(lookAt - m_position.xyz()))
+        , m_orientation(glm::quatLookAt(m_direction, up))
         , m_perspective(glm::perspective(glm::radians(fov), aspect, 0.01f, 10.0f))
         , m_moveSensitivity(3.0f)
-        , m_rotateSensitivity(0.01f)
+        , m_rotateSensitivity(0.5f)
         , m_input() {
+        m_perspective[1][1] *= -1;
         auto key_callback = [this](const application::app_event::arguments& args) {
             assert(std::holds_alternative<application::app_event::keyboard>(args));
             input_delta::keyboard keyboardInput;
@@ -59,7 +62,8 @@ namespace scene {
         auto mouse_callback = [&](const application::app_event::arguments& args) {
             assert(std::holds_alternative<application::app_event::mouse_pos>(args));
             const auto pos = std::get<application::app_event::mouse_pos>(args);
-            m_input.mouseInput = {static_cast<std::uint32_t>(pos.xpos), static_cast<std::uint32_t>(pos.ypos)};
+            m_input.mouseInput = {static_cast<std::int32_t>(pos.xpos), static_cast<std::int32_t>(pos.ypos)};
+            m_input.newMousePos = true;
         };
 
         m_eventProcessor.subscribe(
@@ -78,9 +82,32 @@ namespace scene {
             std::move(mouse_callback));
     }
 
+    camera::camera(camera&& other) noexcept
+        : m_name(std::move(other.m_name))
+        , m_eventProcessor(other.m_eventProcessor)
+        , m_buffer(std::move(other.m_buffer))
+        , m_position(other.m_position)
+        , m_direction(other.m_direction)
+        , m_orientation(other.m_orientation)
+        , m_perspective(other.m_perspective)
+        , m_moveSensitivity(other.m_moveSensitivity)
+        , m_rotateSensitivity(other.m_rotateSensitivity)
+        , m_input(other.m_input) {
+    }
+
     void camera::update(std::chrono::duration<std::uint64_t, std::micro> elapsedTime) {
-        m_position = caclulate_position(elapsedTime);
-        m_orientation = calculate_orientation(elapsedTime);
+        const auto time = std::chrono::duration<float, std::chrono::seconds::period>(elapsedTime).count();
+
+        if (m_input.newMousePos) {
+            m_input.newMousePos = false;
+            const auto orientationDelta = calculate_orientation(time);
+            m_orientation *= orientationDelta;
+            m_direction = glm::normalize(glm::rotate(orientationDelta, m_direction));
+
+            fmt::printf("direction: %f %f %f\n", m_direction.x, m_direction.y, m_direction.z);
+            fmt::printf("position: %f %f %f\n", m_position.x, m_position.y, m_position.z);
+        }
+        m_position = caclulate_position(time);
 
         const auto orientationMartix = glm::translate(glm::toMat4(m_orientation), -m_position.xyz());
 
@@ -88,27 +115,34 @@ namespace scene {
             {orientationMartix, m_perspective, orientationMartix * m_perspective, glm::mat4(1.0f)});
     }
 
-    glm::vec4 camera::caclulate_position(std::chrono::duration<std::uint64_t, std::micro> elapsedTime) const {
-        glm::vec4 moveDir(0.0f, 0.0f, 0.0f, 0.0f);
+    glm::vec4 camera::caclulate_position(float elapsedTime) const {
+        glm::vec3 moveDir(0.0f, 0.0f, 0.0f);
+        glm::vec3 right = glm::cross(m_direction, glm::vec3(0.0f, 1.0f, 0.0f));
         if (m_input.keyboardInput.moveForward) {
-            moveDir.z -= 1.0f;
+            moveDir += m_direction;
         }
         if (m_input.keyboardInput.moveBackward) {
-            moveDir.z += 1.0f;
+            moveDir -= m_direction;
         }
         if (m_input.keyboardInput.moveLeft) {
-            moveDir.x -= 1.0f;
+            moveDir -= right;
         }
         if (m_input.keyboardInput.moveRight) {
-            moveDir.x += 1.0f;
+            moveDir += right;
         }
-        float time = std::chrono::duration<float, std::chrono::seconds::period>(elapsedTime).count();
 
-        return m_position + moveDir * time * m_moveSensitivity;
+        const auto deltaPos = glm::vec4(moveDir * elapsedTime * m_moveSensitivity, 0.0f);
+
+        return m_position + deltaPos;
     }
 
-    glm::quat camera::calculate_orientation(std::chrono::duration<std::uint64_t, std::micro>) const {
-        return m_orientation;
+    glm::quat camera::calculate_orientation(float elapsedTime) const {
+        const float pitchAngle = static_cast<float>(m_input.mouseInput.yPos) * elapsedTime * m_rotateSensitivity;
+        const float yawAngle = static_cast<float>(m_input.mouseInput.xPos) * elapsedTime * m_rotateSensitivity;
+        const auto pitch = glm::angleAxis(pitchAngle, glm::vec3(1.0f, 0.0f, 0.0f));
+        const auto yaw = glm::angleAxis(yawAngle, glm::vec3(0.0f, 1.0f, 0.0f));
+
+        return glm::normalize(pitch * yaw);
     }
 } // namespace scene
 } // namespace tst

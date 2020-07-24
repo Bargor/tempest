@@ -27,6 +27,8 @@ namespace engine {
 
         vk::CullModeFlagBits translate_cull_mode(base::rasterizer_settings::cull_mode cullMode) {
             switch (cullMode) {
+            case base::rasterizer_settings::cull_mode::none:
+                return vk::CullModeFlagBits::eNone;
             case base::rasterizer_settings::cull_mode::back:
                 return vk::CullModeFlagBits::eBack;
             case base::rasterizer_settings::cull_mode::front:

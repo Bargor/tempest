@@ -29,13 +29,15 @@ namespace application {
 
         enum class focus_mode { unfocused, focused };
 
-        enum class cursor_mode { normal, hidden, disable };
+        enum class cursor_mode { normal, hidden, disabled };
 
     public:
         visible_mode is_visible() const noexcept;
         core::extent<std::uint32_t> get_size() const noexcept;
         float get_aspect() const noexcept;
+        cursor_mode get_cursor_mode() const noexcept;
         virtual void set_size(const core::extent<std::uint32_t>& size) = 0;
+
         virtual core::position<std::int32_t> get_position() const noexcept = 0;
         virtual void set_position(const core::position<std::int32_t>& pos) noexcept = 0;
         virtual void set_title(const std::string&) noexcept = 0;
