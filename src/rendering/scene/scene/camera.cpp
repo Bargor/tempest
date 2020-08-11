@@ -102,9 +102,10 @@ namespace scene {
             m_input.newMousePos = false;
             const auto orientationDelta = calculate_orientation(time);
             m_orientation *= orientationDelta;
-            m_direction = glm::normalize(glm::rotate(orientationDelta, m_direction));
+            m_direction = glm::normalize(glm::rotate(glm::inverse(orientationDelta), m_direction));
 
             fmt::printf("direction: %f %f %f\n", m_direction.x, m_direction.y, m_direction.z);
+            fmt::printf("orientation: %f %f %f %f\n", m_orientation.x, m_orientation.y, m_orientation.z, m_orientation.w);
             fmt::printf("position: %f %f %f\n", m_position.x, m_position.y, m_position.z);
         }
         m_position = caclulate_position(time);

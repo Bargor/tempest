@@ -60,7 +60,7 @@ namespace application {
                                    std::chrono::seconds(1));
         m_scene->add_object("test", "test");
         m_scene->add_camera("main",
-                            glm::vec3(0.0f, 0.0f, -5.0f),
+                            glm::vec3(0.0f, 0.0f, 5.0f),
                             glm::vec3(0.0f, 0.0f, 0.0f),
                             glm::vec3(0.0f, 1.0f, 0.0f),
                             90.0f,
