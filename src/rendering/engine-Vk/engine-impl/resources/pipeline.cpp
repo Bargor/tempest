@@ -7,6 +7,7 @@
 #include "vertex_format.h"
 
 #include <assert.h>
+#include <iterator>
 
 namespace tst {
 namespace engine {

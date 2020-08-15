@@ -46,9 +46,13 @@ namespace scene {
                                          {{-2.5f, -1.5f, -2.5f}, {1.0f, 0.0f, 0.0f}, {0.0f, 0.0f}},
                                          {{-1.5f, -1.5f, -2.5f}, {0.0f, 1.0f, 0.0f}, {1.0f, 0.0f}},
                                          {{-1.5f, -0.5f, -2.5f}, {0.0f, 0.0f, 1.0f}, {1.0f, 1.0f}},
-                                         {{-2.5f, -0.5f, -2.5f}, {1.0f, 1.0f, 1.0f}, {0.0f, 1.0f}}}));
+                                         {{-2.5f, -0.5f, -2.5f}, {1.0f, 1.0f, 1.0f}, {0.0f, 1.0f}},
+                                         {{0.5f, 0.5f, 7.5f}, {1.0f, 0.0f, 0.0f}, {0.0f, 0.0f}},
+                                         {{-0.5f, 0.5f, 7.5f}, {0.0f, 1.0f, 0.0f}, {1.0f, 0.0f}},
+                                         {{-0.5f, -0.5f, 7.5f}, {0.0f, 0.0f, 1.0f}, {1.0f, 1.0f}},
+                                         {{0.5f, -0.5f, 7.5f}, {1.0f, 1.0f, 1.0f}, {0.0f, 1.0f}}}));
         auto indexBuffer =
-            m_resourceFactory.create_index_buffer(std::vector<std::uint16_t>({0, 1, 2, 2, 3, 0, 4, 5, 6, 6, 7, 4}));
+            m_resourceFactory.create_index_buffer(std::vector<std::uint16_t>({0, 1, 2, 2, 3, 0, 4, 5, 6, 6, 7, 4, 8, 9, 10, 10, 11, 8}));
 
         auto uniformBuffer = m_resourceFactory.create_uniform_buffer<uniform_buffer_object>(
             "test", engine::bind_point::global_static, 0);

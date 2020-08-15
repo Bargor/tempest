@@ -26,7 +26,7 @@ namespace scene {
         , m_position(glm::vec4(position, 0.0f))
         , m_direction(glm::normalize(lookAt - m_position.xyz()))
         , m_orientation(glm::quatLookAt(m_direction, up))
-        , m_perspective(glm::perspective(glm::radians(fov), aspect, 0.01f, 10.0f))
+        , m_perspective(glm::perspective(glm::radians(fov), aspect, 0.01f, 100.0f))
         , m_moveSensitivity(3.0f)
         , m_rotateSensitivity(0.5f)
         , m_input() {
@@ -100,25 +100,23 @@ namespace scene {
 
         if (m_input.newMousePos) {
             m_input.newMousePos = false;
-            const auto orientationDelta = calculate_orientation(time);
-            m_orientation *= orientationDelta;
-            m_direction = glm::normalize(glm::rotate(glm::inverse(orientationDelta), m_direction));
-
-            fmt::printf("direction: %f %f %f\n", m_direction.x, m_direction.y, m_direction.z);
-            fmt::printf("orientation: %f %f %f %f\n", m_orientation.x, m_orientation.y, m_orientation.z, m_orientation.w);
-            fmt::printf("position: %f %f %f\n", m_position.x, m_position.y, m_position.z);
+            const auto yawDelta = calculate_yaw(time);
+            const auto pitchDelta = calculate_pitch(time);
+            m_orientation = pitchDelta * m_orientation * yawDelta;
+            const auto mat = glm::toMat3(m_orientation);
+            m_direction = glm::normalize(-glm::vec3(mat[0][2], mat[1][2], mat[2][2]));
         }
         m_position = caclulate_position(time);
 
         const auto orientationMartix = glm::translate(glm::toMat4(m_orientation), -m_position.xyz());
 
         m_buffer.update_buffer<uniforms>(
-            {orientationMartix, m_perspective, orientationMartix * m_perspective, glm::mat4(1.0f)});
+            {orientationMartix, m_perspective, m_perspective * orientationMartix, glm::mat4(1.0f)});
     }
 
     glm::vec4 camera::caclulate_position(float elapsedTime) const {
         glm::vec3 moveDir(0.0f, 0.0f, 0.0f);
-        glm::vec3 right = glm::cross(m_direction, glm::vec3(0.0f, 1.0f, 0.0f));
+        glm::vec3 right = glm::normalize(glm::cross(m_direction, glm::vec3(0.0f, 1.0f, 0.0f)));
         if (m_input.keyboardInput.moveForward) {
             moveDir += m_direction;
         }
@@ -137,13 +135,19 @@ namespace scene {
         return m_position + deltaPos;
     }
 
-    glm::quat camera::calculate_orientation(float elapsedTime) const {
+    glm::quat camera::calculate_pitch(float elapsedTime) const {
         const float pitchAngle = static_cast<float>(m_input.mouseInput.yPos) * elapsedTime * m_rotateSensitivity;
-        const float yawAngle = static_cast<float>(m_input.mouseInput.xPos) * elapsedTime * m_rotateSensitivity;
-        const auto pitch = glm::angleAxis(pitchAngle, glm::vec3(1.0f, 0.0f, 0.0f));
-        const auto yaw = glm::angleAxis(yawAngle, glm::vec3(0.0f, 1.0f, 0.0f));
-
-        return glm::normalize(pitch * yaw);
+        return glm::angleAxis(pitchAngle, glm::vec3(1.0f, 0.0f, 0.0f));
     }
+
+    glm::quat camera::calculate_yaw(float elapsedTime) const {
+        const float yawAngle = static_cast<float>(m_input.mouseInput.xPos) * elapsedTime * m_rotateSensitivity;
+        return glm::angleAxis(yawAngle, glm::vec3(0.0f, 1.0f, 0.0f));
+    }
+
+    glm::vec3 camera::calculate_direction(glm::quat pitch, glm::quat yaw) const {
+        return glm::normalize(glm::rotate(glm::normalize(glm::inverse(pitch * yaw)), m_direction));
+    }
+
 } // namespace scene
 } // namespace tst
