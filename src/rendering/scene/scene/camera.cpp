@@ -33,23 +33,35 @@ namespace scene {
         m_perspective[1][1] *= -1;
         auto key_callback = [this](const application::app_event::arguments& args) {
             assert(std::holds_alternative<application::app_event::keyboard>(args));
-            input_delta::keyboard keyboardInput;
             application::app_event::keyboard key_action = std::get<application::app_event::keyboard>(args);
             if (key_action.action == device::key_action::press || key_action.action == device::key_action::repeat) {
                 if (key_action.key == device::keys::key_w) {
-                    keyboardInput.moveForward = true;
+                    m_input.keyboardInput.moveForward = true;
                 }
                 if (key_action.key == device::keys::key_s) {
-                    keyboardInput.moveBackward = true;
+                    m_input.keyboardInput.moveBackward = true;
                 }
                 if (key_action.key == device::keys::key_a) {
-                    keyboardInput.moveLeft = true;
+                    m_input.keyboardInput.moveLeft = true;
                 }
                 if (key_action.key == device::keys::key_d) {
-                    keyboardInput.moveRight = true;
+                    m_input.keyboardInput.moveRight = true;
                 }
             }
-            m_input.keyboardInput = keyboardInput;
+            if (key_action.action == device::key_action::release) {
+                if (key_action.key == device::keys::key_w) {
+                    m_input.keyboardInput.moveForward = false;
+                }
+                if (key_action.key == device::keys::key_s) {
+                    m_input.keyboardInput.moveBackward = false;
+                }
+                if (key_action.key == device::keys::key_a) {
+                    m_input.keyboardInput.moveLeft = false;
+                }
+                if (key_action.key == device::keys::key_d) {
+                    m_input.keyboardInput.moveRight = false;
+                }
+            }
         };
 
         auto resize_callback = [&](const application::app_event::arguments& args) {
