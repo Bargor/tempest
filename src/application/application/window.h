@@ -21,22 +21,27 @@ namespace application {
 
     class window {
     public:
-        enum class fullscreen_option { fullscreen, windowed };
+        enum class fullscreen_mode { fullscreen, windowed };
 
-        enum class visible_option { hidden, visible };
+        enum class visible_mode { hidden, visible };
 
-        enum class open_option { opened = 0, iconified = 1, maximized = 2 };
+        enum class open_mode { opened = 0, iconified = 1, maximized = 2 };
 
-        enum class focus_option { unfocused, focused };
+        enum class focus_mode { unfocused, focused };
+
+        enum class cursor_mode { normal, hidden, disabled };
 
     public:
-        visible_option is_visible() const noexcept;
+        visible_mode is_visible() const noexcept;
         core::extent<std::uint32_t> get_size() const noexcept;
         float get_aspect() const noexcept;
+        cursor_mode get_cursor_mode() const noexcept;
         virtual void set_size(const core::extent<std::uint32_t>& size) = 0;
+
         virtual core::position<std::int32_t> get_position() const noexcept = 0;
         virtual void set_position(const core::position<std::int32_t>& pos) noexcept = 0;
         virtual void set_title(const std::string&) noexcept = 0;
+        virtual void set_cursor_mode(cursor_mode cursor) noexcept = 0;
         virtual void focus() noexcept = 0;
         virtual void unfocus() noexcept = 0;
         virtual void show() noexcept = 0;
@@ -50,10 +55,11 @@ namespace application {
         window(std::string&& name,
                event_processor<app_event>& m_eventProcessor,
                const core::extent<std::uint32_t>& size,
-               fullscreen_option windowMode,
-               visible_option visibility,
-               open_option open,
-               focus_option focus);
+               fullscreen_mode windowMode,
+               visible_mode visibility,
+               open_mode open,
+               focus_mode focus,
+               cursor_mode cursor);
         virtual ~window() = 0;
 
     protected:
@@ -61,10 +67,11 @@ namespace application {
         event_processor<app_event>& m_eventProcessor;
 
         core::extent<std::uint32_t> m_size;
-        fullscreen_option m_windowMode;
-        visible_option m_visible;
-        open_option m_opened;
-        focus_option m_focused;
+        fullscreen_mode m_windowMode;
+        visible_mode m_visible;
+        open_mode m_opened;
+        focus_mode m_focused;
+        cursor_mode m_cursor;
     };
 
 } // namespace application

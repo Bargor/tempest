@@ -12,7 +12,7 @@ namespace tst {
 namespace application {
 
     struct program_params {
-        main_window::fullscreen_option windowMode = main_window::fullscreen_option::windowed;
+        main_window::fullscreen_mode windowMode = main_window::fullscreen_mode::windowed;
         std::filesystem::path executionDirectory;
     };
 

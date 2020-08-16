@@ -13,6 +13,10 @@ namespace tst {
 
 namespace application {
     class data_loader;
+    template<typename Event>
+    class event_processor;
+
+    struct app_event;
 } // namespace application
 
 namespace engine {
@@ -35,16 +39,27 @@ namespace scene {
                                                              std::chrono::duration<std::uint64_t, std::micro> elapsedTime);
 
     public:
-        scene(std::string&& sceneName);
+        scene(std::string&& sceneName,
+              const application::data_loader& dataLoader,
+              application::event_processor<application::app_event>& eventProcessor,
+              engine::resource_factory& resourceFactory);
         ~scene();
 
-        void add_camera(camera&& camera);
-        void add_object(scene_object&& object);
+        void add_camera(const std::string& cameraName,
+                        const glm::vec3& position,
+                        const glm::vec3& lookAt,
+                        const glm::vec3& up,
+                        const float fov,
+                        const float aspectRatio);
+        void add_object(const std::string& objectName, const std::string& path);
 
         camera& get_camera(std::string_view cameraName);
 
     private:
         std::string m_sceneName;
+        application::event_processor<application::app_event>& m_eventProcessor;
+        engine::resource_factory& m_resourceFactory;
+        ptr<object_controller> m_objectController;
         std::vector<scene_object> m_objects;
         std::vector<camera> m_cameras;
     };

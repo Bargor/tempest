@@ -34,8 +34,7 @@ namespace application {
         , m_renderingDevice(std::make_unique<engine::device>(
               m_mainWindow, m_eventProcessor, engine::api::parse_engine_settings(dataLoader)))
         , m_resourceFactory(std::make_unique<engine::resource_factory>(*m_renderingDevice, m_dataLoader))
-        , m_scene(std::make_unique<scene::scene>("world"))
-        , m_objectController(std::make_unique<scene::object_controller>(dataLoader, eventProcessor, *m_resourceFactory))
+        , m_scene(std::make_unique<scene::scene>("world", dataLoader, eventProcessor, *m_resourceFactory))
         , m_frameCounter(0)
         , m_lastSecondFrames(0)
         , m_shouldClose(false)
@@ -45,7 +44,7 @@ namespace application {
         auto iconify_callback = [&](const app_event::arguments& args) {
             assert(std::holds_alternative<application::app_event::iconify>(args));
             m_windowMinimized =
-                std::get<application::app_event::iconify>(args).open == window::open_option::iconified ? true : false;
+                std::get<application::app_event::iconify>(args).open == window::open_mode::iconified ? true : false;
         };
         auto time_callback = [&](const app_event::arguments&) {
             fmt::printf("FPS: %d\n", m_lastSecondFrames);
@@ -59,13 +58,13 @@ namespace application {
                                    this,
                                    std::move(time_callback),
                                    std::chrono::seconds(1));
-        m_scene->add_object(m_objectController->load_object("test", "test"));
-        m_scene->add_camera(m_objectController->create_camera("main",
-                                                              glm::vec3(0.0f, 0.0f, 5.0f),
-                                                              glm::vec3(0.0f, 0.0f, 0.0f),
-                                                              glm::vec3(0.0f, 1.0f, 0.0f),
-                                                              90.0f,
-                                                              m_mainWindow.get_aspect()));
+        m_scene->add_object("test", "test");
+        m_scene->add_camera("main",
+                            glm::vec3(0.0f, 0.0f, 5.0f),
+                            glm::vec3(0.0f, 0.0f, 0.0f),
+                            glm::vec3(0.0f, 1.0f, 0.0f),
+                            60.0f,
+                            m_mainWindow.get_aspect());
     }
 
     simulation_engine::~simulation_engine() {
