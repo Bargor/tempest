@@ -39,11 +39,11 @@ namespace application {
         };
 
         struct iconify {
-            window::open_option open;
+            window::open_mode open;
         };
 
         struct focus {
-            window::focus_option focused;
+            window::focus_mode focused;
         };
 
         struct framebuffer {
@@ -53,7 +53,7 @@ namespace application {
         struct closed {};
 
         struct visible {
-            window::visible_option visible;
+            window::visible_mode visible;
         };
 
         struct time {

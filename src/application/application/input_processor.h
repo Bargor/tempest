@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include "app_event.h"
 #include "event_processor.h"
 
 #include <common/rectangle.h>
@@ -40,7 +41,8 @@ namespace application {
         void framebuffer_size_callback(GLFWwindow*, const core::extent<std::uint32_t>& windowSize);
 
         event_processor<app_event>& m_eventProcessor;
-        GLFWwindow* const m_window;
+        const glfw_window& m_window;
+        app_event::mouse_pos m_lastMousePosition;
     };
 
 } // namespace application

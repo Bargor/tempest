@@ -12,7 +12,7 @@ namespace engine {
 
         struct rasterizer_settings {
             enum class polygon_mode { point, line, fill };
-            enum class cull_mode { front, back, front_and_back };
+            enum class cull_mode { none, front, back, front_and_back };
             enum class front_face { clockwise, counter_clockwise };
             struct depth_bias_settings {
                 bool enable;

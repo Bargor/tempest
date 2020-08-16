@@ -93,7 +93,7 @@ namespace application {
             m_readIndex &= m_mask;
             for (auto& listener : m_listeners[event.args.index()]) {
                 if (event.id != listener.id) {
-                    if (now - listener.lastUpdateTime > listener.updateFrequency) {
+                    if (now - listener.lastUpdateTime >= listener.updateFrequency) {
                         listener.lastUpdateTime = now;
                         listener.callback(event.args);
                     }
