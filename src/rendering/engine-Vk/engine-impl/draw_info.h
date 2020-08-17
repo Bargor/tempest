@@ -21,6 +21,7 @@ namespace engine {
                       const std::vector<const uniform_buffer*>& uniforms,
                       const std::vector<const texture*>& textures);
 
+            draw_info(const draw_info& other) = default;
             draw_info(draw_info&& other) noexcept;
 
             ~draw_info() = default;

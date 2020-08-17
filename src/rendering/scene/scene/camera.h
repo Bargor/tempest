@@ -62,7 +62,6 @@ namespace scene {
     private: 
         glm::vec4 caclulate_position(float elapsedTime) const;
         glm::vec3 calculate_direction(glm::quat pitch, glm::quat yaw) const;
-        glm::quat calculate_orientation(float elapsedTime) const;
         glm::quat calculate_pitch(float elapsedTime) const;
         glm::quat calculate_yaw(float elapsedTime) const;
 

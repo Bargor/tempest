@@ -37,11 +37,11 @@ namespace engine {
             engine_frontend(const engine_frontend& engine) = delete;
             ~engine_frontend();
 
-            template<typename Iter>
-            std::vector<vk::CommandBuffer> prepare_draw(Iter first, Iter last);
+            std::vector<vk::CommandBuffer> prepare_draw(const std::vector<draw_info>& drawInfos);
 
         private:
-            vk::CommandBuffer generate_command_buffer(const draw_info& drawInfo);
+            vk::CommandBuffer generate_command_buffer(std::vector<draw_info>::const_iterator begin,
+                                                      std::vector<draw_info>::const_iterator end);
 
         private:
             device& m_device;
@@ -49,18 +49,6 @@ namespace engine {
             std::array<vk::CommandPool, settings::m_inFlightFrames> m_commandPools;
             std::array<std::vector<vk::CommandBuffer>, settings::m_inFlightFrames> m_bufferCache;
         };
-
-        template<typename Iter>
-        std::vector<vk::CommandBuffer> engine_frontend::prepare_draw(Iter first, Iter last) {
-            std::vector<vk::CommandBuffer> buffers;
-
-            for (; first != last; ++first) {
-                auto& drawItem = *first;
-                buffers.emplace_back(generate_command_buffer(drawItem));
-            }
-
-            return buffers;
-        }
 
     } // namespace vulkan
 

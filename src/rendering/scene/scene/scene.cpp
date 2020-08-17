@@ -60,6 +60,7 @@ namespace scene {
 
     void scene::add_object(const std::string& objectName, const std::string& path) {
         m_objects.emplace_back(m_objectController->load_object(objectName, path));
+        m_objects.emplace_back(m_objectController->load_object2(objectName, path));
     }
 
     camera& scene::get_camera(std::string_view cameraName) {
