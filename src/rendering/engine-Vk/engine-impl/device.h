@@ -80,6 +80,9 @@ namespace engine {
             void update_framebuffer();
             void recreate_swap_chain(const core::extent<std::uint32_t>& extent);
 
+            template<typename Iter>
+            std::vector<draw_info> sort_draw_infos(Iter first, Iter last) const;
+
         private:
             struct framebuffer_resize {
                 bool shouldResize;
@@ -117,12 +120,19 @@ namespace engine {
 
             startFrame();
 
-            const auto commandBuffers = m_engineFrontend->prepare_draw(first, last);
+            const auto drawInfos = sort_draw_infos(first, last);
+
+            const auto commandBuffers = m_engineFrontend->prepare_draw(drawInfos);
 
             draw(commandBuffers);
             endFrame();
 
             return true;
+        }
+
+        template<typename Iter>
+        std::vector<draw_info> device::sort_draw_infos(Iter first, Iter last) const {
+            return std::vector<draw_info>(first, last);
         }
 
         TST_INLINE gpu_info& device::get_GPU_info() const noexcept {
