@@ -3,8 +3,8 @@
 		"depth_clamp": false,
 		"rasterizer_discard": false,
 		"polygon_mode": 2,
-		"cull_mode": 0,
-		"front_face": 0,
+		"cull_mode": 2,
+		"front_face": 1,
 		"line_width": 1.0,
 		"depth_bias": {
 			"enable": false,

@@ -13,8 +13,7 @@ namespace engine {
             const auto rasterizerDiscard = rasterizerSettings["rasterizer_discard"].GetBool();
             const auto polygonMode =
                 static_cast<rasterizer_settings::polygon_mode>(rasterizerSettings["polygon_mode"].GetUint());
-            const auto cullMode =
-                static_cast<rasterizer_settings::cull_mode>(rasterizerSettings["cull_mode"].GetUint());
+            const auto cullMode = static_cast<rasterizer_settings::cull_mode>(rasterizerSettings["cull_mode"].GetUint());
             const auto frontFace =
                 static_cast<rasterizer_settings::front_face>(rasterizerSettings["front_face"].GetUint());
             const auto lineWidth = rasterizerSettings["line_width"].GetFloat();
@@ -25,20 +24,18 @@ namespace engine {
             const auto depthBiasClamp = depthBiasSettings["clamp"].GetFloat();
             const auto depthBiasSlopeFactor = depthBiasSettings["slope_factor"].GetFloat();
 
-            return rasterizer_settings{
-                clamp,
-                rasterizerDiscard,
-                polygonMode,
-                cullMode,
-                frontFace,
-                lineWidth,
-                {depthBiasEnable, depthBiasConstantFactor, depthBiasClamp, depthBiasSlopeFactor}};
+            return rasterizer_settings{clamp,
+                                       rasterizerDiscard,
+                                       polygonMode,
+                                       cullMode,
+                                       frontFace,
+                                       lineWidth,
+                                       {depthBiasEnable, depthBiasConstantFactor, depthBiasClamp, depthBiasSlopeFactor}};
         }
 
         multisampling_settings parse_multisampling_settings(const rapidjson::Value& multisamplingSettings) {
             const auto enable = multisamplingSettings["enable"].GetBool();
-            const auto samples =
-                static_cast<base::sample_count>(multisamplingSettings["samples"].GetUint());
+            const auto samples = static_cast<base::sample_count>(multisamplingSettings["samples"].GetUint());
             return multisampling_settings{enable, samples};
         }
 
@@ -47,6 +44,6 @@ namespace engine {
                             parse_multisampling_settings(settingFile["multisampling"])};
         }
 
-    }
+    } // namespace base
 } // namespace engine
 } // namespace tst
