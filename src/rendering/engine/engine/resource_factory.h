@@ -2,8 +2,8 @@
 // Author: Karol Kontny
 #pragma once
 
+#include "material.h"
 #include "resources/index_buffer.h"
-#include "resources/material.h"
 #include "resources/pipeline.h"
 #include "resources/shader.h"
 #include "resources/texture.h"
@@ -29,8 +29,10 @@ namespace engine {
         ~resource_factory();
 
     public:
+        template<typename MaterialType>
+        material create_material(const std::string materialName, const std::string& shaderName);
+
         resources::index_buffer create_index_buffer(std::vector<std::uint16_t>&& indices);
-        resources::material create_material();
         const resources::pipeline& create_pipeline(const std::string& techniqueName,
                                                    const std::string& pipelineName,
                                                    const std::string& shadersName,
@@ -51,6 +53,14 @@ namespace engine {
                                                                       bind_point bindPoint,
                                                                       std::uint32_t binding) {
         return super::create_uniform_buffer(shaderName, bindPoint, binding, sizeof(StorageType));
+    }
+
+    template<typename MaterialType>
+    material resource_factory::create_material(const std::string materialName, const std::string& shaderName) {
+        return material(
+            materialName,
+            create_uniform_buffer<MaterialType::StaticStorageType>(shaderName, bind_point::material_static, 0),
+            create_uniform_buffer<MaterialType::DynamicStorageType>(shaderName, bind_point::material_dynamic, 0));
     }
 
     static_assert(!std::is_polymorphic_v<resource_factory>);

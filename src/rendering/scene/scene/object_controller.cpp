@@ -4,6 +4,7 @@
 #include "object_controller.h"
 
 #include <application/data_loader.h>
+#include <materials/test.h>
 #include <engine/resource_factory.h>
 #include <util/variant.h>
 
@@ -55,7 +56,7 @@ namespace scene {
         auto texture = m_resourceFactory.create_texture("texture.jpg");
         texture.bind_texture("test", engine::bind_point::global_static, 1);
 
-        auto material = m_resourceFactory.create_material();
+        auto material = m_resourceFactory.create_material<materials::test_material>("test", "test");
 
         return scene_object(objectName,
                             std::move(vertexBuffer),
@@ -102,7 +103,7 @@ namespace scene {
         auto texture = m_resourceFactory.create_texture("texture.jpg");
         texture.bind_texture("test", engine::bind_point::global_static, 1);
 
-        auto material = m_resourceFactory.create_material();
+        auto material = m_resourceFactory.create_material<materials::test_material>("test", "test");
 
         return scene_object(objectName,
                             std::move(vertexBuffer),

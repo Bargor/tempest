@@ -5,9 +5,11 @@ set(ENGINE_HDRS
     engine/device.h
 	engine/draw_info.h
 	engine/gpu_info.h
+    engine/material.h
+    engine/mesh.h
+    engine/model.h
 	engine/resource_factory.h
     engine/resources/index_buffer.h
-	engine/resources/material.h
 	engine/resources/pipeline.h
 	engine/resources/shader.h
 	engine/resources/texture.h
@@ -21,9 +23,11 @@ set(ENGINE_SRCS
     engine/device.cpp
 	engine/draw_info.cpp
 	engine/gpu_info.cpp
+    engine/material.cpp
+    engine/mesh.cpp
+    engine/model.cpp
 	engine/resource_factory.cpp
 	engine/resources/index_buffer.cpp
-	engine/resources/material.cpp
 	engine/resources/pipeline.cpp
 	engine/resources/shader.cpp
 	engine/resources/texture.cpp

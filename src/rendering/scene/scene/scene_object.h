@@ -3,8 +3,8 @@
 #pragma once
 
 #include <chrono>
+#include <engine/material.h>
 #include <engine/resources/index_buffer.h>
-#include <engine/resources/material.h>
 #include <engine/resources/pipeline.h>
 #include <engine/resources/texture.h>
 #include <engine/resources/uniform_buffer.h>
@@ -35,7 +35,7 @@ namespace scene {
         scene_object(const std::string& objectName,
                      engine::resources::vertex_buffer&& vertexBuffer,
                      engine::resources::index_buffer&& indexBuffer,
-                     engine::resources::material&& material,
+                     engine::material&& material,
                      engine::resources::uniform_buffer&& uniformBuffer,
                      engine::resources::texture&& texture,
                      const engine::resources::pipeline& pipeline) noexcept;
@@ -49,7 +49,7 @@ namespace scene {
         std::string m_name;
         engine::resources::vertex_buffer m_vertices;
         engine::resources::index_buffer m_indices;
-        engine::resources::material m_material;
+        engine::material m_material;
         engine::resources::uniform_buffer m_uniforms;
         engine::resources::texture m_texture;
         const engine::resources::pipeline& m_pipeline;

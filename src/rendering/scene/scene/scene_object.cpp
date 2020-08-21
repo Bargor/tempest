@@ -11,7 +11,7 @@ namespace scene {
     scene_object::scene_object(const std::string& objectName,
                                engine::resources::vertex_buffer&& vertexBuffer,
                                engine::resources::index_buffer&& indexBuffer,
-                               engine::resources::material&& material,
+                               engine::material&& material,
                                engine::resources::uniform_buffer&& uniformBuffer,
                                engine::resources::texture&& texture,
                                const engine::resources::pipeline& pipeline) noexcept
