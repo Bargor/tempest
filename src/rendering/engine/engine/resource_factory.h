@@ -59,8 +59,8 @@ namespace engine {
     material resource_factory::create_material(const std::string materialName, const std::string& shaderName) {
         return material(
             materialName,
-            create_uniform_buffer<MaterialType::StaticStorageType>(shaderName, bind_point::material_static, 0),
-            create_uniform_buffer<MaterialType::DynamicStorageType>(shaderName, bind_point::material_dynamic, 0));
+            create_uniform_buffer<typename MaterialType::StaticStorageType>(shaderName, bind_point::material_static, 0),
+            create_uniform_buffer<typename MaterialType::DynamicStorageType>(shaderName, bind_point::material_dynamic, 0));
     }
 
     static_assert(!std::is_polymorphic_v<resource_factory>);

@@ -6,6 +6,8 @@
 #include "resources/uniform_buffer.h"
 
 #include <engine-impl/api.h>
+#include <type_traits>
+#include <concepts>
 
 namespace tst {
 namespace engine {
@@ -19,6 +21,12 @@ namespace engine {
         resources::uniform_buffer m_staticUniformBuffer;
         resources::uniform_buffer m_dynamicUniformBuffer;
         std::vector<resources::texture> m_textures;
+    };
+
+    template<typename T>
+    concept Material = std::derived_from<T, material> && requires {
+        typename T::StaticStorageType;
+        typename T::DynamicStorageType;
     };
 } // namespace engine
 } // namespace tst
