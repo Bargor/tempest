@@ -29,7 +29,7 @@ namespace engine {
         ~resource_factory();
 
     public:
-        template<typename MaterialType>
+        template<MaterialType T>
         material create_material(const std::string materialName, const std::string& shaderName);
 
         resources::index_buffer create_index_buffer(std::vector<std::uint16_t>&& indices);
@@ -55,12 +55,17 @@ namespace engine {
         return super::create_uniform_buffer(shaderName, bindPoint, binding, sizeof(StorageType));
     }
 
-    template<typename MaterialType>
+    template<MaterialType T>
     material resource_factory::create_material(const std::string materialName, const std::string& shaderName) {
-        return material(
-            materialName,
-            create_uniform_buffer<typename MaterialType::StaticStorageType>(shaderName, bind_point::material_static, 0),
-            create_uniform_buffer<typename MaterialType::DynamicStorageType>(shaderName, bind_point::material_dynamic, 0));
+        if constexpr (std::is_null_pointer_v<typename T::StaticStorageType> &&
+                      std::is_null_pointer_v<typename T::DynamicStorageType>) {
+            return material(materialName);
+        } else {
+            return material(
+                materialName,
+                create_uniform_buffer<typename T::StaticStorageType>(shaderName, bind_point::material_static, 0),
+                create_uniform_buffer<typename T::DynamicStorageType>(shaderName, bind_point::material_dynamic, 0));
+        }
     }
 
     static_assert(!std::is_polymorphic_v<resource_factory>);

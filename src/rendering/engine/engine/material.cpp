@@ -8,6 +8,9 @@
 namespace tst {
 namespace engine {
 
+    material::material(const std::string& name) : m_name(name) {
+    }
+
     material::material(const std::string& name,
                        resources::uniform_buffer&& staticUniforms,
                        resources::uniform_buffer&& dynamicUniforms)

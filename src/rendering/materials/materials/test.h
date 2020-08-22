@@ -2,12 +2,14 @@
 // Author: Karol Kontny
 #pragma once
 
+#include <engine/material.h>
+
 namespace tst {
 namespace materials {
-    class test_material {
+    class test_material : public engine::material {
     public:
-        using StaticStorageType = int;
-        using DynamicStorageType = int;
+        using StaticStorageType = std::nullptr_t;
+        using DynamicStorageType = std::nullptr_t;
     };
 }
 } // namespace tst

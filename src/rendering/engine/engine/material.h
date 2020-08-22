@@ -5,26 +5,30 @@
 #include "resources/texture.h"
 #include "resources/uniform_buffer.h"
 
-#include <engine-impl/api.h>
-#include <type_traits>
 #include <concepts>
+#include <engine-impl/api.h>
+#include <optional>
+#include <type_traits>
 
 namespace tst {
 namespace engine {
 
     class material {
     public:
-        material(const std::string& name, resources::uniform_buffer&& staticUniforms, resources::uniform_buffer&& dynamicUniforms);
+        material(const std::string& name);
+        material(const std::string& name,
+                 resources::uniform_buffer&& staticUniforms,
+                 resources::uniform_buffer&& dynamicUniforms);
 
     private:
         std::string m_name;
-        resources::uniform_buffer m_staticUniformBuffer;
-        resources::uniform_buffer m_dynamicUniformBuffer;
+        std::optional<resources::uniform_buffer> m_staticUniformBuffer;
+        std::optional<resources::uniform_buffer> m_dynamicUniformBuffer;
         std::vector<resources::texture> m_textures;
     };
 
     template<typename T>
-    concept Material = std::derived_from<T, material> && requires {
+    concept MaterialType = std::derived_from<T, material>&& requires {
         typename T::StaticStorageType;
         typename T::DynamicStorageType;
     };
