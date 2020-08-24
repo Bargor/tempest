@@ -4,6 +4,7 @@
 
 #include "api.h"
 #include "resources/index_buffer.h"
+#include "resources/material.h"
 #include "resources/pipeline.h"
 #include "resources/shader.h"
 #include "resources/texture.h"
@@ -46,6 +47,12 @@ namespace engine {
                                                  base::resource_bind_point bindPoint,
                                                  std::uint32_t binding,
                                                  std::size_t storageSize);
+
+            material create_material(const std::string materialName,
+                                     const std::string& shaderName,
+                                     const std::vector<std::string>& textureNames,
+                                     std::uint32_t staticStorageSize,
+                                     std::uint32_t dynamicStorageSize);
 
         private:
             const application::data_loader& m_dataLoader;

@@ -2,8 +2,8 @@
 // Author: Karol Kontny
 #pragma once
 
-#include "resources/texture.h"
-#include "resources/uniform_buffer.h"
+#include "texture.h"
+#include "uniform_buffer.h"
 
 #include <concepts>
 #include <engine-base/material.h>
@@ -18,20 +18,19 @@ namespace engine {
             using super = base::material;
 
         public:
-            material::material(const std::string& name,
-                               std::vector<texture>&& textures,
-                               const descriptor_set& staticDescriptorSets,
-                               const std::uint32_t& resourceIndex);
-            material::material(const std::string& name,
-                               uniform_buffer&& staticUniforms,
-                               uniform_buffer&& dynamicUniforms,
-                               std::vector<texture>&& textures,
-                               const descriptor_set& staticDescriptorSets,
-                               const std::uint32_t& resourceIndex);
+            material(const std::string& name,
+                     std::vector<texture>&& textures,
+                     const descriptor_set& staticDescriptorSets,
+                     const std::uint32_t& resourceIndex);
+            material(const std::string& name,
+                     uniform_buffer&& staticUniforms,
+                     uniform_buffer&& dynamicUniforms,
+                     std::vector<texture>&& textures,
+                     const descriptor_set& staticDescriptorSets,
+                     const std::uint32_t& resourceIndex);
 
         public:
             vk::DescriptorSet get_static_descriptor_set() const noexcept;
-            vk::DescriptorSet get_dynamic_descriptor_set() const noexcept;
 
         private:
             std::vector<texture> m_textures;

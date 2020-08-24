@@ -2,10 +2,10 @@
 // Author: Karol Kontny
 #pragma once
 
-#include "material.h"
 #include "resources/index_buffer.h"
 #include "resources/pipeline.h"
 #include "resources/vertex_buffer.h"
+#include "material.h"
 
 #include <engine-impl/api.h>
 #include <engine-impl/draw_info.h>

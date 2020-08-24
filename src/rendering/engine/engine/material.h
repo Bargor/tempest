@@ -7,7 +7,7 @@
 
 #include <concepts>
 #include <engine-impl/api.h>
-#include <engine-impl/material.h>
+#include <engine-impl/resources/material.h>
 #include <type_traits>
 
 namespace tst {
