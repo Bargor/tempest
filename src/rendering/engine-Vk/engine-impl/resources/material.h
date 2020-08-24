@@ -29,6 +29,8 @@ namespace engine {
                      const descriptor_set& staticDescriptorSets,
                      const std::uint32_t& resourceIndex);
 
+            material(material&& other) noexcept;
+
         public:
             vk::DescriptorSet get_static_descriptor_set() const noexcept;
 

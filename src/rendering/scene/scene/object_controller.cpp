@@ -53,8 +53,6 @@ namespace scene {
 
         auto uniformBuffer =
             m_resourceFactory.create_uniform_buffer<uniform_buffer_object>("test", engine::bind_point::global_static, 0);
-        auto texture = m_resourceFactory.create_texture("texture.jpg");
-        texture.bind_texture("test", engine::bind_point::global_static, 1);
 
         auto material = m_resourceFactory.create_material<materials::test_material>("test", "test", {"texture.jpg"});
 
@@ -99,8 +97,6 @@ namespace scene {
 
         auto uniformBuffer =
             m_resourceFactory.create_uniform_buffer<uniform_buffer_object>("test", engine::bind_point::global_static, 0);
-        auto texture = m_resourceFactory.create_texture("texture.jpg");
-        texture.bind_texture("test", engine::bind_point::global_static, 1);
 
         auto material = m_resourceFactory.create_material<materials::test_material>("test", "test", {"texture.jpg"});
 
