@@ -3,7 +3,7 @@
 
 #include "draw_info.h"
 
-#include "material.h"
+#include "resources/material.h"
 #include "resources/pipeline.h"
 #include "resources/uniform_buffer.h"
 #include "resources/vertex_buffer.h"
