@@ -16,7 +16,7 @@ namespace engine {
     class material : private api::material {
     public:
         material(api::material&& pipelineImpl);
-        virtual ~material() = default;
+        ~material() = default;
 
         material(material&& other) noexcept;
 
