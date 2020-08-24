@@ -13,16 +13,14 @@ namespace scene {
                                engine::resources::index_buffer&& indexBuffer,
                                engine::material&& material,
                                engine::resources::uniform_buffer&& uniformBuffer,
-                               engine::resources::texture&& texture,
                                const engine::resources::pipeline& pipeline) noexcept
         : m_name(objectName)
         , m_vertices(std::move(vertexBuffer))
         , m_indices(std::move(indexBuffer))
         , m_material(std::move(material))
         , m_uniforms(std::move(uniformBuffer))
-        , m_texture(std::move(texture))
         , m_pipeline(pipeline)
-        , m_objectState({&m_vertices, &m_indices, m_uniforms, m_texture, m_pipeline, *this})
+        , m_objectState({&m_vertices, &m_indices, m_uniforms, m_pipeline, m_material, *this})
         , m_time(0.0f) {
     }
 
@@ -32,7 +30,6 @@ namespace scene {
         , m_indices(std::move(object.m_indices))
         , m_material(std::move(object.m_material))
         , m_uniforms(std::move(object.m_uniforms))
-        , m_texture(std::move(object.m_texture))
         , m_pipeline(object.m_pipeline)
         , m_objectState(std::move(object.m_objectState))
         , m_time(0.0f) {
@@ -51,7 +48,7 @@ namespace scene {
 
         m_uniforms.update_buffer(ubo);
 
-        state newState{&m_vertices, &m_indices, m_uniforms, m_texture, m_pipeline, *this};
+        state newState{&m_vertices, &m_indices, m_uniforms, m_pipeline, m_material, *this};
 
         return newState;
     }

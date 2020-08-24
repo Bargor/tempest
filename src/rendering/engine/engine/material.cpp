@@ -8,15 +8,10 @@
 namespace tst {
 namespace engine {
 
-    material::material(const std::string& name) : m_name(name) {
+    material::material(api::material&& materialImpl) : api::material(std::move(materialImpl)) {
     }
 
-    material::material(const std::string& name,
-                       resources::uniform_buffer&& staticUniforms,
-                       resources::uniform_buffer&& dynamicUniforms)
-        : m_name(name)
-        , m_staticUniformBuffer(std::move(staticUniforms))
-        , m_dynamicUniformBuffer(std::move(dynamicUniforms)) {
+    material::material(material&& other) noexcept : api::material(std::move(other)) {
     }
 
 } // namespace engine

@@ -10,9 +10,6 @@ namespace engine {
         pipeline::pipeline(api::pipeline&& pipelineImpl) : api::pipeline(std::move(pipelineImpl)) {
         }
 
-        pipeline::~pipeline() {
-        }
-
     } // namespace resources
 } // namespace engine
 } // namespace tst

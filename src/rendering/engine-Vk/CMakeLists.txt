@@ -8,6 +8,7 @@ set(ENGINE_HDRS
 	engine-impl/engine_frontend.h
 	engine-impl/gpu_info.h
 	engine-impl/instance.h
+    engine-impl/material.h
 	engine-impl/queue_indices.h
 	engine-impl/physical_device.h
 	engine-impl/resource_cache.h
@@ -15,7 +16,6 @@ set(ENGINE_HDRS
 	engine-impl/resources/buffer.h
 	engine-impl/resources/image.h
 	engine-impl/resources/index_buffer.h
-	engine-impl/resources/material.h
 	engine-impl/resources/pipeline.h
 	engine-impl/resources/rendering_technique.h
 	engine-impl/resources/settings.h
@@ -37,6 +37,7 @@ set(ENGINE_SRCS
 	engine-impl/draw_info.cpp
 	engine-impl/gpu_info.cpp
 	engine-impl/instance.cpp
+    engine-impl/material.cpp
 	engine-impl/queue_indices.cpp
 	engine-impl/physical_device.cpp
 	engine-impl/resource_cache.cpp
@@ -44,7 +45,6 @@ set(ENGINE_SRCS
 	engine-impl/resources/buffer.cpp
 	engine-impl/resources/image.cpp
 	engine-impl/resources/index_buffer.cpp
-	engine-impl/resources/material.cpp
 	engine-impl/resources/pipeline.cpp
 	engine-impl/resources/rendering_technique.cpp
 	engine-impl/resources/settings.cpp

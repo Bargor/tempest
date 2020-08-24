@@ -2,10 +2,9 @@
 // Author: Karol Kontny
 #pragma once
 
+#include "material.h"
 #include "resources/index_buffer.h"
 #include "resources/pipeline.h"
-#include "resources/texture.h"
-#include "resources/uniform_buffer.h"
 #include "resources/vertex_buffer.h"
 
 #include <engine-impl/api.h>
@@ -18,12 +17,11 @@ namespace engine {
         using super = api::draw_info;
 
     public:
-
         draw_info(const resources::vertex_buffer* vertices,
                   const resources::index_buffer* indices,
                   const resources::pipeline& pipelineState,
-                  const std::vector<const resources::uniform_buffer*>& uniforms,
-                  const std::vector<const resources::texture*>& textures);
+                  const material& material,
+                  const std::vector<const resources::uniform_buffer*>& uniforms);
 
         draw_info(const draw_info&) = delete;
 

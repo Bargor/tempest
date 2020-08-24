@@ -30,7 +30,9 @@ namespace engine {
 
     public:
         template<MaterialType T>
-        material create_material(const std::string materialName, const std::string& shaderName);
+        material create_material(const std::string materialName,
+                                 const std::string& shaderName,
+                                 const std::vector<std::string>& textureNames);
 
         resources::index_buffer create_index_buffer(std::vector<std::uint16_t>&& indices);
         const resources::pipeline& create_pipeline(const std::string& techniqueName,
@@ -56,16 +58,14 @@ namespace engine {
     }
 
     template<MaterialType T>
-    material resource_factory::create_material(const std::string materialName, const std::string& shaderName) {
-        if constexpr (std::is_null_pointer_v<typename T::StaticStorageType> &&
-                      std::is_null_pointer_v<typename T::DynamicStorageType>) {
-            return material(materialName);
-        } else {
-            return material(
-                materialName,
-                create_uniform_buffer<typename T::StaticStorageType>(shaderName, bind_point::material_static, 0),
-                create_uniform_buffer<typename T::DynamicStorageType>(shaderName, bind_point::material_dynamic, 0));
-        }
+    material resource_factory::create_material(const std::string materialName,
+                                               const std::string& shaderName,
+                                               const std::vector<std::string>& textureNames) {
+        return super::create_material(materialName,
+                                      shaderName,
+                                      textureNames,
+                                      std::is_null_pointer_v<T::StaticStorageType> ? 0 : sizeof(T::StaticStorageType),
+                                      std::is_null_pointer_v<T::DynamicStorageType> ? 0 : sizeof(T::DynamicStorageType));
     }
 
     static_assert(!std::is_polymorphic_v<resource_factory>);

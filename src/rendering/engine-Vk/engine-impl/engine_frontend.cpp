@@ -84,6 +84,8 @@ namespace engine {
                 commandBuffer.bindIndexBuffer(drawInfo.indices->get_handle(), 0, vk::IndexType::eUint16);
                 commandBuffer.bindDescriptorSets(
                     vk::PipelineBindPoint::eGraphics, drawInfo.pipelineState.get_layout(), 0, drawInfo.descriptorSets, {});
+                commandBuffer.bindDescriptorSets(
+                    vk::PipelineBindPoint::eGraphics, drawInfo.pipelineState.get_layout(), 4, drawInfo.meshMaterial.get_static_descriptor_set(), {});
                 commandBuffer.drawIndexed(drawInfo.indices->get_index_count(), 1, 0, 0, 0);
             }
             commandBuffer.endRenderPass();

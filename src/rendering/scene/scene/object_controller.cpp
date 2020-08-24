@@ -4,8 +4,8 @@
 #include "object_controller.h"
 
 #include <application/data_loader.h>
-#include <materials/test.h>
 #include <engine/resource_factory.h>
+#include <materials/test.h>
 #include <util/variant.h>
 
 namespace tst {
@@ -48,22 +48,21 @@ namespace scene {
                                          {{-1.5f, -1.5f, -2.5f}, {0.0f, 1.0f, 0.0f}, {1.0f, 0.0f}},
                                          {{-1.5f, -0.5f, -2.5f}, {0.0f, 0.0f, 1.0f}, {1.0f, 1.0f}},
                                          {{-2.5f, -0.5f, -2.5f}, {1.0f, 1.0f, 1.0f}, {0.0f, 1.0f}}}));
-        auto indexBuffer =
-            m_resourceFactory.create_index_buffer(std::vector<std::uint16_t>({0, 1, 2, 2, 3, 0, 4, 5, 6, 6, 7, 4, 8, 9, 10, 10, 11, 8}));
+        auto indexBuffer = m_resourceFactory.create_index_buffer(
+            std::vector<std::uint16_t>({0, 1, 2, 2, 3, 0, 4, 5, 6, 6, 7, 4, 8, 9, 10, 10, 11, 8}));
 
-        auto uniformBuffer = m_resourceFactory.create_uniform_buffer<uniform_buffer_object>(
-            "test", engine::bind_point::global_static, 0);
+        auto uniformBuffer =
+            m_resourceFactory.create_uniform_buffer<uniform_buffer_object>("test", engine::bind_point::global_static, 0);
         auto texture = m_resourceFactory.create_texture("texture.jpg");
         texture.bind_texture("test", engine::bind_point::global_static, 1);
 
-        auto material = m_resourceFactory.create_material<materials::test_material>("test", "test");
+        auto material = m_resourceFactory.create_material<materials::test_material>("test", "test", {"texture.jpg"});
 
         return scene_object(objectName,
                             std::move(vertexBuffer),
                             std::move(indexBuffer),
                             std::move(material),
                             std::move(uniformBuffer),
-                            std::move(texture),
                             pipeline);
     }
 
@@ -103,14 +102,13 @@ namespace scene {
         auto texture = m_resourceFactory.create_texture("texture.jpg");
         texture.bind_texture("test", engine::bind_point::global_static, 1);
 
-        auto material = m_resourceFactory.create_material<materials::test_material>("test", "test");
+        auto material = m_resourceFactory.create_material<materials::test_material>("test", "test", {"texture.jpg"});
 
         return scene_object(objectName,
                             std::move(vertexBuffer),
                             std::move(indexBuffer),
                             std::move(material),
                             std::move(uniformBuffer),
-                            std::move(texture),
                             pipeline);
     }
 

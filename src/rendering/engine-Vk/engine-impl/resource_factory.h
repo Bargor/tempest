@@ -3,14 +3,13 @@
 #pragma once
 
 #include "api.h"
+#include "material.h"
 #include "resources/index_buffer.h"
 #include "resources/pipeline.h"
 #include "resources/texture.h"
 #include "resources/uniform_buffer.h"
 #include "resources/vertex_buffer.h"
 #include "resources/vertex_format.h"
-
-#include <engine-base/resource_bind_point.h>
 
 namespace tst {
 
@@ -24,7 +23,6 @@ namespace engine {
 
         class device;
         class physical_device;
-        class resource_cache;
         class shader_compiler;
         class swap_chain;
 
@@ -50,6 +48,12 @@ namespace engine {
                                                  std::uint32_t binding,
                                                  std::size_t storageSize);
             texture create_texture(const std::string& textureName);
+
+            material create_material(const std::string materialName,
+                                     const std::string& shaderName,
+                                     const std::vector<std::string>& textureNames,
+                                     std::uint32_t staticStorageSize,
+                                     std::uint32_t dynamicStorageSize);
 
         public: // vulkan internal
             const shader_set* load_shaders(const std::string& shadersName);

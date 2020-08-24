@@ -7,25 +7,27 @@
 
 #include <concepts>
 #include <engine-impl/api.h>
-#include <optional>
+#include <engine-impl/material.h>
 #include <type_traits>
 
 namespace tst {
 namespace engine {
 
-    class material {
+    class material : private api::material {
     public:
-        material(const std::string& name);
-        material(const std::string& name,
-                 resources::uniform_buffer&& staticUniforms,
-                 resources::uniform_buffer&& dynamicUniforms);
+        material(api::material&& pipelineImpl);
+        ~material() = default;
 
-    private:
-        std::string m_name;
-        std::optional<resources::uniform_buffer> m_staticUniformBuffer;
-        std::optional<resources::uniform_buffer> m_dynamicUniformBuffer;
-        std::vector<resources::texture> m_textures;
+        material(material&& other) noexcept;
+
+    public:
+        const api::material& to_super() const noexcept {
+            return *this;
+        }
     };
+
+    static_assert(!std::is_polymorphic_v<material>);
+    static_assert(sizeof(material) == sizeof(api::material));
 
     template<typename T>
     concept MaterialType = std::derived_from<T, material>&& requires {

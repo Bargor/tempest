@@ -15,7 +15,7 @@ namespace engine {
         public:
 
             uniform_buffer(api::uniform_buffer&& bufferImpl);
-            ~uniform_buffer();
+            ~uniform_buffer() = default;
 
             uniform_buffer(uniform_buffer&& other) noexcept;
 
