@@ -1,10 +1,10 @@
 #include "scene.h"
 
+#include "object_controller.h"
+
 #include <application/app_event.h>
 #include <application/event_processor.h>
 #include <engine/resource_factory.h>
-
-#include "object_controller.h"
 
 namespace tst {
 namespace scene {
