@@ -61,11 +61,12 @@ namespace engine {
     material resource_factory::create_material(const std::string materialName,
                                                const std::string& shaderName,
                                                const std::vector<std::string>& textureNames) {
-        return super::create_material(materialName,
-                                      shaderName,
-                                      textureNames,
-                                      std::is_null_pointer_v<T::StaticStorageType> ? 0 : sizeof(T::StaticStorageType),
-                                      std::is_null_pointer_v<T::DynamicStorageType> ? 0 : sizeof(T::DynamicStorageType));
+        return super::create_material(
+            materialName,
+            shaderName,
+            textureNames,
+            std::is_null_pointer_v<T::StaticStorageType> ? 0 : sizeof(typename T::StaticStorageType),
+            std::is_null_pointer_v<T::DynamicStorageType> ? 0 : sizeof(typename T::DynamicStorageType));
     }
 
     static_assert(!std::is_polymorphic_v<resource_factory>);
