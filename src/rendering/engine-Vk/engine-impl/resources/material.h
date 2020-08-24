@@ -36,8 +36,8 @@ namespace engine {
             std::vector<texture> m_textures;
             std::optional<uniform_buffer> m_staticUniformBuffer;
             std::optional<uniform_buffer> m_dynamicUniformBuffer;
-            const std::uint32_t& m_resourceIndex;
             const std::array<vk::DescriptorSet, settings::m_inFlightFrames>& m_staticDescriptorSets;
+            const std::uint32_t& m_resourceIndex;
         };
 
         TST_INLINE vk::DescriptorSet material::get_static_descriptor_set() const noexcept {
