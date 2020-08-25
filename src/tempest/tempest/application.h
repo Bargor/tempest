@@ -4,7 +4,6 @@
 #pragma once
 
 #include <core.h>
-#include <thread>
 #include <string>
 
 namespace tst {

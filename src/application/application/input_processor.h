@@ -6,8 +6,6 @@
 #include "app_event.h"
 #include "event_processor.h"
 
-#include <common/rectangle.h>
-
 struct GLFWwindow;
 
 namespace tst {

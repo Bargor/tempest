@@ -3,10 +3,8 @@
 #pragma once
 
 #include "draw_info.h"
-#include "queue_indices.h"
 #include "resources/settings.h"
 
-#include <memory>
 #include <vector>
 #include <vulkan/vulkan.hpp>
 

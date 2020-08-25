@@ -3,12 +3,8 @@
 
 #include "main_window.h"
 
-#include "glfw_exception.h"
-
 #include <assert.h>
-#include <device/monitor.h>
 #include <thread/main_thread.h>
-#include <thread>
 
 namespace tst {
 namespace application {

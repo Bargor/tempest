@@ -10,7 +10,6 @@
 #include <assert.h>
 #include <device/monitor.h>
 #include <thread/main_thread.h>
-#include <thread>
 #include <util/variant.h>
 
 namespace tst {

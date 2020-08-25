@@ -5,22 +5,11 @@
 
 #include "device.h"
 #include "draw_info.h"
-#include "instance.h"
-#include "resource_cache.h"
 #include "resources/index_buffer.h"
 #include "resources/rendering_technique.h"
 #include "resources/texture.h"
 #include "resources/uniform_buffer.h"
 #include "resources/vertex_buffer.h"
-#include "shader_compiler.h"
-#include "swap_chain.h"
-#include "vulkan_exception.h"
-
-#include <application/app_event.h>
-#include <application/event_processor.h>
-#include <application/main_window.h>
-#include <glm/gtc/matrix_transform.hpp>
-#include <util/variant.h>
 
 namespace tst {
 namespace engine {
