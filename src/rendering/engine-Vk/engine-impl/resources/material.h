@@ -5,10 +5,8 @@
 #include "texture.h"
 #include "uniform_buffer.h"
 
-#include <concepts>
 #include <engine-base/material.h>
 #include <optional>
-#include <type_traits>
 #include <vector>
 
 namespace tst {

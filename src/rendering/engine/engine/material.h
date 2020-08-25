@@ -2,9 +2,6 @@
 // Author: Karol Kontny
 #pragma once
 
-#include "resources/texture.h"
-#include "resources/uniform_buffer.h"
-
 #include <engine-impl/api.h>
 #include <engine-impl/resources/material.h>
 #include <type_traits>
