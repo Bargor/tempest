@@ -10,9 +10,6 @@ namespace engine {
         uniform_buffer::uniform_buffer(api::uniform_buffer&& bufferImpl) : api::uniform_buffer(std::move(bufferImpl)) {
         }
 
-        uniform_buffer::~uniform_buffer() {
-        }
-
         uniform_buffer::uniform_buffer(uniform_buffer&& other) noexcept : api::uniform_buffer(std::move(other)) {
         }
 

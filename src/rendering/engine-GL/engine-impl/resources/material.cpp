@@ -4,6 +4,9 @@
 
 namespace tst {
 namespace engine {
-    namespace opengl {} // namespace vulkan
+    namespace opengl {
+        material::material(const std::string& name) : base::material(name) {
+        }
+    } // namespace opengl
 } // namespace engine
 } // namespace tst

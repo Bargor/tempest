@@ -19,10 +19,6 @@ namespace engine {
         return super::create_index_buffer<std::uint16_t>(std::move(indices));
     }
 
-    resources::material resource_factory::create_material() {
-        return resources::material();
-    }
-
     const resources::pipeline& resource_factory::create_pipeline(const std::string& techniqueName,
                                                                  const std::string& pipelineName,
                                                                  const std::string& shadersName,

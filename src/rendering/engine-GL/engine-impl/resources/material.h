@@ -11,6 +11,8 @@ namespace engine {
         public:
             using super = base::material;
 
+            material(const std::string& name);
+
         private:
         };
     } // namespace vulkan

@@ -14,7 +14,7 @@ namespace engine {
 
         public:
             pipeline(api::pipeline&& pipelineImpl);
-            ~pipeline();
+            ~pipeline() = default;
 
         public:
             const api::pipeline& to_super() const noexcept {

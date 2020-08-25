@@ -2,8 +2,8 @@
 // Author: Karol Kontny
 #pragma once
 
+#include "material.h"
 #include "resources/index_buffer.h"
-#include "resources/material.h"
 #include "resources/pipeline.h"
 #include "resources/shader.h"
 #include "resources/texture.h"
@@ -29,8 +29,12 @@ namespace engine {
         ~resource_factory();
 
     public:
+        template<MaterialType T>
+        material create_material(const std::string materialName,
+                                 const std::string& shaderName,
+                                 const std::vector<std::string>& textureNames);
+
         resources::index_buffer create_index_buffer(std::vector<std::uint16_t>&& indices);
-        resources::material create_material();
         const resources::pipeline& create_pipeline(const std::string& techniqueName,
                                                    const std::string& pipelineName,
                                                    const std::string& shadersName,
@@ -51,6 +55,18 @@ namespace engine {
                                                                       bind_point bindPoint,
                                                                       std::uint32_t binding) {
         return super::create_uniform_buffer(shaderName, bindPoint, binding, sizeof(StorageType));
+    }
+
+    template<MaterialType T>
+    material resource_factory::create_material(const std::string materialName,
+                                               const std::string& shaderName,
+                                               const std::vector<std::string>& textureNames) {
+        return super::create_material(
+            materialName,
+            shaderName,
+            textureNames,
+            std::is_null_pointer_v<typename T::StaticStorageType> ? 0 : sizeof(typename T::StaticStorageType),
+            std::is_null_pointer_v<typename T::DynamicStorageType> ? 0 : sizeof(typename T::DynamicStorageType));
     }
 
     static_assert(!std::is_polymorphic_v<resource_factory>);

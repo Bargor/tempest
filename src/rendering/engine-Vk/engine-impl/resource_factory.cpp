@@ -11,6 +11,7 @@
 
 #include <application/data_loader.h>
 #include <engine-base/pipeline_parser.h>
+#include <engine-base/resource_bind_point.h>
 #include <engine-base/technique_parser.h>
 #include <fmt/format.h>
 
@@ -21,8 +22,7 @@ namespace engine {
         resource_factory::resource_factory(const device& device, const application::data_loader& dataLoader)
             : m_device(device)
             , m_dataLoader(dataLoader)
-            , m_shaderCompiler(
-                  std::make_unique<shader_compiler>(m_dataLoader, m_device.m_logicalDevice))
+            , m_shaderCompiler(std::make_unique<shader_compiler>(m_dataLoader, m_device.m_logicalDevice))
             , m_transferCommandPool(m_device.m_logicalDevice.createCommandPool(vk::CommandPoolCreateInfo(
                   vk::CommandPoolCreateFlags(), m_device.m_physicalDevice->get_graphics_index())))
             , m_transferQueue(m_device.m_graphicsQueueHandle) {
@@ -130,6 +130,34 @@ namespace engine {
                            vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent,
                            m_dataLoader.load_image(textureFile.value()),
                            m_device.m_resourceIndex);
+        }
+
+        material resource_factory::create_material(const std::string materialName,
+                                                   const std::string& shaderName,
+                                                   const std::vector<std::string>& textureNames,
+                                                   std::uint32_t staticStorageSize,
+                                                   std::uint32_t dynamicStorageSize) {
+            std::vector<texture> textures;
+            textures.reserve(textureNames.size());
+            std::uint32_t binding = staticStorageSize == 0 ? 0 : 1;
+            for (const auto& name : textureNames) {
+                textures.emplace_back(create_texture(name));
+                textures.rbegin()->bind_texture(shaderName, base::resource_bind_point::material_static, binding++);
+            }
+            const auto descriptorSets =
+                m_device.m_resourceCache->find_descriptor_sets(shaderName, base::resource_bind_point::material_static);
+
+            if (staticStorageSize == 0 && dynamicStorageSize == 0) {
+                return material(materialName, std::move(textures), *descriptorSets, m_device.m_resourceIndex);
+            } else {
+                return material(
+                    materialName,
+                    create_uniform_buffer(shaderName, base::resource_bind_point::material_static, 0, staticStorageSize),
+                    create_uniform_buffer(shaderName, base::resource_bind_point::material_dynamic, 0, dynamicStorageSize),
+                    std::move(textures),
+                    *descriptorSets,
+                    m_device.m_resourceIndex);
+            }
         }
 
         const shader_set* resource_factory::load_shaders(const std::string& shadersName) {

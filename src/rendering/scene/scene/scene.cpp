@@ -1,10 +1,10 @@
 #include "scene.h"
 
+#include "object_controller.h"
+
 #include <application/app_event.h>
 #include <application/event_processor.h>
 #include <engine/resource_factory.h>
-
-#include "object_controller.h"
 
 namespace tst {
 namespace scene {
@@ -27,7 +27,7 @@ namespace scene {
 
         for (auto& state : sceneState) {
             engine::draw_info info(
-                state.vertices, state.indices, state.pipeline, {&state.uniform, &camera.get_uniforms()}, {&state.texture});
+                state.vertices, state.indices, state.pipeline, state.material, {&state.uniform, &camera.get_uniforms()});
             drawInfos.emplace_back(std::move(info));
         }
 

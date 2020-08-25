@@ -46,12 +46,12 @@ namespace engine {
         }
 
         vk::DescriptorPool resource_cache::create_descriptor_pool(std::uint32_t) {
-            vk::DescriptorPoolSize uniformPoolSize(vk::DescriptorType::eUniformBuffer, settings::m_inFlightFrames);
-            vk::DescriptorPoolSize samplerPoolSize(vk::DescriptorType::eCombinedImageSampler, settings::m_inFlightFrames);
+            vk::DescriptorPoolSize uniformPoolSize(vk::DescriptorType::eUniformBuffer, settings::m_inFlightFrames* 10);
+            vk::DescriptorPoolSize samplerPoolSize(vk::DescriptorType::eCombinedImageSampler, settings::m_inFlightFrames * 3);
 
             vk::DescriptorPoolCreateInfo poolCreateInfo(
                 vk::DescriptorPoolCreateFlags(),
-                settings::m_inFlightFrames * 3,
+                settings::m_inFlightFrames * 3 * 5,
                 2,
                 std::array<vk::DescriptorPoolSize, 2>{uniformPoolSize, samplerPoolSize}.data());
 

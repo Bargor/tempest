@@ -15,7 +15,7 @@ set(ENGINE_HDRS
 	engine-impl/resources/buffer.h
 	engine-impl/resources/image.h
 	engine-impl/resources/index_buffer.h
-	engine-impl/resources/material.h
+    engine-impl/resources/material.h
 	engine-impl/resources/pipeline.h
 	engine-impl/resources/rendering_technique.h
 	engine-impl/resources/settings.h
@@ -44,7 +44,7 @@ set(ENGINE_SRCS
 	engine-impl/resources/buffer.cpp
 	engine-impl/resources/image.cpp
 	engine-impl/resources/index_buffer.cpp
-	engine-impl/resources/material.cpp
+    engine-impl/resources/material.cpp
 	engine-impl/resources/pipeline.cpp
 	engine-impl/resources/rendering_technique.cpp
 	engine-impl/resources/settings.cpp
