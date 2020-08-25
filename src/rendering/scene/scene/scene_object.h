@@ -31,7 +31,7 @@ namespace scene {
         };
 
     public:
-        scene_object(const std::string& objectName,
+        scene_object(std::string objectName,
                      engine::resources::vertex_buffer&& vertexBuffer,
                      engine::resources::index_buffer&& indexBuffer,
                      engine::material&& material,

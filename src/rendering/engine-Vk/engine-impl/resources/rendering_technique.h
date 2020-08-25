@@ -15,7 +15,7 @@ namespace engine {
             friend class pipeline;
 
         public:
-            rendering_technique(const std::string& techniqueName,
+            rendering_technique(std::string&& techniqueName,
                                 base::technique_settings&& techniqueSettings,
                                 vk::Device device,
                                 const swap_chain& swapChain);
@@ -26,7 +26,6 @@ namespace engine {
             ~rendering_technique();
 
         public:
-
             void recreate_technique(const swap_chain& newSwapChain);
 
             vk::RenderPassBeginInfo generate_render_pass_info(vk::CommandBuffer buffer,

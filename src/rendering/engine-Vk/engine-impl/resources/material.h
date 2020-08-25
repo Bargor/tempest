@@ -16,11 +16,11 @@ namespace engine {
             using super = base::material;
 
         public:
-            material(const std::string& name,
+            material(std::string&& name,
                      std::vector<texture>&& textures,
                      const descriptor_set& staticDescriptorSets,
                      const std::uint32_t& resourceIndex);
-            material(const std::string& name,
+            material(std::string&& name,
                      uniform_buffer&& staticUniforms,
                      uniform_buffer&& dynamicUniforms,
                      std::vector<texture>&& textures,

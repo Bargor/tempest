@@ -50,7 +50,7 @@ namespace engine {
         shader::shader(shader&& shader) noexcept
             : m_device(shader.m_device)
             , m_source(std::move(shader.m_source))
-            , m_name(shader.m_name)
+            , m_name(std::move(shader.m_name))
             , m_type(shader.m_type)
             , m_shader(std::move(shader.m_shader))
             , m_pipelineInfo(std::move(shader.m_pipelineInfo)) {

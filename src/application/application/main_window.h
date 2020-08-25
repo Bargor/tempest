@@ -16,7 +16,7 @@ namespace application {
         using super = glfw_window;
 
     public:
-        main_window(std::string&& name,
+        main_window(std::string name,
                     event_processor<app_event>& eventProcessor,
                     const core::extent<std::uint32_t>& size,
                     fullscreen_mode windowMode,

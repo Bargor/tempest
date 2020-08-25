@@ -8,13 +8,13 @@
 namespace tst {
 namespace scene {
 
-    scene_object::scene_object(const std::string& objectName,
+    scene_object::scene_object(std::string objectName,
                                engine::resources::vertex_buffer&& vertexBuffer,
                                engine::resources::index_buffer&& indexBuffer,
                                engine::material&& material,
                                engine::resources::uniform_buffer&& uniformBuffer,
                                const engine::resources::pipeline& pipeline) noexcept
-        : m_name(objectName)
+        : m_name(std::move(objectName))
         , m_vertices(std::move(vertexBuffer))
         , m_indices(std::move(indexBuffer))
         , m_material(std::move(material))

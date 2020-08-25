@@ -7,11 +7,11 @@ namespace tst {
 namespace engine {
     namespace vulkan {
 
-        material::material(const std::string& name,
+        material::material(std::string&& name,
                            std::vector<texture>&& textures,
                            const descriptor_set& staticDescriptorSets,
                            const std::uint32_t& resourceIndex)
-            : base::material(name)
+            : base::material(std::move(name))
             , m_textures(std::move(textures))
             , m_staticUniformBuffer(std::nullopt)
             , m_dynamicUniformBuffer(std::nullopt)
@@ -19,13 +19,13 @@ namespace engine {
             , m_resourceIndex(resourceIndex) {
         }
 
-        material::material(const std::string& name,
+        material::material(std::string&& name,
                            uniform_buffer&& staticUniforms,
                            uniform_buffer&& dynamicUniforms,
                            std::vector<texture>&& textures,
                            const descriptor_set& staticDescriptorSets,
                            const std::uint32_t& resourceIndex)
-            : base::material(name)
+            : base::material(std::move(name))
             , m_textures(std::move(textures))
             , m_staticUniformBuffer(std::move(staticUniforms))
             , m_dynamicUniformBuffer(std::move(dynamicUniforms))

@@ -22,8 +22,7 @@ namespace engine {
 
         class shader_compiler {
         public:
-            shader_compiler(const application::data_loader& dataLoader,
-                            const vk::Device device);
+            shader_compiler(const application::data_loader& dataLoader, const vk::Device device);
             ~shader_compiler();
 
             shader_set compile_shaders(const std::string& name) const;
@@ -31,7 +30,7 @@ namespace engine {
         private:
             std::optional<std::vector<char>> load_bytecode(const std::optional<std::filesystem::path>& shaderSourceFile,
                                                            const std::optional<std::filesystem::path>& shaderBytecodeFile,
-                                                           const std::string& bytecodeFileName) const;
+                                                           std::string_view bytecodeFileName) const;
 
             std::tuple<std::vector<vk::DescriptorSetLayout>, std::vector<std::vector<vk::DescriptorSetLayoutBinding>>>
             create_descriptor_layouts(const rapidjson::Document& jsonModel) const;
