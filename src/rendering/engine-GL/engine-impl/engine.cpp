@@ -4,7 +4,6 @@
 #include "engine.h"
 
 #include "device.h"
-#include "shader_compiler.h"
 
 #include <GL/glew.h>
 #include <application/app_event.h>

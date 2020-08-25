@@ -5,7 +5,6 @@
 #include "draw_info.h"
 #include "resources/settings.h"
 
-#include <vector>
 #include <vulkan/vulkan.hpp>
 
 namespace tst {

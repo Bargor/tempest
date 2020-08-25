@@ -6,7 +6,6 @@
 #include <application/app_event.h>
 #include <application/event_processor.h>
 #include <device/keyboard.h>
-#include <fmt/printf.h>
 #include <util/variant.h>
 
 namespace tst {

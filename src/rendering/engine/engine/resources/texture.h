@@ -2,8 +2,6 @@
 // Author: Karol Kontny
 #pragma once
 
-#include "shader.h"
-
 #include <engine-impl/api.h>
 #include <engine-impl/resources/texture.h>
 

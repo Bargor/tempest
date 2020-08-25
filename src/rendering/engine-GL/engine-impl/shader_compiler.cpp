@@ -1,8 +1,9 @@
 // This file is part of Tempest-engine project
 // Author: Karol Kontny
 
-#include "opengl_exception.h"
 #include "shader_compiler.h"
+
+#include "opengl_exception.h"
 
 #include <algorithm>
 #include <application/data_exception.h>

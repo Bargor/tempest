@@ -7,7 +7,6 @@
 #include <GL/glew.h>
 #include <array>
 #include <bitset>
-#include <cstdint>
 #include <string>
 #include <string_view>
 
