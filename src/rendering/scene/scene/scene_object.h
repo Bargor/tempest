@@ -7,6 +7,7 @@
 #include <engine/resources/index_buffer.h>
 #include <engine/resources/pipeline.h>
 #include <engine/resources/vertex_buffer.h>
+#include <engine/resources/uniform_buffer.h>
 
 namespace tst {
 namespace scene {
