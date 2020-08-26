@@ -4,6 +4,8 @@
 
 #include "pipeline_settings.h"
 
+#include <string_view>
+
 namespace tst {
 
 namespace application {

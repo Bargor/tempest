@@ -17,7 +17,7 @@ namespace engine {
 
         class shader_compiler {
         public:
-            std::optional<shader_program> compile_program(std::string_view&& name,
+            std::optional<shader_program> compile_program(std::string_view name,
                                                           const shaderTypesSet& types) const;
 
         public:

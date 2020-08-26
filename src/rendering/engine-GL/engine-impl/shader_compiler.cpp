@@ -17,7 +17,7 @@ namespace engine {
         shader_compiler::shader_compiler(const application::data_loader& data_loader) : m_dataLoader(data_loader) {
         }
 
-        std::optional<shader_program> shader_compiler::compile_program(std::string_view&& name,
+        std::optional<shader_program> shader_compiler::compile_program(std::string_view name,
                                                                        const shaderTypesSet& types) const {
             std::array<std::optional<shader>, base::shader_types_count> shaders{std::nullopt};
             for (std::size_t i = 0; i < shaders.size(); i++) {
