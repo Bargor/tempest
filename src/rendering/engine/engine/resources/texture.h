@@ -21,7 +21,7 @@ namespace engine {
             texture(texture&& other) noexcept;
 
         public:
-            void bind_texture(const std::string shaderName, bind_point set, std::uint32_t binding);
+            void bind_texture(const std::string& shaderName, bind_point set, std::uint32_t binding);
 
         public:
             const api::texture& to_super() const noexcept {
