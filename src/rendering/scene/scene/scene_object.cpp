@@ -8,13 +8,13 @@
 namespace tst {
 namespace scene {
 
-    scene_object::scene_object(const std::string& objectName,
+    scene_object::scene_object(std::string objectName,
                                engine::resources::vertex_buffer&& vertexBuffer,
                                engine::resources::index_buffer&& indexBuffer,
                                engine::material&& material,
                                engine::resources::uniform_buffer&& uniformBuffer,
                                const engine::resources::pipeline& pipeline) noexcept
-        : m_name(objectName)
+        : m_name(std::move(objectName))
         , m_vertices(std::move(vertexBuffer))
         , m_indices(std::move(indexBuffer))
         , m_material(std::move(material))
@@ -42,9 +42,6 @@ namespace scene {
 
         ubo.model = glm::mat4(1.0f); // glm::rotate(glm::mat4(1.0f), m_time * glm::radians(90.0f), glm::vec3(0.0f,
                                      // 0.0f, 1.0f));
-        ubo.view = glm::lookAt(glm::vec3(0.0f, 0.0f, 5.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-        ubo.proj = glm::perspective(glm::radians(60.0f), 1.0f, 0.1f, 10.0f);
-        ubo.proj[1][1] *= -1;
 
         m_uniforms.update_buffer(ubo);
 

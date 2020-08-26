@@ -52,7 +52,7 @@ namespace engine {
         }
 
         const pipeline& resource_factory::create_pipeline(const std::string& techniqueName,
-                                                          const std::string& pipelineName,
+                                                          std::string_view pipelineName,
                                                           const std::string& shadersName,
                                                           const vertex_format& format) {
             auto shaders = m_device.m_resourceCache->find_shaders(shadersName);
@@ -82,13 +82,16 @@ namespace engine {
             throw std::runtime_error("Can't find pipeline");
         }
 
-        void resource_factory::create_technique(const std::string& name) {
+        void resource_factory::create_technique(std::string&& name) {
             if (m_device.m_resourceCache->find_technique(name) != nullptr) {
                 return;
             }
 
-            m_device.m_resourceCache->add_rendering_technique(rendering_technique(
-                name, base::parse_technique_settings(m_dataLoader, name), m_device.m_logicalDevice, *m_device.m_swapChain));
+            m_device.m_resourceCache->add_rendering_technique(
+                rendering_technique(std::move(name),
+                                    base::parse_technique_settings(m_dataLoader, name),
+                                    m_device.m_logicalDevice,
+                                    *m_device.m_swapChain));
         }
 
         vertex_buffer resource_factory::create_vertex_buffer(const vertex_format& format, std::vector<vertex>&& vertices) {
@@ -132,7 +135,7 @@ namespace engine {
                            m_device.m_resourceIndex);
         }
 
-        material resource_factory::create_material(const std::string materialName,
+        material resource_factory::create_material(std::string&& materialName,
                                                    const std::string& shaderName,
                                                    const std::vector<std::string>& textureNames,
                                                    std::uint32_t staticStorageSize,
@@ -148,10 +151,10 @@ namespace engine {
                 m_device.m_resourceCache->find_descriptor_sets(shaderName, base::resource_bind_point::material_static);
 
             if (staticStorageSize == 0 && dynamicStorageSize == 0) {
-                return material(materialName, std::move(textures), *descriptorSets, m_device.m_resourceIndex);
+                return material(std::move(materialName), std::move(textures), *descriptorSets, m_device.m_resourceIndex);
             } else {
                 return material(
-                    materialName,
+                    std::move(materialName),
                     create_uniform_buffer(shaderName, base::resource_bind_point::material_static, 0, staticStorageSize),
                     create_uniform_buffer(shaderName, base::resource_bind_point::material_dynamic, 0, dynamicStorageSize),
                     std::move(textures),

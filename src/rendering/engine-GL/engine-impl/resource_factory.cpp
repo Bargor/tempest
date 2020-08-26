@@ -23,7 +23,7 @@ namespace engine {
         }
 
         const pipeline& resource_factory::create_pipeline(const std::string&,
-                                                          const std::string&,
+                                                          std::string_view,
                                                           const std::string&,
                                                           const vertex_format&) {
             pipeline p{};
@@ -50,15 +50,15 @@ namespace engine {
             return uniform_buffer(storageSize);
         }
 
-        material resource_factory::create_material(const std::string materialName,
-                                 const std::string&,
-                                 const std::vector<std::string>&,
-                                 std::uint32_t,
-                                 std::uint32_t) {
-            return material(materialName);
+        material resource_factory::create_material(std::string&& materialName,
+                                                   const std::string& shaderName,
+                                                   const std::vector<std::string>& textureNames,
+                                                   std::uint32_t staticStorageSize,
+                                                   std::uint32_t dynamicStorageSize) {
+            return material(std::move(materialName), shaderName, textureNames, staticStorageSize, dynamicStorageSize);
         }
 
-        void resource_factory::create_technique(const std::string& name) {
+        void resource_factory::create_technique(std::string&& name) {
             m_shaderCompiler->compile_program(name, shaderTypesSet{});
         }
     } // namespace opengl

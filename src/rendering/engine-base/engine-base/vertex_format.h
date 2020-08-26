@@ -5,7 +5,6 @@
 
 #include "glm.h"
 
-#include <array>
 #include <vector>
 
 namespace tst {

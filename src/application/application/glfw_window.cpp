@@ -10,7 +10,6 @@
 #include <assert.h>
 #include <device/monitor.h>
 #include <thread/main_thread.h>
-#include <thread>
 #include <util/variant.h>
 
 namespace tst {
@@ -134,10 +133,10 @@ namespace application {
         glfwSetWindowPos(m_windowHandle, pos.x, pos.y);
     }
 
-    void glfw_window::set_title(const std::string& name) noexcept {
+    void glfw_window::set_title(std::string name) noexcept {
         assert(m_windowHandle);
         glfwSetWindowTitle(m_windowHandle, name.c_str());
-        m_name = name;
+        m_name = std::move(name);
     }
 
     void glfw_window::set_cursor_mode(cursor_mode mode) noexcept {

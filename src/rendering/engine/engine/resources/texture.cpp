@@ -15,7 +15,7 @@ namespace engine {
         texture::texture(texture&& other) noexcept : api::texture(std::move(other)) {
         }
 
-        void texture::bind_texture(const std::string shaderName, bind_point set, std::uint32_t binding) {
+        void texture::bind_texture(const std::string& shaderName, bind_point set, std::uint32_t binding) {
             super::bind_texture(shaderName, set, binding);
         }
     }

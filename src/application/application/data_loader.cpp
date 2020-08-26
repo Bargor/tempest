@@ -75,7 +75,7 @@ namespace application {
                 ptr<unsigned char, void (*)(void*)>(pixels, stbi_image_free)};
     }
 
-    std::optional<std::filesystem::path> data_loader::find_file(const std::string& name) const {
+    std::optional<std::filesystem::path> data_loader::find_file(const std::string_view name) const {
         return find_file(std::filesystem::path(name));
     }
 
@@ -89,7 +89,7 @@ namespace application {
         return std::nullopt;
     }
 
-    void data_loader::add_search_path(std::string&& path) noexcept {
+    void data_loader::add_search_path(std::string path) noexcept {
         m_searchPaths.emplace_back(std::move(path));
     }
 

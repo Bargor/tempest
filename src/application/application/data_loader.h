@@ -26,11 +26,11 @@ namespace application {
         virtual void load_obj_model(const std::string_view& name) const;
         virtual rapidjson::Document load_json(const std::filesystem::path& path) const;
         virtual image_data load_image(const std::filesystem::path& path) const;
-        virtual std::optional<std::filesystem::path> find_file(const std::string& name) const;
+        virtual std::optional<std::filesystem::path> find_file(const std::string_view name) const;
         virtual std::optional<std::filesystem::path> find_file(const std::filesystem::path& name) const;
 
     public:
-        void add_search_path(std::string&& path) noexcept;
+        void add_search_path(std::string path) noexcept;
 
     private:
         std::vector<std::filesystem::path> m_searchPaths;

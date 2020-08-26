@@ -64,16 +64,16 @@ namespace engine {
 
         class rendering_technique {
         public:
-            rendering_technique(const std::string& techniqueName, technique_settings&& settings);
+            rendering_technique(std::string&& techniqueName, technique_settings&& settings);
 
-            const std::string& get_name() const;
+            std::string_view get_name() const;
 
         protected:
             std::string m_techniqueName;
             technique_settings m_settings;
         };
 
-        TST_INLINE const std::string& rendering_technique::get_name() const {
+        TST_INLINE std::string_view rendering_technique::get_name() const {
             return m_techniqueName;
         }
     } // namespace base

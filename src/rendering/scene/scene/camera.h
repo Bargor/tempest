@@ -42,7 +42,7 @@ namespace scene {
         };
 
     public:
-        camera(const std::string& cameraName,
+        camera(std::string cameraName,
                application::event_processor<application::app_event>& eventProcessor,
                engine::resources::uniform_buffer&& buffer,
                const glm::vec3& position,
@@ -59,7 +59,7 @@ namespace scene {
 
         void update(std::chrono::duration<std::uint64_t, std::micro> elapsedTime);
 
-    private: 
+    private:
         glm::vec4 caclulate_position(float elapsedTime) const;
         glm::vec3 calculate_direction(glm::quat pitch, glm::quat yaw) const;
         glm::quat calculate_pitch(float elapsedTime) const;

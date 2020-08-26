@@ -3,17 +3,13 @@
 
 #include "main_window.h"
 
-#include "glfw_exception.h"
-
 #include <assert.h>
-#include <device/monitor.h>
 #include <thread/main_thread.h>
-#include <thread>
 
 namespace tst {
 namespace application {
 
-    main_window::main_window(std::string&& name,
+    main_window::main_window(std::string name,
                              event_processor<app_event>& eventProcessor,
                              const core::extent<std::uint32_t>& size,
                              fullscreen_mode windowMode,

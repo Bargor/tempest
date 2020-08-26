@@ -184,11 +184,11 @@ namespace engine {
             return framebuffers;
         }
 
-        rendering_technique::rendering_technique(const std::string& techniqueName,
+        rendering_technique::rendering_technique(std::string&& techniqueName,
                                                  base::technique_settings&& settings,
                                                  vk::Device device,
                                                  const swap_chain& swapChain)
-            : base::rendering_technique(techniqueName, std::move(settings))
+            : base::rendering_technique(std::move(techniqueName), std::move(settings))
             , m_device(device)
             , m_swapChain(swapChain)
             , m_extent(m_swapChain.get().get_extent())

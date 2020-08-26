@@ -32,7 +32,7 @@ namespace application {
         , m_mainWindow(mainWindow)
         , m_dataLoader(dataLoader)
         , m_renderingDevice(std::make_unique<engine::device>(
-              m_mainWindow, m_eventProcessor, engine::api::parse_engine_settings(dataLoader)))
+              m_mainWindow, m_eventProcessor, engine::parse_engine_settings(dataLoader)))
         , m_resourceFactory(std::make_unique<engine::resource_factory>(*m_renderingDevice, m_dataLoader))
         , m_scene(std::make_unique<scene::scene>("world", dataLoader, eventProcessor, *m_resourceFactory))
         , m_frameCounter(0)

@@ -7,7 +7,6 @@
 #include <GL/glew.h>
 #include <array>
 #include <bitset>
-#include <cstdint>
 #include <string>
 #include <string_view>
 
@@ -23,7 +22,7 @@ namespace engine {
             friend class shader_program;
 
         public:
-            shader(shader_type type, std::string&& source, const std::string_view name);
+            shader(shader_type type, std::string&& source, std::string_view name);
             shader(const shader&) = delete;
             shader(shader&& shader);
             ~shader();

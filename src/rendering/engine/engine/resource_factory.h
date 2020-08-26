@@ -30,16 +30,16 @@ namespace engine {
 
     public:
         template<MaterialType T>
-        material create_material(const std::string materialName,
+        material create_material(std::string materialName,
                                  const std::string& shaderName,
                                  const std::vector<std::string>& textureNames);
 
         resources::index_buffer create_index_buffer(std::vector<std::uint16_t>&& indices);
         const resources::pipeline& create_pipeline(const std::string& techniqueName,
-                                                   const std::string& pipelineName,
+                                                   std::string_view pipelineName,
                                                    const std::string& shadersName,
                                                    const vertex_format& format);
-        void create_technique(const std::string& name);
+        void create_technique(std::string name);
         resources::vertex_buffer create_vertex_buffer(const vertex_format& format, std::vector<vertex>&& vertices);
         resources::texture create_texture(const std::string& textureName);
         template<typename StorageType>
@@ -58,11 +58,11 @@ namespace engine {
     }
 
     template<MaterialType T>
-    material resource_factory::create_material(const std::string materialName,
+    material resource_factory::create_material(std::string materialName,
                                                const std::string& shaderName,
                                                const std::vector<std::string>& textureNames) {
         return super::create_material(
-            materialName,
+            std::move(materialName),
             shaderName,
             textureNames,
             std::is_null_pointer_v<typename T::StaticStorageType> ? 0 : sizeof(typename T::StaticStorageType),

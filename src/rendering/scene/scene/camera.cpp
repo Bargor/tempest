@@ -6,13 +6,12 @@
 #include <application/app_event.h>
 #include <application/event_processor.h>
 #include <device/keyboard.h>
-#include <fmt/printf.h>
 #include <util/variant.h>
 
 namespace tst {
 namespace scene {
 
-    camera::camera(const std::string& cameraName,
+    camera::camera(std::string cameraName,
                    application::event_processor<application::app_event>& eventProcessor,
                    engine::resources::uniform_buffer&& buffer,
                    const glm::vec3& position,
@@ -20,7 +19,7 @@ namespace scene {
                    const glm::vec3& up,
                    const float fov,
                    const float aspect)
-        : m_name(cameraName)
+        : m_name(std::move(cameraName))
         , m_eventProcessor(eventProcessor)
         , m_buffer(std::move(buffer))
         , m_position(glm::vec4(position, 0.0f))

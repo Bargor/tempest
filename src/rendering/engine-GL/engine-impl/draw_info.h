@@ -4,7 +4,6 @@
 
 #include "resources/index_buffer.h"
 #include "resources/pipeline.h"
-#include "resources/texture.h"
 #include "resources/uniform_buffer.h"
 #include "resources/vertex_buffer.h"
 #include "resources/material.h"

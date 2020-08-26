@@ -4,6 +4,8 @@
 
 #include "pipeline_settings.h"
 
+#include <string_view>
+
 namespace tst {
 
 namespace application {
@@ -13,7 +15,7 @@ namespace application {
 namespace engine {
     namespace base {
 
-        draw_settings parse_draw_settings(const application::data_loader& dataLoader, const std::string& name);
+        draw_settings parse_draw_settings(const application::data_loader& dataLoader, std::string_view name);
 
     }
 } // namespace engine

@@ -19,7 +19,7 @@ namespace engine {
             return formats[static_cast<std::size_t>(type)];
         }
 
-        bool compile_shader(const std::string& shaderBytecodeFile, const std::string& shaderSourceFile) {
+        bool compile_shader(std::string_view shaderBytecodeFile, std::string_view shaderSourceFile) {
             std::string command = fmt::sprintf("glslangValidator -V -o %s %s", shaderBytecodeFile, shaderSourceFile);
             return std::system(command.c_str());
         }
@@ -46,8 +46,7 @@ namespace engine {
             return bindings;
         }
 
-        shader_compiler::shader_compiler(const application::data_loader& dataLoader,
-                                         const vk::Device device)
+        shader_compiler::shader_compiler(const application::data_loader& dataLoader, const vk::Device device)
             : m_dataLoader(dataLoader), m_device(device) {
         }
 
@@ -62,13 +61,14 @@ namespace engine {
             const auto& jsonModel = m_dataLoader.load_json(jsonDescriptorFile.value());
 
             for (std::int32_t idx = 0; idx < static_cast<std::int32_t>(shader_type::enum_size); ++idx) {
-                const auto shaderFileName(std::filesystem::path("shaders") /
-                                          (name + "." + get_shader_format(static_cast<shader_type>(idx))));
+                const auto shaderFileName(std::filesystem::path("shaders") / name / "." /
+                                          get_shader_format(static_cast<shader_type>(idx)));
                 const auto bytecodeFileName(name + "." + get_shader_format(static_cast<shader_type>(idx)) +
                                             m_shaderExtension);
 
-                auto bytecode = load_bytecode(
-                    m_dataLoader.find_file(shaderFileName), m_dataLoader.find_file(bytecodeFileName), bytecodeFileName);
+                auto bytecode = load_bytecode(m_dataLoader.find_file(shaderFileName),
+                                              m_dataLoader.find_file(std::filesystem::path(bytecodeFileName)),
+                                              bytecodeFileName);
 
                 if (!bytecode) {
                     continue;
@@ -87,7 +87,7 @@ namespace engine {
         std::optional<std::vector<char>>
         shader_compiler::load_bytecode(const std::optional<std::filesystem::path>& shaderSourceFile,
                                        const std::optional<std::filesystem::path>& shaderBytecodeFile,
-                                       const std::string& bytecodeFileName) const {
+                                       std::string_view bytecodeFileName) const {
             if (shaderSourceFile) {
                 if (shaderBytecodeFile) {
                     auto sourceWriteTime = std::filesystem::last_write_time(shaderSourceFile.value());

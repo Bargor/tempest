@@ -6,7 +6,7 @@ namespace tst {
 namespace engine {
     namespace base {
 
-        material::material(const std::string& name) : m_materialName(name) {
+        material::material(std::string&& name) : m_materialName(name) {
         }
     } // namespace base
 } // namespace engine

@@ -6,7 +6,6 @@
 
 #include <array>
 #include <common/rectangle.h>
-#include <util/hash.h>
 #include <vector>
 
 namespace tst {

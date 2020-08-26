@@ -47,7 +47,7 @@ namespace scene {
     scene::~scene() {
     }
 
-    void scene::add_camera(const std::string& cameraName,
+    void scene::add_camera(std::string cameraName,
                            const glm::vec3& position,
                            const glm::vec3& lookAt,
                            const glm::vec3& up,
@@ -55,10 +55,11 @@ namespace scene {
                            const float aspectRatio) {
         auto buffer =
             m_resourceFactory.create_uniform_buffer<camera::uniforms>("test", engine::bind_point::global_static, 2);
-        m_cameras.emplace_back(cameraName, m_eventProcessor, std::move(buffer), position, lookAt, up, fov, aspectRatio);
+        m_cameras.emplace_back(
+            std::move(cameraName), m_eventProcessor, std::move(buffer), position, lookAt, up, fov, aspectRatio);
     }
 
-    void scene::add_object(const std::string& objectName, const std::string& path) {
+    void scene::add_object(std::string_view objectName, std::string_view path) {
         m_objects.emplace_back(m_objectController->load_object(objectName, path));
         m_objects.emplace_back(m_objectController->load_object2(objectName, path));
     }

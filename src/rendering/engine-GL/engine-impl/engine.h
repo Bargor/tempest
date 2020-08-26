@@ -6,7 +6,6 @@
 #include "device.h"
 
 #include <memory>
-#include <vector>
 
 namespace tst {
 namespace application {
