@@ -3,6 +3,8 @@
 
 #include "object_controller.h"
 
+#include "obj_loader.h"
+
 #include <application/data_loader.h>
 #include <engine/resource_factory.h>
 #include <materials/test.h>
@@ -17,7 +19,9 @@ namespace scene {
     }
 
     scene_object object_controller::load_object(std::string_view objectName, std::string_view path) {
-        m_dataLoader.find_file(path);
+
+        engine::model model = load_model(path);
+
         auto vertexFormat = engine::vertex_format(engine::vertex_format::primitive_topology::triangle_list);
         vertexFormat.add_attribute(engine::vertex_format::location::position,
                                    engine::vertex_format::format::float3,
@@ -106,6 +110,23 @@ namespace scene {
                             std::move(material),
                             std::move(uniformBuffer),
                             pipeline);
+    }
+
+    engine::model object_controller::load_model(std::string_view path) {
+        
+        const auto filepath = m_dataLoader.find_file(path);
+        if (filepath && filepath->extension() == ".obj") {
+            std::vector<engine::mesh> meshes;
+            meshes.emplace_back(load_obj_model(m_resourceFactory, *filepath));
+            
+            return engine::model(std::move(meshes), {});
+        } else {
+            return load_dummy_model();
+        }
+    }
+
+    engine::model object_controller::load_dummy_model() {
+        return engine::model();
     }
 
 } // namespace scene
