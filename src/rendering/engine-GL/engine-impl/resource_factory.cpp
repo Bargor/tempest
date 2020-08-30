@@ -25,7 +25,7 @@ namespace engine {
         const pipeline& resource_factory::create_pipeline(const std::string&,
                                                           std::string_view,
                                                           const std::string&,
-                                                          const vertex_format&) {
+                                                          const vertex_buffer&) {
             pipeline p{};
             m_pipelines.push_back(p);
             return m_pipelines[0];

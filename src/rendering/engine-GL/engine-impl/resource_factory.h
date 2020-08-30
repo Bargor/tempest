@@ -39,7 +39,7 @@ namespace engine {
             const pipeline& create_pipeline(const std::string& techniqueName,
                                             const std::string_view pipelineName,
                                             const std::string& shadersName,
-                                            const vertex_format& format);
+                                            const vertex_buffer& vertexBuffer);
             void create_technique(std::string&& name);
             texture create_texture(const std::string& textureName);
             vertex_buffer create_vertex_buffer(const vertex_format& format, std::vector<vertex>&& vertices);

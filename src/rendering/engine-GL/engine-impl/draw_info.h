@@ -13,7 +13,7 @@ namespace engine {
     namespace opengl {
         class draw_info {
         public:
-            draw_info(const vertex_buffer* vertices,
+            draw_info(const vertex_buffer& vertices,
                       const index_buffer<std::uint16_t>* indices,
                       const pipeline& pipeline,
                       const material& material,
@@ -22,7 +22,7 @@ namespace engine {
             ~draw_info() = default;
 
         public:
-            const vertex_buffer* vertices;
+            const vertex_buffer& vertices;
             const index_buffer<std::uint16_t>* indices;
             const pipeline& pipelineState;
             const material& meshMaterial;
