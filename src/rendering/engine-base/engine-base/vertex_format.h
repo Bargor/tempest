@@ -5,6 +5,7 @@
 
 #include "glm.h"
 
+#include <util/hash.h>
 #include <vector>
 
 namespace tst {
@@ -15,6 +16,10 @@ namespace engine {
         glm::vec3 color;
         glm::vec2 texCoord;
     };
+
+    TST_INLINE bool operator==(const vertex& rhs, const vertex& lhs) {
+        return rhs.pos == lhs.pos && rhs.color == lhs.color && rhs.texCoord == lhs.texCoord;
+    }
 
     namespace base {
 
@@ -71,3 +76,18 @@ namespace engine {
     } // namespace base
 } // namespace engine
 } // namespace tst
+
+namespace std {
+template<>
+struct hash<tst::engine::vertex> {
+    size_t operator()(tst::engine::vertex const& vertex) const {
+
+        size_t seed = 0;
+        tst::hash_combine(seed, hash<glm::vec3>{}(vertex.pos));
+        tst::hash_combine(seed, hash<glm::vec3>{}(vertex.color));
+        tst::hash_combine(seed, hash<glm::vec2>{}(vertex.texCoord));
+
+        return seed;
+    }
+};
+} // namespace std

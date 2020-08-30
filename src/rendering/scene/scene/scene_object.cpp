@@ -9,26 +9,20 @@ namespace tst {
 namespace scene {
 
     scene_object::scene_object(std::string objectName,
-                               engine::resources::vertex_buffer&& vertexBuffer,
-                               engine::resources::index_buffer&& indexBuffer,
-                               engine::material&& material,
+                               engine::model&& model,
                                engine::resources::uniform_buffer&& uniformBuffer,
                                const engine::resources::pipeline& pipeline) noexcept
         : m_name(std::move(objectName))
-        , m_vertices(std::move(vertexBuffer))
-        , m_indices(std::move(indexBuffer))
-        , m_material(std::move(material))
+        , m_model(std::move(model))
         , m_uniforms(std::move(uniformBuffer))
         , m_pipeline(pipeline)
-        , m_objectState({&m_vertices, &m_indices, m_uniforms, m_pipeline, m_material, *this})
+        , m_objectState({m_model, m_uniforms, m_pipeline, *this})
         , m_time(0.0f) {
     }
 
     scene_object::scene_object(scene_object&& object) noexcept
         : m_name(std::move(object.m_name))
-        , m_vertices(std::move(object.m_vertices))
-        , m_indices(std::move(object.m_indices))
-        , m_material(std::move(object.m_material))
+        , m_model(std::move(object.m_model))
         , m_uniforms(std::move(object.m_uniforms))
         , m_pipeline(object.m_pipeline)
         , m_objectState(std::move(object.m_objectState))
@@ -42,10 +36,9 @@ namespace scene {
 
         ubo.model = glm::mat4(1.0f); // glm::rotate(glm::mat4(1.0f), m_time * glm::radians(90.0f), glm::vec3(0.0f,
                                      // 0.0f, 1.0f));
-
         m_uniforms.update_buffer(ubo);
 
-        state newState{&m_vertices, &m_indices, m_uniforms, m_pipeline, m_material, *this};
+        state newState{m_model, m_uniforms, m_pipeline, *this};
 
         return newState;
     }

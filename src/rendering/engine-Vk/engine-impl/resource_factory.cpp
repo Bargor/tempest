@@ -54,7 +54,7 @@ namespace engine {
         const pipeline& resource_factory::create_pipeline(const std::string& techniqueName,
                                                           std::string_view pipelineName,
                                                           const std::string& shadersName,
-                                                          const vertex_format& format) {
+                                                          const vertex_buffer& vertexBuffer) {
             auto shaders = m_device.m_resourceCache->find_shaders(shadersName);
             auto technique = m_device.m_resourceCache->find_technique(techniqueName);
 
@@ -69,7 +69,7 @@ namespace engine {
                 pipeline pipeline(m_device.m_logicalDevice,
                                   m_device.m_engineSettings,
                                   base::parse_draw_settings(m_dataLoader, pipelineName),
-                                  format,
+                                  vertexBuffer.get_vertex_format(),
                                   *shaders,
                                   *technique,
                                   std::move(layouts),

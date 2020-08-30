@@ -19,6 +19,7 @@ namespace engine {
             vertex_buffer(vertex_buffer&& other) noexcept;
 
         public:
+
             const api::vertex_buffer& to_super() const noexcept {
                 return *this;
             }

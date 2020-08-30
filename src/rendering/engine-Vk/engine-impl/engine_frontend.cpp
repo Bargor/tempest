@@ -67,7 +67,7 @@ namespace engine {
                 const auto drawInfo = *begin;
                 drawInfo.pipelineState.bind_command_buffer(commandBuffer, vk::PipelineBindPoint::eGraphics);
 
-                std::vector<vk::Buffer> vertexBuffers = {drawInfo.vertices->get_handle()};
+                std::vector<vk::Buffer> vertexBuffers = {drawInfo.vertices.get_handle()};
                 std::vector<vk::DeviceSize> offsets = {0};
                 commandBuffer.bindVertexBuffers(0, vertexBuffers, offsets);
                 commandBuffer.bindIndexBuffer(drawInfo.indices->get_handle(), 0, vk::IndexType::eUint16);
