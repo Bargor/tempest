@@ -3,17 +3,20 @@
 
 #include "draw_info.h"
 
+#include "material.h"
+#include "mesh.h"
+#include "resources/pipeline.h"
+
 #include <util/cast.h>
 
 namespace tst {
 namespace engine {
-    draw_info::draw_info(const resources::vertex_buffer* vertices,
-                         const resources::index_buffer* indices,
+    draw_info::draw_info(const mesh& mesh,
                          const resources::pipeline& pipeline,
                          const material& material,
                          const std::vector<const resources::uniform_buffer*>& uniforms)
-        : api::draw_info(&vertices->to_super(),
-                         &indices->to_super(),
+        : api::draw_info(mesh.get_vertices().to_super(),
+                         &mesh.get_indices()->to_super(),
                          pipeline.to_super(),
                          material.to_super(),
                          core::vector_cast<const api::uniform_buffer*>(uniforms)) {

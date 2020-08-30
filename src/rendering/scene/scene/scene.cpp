@@ -26,8 +26,10 @@ namespace scene {
         drawInfos.reserve(sceneState.size());
 
         for (auto& state : sceneState) {
-            engine::draw_info info(
-                state.vertices, state.indices, state.pipeline, state.material, {&state.uniform, &camera.get_uniforms()});
+            engine::draw_info info(state.model.get_mesh(0),
+                                   state.pipeline,
+                                   state.model.get_material(0),
+                                   {&state.uniform, &camera.get_uniforms()});
             drawInfos.emplace_back(std::move(info));
         }
 
@@ -61,7 +63,6 @@ namespace scene {
 
     void scene::add_object(std::string_view objectName, std::string_view path) {
         m_objects.emplace_back(m_objectController->load_object(objectName, path));
-        m_objects.emplace_back(m_objectController->load_object2(objectName, path));
     }
 
     camera& scene::get_camera(std::string_view cameraName) {

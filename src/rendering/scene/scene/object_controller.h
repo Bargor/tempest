@@ -24,7 +24,6 @@ namespace scene {
                           engine::resource_factory& resourceFactory);
 
         scene_object load_object(const std::string_view objectName, const std::string_view shaderName);
-        scene_object load_object2(const std::string_view objectName, const std::string_view shaderName);
 
     private:
         engine::model load_model(std::string_view path);

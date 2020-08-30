@@ -20,11 +20,34 @@ namespace engine {
 
         mesh(mesh&& other) noexcept;
 
+    public:
+        const resources::vertex_buffer& get_vertices() const noexcept;
+        const resources::index_buffer* get_indices() const noexcept;
+        const material* get_material() const noexcept;
+
+        void set_material(const material& material);
+
     private:
         resources::vertex_buffer m_vertices;
         std::optional<resources::index_buffer> m_indices;
         const material* m_material;
     };
+
+    TST_INLINE const resources::vertex_buffer& mesh::get_vertices() const noexcept {
+        return m_vertices;
+    }
+
+    TST_INLINE const resources::index_buffer* mesh::get_indices() const noexcept {
+        return &*m_indices;
+    }
+
+    TST_INLINE const material* mesh::get_material() const noexcept {
+        return m_material;
+    }
+
+    TST_INLINE void mesh::set_material(const material& material) {
+        m_material = &material;
+    }
 
 } // namespace engine
 } // namespace tst

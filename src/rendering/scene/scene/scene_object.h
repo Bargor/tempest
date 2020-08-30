@@ -21,19 +21,15 @@ namespace scene {
     class scene_object {
     public:
         struct state {
-            const engine::resources::vertex_buffer* vertices;
-            const engine::resources::index_buffer* indices;
+            const engine::model& model;
             const engine::resources::uniform_buffer& uniform;
             const engine::resources::pipeline& pipeline;
-            const engine::material& material;
             const scene_object& object;
         };
 
     public:
         scene_object(std::string objectName,
-                     engine::resources::vertex_buffer&& vertexBuffer,
-                     engine::resources::index_buffer&& indexBuffer,
-                     engine::material&& material,
+                     engine::model&& model,
                      engine::resources::uniform_buffer&& uniformBuffer,
                      const engine::resources::pipeline& pipeline) noexcept;
         scene_object(const scene_object&) = delete;
@@ -44,9 +40,7 @@ namespace scene {
 
     private:
         std::string m_name;
-        engine::resources::vertex_buffer m_vertices;
-        engine::resources::index_buffer m_indices;
-        engine::material m_material;
+        engine::model m_model;
         engine::resources::uniform_buffer m_uniforms;
         const engine::resources::pipeline& m_pipeline;
 

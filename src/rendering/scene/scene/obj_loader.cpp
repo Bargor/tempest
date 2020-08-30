@@ -4,6 +4,7 @@
 #include "obj_loader.h"
 
 #include <engine/resource_factory.h>
+#include <unordered_map>
 
 #define TINYOBJLOADER_IMPLEMENTATION
 #include <tiny_obj_loader.h>
