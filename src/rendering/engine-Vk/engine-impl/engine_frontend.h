@@ -21,7 +21,6 @@ namespace engine {
 
     namespace vulkan {
         class device;
-        template<typename IndexType>
         class index_buffer;
         class resource_cache;
         class swap_chain;

@@ -42,13 +42,23 @@ namespace engine {
         }
 
         template<>
-        index_buffer<std::uint16_t> resource_factory::create_index_buffer(std::vector<std::uint16_t>&& indices) {
-            return index_buffer<std::uint16_t>(m_device.m_logicalDevice,
-                                               m_transferQueue,
-                                               m_transferCommandPool,
-                                               m_device.m_physicalDevice->get_memory_properties(),
-                                               vk::IndexType::eUint16,
-                                               std::move(indices));
+        index_buffer resource_factory::create_index_buffer(std::vector<std::uint16_t>&& indices) {
+            return index_buffer(m_device.m_logicalDevice,
+                                m_transferQueue,
+                                m_transferCommandPool,
+                                m_device.m_physicalDevice->get_memory_properties(),
+                                vk::IndexType::eUint16,
+                                std::move(indices));
+        }
+
+        template<>
+        index_buffer resource_factory::create_index_buffer(std::vector<std::uint32_t>&& indices) {
+            return index_buffer(m_device.m_logicalDevice,
+                                m_transferQueue,
+                                m_transferCommandPool,
+                                m_device.m_physicalDevice->get_memory_properties(),
+                                vk::IndexType::eUint32,
+                                std::move(indices));
         }
 
         const pipeline& resource_factory::create_pipeline(const std::string& techniqueName,

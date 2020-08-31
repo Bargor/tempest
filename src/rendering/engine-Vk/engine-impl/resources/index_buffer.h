@@ -5,24 +5,25 @@
 #include "../vulkan_exception.h"
 #include "buffer.h"
 
+#include <variant>
 #include <vector>
 
 namespace tst {
 namespace engine {
     namespace vulkan {
 
-        template<typename IndexType>
         class index_buffer : public buffer {
             using super = buffer;
-        public:
 
+        public:
+            template<typename IndexType>
             index_buffer(vk::Device logicalDevice,
                          vk::Queue queueHandle,
                          vk::CommandPool cmdPool,
                          const vk::PhysicalDeviceMemoryProperties& memoryProperties,
                          vk::IndexType format,
                          std::vector<IndexType>&& indices);
-            ~index_buffer();
+            ~index_buffer() = default;
 
             index_buffer(index_buffer&& other) noexcept;
 
@@ -30,16 +31,16 @@ namespace engine {
 
         private:
             vk::IndexType m_format;
-            std::vector<IndexType> m_indices;
+            std::variant<std::vector<std::uint16_t>, std::vector<std::uint32_t>> m_indices;
         };
 
         template<typename IndexType>
-        index_buffer<IndexType>::index_buffer(vk::Device logicalDevice,
-                                              vk::Queue queueHandle,
-                                              vk::CommandPool cmdPool,
-                                              const vk::PhysicalDeviceMemoryProperties& memoryProperties,
-                                              vk::IndexType format,
-                                              std::vector<IndexType>&& indices)
+        index_buffer::index_buffer(vk::Device logicalDevice,
+                                   vk::Queue queueHandle,
+                                   vk::CommandPool cmdPool,
+                                   const vk::PhysicalDeviceMemoryProperties& memoryProperties,
+                                   vk::IndexType format,
+                                   std::vector<IndexType>&& indices)
             : buffer(logicalDevice,
                      queueHandle,
                      cmdPool,
@@ -57,22 +58,9 @@ namespace engine {
                                  memoryProperties,
                                  vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent);
 
-            stagingBuffer.copy_data(m_indices.data(), m_memSize);
+            stagingBuffer.copy_data(std::visit([](auto&& arg) { return static_cast<void*>(arg.data()); }, m_indices),
+                                    m_memSize);
             stagingBuffer.copy_buffer(m_buffer, m_memSize);
-        }
-
-        template<typename IndexType>
-        index_buffer<IndexType>::index_buffer(index_buffer&& other) noexcept
-            : buffer(std::move(other)), m_format(other.m_format), m_indices(std::move(other.m_indices)) {
-        }
-
-        template<typename IndexType>
-        index_buffer<IndexType>::~index_buffer() {
-        }
-
-        template<typename IndexType>
-        std::uint32_t index_buffer<IndexType>::get_index_count() const noexcept {
-            return static_cast<std::uint32_t>(m_indices.size());
         }
 
     } // namespace vulkan

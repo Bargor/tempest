@@ -11,7 +11,7 @@
 
 #if TST_COMPILER & TST_COMPILER_VC
 #pragma warning(push)
-#pragma warning(disable : 4324) // nonstandard extension used : nameless struct/union
+#pragma warning(disable : 4324)
 #endif
 
 namespace {

@@ -20,6 +20,8 @@ namespace engine {
 
         mesh(mesh&& other) noexcept;
 
+        ~mesh();
+
     public:
         const resources::vertex_buffer& get_vertices() const noexcept;
         const resources::index_buffer* get_indices() const noexcept;
