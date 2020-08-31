@@ -28,6 +28,7 @@ namespace engine {
             index_buffer(index_buffer&& other) noexcept;
 
             std::uint32_t get_index_count() const noexcept;
+            vk::IndexType get_index_type() const noexcept;
 
         private:
             vk::IndexType m_format;
@@ -61,6 +62,14 @@ namespace engine {
             stagingBuffer.copy_data(std::visit([](auto&& arg) { return static_cast<void*>(arg.data()); }, m_indices),
                                     m_memSize);
             stagingBuffer.copy_buffer(m_buffer, m_memSize);
+        }
+
+        TST_INLINE std::uint32_t index_buffer::get_index_count() const noexcept {
+            return std::visit([](auto&& arg) { return static_cast<std::uint32_t>(arg.size()); }, m_indices);
+        }
+
+        TST_INLINE vk::IndexType index_buffer::get_index_type() const noexcept {
+            return m_format;
         }
 
     } // namespace vulkan

@@ -70,7 +70,7 @@ namespace engine {
                 std::vector<vk::Buffer> vertexBuffers = {drawInfo.vertices.get_handle()};
                 std::vector<vk::DeviceSize> offsets = {0};
                 commandBuffer.bindVertexBuffers(0, vertexBuffers, offsets);
-                commandBuffer.bindIndexBuffer(drawInfo.indices->get_handle(), 0, vk::IndexType::eUint16);
+                commandBuffer.bindIndexBuffer(drawInfo.indices->get_handle(), 0, drawInfo.indices->get_index_type());
                 commandBuffer.bindDescriptorSets(
                     vk::PipelineBindPoint::eGraphics, drawInfo.pipelineState.get_layout(), 0, drawInfo.descriptorSets, {});
                 commandBuffer.bindDescriptorSets(

@@ -5,6 +5,7 @@
 
 #include <engine/resource_factory.h>
 #include <unordered_map>
+#include <fmt/printf.h>
 
 #define TINYOBJLOADER_IMPLEMENTATION
 #include <tiny_obj_loader.h>
@@ -15,7 +16,7 @@
 #endif
 
 namespace {
-std::tuple<std::vector<tst::engine::vertex>, std::vector<std::uint16_t>> load_mesh(const std::filesystem::path& path) {
+std::tuple<std::vector<tst::engine::vertex>, std::vector<std::uint32_t>> load_mesh(const std::filesystem::path& path) {
     tinyobj::attrib_t attrib;
     std::vector<tinyobj::shape_t> shapes;
     std::vector<tinyobj::material_t> materials;
@@ -25,21 +26,21 @@ std::tuple<std::vector<tst::engine::vertex>, std::vector<std::uint16_t>> load_me
         throw std::runtime_error(warn + err);
     }
 
-    std::unordered_map<tst::engine::vertex, std::uint16_t> uniqueVertices;
+    std::unordered_map<tst::engine::vertex, std::uint32_t> uniqueVertices;
 
     std::vector<tst::engine::vertex> vertices;
-    std::vector<std::uint16_t> indices;
+    std::vector<std::uint32_t> indices;
 
     for (const auto& shape : shapes) {
         for (const auto& index : shape.mesh.indices) {
             tst::engine::vertex vertex;
 
-            vertex.pos = {attrib.vertices[3 * index.vertex_index + 0],
+            vertex.pos = {attrib.vertices[3 * index.vertex_index],
                           attrib.vertices[3 * index.vertex_index + 1],
                           attrib.vertices[3 * index.vertex_index + 2]};
 
             if (index.texcoord_index != -1) {
-                vertex.texCoord = {attrib.texcoords[2 * index.texcoord_index + 0],
+                vertex.texCoord = {attrib.texcoords[2 * index.texcoord_index],
                                    1.0f - attrib.texcoords[2 * index.texcoord_index + 1]};
             } else {
                 vertex.texCoord = {0.0f, 0.0f};
@@ -48,7 +49,7 @@ std::tuple<std::vector<tst::engine::vertex>, std::vector<std::uint16_t>> load_me
             vertex.color = {1.0f, 1.0f, 1.0f};
 
             if (uniqueVertices.count(vertex) == 0) {
-                uniqueVertices[vertex] = static_cast<std::uint16_t>(vertices.size());
+                uniqueVertices[vertex] = static_cast<std::uint32_t>(vertices.size());
                 vertices.push_back(vertex);
             }
 
@@ -80,8 +81,24 @@ namespace scene {
                                    offsetof(engine::vertex, texCoord),
                                    sizeof(engine::vertex),
                                    0);
+
+        fmt::printf("Loaded model %s, vertices: %d triangles: %d\n", path.string(), vertices.size(), indices.size() / 3);
+
         auto vertexBuffer = factory.create_vertex_buffer(vertexFormat, std::move(vertices));
-        auto indexBuffer = factory.create_index_buffer(std::move(indices));
+
+        auto create_buffer = [&factory, &vertices](std::vector<std::uint32_t>&& indices) {
+            if (vertices.size() < std::numeric_limits<std::uint16_t>::max()) {
+                return factory.create_index_buffer(std::move(indices));
+            } else {
+                std::vector<std::uint16_t> newIndices(indices.size());
+                for (std::uint32_t idx = 0; idx < indices.size(); ++idx) {
+                    newIndices[idx] = static_cast<std::uint16_t>(indices[idx]);
+                }
+                return factory.create_index_buffer(std::move(newIndices));
+            }
+        };
+
+        auto indexBuffer = create_buffer(std::move(indices));       
 
         return engine::mesh(std::move(vertexBuffer), std::move(indexBuffer), nullptr);
     }
