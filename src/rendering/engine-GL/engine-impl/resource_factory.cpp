@@ -43,6 +43,16 @@ namespace engine {
             return vertex_buffer(format, std::move(vertices));
         }
 
+        template<>
+        index_buffer resource_factory::create_index_buffer(std::vector<std::uint16_t>&& indices) {
+            return index_buffer(std::move(indices));
+        }
+
+        template<>
+        index_buffer resource_factory::create_index_buffer(std::vector<std::uint32_t>&& indices) {
+            return index_buffer(std::move(indices));
+        }
+
         uniform_buffer resource_factory::create_uniform_buffer(const std::string&,
                                                                base::resource_bind_point,
                                                                std::uint32_t,
