@@ -3,7 +3,7 @@
 	url = https://github.com/fmtlib/fmt
 [submodule "libs/glm"]
 	path = libs/glm
-	url = https://github.com/Bargor/glm
+	url = https://github.com/g-truc/glm
 [submodule "libs/googletest"]
 	path = libs/googletest
 	url = https://github.com/google/googletest
