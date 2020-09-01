@@ -84,10 +84,8 @@ namespace scene {
 
         fmt::printf("Loaded model %s, vertices: %d triangles: %d\n", path.string(), vertices.size(), indices.size() / 3);
 
-        auto vertexBuffer = factory.create_vertex_buffer(vertexFormat, std::move(vertices));
-
         auto create_buffer = [&factory, &vertices](std::vector<std::uint32_t>&& indices) {
-            if (vertices.size() < std::numeric_limits<std::uint16_t>::max()) {
+            if (vertices.size() >= std::numeric_limits<std::uint16_t>::max()) {
                 return factory.create_index_buffer(std::move(indices));
             } else {
                 std::vector<std::uint16_t> newIndices(indices.size());
@@ -99,6 +97,7 @@ namespace scene {
         };
 
         auto indexBuffer = create_buffer(std::move(indices));       
+        auto vertexBuffer = factory.create_vertex_buffer(vertexFormat, std::move(vertices));
 
         return engine::mesh(std::move(vertexBuffer), std::move(indexBuffer), nullptr);
     }
