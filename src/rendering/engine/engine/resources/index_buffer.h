@@ -10,26 +10,24 @@ namespace engine {
 
     namespace resources {
 
-        class index_buffer : private api::index_buffer<std::uint16_t> {
-            template<typename T>
-            using super = api::index_buffer<T>;
+        class index_buffer : private api::index_buffer {
+            using super = api::index_buffer;
 
         public:
-            index_buffer(api::index_buffer<std::uint16_t>&& bufferImpl);
+            index_buffer(api::index_buffer&& bufferImpl);
             ~index_buffer();
 
             index_buffer(index_buffer&& other) noexcept;
 
         public:
-            const api::index_buffer<std::uint16_t>& to_super() const noexcept {
+            TST_INLINE const api::index_buffer& to_super() const noexcept {
                 return *this;
             }
-
 
         private:
         };
 
-        static_assert(sizeof(index_buffer) == sizeof(api::index_buffer<std::uint16_t>));
+        static_assert(sizeof(index_buffer) == sizeof(api::index_buffer));
         static_assert(!std::is_polymorphic_v<index_buffer>);
 
     } // namespace resources

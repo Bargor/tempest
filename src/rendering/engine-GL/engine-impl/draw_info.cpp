@@ -7,7 +7,7 @@ namespace tst {
 namespace engine {
     namespace opengl {
         draw_info::draw_info(const vertex_buffer& vertices,
-                             const index_buffer<std::uint16_t>* indices,
+                             const index_buffer* indices,
                              const pipeline& pipeline,
                              const material& material,
                              const std::vector<const uniform_buffer*>& uniforms)

@@ -35,6 +35,7 @@ namespace engine {
                                  const std::vector<std::string>& textureNames);
 
         resources::index_buffer create_index_buffer(std::vector<std::uint16_t>&& indices);
+        resources::index_buffer create_index_buffer(std::vector<std::uint32_t>&& indices);
         const resources::pipeline& create_pipeline(const std::string& techniqueName,
                                                    std::string_view pipelineName,
                                                    const std::string& shadersName,

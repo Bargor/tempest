@@ -21,5 +21,8 @@ namespace engine {
     mesh::mesh(mesh&& other) noexcept
         : m_vertices(std::move(other.m_vertices)), m_indices(std::move(other.m_indices)), m_material(other.m_material) {
     }
+
+    mesh::~mesh() {
+    }
 } // namespace engine
 } // namespace tst

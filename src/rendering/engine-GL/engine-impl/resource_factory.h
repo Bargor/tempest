@@ -35,7 +35,7 @@ namespace engine {
 
         public:
             template<typename IndexType>
-            index_buffer<IndexType> create_index_buffer(std::vector<std::uint16_t>&& indices);
+            index_buffer create_index_buffer(std::vector<IndexType>&& indices);
             const pipeline& create_pipeline(const std::string& techniqueName,
                                             const std::string_view pipelineName,
                                             const std::string& shadersName,
@@ -59,11 +59,6 @@ namespace engine {
             ptr<shader_compiler> m_shaderCompiler;
             std::vector<pipeline> m_pipelines;
         };
-
-        template<typename IndexType>
-        index_buffer<IndexType> resource_factory::create_index_buffer(std::vector<std::uint16_t>&& indices) {
-            return index_buffer<std::uint16_t>(std::move(indices));
-        }
     } // namespace opengl
 } // namespace engine
 } // namespace tst

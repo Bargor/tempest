@@ -36,7 +36,7 @@ namespace engine {
 
         public: // public resource factory interface
             template<typename IndexType>
-            index_buffer<IndexType> create_index_buffer(std::vector<std::uint16_t>&& indices);
+            index_buffer create_index_buffer(std::vector<IndexType>&& indices);
             const pipeline& create_pipeline(const std::string& techniqueName,
                                             std::string_view pipelineName,
                                             const std::string& shadersName,

@@ -18,7 +18,7 @@ namespace engine {
         struct draw_info {
         public:
             draw_info(const vertex_buffer& vertices,
-                      const index_buffer<std::uint16_t>* indices,
+                      const index_buffer* indices,
                       const pipeline& pipeline,
                       const material& material,
                       const std::vector<const uniform_buffer*>& uniforms);
@@ -30,7 +30,7 @@ namespace engine {
 
         public:
             const vertex_buffer& vertices;
-            const index_buffer<std::uint16_t>* indices;
+            const index_buffer* indices;
             const pipeline& pipelineState;
             const material& meshMaterial;
             std::vector<vk::DescriptorSet> descriptorSets;
