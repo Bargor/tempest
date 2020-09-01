@@ -38,7 +38,7 @@ namespace engine {
             default:
                 super::deviceVendor = device_vendor::other;
             }
-            super::deviceName = deviceProperties.deviceName;
+            super::deviceName = std::move(deviceProperties.deviceName);
 
             maxIndexValue = deviceProperties.limits.maxDrawIndexedIndexValue;
             maxFramebufferWidth = deviceProperties.limits.maxFramebufferWidth;
