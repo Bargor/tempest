@@ -41,26 +41,6 @@ namespace engine {
             factory.m_transferCommandPool = vk::CommandPool();
         }
 
-        template<>
-        index_buffer resource_factory::create_index_buffer(std::vector<std::uint16_t>&& indices) {
-            return index_buffer(m_device.m_logicalDevice,
-                                m_transferQueue,
-                                m_transferCommandPool,
-                                m_device.m_physicalDevice->get_memory_properties(),
-                                vk::IndexType::eUint16,
-                                std::move(indices));
-        }
-
-        template<>
-        index_buffer resource_factory::create_index_buffer(std::vector<std::uint32_t>&& indices) {
-            return index_buffer(m_device.m_logicalDevice,
-                                m_transferQueue,
-                                m_transferCommandPool,
-                                m_device.m_physicalDevice->get_memory_properties(),
-                                vk::IndexType::eUint32,
-                                std::move(indices));
-        }
-
         const pipeline& resource_factory::create_pipeline(const std::string& techniqueName,
                                                           std::string_view pipelineName,
                                                           const std::string& shadersName,
@@ -179,6 +159,13 @@ namespace engine {
             m_device.m_resourceCache->add_shaders(shadersName, std::move(shaders));
 
             return m_device.m_resourceCache->find_shaders(shadersName);
+        }
+
+        buffer_construction_info resource_factory::create_buffer_construction_info() const noexcept {
+            return buffer_construction_info{m_device.m_logicalDevice,
+                                            m_transferQueue,
+                                            m_transferCommandPool,
+                                            m_device.m_physicalDevice->get_memory_properties()};
         }
     } // namespace vulkan
 } // namespace engine

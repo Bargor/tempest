@@ -8,6 +8,13 @@ namespace tst {
 namespace engine {
     namespace vulkan {
 
+        struct buffer_construction_info {
+            vk::Device logicalDevice;
+            vk::Queue queueHandle;
+            vk::CommandPool cmdPool;
+            vk::PhysicalDeviceMemoryProperties memoryProperties;
+        };
+
         class buffer {
 
         public:
@@ -17,6 +24,10 @@ namespace engine {
                    std::size_t size,
                    vk::BufferUsageFlags flags,
                    const vk::PhysicalDeviceMemoryProperties& memoryProperties,
+                   vk::MemoryPropertyFlags memoryFlags);
+            buffer(const buffer_construction_info& info,
+                   std::size_t size,
+                   vk::BufferUsageFlags flags,
                    vk::MemoryPropertyFlags memoryFlags);
             ~buffer();
 

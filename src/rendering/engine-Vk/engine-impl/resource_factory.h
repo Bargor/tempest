@@ -35,8 +35,6 @@ namespace engine {
             resource_factory(resource_factory&& factory) noexcept;
 
         public: // public resource factory interface
-            template<typename IndexType>
-            index_buffer create_index_buffer(std::vector<IndexType>&& indices);
             const pipeline& create_pipeline(const std::string& techniqueName,
                                             std::string_view pipelineName,
                                             const std::string& shadersName,
@@ -57,6 +55,8 @@ namespace engine {
 
         public: // vulkan internal
             const shader_set* load_shaders(const std::string& shadersName);
+
+            api::buffer_construction_info create_buffer_construction_info() const noexcept;
 
         private:
             const device& m_device;

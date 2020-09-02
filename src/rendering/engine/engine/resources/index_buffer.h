@@ -8,16 +8,19 @@
 namespace tst {
 namespace engine {
 
+    class resource_factory;
+
     namespace resources {
 
         class index_buffer : private api::index_buffer {
             using super = api::index_buffer;
 
         public:
-            index_buffer(api::index_buffer&& bufferImpl);
-            ~index_buffer();
+            index_buffer(const api::buffer_construction_info& info, std::vector<std::uint16_t>&& indices);
+            index_buffer(const api::buffer_construction_info& info, std::vector<std::uint32_t>&& indices);
 
             index_buffer(index_buffer&& other) noexcept;
+            ~index_buffer();
 
         public:
             TST_INLINE const api::index_buffer& to_super() const noexcept {

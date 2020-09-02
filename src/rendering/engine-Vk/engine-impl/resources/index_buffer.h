@@ -12,17 +12,14 @@ namespace tst {
 namespace engine {
     namespace vulkan {
 
+        class resource_factory;
+
         class index_buffer : public buffer {
             using super = buffer;
 
         public:
             template<typename IndexType>
-            index_buffer(vk::Device logicalDevice,
-                         vk::Queue queueHandle,
-                         vk::CommandPool cmdPool,
-                         const vk::PhysicalDeviceMemoryProperties& memoryProperties,
-                         vk::IndexType format,
-                         std::vector<IndexType>&& indices);
+            index_buffer(const buffer_construction_info& info, std::vector<IndexType>&& indices);
             ~index_buffer() = default;
 
             index_buffer(index_buffer&& other) noexcept;
@@ -31,38 +28,12 @@ namespace engine {
             vk::IndexType get_index_type() const noexcept;
 
         private:
+            void copy_to_gpu(const buffer_construction_info& info);
+
+        private:
             vk::IndexType m_format;
             std::variant<std::vector<std::uint16_t>, std::vector<std::uint32_t>> m_indices;
         };
-
-        template<typename IndexType>
-        index_buffer::index_buffer(vk::Device logicalDevice,
-                                   vk::Queue queueHandle,
-                                   vk::CommandPool cmdPool,
-                                   const vk::PhysicalDeviceMemoryProperties& memoryProperties,
-                                   vk::IndexType format,
-                                   std::vector<IndexType>&& indices)
-            : buffer(logicalDevice,
-                     queueHandle,
-                     cmdPool,
-                     indices.size() * sizeof(IndexType),
-                     vk::BufferUsageFlagBits::eIndexBuffer | vk::BufferUsageFlagBits::eTransferDst,
-                     memoryProperties,
-                     vk::MemoryPropertyFlagBits::eDeviceLocal)
-            , m_format(format)
-            , m_indices(std::move(indices)) {
-            buffer stagingBuffer(logicalDevice,
-                                 queueHandle,
-                                 cmdPool,
-                                 m_memSize,
-                                 vk::BufferUsageFlagBits::eTransferSrc,
-                                 memoryProperties,
-                                 vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent);
-
-            stagingBuffer.copy_data(std::visit([](auto&& arg) { return static_cast<void*>(arg.data()); }, m_indices),
-                                    m_memSize);
-            stagingBuffer.copy_buffer(m_buffer, m_memSize);
-        }
 
         TST_INLINE std::uint32_t index_buffer::get_index_count() const noexcept {
             return std::visit([](auto&& arg) { return static_cast<std::uint32_t>(arg.size()); }, m_indices);

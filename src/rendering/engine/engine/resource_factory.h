@@ -49,6 +49,7 @@ namespace engine {
                                                         std::uint32_t binding);
 
     private:
+        api::buffer_construction_info create_buffer_construction_info() const noexcept;
     };
 
     template<typename StorageType>

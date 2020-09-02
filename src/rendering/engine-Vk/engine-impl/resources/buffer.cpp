@@ -30,6 +30,25 @@ namespace engine {
             m_logicalDevice.bindBufferMemory(m_buffer, m_bufferMemory, 0);
         }
 
+        buffer::buffer(const buffer_construction_info& info,
+                       std::size_t size,
+                       vk::BufferUsageFlags usageFlags,
+                       vk::MemoryPropertyFlags memoryFlags)
+            : m_logicalDevice(info.logicalDevice)
+            , m_queueHandle(info.queueHandle)
+            , m_cmdPool(info.cmdPool)
+            , m_memSize(size) {
+            const vk::BufferCreateInfo createInfo(vk::BufferCreateFlags(), size, usageFlags, vk::SharingMode::eExclusive);
+
+            m_buffer = m_logicalDevice.createBuffer(createInfo);
+            const auto requirements = m_logicalDevice.getBufferMemoryRequirements(m_buffer);
+            const vk::MemoryAllocateInfo allocateInfo(
+                requirements.size, find_memory_type(info.memoryProperties, requirements.memoryTypeBits, memoryFlags));
+
+            m_bufferMemory = m_logicalDevice.allocateMemory(allocateInfo);
+            m_logicalDevice.bindBufferMemory(m_buffer, m_bufferMemory, 0);
+        }
+
         buffer::~buffer() {
             if (m_buffer) {
                 m_logicalDevice.destroyBuffer(m_buffer);
@@ -59,14 +78,13 @@ namespace engine {
         }
 
         void buffer::copy_buffer(vk::Buffer& dstBuffer, std::uint64_t size) const {
-            
             const auto cmdBuffer = create_one_time_buffer(m_logicalDevice, m_cmdPool);
 
             {
                 vk::BufferCopy copyInfo(0, 0, size);
                 cmdBuffer.copyBuffer(m_buffer, dstBuffer, copyInfo);
             }
-            
+
             submit_one_time_buffer(m_logicalDevice, m_cmdPool, m_queueHandle, cmdBuffer);
         }
 

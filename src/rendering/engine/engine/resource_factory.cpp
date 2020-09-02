@@ -16,11 +16,11 @@ namespace engine {
     }
 
     resources::index_buffer resource_factory::create_index_buffer(std::vector<std::uint16_t>&& indices) {
-        return super::create_index_buffer<std::uint16_t>(std::move(indices));
+        return resources::index_buffer(create_buffer_construction_info(), std::move(indices));
     }
 
     resources::index_buffer resource_factory::create_index_buffer(std::vector<std::uint32_t>&& indices) {
-        return super::create_index_buffer<std::uint32_t>(std::move(indices));
+        return resources::index_buffer(create_buffer_construction_info(), std::move(indices));
     }
 
     const resources::pipeline& resource_factory::create_pipeline(const std::string& techniqueName,
@@ -42,6 +42,10 @@ namespace engine {
 
     resources::texture resource_factory::create_texture(const std::string& textureName) {
         return super::create_texture(textureName);
+    }
+
+    api::buffer_construction_info resource_factory::create_buffer_construction_info() const noexcept {
+        return super::create_buffer_construction_info();
     }
 } // namespace engine
 } // namespace tst
