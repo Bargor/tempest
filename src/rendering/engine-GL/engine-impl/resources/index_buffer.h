@@ -15,7 +15,7 @@ namespace engine {
         class index_buffer : public buffer {
         public:
             template<typename IndexType>
-            index_buffer(std::vector<IndexType>&& indices);
+            index_buffer(const buffer_construction_info& info, std::vector<IndexType>&& indices);
             ~index_buffer();
 
             index_buffer(index_buffer&& other) noexcept;
@@ -27,7 +27,7 @@ namespace engine {
         };
 
         template<typename IndexType>
-        index_buffer::index_buffer(std::vector<IndexType>&& indices)
+        index_buffer::index_buffer(const buffer_construction_info&, std::vector<IndexType>&& indices)
             : buffer(indices.size() * sizeof(IndexType), indices.data(), GL_STATIC_DRAW), m_indices(std::move(indices)) {
         }
 

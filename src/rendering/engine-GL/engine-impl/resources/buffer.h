@@ -8,6 +8,9 @@
 namespace tst {
 namespace engine {
     namespace opengl {
+
+        struct buffer_construction_info {};
+
         class buffer {
         public:
             buffer(std::uint64_t size, void* data, GLenum usage);

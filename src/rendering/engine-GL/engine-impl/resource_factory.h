@@ -34,15 +34,12 @@ namespace engine {
             resource_factory(resource_factory&& factory) noexcept;
 
         public:
-            template<typename IndexType>
-            index_buffer create_index_buffer(std::vector<IndexType>&& indices);
             const pipeline& create_pipeline(const std::string& techniqueName,
                                             const std::string_view pipelineName,
                                             const std::string& shadersName,
                                             const vertex_buffer& vertexBuffer);
             void create_technique(std::string&& name);
             texture create_texture(const std::string& textureName);
-            vertex_buffer create_vertex_buffer(const vertex_format& format, std::vector<vertex>&& vertices);
             uniform_buffer create_uniform_buffer(const std::string& shaderName,
                                                  base::resource_bind_point bindPoint,
                                                  std::uint32_t binding,
@@ -53,6 +50,8 @@ namespace engine {
                                      const std::vector<std::string>& textureNames,
                                      std::uint32_t staticStorageSize,
                                      std::uint32_t dynamicStorageSize);
+
+            buffer_construction_info create_buffer_construction_info() const noexcept;
 
         private:
             const application::data_loader& m_dataLoader;
