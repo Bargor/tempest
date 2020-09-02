@@ -37,7 +37,7 @@ namespace engine {
 
     resources::vertex_buffer resource_factory::create_vertex_buffer(const engine::vertex_format& format,
                                                                     std::vector<vertex>&& vertices) {
-        return super::create_vertex_buffer(format.to_super(), std::move(vertices));
+        return resources::vertex_buffer(create_buffer_construction_info(), format, std::move(vertices));
     }
 
     resources::texture resource_factory::create_texture(const std::string& textureName) {

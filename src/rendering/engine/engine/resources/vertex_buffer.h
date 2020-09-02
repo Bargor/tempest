@@ -7,16 +7,21 @@
 
 namespace tst {
 namespace engine {
+
+    class vertex_format;
+
     namespace resources {
 
         class vertex_buffer : private api::vertex_buffer {
             using super = api::vertex_buffer;
 
         public:
-            vertex_buffer(api::vertex_buffer&& bufferImpl);
-            ~vertex_buffer();
-
+            vertex_buffer(const api::buffer_construction_info& info,
+                          const vertex_format& format,
+                          std::vector<vertex>&& vertices);
             vertex_buffer(vertex_buffer&& other) noexcept;
+
+            ~vertex_buffer();
 
         public:
 

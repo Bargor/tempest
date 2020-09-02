@@ -15,10 +15,7 @@ namespace engine {
             using super = buffer;
         public:
 
-            vertex_buffer(const vk::Device logicalDevice,
-                          const vk::Queue m_queueHandle,
-                          const vk::CommandPool cmdPool,
-                          const vk::PhysicalDeviceMemoryProperties memoryProperties,
+            vertex_buffer(const buffer_construction_info& info,
                           const vertex_format& format,
                           std::vector<vertex>&& vertices);
             ~vertex_buffer();

@@ -3,8 +3,6 @@
 
 #include "index_buffer.h"
 
-#include "../resource_factory.h"
-
 namespace tst {
 namespace engine {
     namespace resources {

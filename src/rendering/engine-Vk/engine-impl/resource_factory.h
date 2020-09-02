@@ -3,13 +3,10 @@
 #pragma once
 
 #include "api.h"
-#include "resources/index_buffer.h"
 #include "resources/material.h"
 #include "resources/pipeline.h"
 #include "resources/texture.h"
 #include "resources/uniform_buffer.h"
-#include "resources/vertex_buffer.h"
-#include "resources/vertex_format.h"
 
 namespace tst {
 
@@ -25,6 +22,7 @@ namespace engine {
         class physical_device;
         class shader_compiler;
         class swap_chain;
+        class vertex_buffer;
 
         class resource_factory {
         public:
@@ -40,7 +38,6 @@ namespace engine {
                                             const std::string& shadersName,
                                             const vertex_buffer& vertexBuffer);
             void create_technique(std::string&& name);
-            vertex_buffer create_vertex_buffer(const vertex_format& format, std::vector<vertex>&& vertices);
             uniform_buffer create_uniform_buffer(const std::string& shaderName,
                                                  base::resource_bind_point bindPoint,
                                                  std::uint32_t binding,

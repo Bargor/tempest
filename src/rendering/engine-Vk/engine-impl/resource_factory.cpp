@@ -8,6 +8,7 @@
 #include "resource_cache.h"
 #include "shader_compiler.h"
 #include "swap_chain.h"
+#include "resources/vertex_buffer.h"
 
 #include <application/data_loader.h>
 #include <engine-base/pipeline_parser.h>
@@ -82,15 +83,6 @@ namespace engine {
                                     base::parse_technique_settings(m_dataLoader, name),
                                     m_device.m_logicalDevice,
                                     *m_device.m_swapChain));
-        }
-
-        vertex_buffer resource_factory::create_vertex_buffer(const vertex_format& format, std::vector<vertex>&& vertices) {
-            return vertex_buffer(m_device.m_logicalDevice,
-                                 m_transferQueue,
-                                 m_transferCommandPool,
-                                 m_device.m_physicalDevice->get_memory_properties(),
-                                 format,
-                                 std::move(vertices));
         }
 
         uniform_buffer resource_factory::create_uniform_buffer(const std::string& shaderName,
