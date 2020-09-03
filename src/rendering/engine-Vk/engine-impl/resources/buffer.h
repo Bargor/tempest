@@ -18,13 +18,6 @@ namespace engine {
         class buffer {
 
         public:
-            buffer(vk::Device logicalDevice,
-                   vk::Queue queueHandle,
-                   vk::CommandPool cmdPool,
-                   std::size_t size,
-                   vk::BufferUsageFlags flags,
-                   const vk::PhysicalDeviceMemoryProperties& memoryProperties,
-                   vk::MemoryPropertyFlags memoryFlags);
             buffer(const buffer_construction_info& info,
                    std::size_t size,
                    vk::BufferUsageFlags flags,

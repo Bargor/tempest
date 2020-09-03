@@ -103,12 +103,9 @@ namespace engine {
             if (!textureFile) {
                 throw std::runtime_error(fmt::format("Wrong texture path: no such file: %s", "textures/" + textureName));
             }
-            return texture(m_device.m_logicalDevice,
-                           m_transferQueue,
-                           m_transferCommandPool,
+            return texture(create_buffer_construction_info(),
                            *m_device.m_resourceCache,
                            vk::BufferUsageFlagBits::eTransferSrc,
-                           m_device.m_physicalDevice->get_memory_properties(),
                            vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent,
                            m_dataLoader.load_image(textureFile.value()),
                            m_device.m_resourceIndex);

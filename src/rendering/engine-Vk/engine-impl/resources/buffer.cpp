@@ -11,25 +11,6 @@ namespace engine {
 
         class physical_device;
 
-        buffer::buffer(vk::Device logicalDevice,
-                       vk::Queue queueHandle,
-                       vk::CommandPool cmdPool,
-                       std::size_t size,
-                       vk::BufferUsageFlags usageFlags,
-                       const vk::PhysicalDeviceMemoryProperties& memoryProperties,
-                       vk::MemoryPropertyFlags memoryFlags)
-            : m_logicalDevice(logicalDevice), m_queueHandle(queueHandle), m_cmdPool(cmdPool), m_memSize(size) {
-            const vk::BufferCreateInfo createInfo(vk::BufferCreateFlags(), size, usageFlags, vk::SharingMode::eExclusive);
-
-            m_buffer = m_logicalDevice.createBuffer(createInfo);
-            const auto requirements = m_logicalDevice.getBufferMemoryRequirements(m_buffer);
-            const vk::MemoryAllocateInfo allocateInfo(
-                requirements.size, find_memory_type(memoryProperties, requirements.memoryTypeBits, memoryFlags));
-
-            m_bufferMemory = m_logicalDevice.allocateMemory(allocateInfo);
-            m_logicalDevice.bindBufferMemory(m_buffer, m_bufferMemory, 0);
-        }
-
         buffer::buffer(const buffer_construction_info& info,
                        std::size_t size,
                        vk::BufferUsageFlags usageFlags,
