@@ -10,20 +10,14 @@ namespace tst {
 namespace engine {
     namespace vulkan {
 
-        uniform_buffer::uniform_buffer(vk::Device logicalDevice,
-                                       vk::Queue queueHandle,
-                                       vk::CommandPool cmdPool,
+        uniform_buffer::uniform_buffer(const buffer_construction_info& info,
                                        const descriptor_set& descriptorSets,
                                        std::uint32_t binding,
-                                       vk::PhysicalDeviceMemoryProperties memoryProperties,
                                        const std::uint32_t& resourceIndex,
                                        std::size_t storageSize)
-            : buffer(logicalDevice,
-                     queueHandle,
-                     cmdPool,
+            : buffer(info,
                      storageSize * settings::m_inFlightFrames,
                      vk::BufferUsageFlagBits::eUniformBuffer,
-                     memoryProperties,
                      vk::MemoryPropertyFlagBits::eHostCoherent | vk::MemoryPropertyFlagBits::eHostVisible)
             , m_resourceIndex(resourceIndex)
             , m_descriptorSets(descriptorSets)
@@ -34,7 +28,7 @@ namespace engine {
                 const vk::WriteDescriptorSet descriptorWrite(
                     m_descriptorSets[i], binding, 0, 1, vk::DescriptorType::eUniformBuffer, nullptr, &bufferInfo, nullptr);
 
-                logicalDevice.updateDescriptorSets({descriptorWrite}, {});
+                info.logicalDevice.updateDescriptorSets({descriptorWrite}, {});
             }
         }
 

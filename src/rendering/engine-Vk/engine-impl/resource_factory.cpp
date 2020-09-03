@@ -91,12 +91,9 @@ namespace engine {
                                                                std::size_t storageSize) {
             const auto descriptorSets = m_device.m_resourceCache->find_descriptor_sets(shaderName, bindPoint);
             assert(descriptorSets);
-            return uniform_buffer(m_device.m_logicalDevice,
-                                  m_transferQueue,
-                                  m_transferCommandPool,
+            return uniform_buffer(create_buffer_construction_info(),
                                   *descriptorSets,
                                   binding,
-                                  m_device.m_physicalDevice->get_memory_properties(),
                                   m_device.m_resourceIndex,
                                   storageSize);
         }

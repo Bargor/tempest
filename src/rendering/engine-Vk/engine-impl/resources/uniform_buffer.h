@@ -18,12 +18,9 @@ namespace engine {
             using super = buffer;
 
         public:
-            uniform_buffer(vk::Device logicalDevice,
-                           vk::Queue m_queueHandle,
-                           vk::CommandPool cmdPool,
+            uniform_buffer(const buffer_construction_info& info,
                            const descriptor_set& descriptorSets,
                            std::uint32_t binding,
-                           vk::PhysicalDeviceMemoryProperties memoryProperties,
                            const std::uint32_t& resourceIndex,
                            std::size_t storageSize);
             uniform_buffer(uniform_buffer&& other) noexcept;
