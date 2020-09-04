@@ -6,9 +6,9 @@
 #include "device.h"
 #include "physical_device.h"
 #include "resource_cache.h"
+#include "resources/vertex_buffer.h"
 #include "shader_compiler.h"
 #include "swap_chain.h"
-#include "resources/vertex_buffer.h"
 
 #include <application/data_loader.h>
 #include <engine-base/pipeline_parser.h>
@@ -78,11 +78,10 @@ namespace engine {
                 return;
             }
 
-            m_device.m_resourceCache->add_rendering_technique(
-                rendering_technique(std::move(name),
-                                    base::parse_technique_settings(m_dataLoader, name),
-                                    m_device.m_logicalDevice,
-                                    *m_device.m_swapChain));
+            m_device.m_resourceCache->add_rendering_technique(std::move(name),
+                                                              base::parse_technique_settings(m_dataLoader, name),
+                                                              m_device.m_logicalDevice,
+                                                              *m_device.m_swapChain);
         }
 
         uniform_buffer resource_factory::create_uniform_buffer(const std::string& shaderName,
@@ -91,11 +90,8 @@ namespace engine {
                                                                std::size_t storageSize) {
             const auto descriptorSets = m_device.m_resourceCache->find_descriptor_sets(shaderName, bindPoint);
             assert(descriptorSets);
-            return uniform_buffer(create_buffer_construction_info(),
-                                  *descriptorSets,
-                                  binding,
-                                  m_device.m_resourceIndex,
-                                  storageSize);
+            return uniform_buffer(
+                create_buffer_construction_info(), *descriptorSets, binding, m_device.m_resourceIndex, storageSize);
         }
 
         texture resource_factory::create_texture(const std::string& textureName) {

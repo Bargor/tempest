@@ -26,7 +26,10 @@ namespace engine {
             ~resource_cache();
 
             std::size_t add_pipeline(pipeline&& newPipeline);
-            void add_rendering_technique(rendering_technique&& technique);
+            void add_rendering_technique(std::string&& techniqueName,
+                                         base::technique_settings&& settings,
+                                         vk::Device device,
+                                         const swap_chain& swapChain);
             void add_shaders(std::string name, shader_set&& shaders);
 
             const pipeline* find_pipeline(std::size_t pipelineHash) const;
