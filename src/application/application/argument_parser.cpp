@@ -3,7 +3,7 @@
 
 #include "argument_parser.h"
 
-#include <string>
+#include <string_view>
 #include <vector>
 
 namespace tst {
@@ -14,7 +14,7 @@ namespace application {
 		const auto executionDirectory = std::filesystem::path(argv[0]).parent_path().append("");
 
         for (int i = 1; i < argc; i++) {
-            std::string param(argv[i]);
+            std::string_view param(argv[i]);
 
             if (param == "-w") {
                 return {main_window::fullscreen_mode::windowed, executionDirectory};

@@ -9,7 +9,7 @@ namespace engine {
     namespace base {
         class material {
         public:
-            material();
+            material(std::string&& name);
         private:
             std::string m_materialName;
         };

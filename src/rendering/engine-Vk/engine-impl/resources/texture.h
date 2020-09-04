@@ -13,18 +13,16 @@ namespace tst {
 namespace engine {
     namespace vulkan {
 
+        struct buffer_construction_info;
         class resource_cache;
 
         using descriptor_set = std::array<vk::DescriptorSet, settings::m_inFlightFrames>;
 
         class texture {
         public:
-            texture(vk::Device logicalDevice,
-                    vk::Queue queueHandle,
-                    vk::CommandPool cmdPool,
+            texture(const buffer_construction_info& info,
                     const resource_cache& resourceCache,
                     vk::BufferUsageFlags flags,
-                    const vk::PhysicalDeviceMemoryProperties& memoryProperties,
                     vk::MemoryPropertyFlags memoryFlags,
                     const application::image_data& imageData,
                     const std::uint32_t& resourceIndex,

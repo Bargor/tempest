@@ -26,11 +26,14 @@ namespace engine {
             ~resource_cache();
 
             std::size_t add_pipeline(pipeline&& newPipeline);
-            void add_rendering_technique(rendering_technique&& technique);
-            void add_shaders(const std::string& name, shader_set&& shaders);
+            void add_rendering_technique(std::string&& techniqueName,
+                                         base::technique_settings&& settings,
+                                         vk::Device device,
+                                         const swap_chain& swapChain);
+            void add_shaders(std::string name, shader_set&& shaders);
 
             const pipeline* find_pipeline(std::size_t pipelineHash) const;
-            const rendering_technique* find_technique(const std::string& name) const;
+            const rendering_technique* find_technique(std::string_view name) const;
             const shader_set* find_shaders(const std::string& name) const;
             const std::vector<vk::DescriptorSetLayout>* find_descriptor_layouts(const std::string& shadersName) const noexcept;
             const descriptor_set* find_descriptor_sets(const std::string& shadersName,

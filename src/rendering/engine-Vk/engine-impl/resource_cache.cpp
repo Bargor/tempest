@@ -23,11 +23,14 @@ namespace engine {
             return hash;
         }
 
-        void resource_cache::add_rendering_technique(rendering_technique&& technique) {
-            m_techniques.emplace_back(std::move(technique));
+        void resource_cache::add_rendering_technique(std::string&& techniqueName,
+                                                     base::technique_settings&& settings,
+                                                     vk::Device device,
+                                                     const swap_chain& swapChain) {
+            m_techniques.emplace_back(std::move(techniqueName), std::move(settings), device, swapChain);
         }
 
-        void resource_cache::add_shaders(const std::string& name, shader_set&& shaders) {
+        void resource_cache::add_shaders(std::string name, shader_set&& shaders) {
             for (const auto layout : shaders.layouts) {
                 std::vector<vk::DescriptorSetLayout> layouts(settings::m_inFlightFrames, layout);
                 const vk::DescriptorSetAllocateInfo allocInfo(
@@ -42,16 +45,17 @@ namespace engine {
                 m_descriptorSets[name].push_back(descSets);
             }
 
-            m_shaders.insert({name, std::move(shaders)});
+            m_shaders.insert({std::move(name), std::move(shaders)});
         }
 
         vk::DescriptorPool resource_cache::create_descriptor_pool(std::uint32_t) {
-            vk::DescriptorPoolSize uniformPoolSize(vk::DescriptorType::eUniformBuffer, settings::m_inFlightFrames);
-            vk::DescriptorPoolSize samplerPoolSize(vk::DescriptorType::eCombinedImageSampler, settings::m_inFlightFrames);
+            vk::DescriptorPoolSize uniformPoolSize(vk::DescriptorType::eUniformBuffer, settings::m_inFlightFrames * 10);
+            vk::DescriptorPoolSize samplerPoolSize(vk::DescriptorType::eCombinedImageSampler,
+                                                   settings::m_inFlightFrames * 3);
 
             vk::DescriptorPoolCreateInfo poolCreateInfo(
                 vk::DescriptorPoolCreateFlags(),
-                settings::m_inFlightFrames * 3,
+                settings::m_inFlightFrames * 3 * 5,
                 2,
                 std::array<vk::DescriptorPoolSize, 2>{uniformPoolSize, samplerPoolSize}.data());
 
@@ -73,7 +77,7 @@ namespace engine {
             return nullptr;
         }
 
-        const rendering_technique* resource_cache::find_technique(const std::string& techniqueName) const {
+        const rendering_technique* resource_cache::find_technique(std::string_view techniqueName) const {
             const auto technique =
                 std::find_if(m_techniques.begin(), m_techniques.end(), [&](const rendering_technique& technique) {
                     if (technique.get_name() == techniqueName) {

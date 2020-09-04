@@ -16,32 +16,36 @@ namespace engine {
     }
 
     resources::index_buffer resource_factory::create_index_buffer(std::vector<std::uint16_t>&& indices) {
-        return super::create_index_buffer<std::uint16_t>(std::move(indices));
+        return resources::index_buffer(create_buffer_construction_info(), std::move(indices));
     }
 
-    resources::material resource_factory::create_material() {
-        return resources::material();
+    resources::index_buffer resource_factory::create_index_buffer(std::vector<std::uint32_t>&& indices) {
+        return resources::index_buffer(create_buffer_construction_info(), std::move(indices));
     }
 
     const resources::pipeline& resource_factory::create_pipeline(const std::string& techniqueName,
-                                                                 const std::string& pipelineName,
+                                                                 std::string_view pipelineName,
                                                                  const std::string& shadersName,
-                                                                 const vertex_format& format) {
+                                                                 const resources::vertex_buffer& vertexBuffer) {
         return (const resources::pipeline&)(super::create_pipeline(
-            techniqueName, pipelineName, shadersName, format.to_super()));
+            techniqueName, pipelineName, shadersName, vertexBuffer.to_super()));
     }
 
-    void resource_factory::create_technique(const std::string& name) {
-        super::create_technique(name);
+    void resource_factory::create_technique(std::string name) {
+        super::create_technique(std::move(name));
     }
 
     resources::vertex_buffer resource_factory::create_vertex_buffer(const engine::vertex_format& format,
                                                                     std::vector<vertex>&& vertices) {
-        return super::create_vertex_buffer(format.to_super(), std::move(vertices));
+        return resources::vertex_buffer(create_buffer_construction_info(), format, std::move(vertices));
     }
 
     resources::texture resource_factory::create_texture(const std::string& textureName) {
         return super::create_texture(textureName);
+    }
+
+    api::buffer_construction_info resource_factory::create_buffer_construction_info() const noexcept {
+        return super::create_buffer_construction_info();
     }
 } // namespace engine
 } // namespace tst

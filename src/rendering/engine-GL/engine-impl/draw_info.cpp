@@ -6,12 +6,12 @@
 namespace tst {
 namespace engine {
     namespace opengl {
-        draw_info::draw_info(const vertex_buffer* vertices,
-                             const index_buffer<std::uint16_t>* indices,
+        draw_info::draw_info(const vertex_buffer& vertices,
+                             const index_buffer* indices,
                              const pipeline& pipeline,
-                             const std::vector<const uniform_buffer*>& uniforms,
-                             const std::vector<const texture*>& texture)
-            : vertices(vertices), indices(indices), pipelineState(pipeline), uniforms(uniforms), textures(texture) {
+                             const material& material,
+                             const std::vector<const uniform_buffer*>& uniforms)
+            : vertices(vertices), indices(indices), pipelineState(pipeline), meshMaterial(material), uniforms(uniforms) {
         }
     } // namespace opengl
 } // namespace engine

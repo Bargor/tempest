@@ -7,15 +7,18 @@ namespace tst {
 namespace engine {
     namespace resources {
 
-        index_buffer::index_buffer(api::index_buffer<std::uint16_t>&& bufferImpl)
-            : api::index_buffer<std::uint16_t>(std::move(bufferImpl)) {
+        index_buffer::index_buffer(const api::buffer_construction_info& info, std::vector<std::uint16_t>&& indices)
+            : api::index_buffer(info, std::move(indices)) {
+        }
+
+        index_buffer::index_buffer(const api::buffer_construction_info& info, std::vector<std::uint32_t>&& indices)
+            : api::index_buffer(info, std::move(indices)) {
+        }
+
+        index_buffer::index_buffer(index_buffer&& other) noexcept : api::index_buffer(std::move(other)) {
         }
 
         index_buffer::~index_buffer() {
-        }
-
-        index_buffer::index_buffer(index_buffer&& other) noexcept
-            : api::index_buffer<std::uint16_t>(std::move(other)) {
         }
 
     } // namespace resources

@@ -4,29 +4,29 @@
 
 #include "resources/index_buffer.h"
 #include "resources/pipeline.h"
-#include "resources/texture.h"
 #include "resources/uniform_buffer.h"
 #include "resources/vertex_buffer.h"
+#include "resources/material.h"
 
 namespace tst {
 namespace engine {
     namespace opengl {
         class draw_info {
         public:
-            draw_info(const vertex_buffer* vertices,
-                      const index_buffer<std::uint16_t>* indices,
+            draw_info(const vertex_buffer& vertices,
+                      const index_buffer* indices,
                       const pipeline& pipeline,
-                      const std::vector<const uniform_buffer*>& uniforms,
-                      const std::vector<const texture*>& textures);
+                      const material& material,
+                      const std::vector<const uniform_buffer*>& uniforms);
 
             ~draw_info() = default;
 
         public:
-            const vertex_buffer* vertices;
-            const index_buffer<std::uint16_t>* indices;
+            const vertex_buffer& vertices;
+            const index_buffer* indices;
             const pipeline& pipelineState;
-            const std::vector<const uniform_buffer*> uniforms;
-            const std::vector<const texture*> textures;
+            const material& meshMaterial;
+            const std::vector<const uniform_buffer*>& uniforms;
         };
     } // namespace opengl
 } // namespace engine

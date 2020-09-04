@@ -23,7 +23,11 @@ namespace scene {
         object_controller(const application::data_loader& dataLoader,
                           engine::resource_factory& resourceFactory);
 
-        scene_object load_object(const std::string& objectName, const std::string& shaderName);
+        scene_object load_object(const std::string_view objectName, const std::string_view shaderName);
+
+    private:
+        engine::model load_model(std::string_view path);
+        engine::model load_dummy_model();
 
     private:
         const application::data_loader& m_dataLoader;

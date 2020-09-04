@@ -3,8 +3,6 @@
 
 #include "event_processor.h"
 
-#include "time_source.h"
-
 namespace tst {
 namespace application {
 

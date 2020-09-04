@@ -10,7 +10,6 @@ namespace engine {
     }
 
     vertex_format::~vertex_format() {
-        
     }
 
 } // namespace engine

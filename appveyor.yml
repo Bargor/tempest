@@ -6,9 +6,10 @@ environment:
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
       GENERATOR: "Visual Studio 16 2019"
       ARCH: "-Ax64"
-      ENGINE: "GL"
-    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
-      GENERATOR: "Visual Studio 15 2017 Win64"
+      ENGINE: "Vk"
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+      GENERATOR: "Visual Studio 16 2019"
+      ARCH: "-Ax64"
       ENGINE: "GL"
 
 platform:
@@ -20,10 +21,14 @@ configuration:
 
 install:
     - git submodule update --init --recursive
-    - IF "%ENGINE%"=="Vk" (curl --silent --show-error --output VulkanSDK.exe https://vulkan.lunarg.com/sdk/download/1.1.82.1/windows/VulkanSDK-1.1.82.1-Installer.exe)
+    - IF "%ENGINE%"=="Vk" (curl -L --show-error --output VulkanSDK.exe https://vulkan.lunarg.com/sdk/download/1.2.148.1/windows/VulkanSDK-1.2.148.1-Installer.exe?Human=true)
     - IF "%ENGINE%"=="Vk" (VulkanSDK.exe /S)
+    
+cache:
+  - VulkanSDK.exe
 
 before_build:
+    - cmd: set VULKAN_SDK=C:\VulkanSDK\1.2.148.1
     - cmd: echo %GENERATOR%
     - cmd: cmake -G"%GENERATOR%" "%ARCH%" . -DTEMPEST_BUILD_ALL=ON -DENGINE=%ENGINE%
     - sh: cmake . 

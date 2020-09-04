@@ -6,13 +6,12 @@
 #include <application/app_event.h>
 #include <application/event_processor.h>
 #include <device/keyboard.h>
-#include <fmt/printf.h>
 #include <util/variant.h>
 
 namespace tst {
 namespace scene {
 
-    camera::camera(const std::string& cameraName,
+    camera::camera(std::string cameraName,
                    application::event_processor<application::app_event>& eventProcessor,
                    engine::resources::uniform_buffer&& buffer,
                    const glm::vec3& position,
@@ -20,7 +19,7 @@ namespace scene {
                    const glm::vec3& up,
                    const float fov,
                    const float aspect)
-        : m_name(cameraName)
+        : m_name(std::move(cameraName))
         , m_eventProcessor(eventProcessor)
         , m_buffer(std::move(buffer))
         , m_position(glm::vec4(position, 0.0f))
@@ -64,11 +63,13 @@ namespace scene {
             }
         };
 
-        auto resize_callback = [&](const application::app_event::arguments& args) {
+        auto resize_callback = [&, fov, aspect](const application::app_event::arguments& args) {
             assert(std::holds_alternative<application::app_event::framebuffer>(args));
             const auto size = std::get<application::app_event::framebuffer>(args).size;
-            m_perspective =
-                glm::perspective(glm::radians(fov), static_cast<float>(size.width) / size.height, 0.01f, 10.0f);
+            if (size.height > 0) {
+                m_perspective = glm::perspective(glm::radians(fov), aspect, 0.01f, 100.0f);
+                m_perspective[1][1] *= -1;
+            }
         };
 
         auto mouse_callback = [&](const application::app_event::arguments& args) {

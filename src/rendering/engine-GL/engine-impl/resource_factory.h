@@ -4,6 +4,7 @@
 
 #include "api.h"
 #include "resources/index_buffer.h"
+#include "resources/material.h"
 #include "resources/pipeline.h"
 #include "resources/shader.h"
 #include "resources/texture.h"
@@ -33,30 +34,30 @@ namespace engine {
             resource_factory(resource_factory&& factory) noexcept;
 
         public:
-            template<typename IndexType>
-            index_buffer<IndexType> create_index_buffer(std::vector<std::uint16_t>&& indices);
             const pipeline& create_pipeline(const std::string& techniqueName,
-                                            const std::string& pipelineName,
+                                            const std::string_view pipelineName,
                                             const std::string& shadersName,
-                                            const vertex_format& format);
-            void create_technique(const std::string& name);
+                                            const vertex_buffer& vertexBuffer);
+            void create_technique(std::string&& name);
             texture create_texture(const std::string& textureName);
-            vertex_buffer create_vertex_buffer(const vertex_format& format, std::vector<vertex>&& vertices);
             uniform_buffer create_uniform_buffer(const std::string& shaderName,
                                                  base::resource_bind_point bindPoint,
                                                  std::uint32_t binding,
                                                  std::size_t storageSize);
+
+            material create_material(std::string&& materialName,
+                                     const std::string& shaderName,
+                                     const std::vector<std::string>& textureNames,
+                                     std::uint32_t staticStorageSize,
+                                     std::uint32_t dynamicStorageSize);
+
+            buffer_construction_info create_buffer_construction_info() const noexcept;
 
         private:
             const application::data_loader& m_dataLoader;
             ptr<shader_compiler> m_shaderCompiler;
             std::vector<pipeline> m_pipelines;
         };
-
-        template<typename IndexType>
-        index_buffer<IndexType> resource_factory::create_index_buffer(std::vector<std::uint16_t>&& indices) {
-            return index_buffer<std::uint16_t>(std::move(indices));
-        }
     } // namespace opengl
 } // namespace engine
 } // namespace tst

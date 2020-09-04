@@ -11,7 +11,7 @@ namespace engine {
     namespace opengl {
         class vertex_buffer : public buffer {
         public:
-            vertex_buffer(const vertex_format& format,
+            vertex_buffer(const buffer_construction_info& info, const vertex_format& format,
                           std::vector<vertex>&& vertices);
             ~vertex_buffer();
 

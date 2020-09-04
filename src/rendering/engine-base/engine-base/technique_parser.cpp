@@ -112,8 +112,8 @@ namespace engine {
             return dependencies;
         }
 
-        technique_settings parse_technique_settings(const application::data_loader& dataLoader, const std::string& name) {
-            const auto techniqueFile = dataLoader.find_file(std::filesystem::path("techniques") / (name + ".json"));
+        technique_settings parse_technique_settings(const application::data_loader& dataLoader, std::string_view name) {
+            const auto techniqueFile = dataLoader.find_file((std::filesystem::path("techniques") / name).concat(".json"));
             if (!techniqueFile) {
                 return default_settings;
             }

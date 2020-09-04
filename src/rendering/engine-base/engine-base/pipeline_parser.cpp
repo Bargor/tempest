@@ -168,8 +168,8 @@ namespace engine {
             return global_blending_settings{enable, logicOperation, blendConstants};
         }
 
-        draw_settings parse_draw_settings(const application::data_loader& dataLoader, const std::string& name) {
-            const auto techniqueFile = dataLoader.find_file(std::filesystem::path("pipelines") / (name + ".json"));
+        draw_settings parse_draw_settings(const application::data_loader& dataLoader, std::string_view name) {
+            const auto techniqueFile = dataLoader.find_file((std::filesystem::path("pipelines") / name).concat(".json"));
             if (!techniqueFile) {
                 return default_settings;
             }

@@ -68,7 +68,7 @@ template<>
 struct hash<tst::engine::vulkan::pipeline> {
     std::size_t operator()(const tst::engine::vulkan::pipeline& pipeline) const {
         std::size_t seed = 0;
-        hash<std::string> hasher;
+        hash<std::string_view> hasher;
         tst::hash_combine(seed, hasher(pipeline.m_technique.get_name()));
         tst::hash_combine(seed, std::hash<tst::engine::base::pipeline_settings>{}(pipeline.m_pipelineSettings));
         return seed;

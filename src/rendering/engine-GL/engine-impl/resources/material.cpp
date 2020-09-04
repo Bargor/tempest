@@ -4,6 +4,11 @@
 
 namespace tst {
 namespace engine {
-    namespace opengl {} // namespace vulkan
+    namespace opengl {
+        material::material(
+            std::string&& name, const std::string&, const std::vector<std::string>&, std::uint32_t, std::uint32_t)
+            : base::material(std::move(name)) {
+        }
+    } // namespace opengl
 } // namespace engine
 } // namespace tst

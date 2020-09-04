@@ -24,7 +24,7 @@ namespace application {
         void set_size(const core::extent<std::uint32_t>& size) noexcept override;
         core::position<std::int32_t> get_position() const noexcept override;
         void set_position(const core::position<std::int32_t>& pos) noexcept override;
-        void set_title(const std::string&) noexcept override;
+        void set_title(std::string name) noexcept override;
         void set_cursor_mode(cursor_mode cursor) noexcept override;
         void focus() noexcept override;
         void unfocus() noexcept override;

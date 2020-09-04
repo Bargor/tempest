@@ -45,13 +45,13 @@ namespace scene {
               engine::resource_factory& resourceFactory);
         ~scene();
 
-        void add_camera(const std::string& cameraName,
+        void add_camera(std::string cameraName,
                         const glm::vec3& position,
                         const glm::vec3& lookAt,
                         const glm::vec3& up,
                         const float fov,
                         const float aspectRatio);
-        void add_object(const std::string& objectName, const std::string& path);
+        void add_object(std::string_view objectName, std::string_view path);
 
         camera& get_camera(std::string_view cameraName);
 

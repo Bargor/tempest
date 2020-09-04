@@ -1,10 +1,10 @@
 #include "scene.h"
 
+#include "object_controller.h"
+
 #include <application/app_event.h>
 #include <application/event_processor.h>
 #include <engine/resource_factory.h>
-
-#include "object_controller.h"
 
 namespace tst {
 namespace scene {
@@ -26,8 +26,10 @@ namespace scene {
         drawInfos.reserve(sceneState.size());
 
         for (auto& state : sceneState) {
-            engine::draw_info info(
-                state.vertices, state.indices, state.pipeline, {&state.uniform, &camera.get_uniforms()}, {&state.texture});
+            engine::draw_info info(state.model.get_mesh(0),
+                                   state.pipeline,
+                                   state.model.get_material(0),
+                                   {&state.uniform, &camera.get_uniforms()});
             drawInfos.emplace_back(std::move(info));
         }
 
@@ -47,7 +49,7 @@ namespace scene {
     scene::~scene() {
     }
 
-    void scene::add_camera(const std::string& cameraName,
+    void scene::add_camera(std::string cameraName,
                            const glm::vec3& position,
                            const glm::vec3& lookAt,
                            const glm::vec3& up,
@@ -55,10 +57,11 @@ namespace scene {
                            const float aspectRatio) {
         auto buffer =
             m_resourceFactory.create_uniform_buffer<camera::uniforms>("test", engine::bind_point::global_static, 2);
-        m_cameras.emplace_back(cameraName, m_eventProcessor, std::move(buffer), position, lookAt, up, fov, aspectRatio);
+        m_cameras.emplace_back(
+            std::move(cameraName), m_eventProcessor, std::move(buffer), position, lookAt, up, fov, aspectRatio);
     }
 
-    void scene::add_object(const std::string& objectName, const std::string& path) {
+    void scene::add_object(std::string_view objectName, std::string_view path) {
         m_objects.emplace_back(m_objectController->load_object(objectName, path));
     }
 

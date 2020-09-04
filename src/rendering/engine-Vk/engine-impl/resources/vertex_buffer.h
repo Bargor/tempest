@@ -15,10 +15,7 @@ namespace engine {
             using super = buffer;
         public:
 
-            vertex_buffer(const vk::Device logicalDevice,
-                          const vk::Queue m_queueHandle,
-                          const vk::CommandPool cmdPool,
-                          const vk::PhysicalDeviceMemoryProperties memoryProperties,
+            vertex_buffer(const buffer_construction_info& info,
                           const vertex_format& format,
                           std::vector<vertex>&& vertices);
             ~vertex_buffer();
@@ -26,7 +23,6 @@ namespace engine {
             vertex_buffer(vertex_buffer&& other) noexcept;
 
         public:
-
             std::uint32_t get_vertex_count() const noexcept;
 
             const vertex_format& get_vertex_format() const noexcept;
@@ -36,8 +32,12 @@ namespace engine {
             std::vector<vertex> m_vertices;
         };
 
-        inline std::uint32_t vertex_buffer::get_vertex_count() const noexcept {
+        TST_INLINE std::uint32_t vertex_buffer::get_vertex_count() const noexcept {
             return static_cast<std::uint32_t>(m_vertices.size());
+        }
+
+        TST_INLINE const vertex_format& vertex_buffer::get_vertex_format() const noexcept {
+            return m_format;
         }
 
     } // namespace vulkan

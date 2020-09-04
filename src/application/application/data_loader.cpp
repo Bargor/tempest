@@ -12,6 +12,8 @@
 #include <rapidjson/rapidjson.h>
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
+#define TINYOBJLOADER_IMPLEMENTATION
+#include <tiny_obj_loader.h>
 
 namespace tst {
 namespace application {
@@ -54,7 +56,15 @@ namespace application {
         throw data_exception(fmt::sprintf("Can't load file: %s", path.string()));
     }
 
-    void data_loader::load_obj_model(const std::string_view&) const {
+    obj_data data_loader::load_obj_model(const std::filesystem::path& path) const {
+        obj_data data;
+        std::string warn, err;
+
+        if (!tinyobj::LoadObj(&data.attrib, &data.shapes, &data.materials, &warn, &err, path.string().c_str())) {
+            throw std::runtime_error(warn + err);
+        }
+
+        return data;
     }
 
     rapidjson::Document data_loader::load_json(const std::filesystem::path& path) const {
@@ -75,7 +85,7 @@ namespace application {
                 ptr<unsigned char, void (*)(void*)>(pixels, stbi_image_free)};
     }
 
-    std::optional<std::filesystem::path> data_loader::find_file(const std::string& name) const {
+    std::optional<std::filesystem::path> data_loader::find_file(const std::string_view name) const {
         return find_file(std::filesystem::path(name));
     }
 
@@ -89,7 +99,7 @@ namespace application {
         return std::nullopt;
     }
 
-    void data_loader::add_search_path(std::string&& path) noexcept {
+    void data_loader::add_search_path(std::string path) noexcept {
         m_searchPaths.emplace_back(std::move(path));
     }
 

@@ -40,7 +40,7 @@ namespace application {
 
         virtual core::position<std::int32_t> get_position() const noexcept = 0;
         virtual void set_position(const core::position<std::int32_t>& pos) noexcept = 0;
-        virtual void set_title(const std::string&) noexcept = 0;
+        virtual void set_title(std::string) noexcept = 0;
         virtual void set_cursor_mode(cursor_mode cursor) noexcept = 0;
         virtual void focus() noexcept = 0;
         virtual void unfocus() noexcept = 0;

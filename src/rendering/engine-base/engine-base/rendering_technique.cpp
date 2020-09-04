@@ -7,7 +7,7 @@ namespace tst {
 namespace engine {
     namespace base {
 
-        rendering_technique::rendering_technique(const std::string& techniqueName, technique_settings&& settings)
+        rendering_technique::rendering_technique(std::string&& techniqueName, technique_settings&& settings)
             : m_techniqueName(techniqueName), m_settings(std::move(settings)) {
         }
     } // namespace base

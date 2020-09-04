@@ -15,7 +15,7 @@ namespace engine {
             friend class pipeline;
 
         public:
-            rendering_technique(const std::string& techniqueName,
+            rendering_technique(std::string&& techniqueName,
                                 base::technique_settings&& techniqueSettings,
                                 vk::Device device,
                                 const swap_chain& swapChain);
@@ -25,6 +25,7 @@ namespace engine {
 
             ~rendering_technique();
 
+        public:
             void recreate_technique(const swap_chain& newSwapChain);
 
             vk::RenderPassBeginInfo generate_render_pass_info(vk::CommandBuffer buffer,
@@ -45,6 +46,10 @@ namespace engine {
 
         TST_INLINE vk::Extent2D rendering_technique::get_extent() const noexcept {
             return m_extent;
+        }
+
+        TST_INLINE bool operator==(const rendering_technique& lhs, const rendering_technique& rhs) noexcept {
+            return &lhs == &rhs;
         }
 
     } // namespace vulkan

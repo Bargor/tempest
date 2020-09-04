@@ -8,6 +8,7 @@
 #include <cstdint>
 #include <platform.h>
 #include <string>
+#include <string_view>
 
 namespace tst {
 namespace device {
@@ -17,7 +18,7 @@ namespace device {
         monitor() = delete;
         monitor(GLFWmonitor& monitor);
 
-        const std::string& get_name() const noexcept;
+        std::string_view get_name() const noexcept;
         std::uint32_t get_width() const noexcept;
         std::uint32_t get_height() const noexcept;
         std::int32_t get_red_bits() const noexcept;
@@ -44,7 +45,7 @@ namespace device {
         core::position<std::int32_t> m_position;
     };
 
-    TST_INLINE const std::string& monitor::get_name() const noexcept {
+    TST_INLINE std::string_view monitor::get_name() const noexcept {
         return m_name;
     }
 

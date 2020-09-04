@@ -13,7 +13,7 @@ namespace tst {
 namespace engine {
     namespace opengl {
 
-        shader::shader(shader_type type, std::string&& source, const std::string_view name)
+        shader::shader(shader_type type, std::string&& source, std::string_view name)
             : m_type(type)
             , m_shaderId(glCreateShader(m_shaderTypesLookup[static_cast<std::size_t>(type)]))
             , m_source(source)
@@ -28,7 +28,7 @@ namespace engine {
             : m_type(shader.m_type)
             , m_shaderId(shader.m_shaderId)
             , m_source(std::move(shader.m_source))
-            , m_name(shader.m_name)
+            , m_name(std::move(shader.m_name))
             , m_compiled(shader.m_compiled) {
             shader.m_shaderId = 0;
         }

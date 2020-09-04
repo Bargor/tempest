@@ -23,9 +23,9 @@ namespace engine {
         }
 
         const pipeline& resource_factory::create_pipeline(const std::string&,
+                                                          std::string_view,
                                                           const std::string&,
-                                                          const std::string&,
-                                                          const vertex_format&) {
+                                                          const vertex_buffer&) {
             pipeline p{};
             m_pipelines.push_back(p);
             return m_pipelines[0];
@@ -39,17 +39,27 @@ namespace engine {
             return texture(m_dataLoader.load_image(textureFile.value()));
         }
 
-        vertex_buffer resource_factory::create_vertex_buffer(const vertex_format& format, std::vector<vertex>&& vertices) {
-            return vertex_buffer(format, std::move(vertices));
-        }
-
-        uniform_buffer resource_factory::create_uniform_buffer(
-            const std::string&, base::resource_bind_point, std::uint32_t, std::size_t storageSize) {
+        uniform_buffer resource_factory::create_uniform_buffer(const std::string&,
+                                                               base::resource_bind_point,
+                                                               std::uint32_t,
+                                                               std::size_t storageSize) {
             return uniform_buffer(storageSize);
         }
 
-        void resource_factory::create_technique(const std::string& name) {
+        material resource_factory::create_material(std::string&& materialName,
+                                                   const std::string& shaderName,
+                                                   const std::vector<std::string>& textureNames,
+                                                   std::uint32_t staticStorageSize,
+                                                   std::uint32_t dynamicStorageSize) {
+            return material(std::move(materialName), shaderName, textureNames, staticStorageSize, dynamicStorageSize);
+        }
+
+        void resource_factory::create_technique(std::string&& name) {
             m_shaderCompiler->compile_program(name, shaderTypesSet{});
+        }
+
+        buffer_construction_info resource_factory::create_buffer_construction_info() const noexcept {
+            return buffer_construction_info{};
         }
     } // namespace opengl
 } // namespace engine

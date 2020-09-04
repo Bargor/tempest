@@ -5,9 +5,6 @@
 #include "physical_device.h"
 #include "resources/settings.h"
 
-#include <vector>
-#include <vulkan/vulkan.hpp>
-
 namespace tst {
 
 namespace engine {

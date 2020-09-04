@@ -4,7 +4,6 @@
 #include "queue_indices.h"
 
 #include <core.h>
-#include <vulkan/vulkan.hpp>
 
 namespace tst {
 namespace engine {
