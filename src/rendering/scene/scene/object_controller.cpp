@@ -37,7 +37,7 @@ namespace scene {
         const auto filepath = m_dataLoader.find_file(path);
         if (filepath && filepath->extension() == ".obj") {
             std::vector<engine::mesh> meshes;
-            meshes.emplace_back(load_obj_model(m_resourceFactory, *filepath));
+            meshes.emplace_back(load_obj_model(m_dataLoader, m_resourceFactory, *filepath));
 
             return engine::model(std::move(meshes), {});
         } else {

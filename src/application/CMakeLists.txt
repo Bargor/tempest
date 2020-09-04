@@ -35,7 +35,7 @@ tst_add_library(application "${APPLICATION_HDRS}" "${APPLICATION_SRCS}")
 
 target_include_directories(application PRIVATE ${PROJECT_SOURCE_DIR}/libs/stb)
 
-target_link_libraries(application PUBLIC tst::core tst::device rapidjson::rapidjson PRIVATE glfw)
+target_link_libraries(application PUBLIC tst::core tst::device rapidjson::rapidjson tinyobjloader PRIVATE glfw)
 
 if (ENGINE STREQUAL "Vk")
 	target_include_directories(application PRIVATE ${Vulkan_INCLUDE_DIRS})

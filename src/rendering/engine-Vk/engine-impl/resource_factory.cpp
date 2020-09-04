@@ -125,6 +125,7 @@ namespace engine {
             }
             const auto descriptorSets =
                 m_device.m_resourceCache->find_descriptor_sets(shaderName, base::resource_bind_point::material_static);
+            assert(descriptorSets);
 
             if (staticStorageSize == 0 && dynamicStorageSize == 0) {
                 return material(std::move(materialName), std::move(textures), *descriptorSets, m_device.m_resourceIndex);

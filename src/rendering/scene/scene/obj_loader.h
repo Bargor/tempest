@@ -7,10 +7,15 @@
 #include <string>
 
 namespace tst {
+namespace application {
+    class data_loader;
+}
 namespace engine {
     class resource_factory;
 }
 namespace scene {
-    engine::mesh load_obj_model(engine::resource_factory& factory, const std::filesystem::path& path);
+    engine::mesh load_obj_model(const application::data_loader& dataLoader,
+                                engine::resource_factory& factory,
+                                const std::filesystem::path& path);
 }
 } // namespace tst

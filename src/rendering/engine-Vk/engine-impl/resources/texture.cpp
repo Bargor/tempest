@@ -87,6 +87,7 @@ namespace engine {
                                    base::resource_bind_point bindPoint,
                                    std::uint32_t binding) {
             m_descriptorSets = m_resourceCache.find_descriptor_sets(shaderName, bindPoint);
+            assert(m_descriptorSets);
 
             for (const auto set : *m_descriptorSets) {
                 vk::DescriptorImageInfo imageInfo(m_sampler, m_textureView, vk::ImageLayout::eShaderReadOnlyOptimal);
