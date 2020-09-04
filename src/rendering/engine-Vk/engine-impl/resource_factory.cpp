@@ -70,7 +70,7 @@ namespace engine {
 
                 return *m_device.m_resourceCache->find_pipeline(hash);
             }
-            throw std::runtime_error("Can't find pipeline");
+            throw std::runtime_error("Can't create pipeline");
         }
 
         void resource_factory::create_technique(std::string&& name) {

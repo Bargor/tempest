@@ -5,7 +5,6 @@
 #include "material.h"
 #include "resources/index_buffer.h"
 #include "resources/pipeline.h"
-#include "resources/shader.h"
 #include "resources/texture.h"
 #include "resources/uniform_buffer.h"
 #include "resources/vertex_buffer.h"
