@@ -7,6 +7,7 @@
 
 #include <application/data_loader.h>
 #include <engine/resource_factory.h>
+#include <fmt/printf.h>
 #include <materials/test.h>
 #include <util/variant.h>
 
@@ -46,6 +47,8 @@ namespace scene {
     }
 
     engine::model object_controller::load_dummy_model() {
+        fmt::printf("Loading dummy model\n");
+
         auto vertexFormat = engine::vertex_format(engine::vertex_format::primitive_topology::triangle_list);
         vertexFormat.add_attribute(engine::vertex_format::location::position,
                                    engine::vertex_format::format::float3,
