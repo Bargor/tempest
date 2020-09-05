@@ -16,8 +16,8 @@ namespace engine {
             using super = api::index_buffer;
 
         public:
-            index_buffer(const api::buffer_construction_info& info, std::vector<std::uint16_t>&& indices);
-            index_buffer(const api::buffer_construction_info& info, std::vector<std::uint32_t>&& indices);
+            index_buffer(const creation_info& info, std::vector<std::uint16_t>&& indices);
+            index_buffer(const creation_info& info, std::vector<std::uint32_t>&& indices);
 
             index_buffer(index_buffer&& other) noexcept;
             ~index_buffer();

@@ -4,7 +4,6 @@
 #include "texture.h"
 
 #include "../resource_cache.h"
-#include "buffer.h"
 #include "image.h"
 
 namespace tst {
@@ -32,7 +31,7 @@ namespace engine {
             return device.createSampler(samplerInfo);
         }
 
-        texture::texture(const buffer_construction_info& info,
+        texture::texture(const buffer::creation_info& info,
                          const resource_cache& resourceCache,
                          vk::BufferUsageFlags flags,
                          vk::MemoryPropertyFlags memoryFlags,

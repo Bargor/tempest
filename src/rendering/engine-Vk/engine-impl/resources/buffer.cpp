@@ -11,7 +11,7 @@ namespace engine {
 
         class physical_device;
 
-        buffer::buffer(const buffer_construction_info& info,
+        buffer::buffer(const creation_info& info,
                        std::size_t size,
                        vk::BufferUsageFlags usageFlags,
                        vk::MemoryPropertyFlags memoryFlags)

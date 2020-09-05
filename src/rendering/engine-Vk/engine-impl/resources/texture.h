@@ -2,6 +2,7 @@
 // Author: Karol Kontny
 #pragma once
 
+#include "buffer.h"
 #include "settings.h"
 
 #include <application/image_data.h>
@@ -13,14 +14,13 @@ namespace tst {
 namespace engine {
     namespace vulkan {
 
-        struct buffer_construction_info;
         class resource_cache;
 
         using descriptor_set = std::array<vk::DescriptorSet, settings::m_inFlightFrames>;
 
         class texture {
         public:
-            texture(const buffer_construction_info& info,
+            texture(const buffer::creation_info& info,
                     const resource_cache& resourceCache,
                     vk::BufferUsageFlags flags,
                     vk::MemoryPropertyFlags memoryFlags,

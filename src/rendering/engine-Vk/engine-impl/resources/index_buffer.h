@@ -19,7 +19,7 @@ namespace engine {
 
         public:
             template<typename IndexType>
-            index_buffer(const buffer_construction_info& info, std::vector<IndexType>&& indices);
+            index_buffer(const buffer::creation_info& info, std::vector<IndexType>&& indices);
             ~index_buffer() = default;
 
             index_buffer(index_buffer&& other) noexcept;
@@ -28,7 +28,7 @@ namespace engine {
             vk::IndexType get_index_type() const noexcept;
 
         private:
-            void copy_to_gpu(const buffer_construction_info& info);
+            void copy_to_gpu(const buffer::creation_info& info);
 
         private:
             vk::IndexType m_format;

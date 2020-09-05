@@ -39,11 +39,11 @@ namespace engine {
             return texture(m_dataLoader.load_image(textureFile.value()));
         }
 
-        uniform_buffer resource_factory::create_uniform_buffer(const std::string&,
-                                                               base::resource_bind_point,
-                                                               std::uint32_t,
+        uniform_buffer resource_factory::create_uniform_buffer(const std::string& shaderName,
+                                                               base::resource_bind_point bindPoint,
+                                                               std::uint32_t binding,
                                                                std::size_t storageSize) {
-            return uniform_buffer(storageSize);
+            return uniform_buffer(create_uniform_creation_info(shaderName, bindPoint), binding, storageSize);
         }
 
         material resource_factory::create_material(std::string&& materialName,
@@ -58,8 +58,13 @@ namespace engine {
             m_shaderCompiler->compile_program(name, shaderTypesSet{});
         }
 
-        buffer_construction_info resource_factory::create_buffer_construction_info() const noexcept {
-            return buffer_construction_info{};
+        buffer::creation_info resource_factory::create_buffer_creation_info() const noexcept {
+            return buffer::creation_info{};
+        }
+
+        uniform_buffer::creation_info resource_factory::create_uniform_creation_info(
+            const std::string&, base::resource_bind_point) const noexcept {
+            return uniform_buffer::creation_info{};
         }
     } // namespace opengl
 } // namespace engine

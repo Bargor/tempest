@@ -44,9 +44,9 @@ namespace engine {
         }
 
         std::size_t resource_factory::create_pipeline(const std::string& techniqueName,
-                                                          std::string_view pipelineName,
-                                                          const std::string& shadersName,
-                                                          const vertex_buffer& vertexBuffer) {
+                                                      std::string_view pipelineName,
+                                                      const std::string& shadersName,
+                                                      const vertex_buffer& vertexBuffer) {
             auto shaders = m_device.m_resourceCache->find_shaders(shadersName);
             auto technique = m_device.m_resourceCache->find_technique(techniqueName);
 
@@ -87,10 +87,7 @@ namespace engine {
                                                                base::resource_bind_point bindPoint,
                                                                std::uint32_t binding,
                                                                std::size_t storageSize) {
-            const auto descriptorSets = m_device.m_resourceCache->find_descriptor_sets(shaderName, bindPoint);
-            assert(descriptorSets);
-            return uniform_buffer(
-                create_buffer_construction_info(), *descriptorSets, binding, m_device.m_resourceIndex, storageSize);
+            return uniform_buffer(create_uniform_creation_info(shaderName, bindPoint), binding, storageSize);
         }
 
         texture resource_factory::create_texture(const std::string& textureName) {
@@ -98,7 +95,7 @@ namespace engine {
             if (!textureFile) {
                 throw std::runtime_error(fmt::format("Wrong texture path: no such file: %s", "textures/" + textureName));
             }
-            return texture(create_buffer_construction_info(),
+            return texture(create_buffer_creation_info(),
                            *m_device.m_resourceCache,
                            vk::BufferUsageFlagBits::eTransferSrc,
                            vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent,
@@ -143,12 +140,20 @@ namespace engine {
             return m_device.m_resourceCache->find_shaders(shadersName);
         }
 
-        buffer_construction_info resource_factory::create_buffer_construction_info() const noexcept {
-            return buffer_construction_info{m_device.m_logicalDevice,
-                                            m_transferQueue,
-                                            m_transferCommandPool,
-                                            m_device.m_physicalDevice->get_memory_properties()};
+        buffer::creation_info resource_factory::create_buffer_creation_info() const noexcept {
+            return buffer::creation_info{m_device.m_logicalDevice,
+                                         m_transferQueue,
+                                         m_transferCommandPool,
+                                         m_device.m_physicalDevice->get_memory_properties()};
+        }
+
+        uniform_buffer::creation_info resource_factory::create_uniform_creation_info(
+            const std::string& shaderName, base::resource_bind_point bindPoint) const noexcept {
+            const auto descriptorSets = m_device.m_resourceCache->find_descriptor_sets(shaderName, bindPoint);
+            assert(descriptorSets);
+            return uniform_buffer::creation_info{create_buffer_creation_info(), *descriptorSets, m_device.m_resourceIndex};
         }
     } // namespace vulkan
+
 } // namespace engine
 } // namespace tst

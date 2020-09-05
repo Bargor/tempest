@@ -18,10 +18,6 @@ namespace engine {
 
     class device;
 
-    namespace resources {
-        class pipeline;
-    }
-
     using bind_point = base::resource_bind_point;
 
     class resource_factory final : private api::resource_factory {
@@ -52,14 +48,17 @@ namespace engine {
                                                         std::uint32_t binding);
 
     private:
-        api::buffer_construction_info create_buffer_construction_info() const noexcept;
+        api::buffer::creation_info create_buffer_creation_info() const noexcept;
+        api::uniform_buffer::creation_info create_uniform_creation_info(const std::string& shaderName,
+                                                                        bind_point bindPoint) const noexcept;
     };
 
     template<typename StorageType>
     resources::uniform_buffer resource_factory::create_uniform_buffer(const std::string& shaderName,
                                                                       bind_point bindPoint,
                                                                       std::uint32_t binding) {
-        return super::create_uniform_buffer(shaderName, bindPoint, binding, sizeof(StorageType));
+        return resources::uniform_buffer(
+            create_uniform_creation_info(shaderName, bindPoint), binding, sizeof(StorageType));
     }
 
     template<MaterialType T>

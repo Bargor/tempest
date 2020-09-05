@@ -54,7 +54,9 @@ namespace engine {
         public: // vulkan internal
             const shader_set* load_shaders(const std::string& shadersName);
 
-            api::buffer_construction_info create_buffer_construction_info() const noexcept;
+            buffer::creation_info create_buffer_creation_info() const noexcept;
+            uniform_buffer::creation_info create_uniform_creation_info(const std::string& shaderName,
+                                                                       base::resource_bind_point bindPoint) const noexcept;
 
         private:
             const device& m_device;

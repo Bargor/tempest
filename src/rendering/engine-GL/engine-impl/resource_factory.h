@@ -51,7 +51,9 @@ namespace engine {
                                      std::uint32_t staticStorageSize,
                                      std::uint32_t dynamicStorageSize);
 
-            buffer_construction_info create_buffer_construction_info() const noexcept;
+            buffer::creation_info create_buffer_creation_info() const noexcept;
+            uniform_buffer::creation_info create_uniform_creation_info(const std::string& shaderName,
+                                                                       base::resource_bind_point bindPoint) const noexcept;
 
         private:
             const application::data_loader& m_dataLoader;

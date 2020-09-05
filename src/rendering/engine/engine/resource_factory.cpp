@@ -16,11 +16,11 @@ namespace engine {
     }
 
     resources::index_buffer resource_factory::create_index_buffer(std::vector<std::uint16_t>&& indices) {
-        return resources::index_buffer(create_buffer_construction_info(), std::move(indices));
+        return resources::index_buffer(create_buffer_creation_info(), std::move(indices));
     }
 
     resources::index_buffer resource_factory::create_index_buffer(std::vector<std::uint32_t>&& indices) {
-        return resources::index_buffer(create_buffer_construction_info(), std::move(indices));
+        return resources::index_buffer(create_buffer_creation_info(), std::move(indices));
     }
 
     std::size_t resource_factory::create_pipeline(const std::string& techniqueName,
@@ -36,15 +36,20 @@ namespace engine {
 
     resources::vertex_buffer resource_factory::create_vertex_buffer(const engine::vertex_format& format,
                                                                     std::vector<vertex>&& vertices) {
-        return resources::vertex_buffer(create_buffer_construction_info(), format, std::move(vertices));
+        return resources::vertex_buffer(create_buffer_creation_info(), format, std::move(vertices));
     }
 
     resources::texture resource_factory::create_texture(const std::string& textureName) {
         return super::create_texture(textureName);
     }
 
-    api::buffer_construction_info resource_factory::create_buffer_construction_info() const noexcept {
-        return super::create_buffer_construction_info();
+    api::buffer::creation_info resource_factory::create_buffer_creation_info() const noexcept {
+        return super::create_buffer_creation_info();
+    }
+
+    api::uniform_buffer::creation_info resource_factory::create_uniform_creation_info(const std::string& shaderName,
+                                                                                      bind_point bindPoint) const noexcept {
+        return super::create_uniform_creation_info(shaderName, bindPoint);
     }
 } // namespace engine
 } // namespace tst

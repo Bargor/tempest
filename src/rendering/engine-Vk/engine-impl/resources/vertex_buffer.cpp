@@ -9,7 +9,7 @@ namespace tst {
 namespace engine {
     namespace vulkan {
 
-        vertex_buffer::vertex_buffer(const buffer_construction_info& info,
+        vertex_buffer::vertex_buffer(const buffer::creation_info& info,
                                      const vertex_format& format,
                                      std::vector<vertex>&& vertices)
             : buffer(info,

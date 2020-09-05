@@ -16,7 +16,7 @@ namespace engine {
             using super = api::vertex_buffer;
 
         public:
-            vertex_buffer(const api::buffer_construction_info& info,
+            vertex_buffer(const creation_info& info,
                           const vertex_format& format,
                           std::vector<vertex>&& vertices);
             vertex_buffer(vertex_buffer&& other) noexcept;
