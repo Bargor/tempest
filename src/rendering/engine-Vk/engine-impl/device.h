@@ -131,7 +131,7 @@ namespace engine {
         template<typename Iter>
         std::vector<draw_info> device::sort_draw_infos(Iter first, Iter last) const {
             std::for_each(first, last, [&](draw_info& drawInfo) {
-                drawInfo.pipeline = m_resourceCache->find_pipeline(drawInfo.pipelineHash);
+                drawInfo.pipelineState = m_resourceCache->find_pipeline(drawInfo.pipelineHash);
             });
             return std::vector<draw_info>(first, last);
         }

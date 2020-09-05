@@ -34,7 +34,7 @@ namespace engine {
             const pipeline::pipeline_hash pipelineHash;
             const material& meshMaterial;
             std::vector<vk::DescriptorSet> descriptorSets;
-            const pipeline* pipeline;
+            const pipeline* pipelineState;
         };
     } // namespace vulkan
 } // namespace engine

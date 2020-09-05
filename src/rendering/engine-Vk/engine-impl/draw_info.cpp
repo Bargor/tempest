@@ -26,7 +26,7 @@ namespace engine {
             , pipelineHash(other.pipelineHash)
             , meshMaterial(other.meshMaterial)
             , descriptorSets(std::move(other.descriptorSets))
-            , pipeline(other.pipeline) {
+            , pipelineState(other.pipelineState) {
         }
     } // namespace vulkan
 } // namespace engine
