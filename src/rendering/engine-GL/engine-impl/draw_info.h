@@ -24,7 +24,7 @@ namespace engine {
         public:
             const vertex_buffer& vertices;
             const index_buffer* indices;
-            pipeline::pipeline_hash pipeline;
+            pipeline::pipeline_hash pipelineHash;
             const material& meshMaterial;
             const std::vector<const uniform_buffer*>& uniforms;
         };

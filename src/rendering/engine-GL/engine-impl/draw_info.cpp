@@ -11,8 +11,7 @@ namespace engine {
                              pipeline::pipeline_hash pipeline,
                              const material& material,
                              const std::vector<const uniform_buffer*>& uniforms)
-            : vertices(vertices), indices(indices), pipeline(pipeline), meshMaterial(material), uniforms(uniforms) {
+            : vertices(vertices), indices(indices), pipelineHash(pipeline), meshMaterial(material), uniforms(uniforms) {
         }
     } // namespace opengl
 } // namespace engine
-} // namespace tst
