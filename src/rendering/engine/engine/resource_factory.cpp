@@ -27,7 +27,7 @@ namespace engine {
                                                   std::string_view pipelineName,
                                                   const std::string& shadersName,
                                                   const resources::vertex_buffer& vertexBuffer) {
-        return (super::create_pipeline(techniqueName, pipelineName, shadersName, vertexBuffer.to_super()));
+        return super::create_pipeline(techniqueName, pipelineName, shadersName, vertexBuffer.to_super());
     }
 
     void resource_factory::create_technique(std::string name) {

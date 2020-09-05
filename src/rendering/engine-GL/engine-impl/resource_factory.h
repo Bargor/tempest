@@ -34,10 +34,10 @@ namespace engine {
             resource_factory(resource_factory&& factory) noexcept;
 
         public:
-            const pipeline& create_pipeline(const std::string& techniqueName,
-                                            const std::string_view pipelineName,
-                                            const std::string& shadersName,
-                                            const vertex_buffer& vertexBuffer);
+            pipeline::pipeline_hash create_pipeline(const std::string& techniqueName,
+                                                    const std::string_view pipelineName,
+                                                    const std::string& shadersName,
+                                                    const vertex_buffer& vertexBuffer);
             void create_technique(std::string&& name);
             texture create_texture(const std::string& textureName);
             uniform_buffer create_uniform_buffer(const std::string& shaderName,
