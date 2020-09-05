@@ -40,7 +40,7 @@ namespace engine {
     }
 
     resources::texture resource_factory::create_texture(const std::string& textureName) {
-        return super::create_texture(textureName);
+        return resources::texture(create_texture_creation_info(textureName));
     }
 
     api::buffer::creation_info resource_factory::create_buffer_creation_info() const noexcept {
@@ -50,6 +50,10 @@ namespace engine {
     api::uniform_buffer::creation_info resource_factory::create_uniform_creation_info(const std::string& shaderName,
                                                                                       bind_point bindPoint) const noexcept {
         return super::create_uniform_creation_info(shaderName, bindPoint);
+    }
+
+    api::texture::creation_info resource_factory::create_texture_creation_info(const std::string& textureName) const noexcept {
+        return super::create_texture_creation_info(textureName);
     }
 } // namespace engine
 } // namespace tst

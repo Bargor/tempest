@@ -31,41 +31,40 @@ namespace engine {
             return device.createSampler(samplerInfo);
         }
 
-        texture::texture(const buffer::creation_info& info,
-                         const resource_cache& resourceCache,
-                         vk::BufferUsageFlags flags,
-                         vk::MemoryPropertyFlags memoryFlags,
-                         const application::image_data& imageData,
-                         const std::uint32_t& resourceIndex,
-                         vk::Sampler sampler)
-            : m_logicalDevice(info.logicalDevice)
-            , m_resourceCache(resourceCache)
-            , m_sampler(sampler ? sampler : create_default_sampler(m_logicalDevice))
-            , m_resourceIndex(resourceIndex) {
-            buffer stagingBuffer(info, imageData.memorySize, flags, memoryFlags);
-            stagingBuffer.copy_data(imageData.data.get(), imageData.memorySize);
+        texture::texture(const creation_info& info)
+            : m_logicalDevice(info.bufferCreationInfo.logicalDevice)
+            , m_resourceCache(info.resourceCache)
+            , m_sampler(info.sampler ? info.sampler : create_default_sampler(m_logicalDevice))
+            , m_resourceIndex(info.resourceIndex)
+            , m_descriptorSets(nullptr) {
+            buffer stagingBuffer(info.bufferCreationInfo, info.imageData.memorySize, info.flags, info.memoryFlags);
+            stagingBuffer.copy_data(info.imageData.data.get(), info.imageData.memorySize);
 
             std::tie(m_textureImage, m_textureMemory) =
                 create_image(m_logicalDevice,
-                             {imageData.imageSize.width, imageData.imageSize.height},
+                             {info.imageData.imageSize.width, info.imageData.imageSize.height},
                              vk::Format::eR8G8B8A8Srgb,
                              vk::ImageTiling::eOptimal,
                              vk::ImageUsageFlagBits::eTransferDst | vk::ImageUsageFlagBits::eSampled,
-                             info.memoryProperties,
+                             info.bufferCreationInfo.memoryProperties,
                              vk::MemoryPropertyFlagBits::eDeviceLocal);
 
             transition_image_layout(m_logicalDevice,
-                                    info.queueHandle,
-                                    info.cmdPool,
+                                    info.bufferCreationInfo.queueHandle,
+                                    info.bufferCreationInfo.cmdPool,
                                     m_textureImage,
                                     vk::Format::eR8G8B8A8Srgb,
                                     vk::ImageLayout::eUndefined,
                                     vk::ImageLayout::eTransferDstOptimal);
-            copy_buffer_to_image(
-                m_logicalDevice, info.cmdPool, info.queueHandle, stagingBuffer, m_textureImage, imageData.imageSize);
+            copy_buffer_to_image(m_logicalDevice,
+                                 info.bufferCreationInfo.cmdPool,
+                                 info.bufferCreationInfo.queueHandle,
+                                 stagingBuffer,
+                                 m_textureImage,
+                                 info.imageData.imageSize);
             transition_image_layout(m_logicalDevice,
-                                    info.queueHandle,
-                                    info.cmdPool,
+                                    info.bufferCreationInfo.queueHandle,
+                                    info.bufferCreationInfo.cmdPool,
                                     m_textureImage,
                                     vk::Format::eR8G8B8A8Srgb,
                                     vk::ImageLayout::eTransferDstOptimal,

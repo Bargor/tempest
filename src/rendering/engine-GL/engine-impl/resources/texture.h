@@ -11,7 +11,11 @@ namespace engine {
 
         class texture {
         public:
-            texture(const application::image_data& imageData);
+            struct creation_info {
+                application::image_data imageData;
+            };
+        public:
+            texture(const creation_info& info);
             ~texture();
 
             texture(texture&& other) noexcept;

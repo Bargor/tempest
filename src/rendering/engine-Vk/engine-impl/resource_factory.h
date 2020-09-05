@@ -35,9 +35,9 @@ namespace engine {
 
         public: // public resource factory interface
             std::size_t create_pipeline(const std::string& techniqueName,
-                                            std::string_view pipelineName,
-                                            const std::string& shadersName,
-                                            const vertex_buffer& vertexBuffer);
+                                        std::string_view pipelineName,
+                                        const std::string& shadersName,
+                                        const vertex_buffer& vertexBuffer);
             void create_technique(std::string&& name);
             uniform_buffer create_uniform_buffer(const std::string& shaderName,
                                                  base::resource_bind_point bindPoint,
@@ -57,6 +57,7 @@ namespace engine {
             buffer::creation_info create_buffer_creation_info() const noexcept;
             uniform_buffer::creation_info create_uniform_creation_info(const std::string& shaderName,
                                                                        base::resource_bind_point bindPoint) const noexcept;
+            texture::creation_info create_texture_creation_info(const std::string& textureName) const;
 
         private:
             const device& m_device;

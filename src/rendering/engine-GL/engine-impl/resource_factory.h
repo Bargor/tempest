@@ -55,6 +55,8 @@ namespace engine {
             uniform_buffer::creation_info create_uniform_creation_info(const std::string& shaderName,
                                                                        base::resource_bind_point bindPoint) const noexcept;
 
+            texture::creation_info create_texture_creation_info(const std::string& textureName) const;
+
         private:
             const application::data_loader& m_dataLoader;
             ptr<shader_compiler> m_shaderCompiler;

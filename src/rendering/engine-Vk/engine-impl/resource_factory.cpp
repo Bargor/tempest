@@ -91,16 +91,7 @@ namespace engine {
         }
 
         texture resource_factory::create_texture(const std::string& textureName) {
-            const auto textureFile = m_dataLoader.find_file(std::filesystem::path("textures") / (textureName));
-            if (!textureFile) {
-                throw std::runtime_error(fmt::format("Wrong texture path: no such file: %s", "textures/" + textureName));
-            }
-            return texture(create_buffer_creation_info(),
-                           *m_device.m_resourceCache,
-                           vk::BufferUsageFlagBits::eTransferSrc,
-                           vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent,
-                           m_dataLoader.load_image(textureFile.value()),
-                           m_device.m_resourceIndex);
+            return texture(create_texture_creation_info(textureName));
         }
 
         material resource_factory::create_material(std::string&& materialName,
@@ -152,6 +143,20 @@ namespace engine {
             const auto descriptorSets = m_device.m_resourceCache->find_descriptor_sets(shaderName, bindPoint);
             assert(descriptorSets);
             return uniform_buffer::creation_info{create_buffer_creation_info(), *descriptorSets, m_device.m_resourceIndex};
+        }
+
+        texture::creation_info resource_factory::create_texture_creation_info(const std::string& textureName) const {
+            const auto textureFile = m_dataLoader.find_file(std::filesystem::path("textures") / (textureName));
+            if (!textureFile) {
+                throw std::runtime_error(fmt::format("Wrong texture path: no such file: %s", "textures/" + textureName));
+            }
+            return texture::creation_info{create_buffer_creation_info(),
+                                          *m_device.m_resourceCache,
+                                          vk::BufferUsageFlagBits::eTransferSrc,
+                                          vk::MemoryPropertyFlagBits::eHostVisible |
+                                              vk::MemoryPropertyFlagBits::eHostCoherent,
+                                          m_dataLoader.load_image(textureFile.value()),
+                                          m_device.m_resourceIndex};
         }
     } // namespace vulkan
 

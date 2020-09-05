@@ -32,11 +32,7 @@ namespace engine {
         }
 
         texture resource_factory::create_texture(const std::string& textureName) {
-            const auto textureFile = m_dataLoader.find_file(std::filesystem::path("textures") / (textureName));
-            if (!textureFile) {
-                throw std::runtime_error(fmt::format("Wrong texture path: so such file: %s", "textures/" + textureName));
-            }
-            return texture(m_dataLoader.load_image(textureFile.value()));
+            return texture(create_texture_creation_info(textureName));
         }
 
         uniform_buffer resource_factory::create_uniform_buffer(const std::string& shaderName,
@@ -65,6 +61,14 @@ namespace engine {
         uniform_buffer::creation_info resource_factory::create_uniform_creation_info(
             const std::string&, base::resource_bind_point) const noexcept {
             return uniform_buffer::creation_info{};
+        }
+
+        texture::creation_info resource_factory::create_texture_creation_info(const std::string& textureName) const {
+            const auto textureFile = m_dataLoader.find_file(std::filesystem::path("textures") / (textureName));
+            if (!textureFile) {
+                throw std::runtime_error(fmt::format("Wrong texture path: so such file: %s", "textures/" + textureName));
+            }
+            return texture::creation_info{m_dataLoader.load_image(textureFile.value())};
         }
     } // namespace opengl
 } // namespace engine

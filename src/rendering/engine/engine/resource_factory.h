@@ -51,6 +51,7 @@ namespace engine {
         api::buffer::creation_info create_buffer_creation_info() const noexcept;
         api::uniform_buffer::creation_info create_uniform_creation_info(const std::string& shaderName,
                                                                         bind_point bindPoint) const noexcept;
+        api::texture::creation_info create_texture_creation_info(const std::string& textureName) const noexcept;
     };
 
     template<typename StorageType>
