@@ -6,6 +6,7 @@
 #include "device.h"
 #include "draw_info.h"
 #include "resources/index_buffer.h"
+#include "resources/pipeline.h"
 #include "resources/rendering_technique.h"
 #include "resources/texture.h"
 #include "resources/uniform_buffer.h"
@@ -36,7 +37,7 @@ namespace engine {
             while (rangeBegin != drawInfos.end()) {
                 auto rangeEnd = rangeBegin;
                 while (rangeEnd != drawInfos.end() &&
-                       rangeEnd->pipelineState.get_technique() == rangeBegin->pipelineState.get_technique()) {
+                       rangeEnd->pipeline->get_technique() == rangeBegin->pipeline->get_technique()) {
                     rangeEnd++;
                 }
                 buffers.emplace_back(generate_command_buffer(rangeBegin, rangeEnd));
@@ -61,20 +62,23 @@ namespace engine {
 
             vk::CommandBufferBeginInfo commandBufferInfo(vk::CommandBufferUsageFlagBits::eSimultaneousUse, nullptr);
             commandBuffer.begin(commandBufferInfo);
-            begin->pipelineState.get_technique().generate_render_pass_info(commandBuffer, vk::SubpassContents::eInline);
+            begin->pipeline->get_technique().generate_render_pass_info(commandBuffer, vk::SubpassContents::eInline);
 
             for (; begin != end; begin++) {
                 const auto drawInfo = *begin;
-                drawInfo.pipelineState.bind_command_buffer(commandBuffer, vk::PipelineBindPoint::eGraphics);
+                drawInfo.pipeline->bind_command_buffer(commandBuffer, vk::PipelineBindPoint::eGraphics);
 
                 std::vector<vk::Buffer> vertexBuffers = {drawInfo.vertices.get_handle()};
                 std::vector<vk::DeviceSize> offsets = {0};
                 commandBuffer.bindVertexBuffers(0, vertexBuffers, offsets);
                 commandBuffer.bindIndexBuffer(drawInfo.indices->get_handle(), 0, drawInfo.indices->get_index_type());
                 commandBuffer.bindDescriptorSets(
-                    vk::PipelineBindPoint::eGraphics, drawInfo.pipelineState.get_layout(), 0, drawInfo.descriptorSets, {});
-                commandBuffer.bindDescriptorSets(
-                    vk::PipelineBindPoint::eGraphics, drawInfo.pipelineState.get_layout(), 4, drawInfo.meshMaterial.get_static_descriptor_set(), {});
+                    vk::PipelineBindPoint::eGraphics, drawInfo.pipeline->get_layout(), 0, drawInfo.descriptorSets, {});
+                commandBuffer.bindDescriptorSets(vk::PipelineBindPoint::eGraphics,
+                                                 drawInfo.pipeline->get_layout(),
+                                                 4,
+                                                 drawInfo.meshMaterial.get_static_descriptor_set(),
+                                                 {});
                 commandBuffer.drawIndexed(drawInfo.indices->get_index_count(), 1, 0, 0, 0);
             }
             commandBuffer.endRenderPass();

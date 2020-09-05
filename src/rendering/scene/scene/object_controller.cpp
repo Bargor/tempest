@@ -24,14 +24,14 @@ namespace scene {
 
         m_resourceFactory.create_technique("test");
         const auto& mesh = model.get_mesh(0);
-        const auto& pipeline = m_resourceFactory.create_pipeline("test", "test", "test", mesh.get_vertices());
+        const auto pipelineHash = m_resourceFactory.create_pipeline("test", "test", "test", mesh.get_vertices());
 
         model.add_material(m_resourceFactory.create_material<materials::test_material>("test", "test", {"texture.jpg"}));
 
         auto uniformBuffer =
             m_resourceFactory.create_uniform_buffer<uniform_buffer_object>("test", engine::bind_point::global_static, 0);
 
-        return scene_object(std::string(objectName), std::move(model), std::move(uniformBuffer), pipeline);
+        return scene_object(std::string(objectName), std::move(model), std::move(uniformBuffer), pipelineHash);
     }
 
     engine::model object_controller::load_model(std::string_view path) {

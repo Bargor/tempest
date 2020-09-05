@@ -11,7 +11,7 @@ namespace scene {
     scene_object::scene_object(std::string objectName,
                                engine::model&& model,
                                engine::resources::uniform_buffer&& uniformBuffer,
-                               const engine::resources::pipeline& pipeline) noexcept
+                               engine::pipeline_hash pipeline) noexcept
         : m_name(std::move(objectName))
         , m_model(std::move(model))
         , m_uniforms(std::move(uniformBuffer))

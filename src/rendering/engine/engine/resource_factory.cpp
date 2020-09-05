@@ -23,12 +23,11 @@ namespace engine {
         return resources::index_buffer(create_buffer_construction_info(), std::move(indices));
     }
 
-    const resources::pipeline& resource_factory::create_pipeline(const std::string& techniqueName,
-                                                                 std::string_view pipelineName,
-                                                                 const std::string& shadersName,
-                                                                 const resources::vertex_buffer& vertexBuffer) {
-        return (const resources::pipeline&)(super::create_pipeline(
-            techniqueName, pipelineName, shadersName, vertexBuffer.to_super()));
+    std::size_t resource_factory::create_pipeline(const std::string& techniqueName,
+                                                  std::string_view pipelineName,
+                                                  const std::string& shadersName,
+                                                  const resources::vertex_buffer& vertexBuffer) {
+        return (super::create_pipeline(techniqueName, pipelineName, shadersName, vertexBuffer.to_super()));
     }
 
     void resource_factory::create_technique(std::string name) {

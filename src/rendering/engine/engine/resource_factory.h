@@ -18,6 +18,10 @@ namespace engine {
 
     class device;
 
+    namespace resources {
+        class pipeline;
+    }
+
     using bind_point = base::resource_bind_point;
 
     class resource_factory final : private api::resource_factory {
@@ -35,10 +39,10 @@ namespace engine {
 
         resources::index_buffer create_index_buffer(std::vector<std::uint16_t>&& indices);
         resources::index_buffer create_index_buffer(std::vector<std::uint32_t>&& indices);
-        const resources::pipeline& create_pipeline(const std::string& techniqueName,
-                                                   std::string_view pipelineName,
-                                                   const std::string& shadersName,
-                                                   const resources::vertex_buffer& vertexBuffer);
+        pipeline_hash create_pipeline(const std::string& techniqueName,
+                                      std::string_view pipelineName,
+                                      const std::string& shadersName,
+                                      const resources::vertex_buffer& vertexBuffer);
         void create_technique(std::string name);
         resources::vertex_buffer create_vertex_buffer(const vertex_format& format, std::vector<vertex>&& vertices);
         resources::texture create_texture(const std::string& textureName);

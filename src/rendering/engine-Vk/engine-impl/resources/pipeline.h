@@ -22,6 +22,9 @@ namespace engine {
             friend std::hash<tst::engine::vulkan::pipeline>;
 
         public:
+            using pipeline_hash = std::size_t;
+
+        public:
             pipeline(const vk::Device logicalDevice,
                      const settings& engineSettings,
                      base::draw_settings&& drawSettings,

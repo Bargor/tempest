@@ -4,7 +4,6 @@
 
 #include "api.h"
 #include "resources/material.h"
-#include "resources/pipeline.h"
 #include "resources/texture.h"
 #include "resources/uniform_buffer.h"
 
@@ -23,6 +22,8 @@ namespace engine {
         class shader_compiler;
         class swap_chain;
         class vertex_buffer;
+        class pipeline;
+        struct shader_set;
 
         class resource_factory {
         public:
@@ -33,7 +34,7 @@ namespace engine {
             resource_factory(resource_factory&& factory) noexcept;
 
         public: // public resource factory interface
-            const pipeline& create_pipeline(const std::string& techniqueName,
+            std::size_t create_pipeline(const std::string& techniqueName,
                                             std::string_view pipelineName,
                                             const std::string& shadersName,
                                             const vertex_buffer& vertexBuffer);

@@ -6,6 +6,7 @@
 #include "device.h"
 #include "physical_device.h"
 #include "resource_cache.h"
+#include "resources/pipeline.h"
 #include "resources/vertex_buffer.h"
 #include "shader_compiler.h"
 #include "swap_chain.h"
@@ -42,7 +43,7 @@ namespace engine {
             factory.m_transferCommandPool = vk::CommandPool();
         }
 
-        const pipeline& resource_factory::create_pipeline(const std::string& techniqueName,
+        std::size_t resource_factory::create_pipeline(const std::string& techniqueName,
                                                           std::string_view pipelineName,
                                                           const std::string& shadersName,
                                                           const vertex_buffer& vertexBuffer) {
@@ -66,9 +67,7 @@ namespace engine {
                                   std::move(layouts),
                                   technique->get_extent());
 
-                auto hash = m_device.m_resourceCache->add_pipeline(std::move(pipeline));
-
-                return *m_device.m_resourceCache->find_pipeline(hash);
+                return m_device.m_resourceCache->add_pipeline(std::move(pipeline));
             }
             throw std::runtime_error("Can't create pipeline");
         }
