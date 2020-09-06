@@ -5,8 +5,7 @@
 namespace tst {
 namespace engine {
     namespace opengl {
-        material::material(
-            std::string&& name, const std::string&, const std::vector<std::string>&, std::uint32_t, std::uint32_t)
+        material::material(std::string&& name, const std::string&, const creation_info&)
             : base::material(std::move(name)) {
         }
     } // namespace opengl

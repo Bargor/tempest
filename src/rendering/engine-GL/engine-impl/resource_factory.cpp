@@ -35,21 +35,6 @@ namespace engine {
             return texture(create_texture_creation_info(textureName));
         }
 
-        uniform_buffer resource_factory::create_uniform_buffer(const std::string& shaderName,
-                                                               base::resource_bind_point bindPoint,
-                                                               std::uint32_t binding,
-                                                               std::size_t storageSize) {
-            return uniform_buffer(create_uniform_creation_info(shaderName, bindPoint), binding, storageSize);
-        }
-
-        material resource_factory::create_material(std::string&& materialName,
-                                                   const std::string& shaderName,
-                                                   const std::vector<std::string>& textureNames,
-                                                   std::uint32_t staticStorageSize,
-                                                   std::uint32_t dynamicStorageSize) {
-            return material(std::move(materialName), shaderName, textureNames, staticStorageSize, dynamicStorageSize);
-        }
-
         void resource_factory::create_technique(std::string&& name) {
             m_shaderCompiler->compile_program(name, shaderTypesSet{});
         }
@@ -58,8 +43,8 @@ namespace engine {
             return buffer::creation_info{};
         }
 
-        uniform_buffer::creation_info resource_factory::create_uniform_creation_info(
-            const std::string&, base::resource_bind_point) const noexcept {
+        uniform_buffer::creation_info
+        resource_factory::create_uniform_creation_info(const std::string&, base::resource_bind_point) const noexcept {
             return uniform_buffer::creation_info{};
         }
 
@@ -69,6 +54,13 @@ namespace engine {
                 throw std::runtime_error(fmt::format("Wrong texture path: so such file: %s", "textures/" + textureName));
             }
             return texture::creation_info{m_dataLoader.load_image(textureFile.value())};
+        }
+
+        material::creation_info resource_factory::create_material_creation_info(const std::string&,
+                                                                                const std::vector<std::string>& textureNames,
+                                                                                std::uint32_t staticStorageSize,
+                                                                                std::uint32_t dynamicStorageSize) const {
+            return material::creation_info{textureNames, staticStorageSize, dynamicStorageSize};
         }
     } // namespace opengl
 } // namespace engine

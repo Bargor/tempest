@@ -57,6 +57,11 @@ namespace engine {
 
             texture::creation_info create_texture_creation_info(const std::string& textureName) const;
 
+            material::creation_info
+            resource_factory::create_material_creation_info(const std::string& shaderName,
+                                                            const std::vector<std::string>& textureNames,
+                                                            std::uint32_t staticStorageSize,
+                                                            std::uint32_t dynamicStorageSize) const;
         private:
             const application::data_loader& m_dataLoader;
             ptr<shader_compiler> m_shaderCompiler;
