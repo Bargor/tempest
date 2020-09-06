@@ -40,12 +40,6 @@ namespace engine {
                                         const vertex_buffer& vertexBuffer);
             void create_technique(std::string&& name);
 
-            material create_material(std::string&& materialName,
-                                     const std::string& shaderName,
-                                     const std::vector<std::string>& textureNames,
-                                     std::uint32_t staticStorageSize,
-                                     std::uint32_t dynamicStorageSize);
-
         public: // vulkan internal
             const shader_set* load_shaders(const std::string& shadersName);
 
@@ -53,6 +47,10 @@ namespace engine {
             uniform_buffer::creation_info create_uniform_creation_info(const std::string& shaderName,
                                                                        base::resource_bind_point bindPoint) const noexcept;
             texture::creation_info create_texture_creation_info(const std::string& textureName) const;
+            material::creation_info create_material_creation_info(const std::string& shaderName,
+                                                                  const std::vector<std::string>& textureNames,
+                                                                  std::uint32_t staticStorageSize,
+                                                                  std::uint32_t dynamicStorageSize) const;
 
         private:
             const device& m_device;

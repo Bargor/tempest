@@ -21,7 +21,7 @@ namespace engine {
 
     class material : private api::material {
     public:
-        material(api::material&& pipelineImpl);
+        material(std::string&& name, const std::string& shaderName, const creation_info& info);
         ~material() = default;
 
         material(material&& other) noexcept;

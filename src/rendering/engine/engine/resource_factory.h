@@ -51,7 +51,11 @@ namespace engine {
         api::buffer::creation_info create_buffer_creation_info() const noexcept;
         api::uniform_buffer::creation_info create_uniform_creation_info(const std::string& shaderName,
                                                                         bind_point bindPoint) const noexcept;
-        api::texture::creation_info create_texture_creation_info(const std::string& textureName) const noexcept;
+        api::texture::creation_info create_texture_creation_info(const std::string& textureName) const;
+        api::material::creation_info create_material_creation_info(const std::string& shaderName,
+                                                                   const std::vector<std::string>& textureNames,
+                                                                   std::uint32_t staticStorageSize,
+                                                                   std::uint32_t dynamicStorageSize) const;
     };
 
     template<typename StorageType>
@@ -66,12 +70,14 @@ namespace engine {
     material resource_factory::create_material(std::string materialName,
                                                const std::string& shaderName,
                                                const std::vector<std::string>& textureNames) {
-        return super::create_material(
+        return material(
             std::move(materialName),
             shaderName,
-            textureNames,
-            std::is_null_pointer_v<typename T::StaticStorageType> ? 0 : sizeof(typename T::StaticStorageType),
-            std::is_null_pointer_v<typename T::DynamicStorageType> ? 0 : sizeof(typename T::DynamicStorageType));
+            create_material_creation_info(
+                shaderName,
+                textureNames,
+                std::is_null_pointer_v<typename T::StaticStorageType> ? 0 : sizeof(typename T::StaticStorageType),
+                std::is_null_pointer_v<typename T::DynamicStorageType> ? 0 : sizeof(typename T::DynamicStorageType)));
     }
 
     static_assert(!std::is_polymorphic_v<resource_factory>);

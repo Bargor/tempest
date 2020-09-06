@@ -52,8 +52,15 @@ namespace engine {
         return super::create_uniform_creation_info(shaderName, bindPoint);
     }
 
-    api::texture::creation_info resource_factory::create_texture_creation_info(const std::string& textureName) const noexcept {
+    api::texture::creation_info resource_factory::create_texture_creation_info(const std::string& textureName) const {
         return super::create_texture_creation_info(textureName);
+    }
+
+    api::material::creation_info resource_factory::create_material_creation_info(const std::string& shaderName,
+                                                                                 const std::vector<std::string>& textureNames,
+                                                                                 std::uint32_t staticStorageSize,
+                                                                                 std::uint32_t dynamicStorageSize) const {
+        return super::create_material_creation_info(shaderName, textureNames, staticStorageSize, dynamicStorageSize);
     }
 } // namespace engine
 } // namespace tst

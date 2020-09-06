@@ -83,39 +83,6 @@ namespace engine {
                                                               *m_device.m_swapChain);
         }
 
-        material resource_factory::create_material(std::string&& materialName,
-                                                   const std::string& shaderName,
-                                                   const std::vector<std::string>& textureNames,
-                                                   std::uint32_t staticStorageSize,
-                                                   std::uint32_t dynamicStorageSize) {
-            std::vector<texture> textures;
-            textures.reserve(textureNames.size());
-            std::uint32_t binding = staticStorageSize == 0 ? 0 : 1;
-            for (const auto& name : textureNames) {
-                textures.emplace_back(create_texture_creation_info(name));
-                textures.rbegin()->bind_texture(shaderName, base::resource_bind_point::material_static, binding++);
-            }
-            const auto descriptorSets =
-                m_device.m_resourceCache->find_descriptor_sets(shaderName, base::resource_bind_point::material_static);
-            assert(descriptorSets);
-
-            if (staticStorageSize == 0 && dynamicStorageSize == 0) {
-                return material(std::move(materialName), std::move(textures), *descriptorSets, m_device.m_resourceIndex);
-            } else {
-                return material(
-                    std::move(materialName),
-                    uniform_buffer(create_uniform_creation_info(shaderName, base::resource_bind_point::material_static),
-                                   0,
-                                   staticStorageSize),
-                    uniform_buffer(create_uniform_creation_info(shaderName, base::resource_bind_point::material_dynamic),
-                                   0,
-                                   dynamicStorageSize),
-                    std::move(textures),
-                    *descriptorSets,
-                    m_device.m_resourceIndex);
-            }
-        }
-
         const shader_set* resource_factory::load_shaders(const std::string& shadersName) {
             auto shaders = m_shaderCompiler->compile_shaders(shadersName);
 
@@ -150,6 +117,33 @@ namespace engine {
                                               vk::MemoryPropertyFlagBits::eHostCoherent,
                                           m_dataLoader.load_image(textureFile.value()),
                                           m_device.m_resourceIndex};
+        }
+
+        material::creation_info resource_factory::create_material_creation_info(const std::string& shaderName,
+                                                                                const std::vector<std::string>& textureNames,
+                                                                                std::uint32_t staticStorageSize,
+                                                                                std::uint32_t dynamicStorageSize) const {
+            std::vector<texture::creation_info> textureInfos;
+            textureInfos.reserve(textureNames.size());
+            for (const auto& name : textureNames) {
+                textureInfos.emplace_back(create_texture_creation_info(name));
+            }
+            const auto descriptorSets =
+                m_device.m_resourceCache->find_descriptor_sets(shaderName, base::resource_bind_point::material_static);
+            assert(descriptorSets);
+
+            return material::creation_info{
+                std::move(textureInfos),
+                *descriptorSets,
+                staticStorageSize == 0 ?
+                    std::optional<uniform_buffer::creation_info>() :
+                    create_uniform_creation_info(shaderName, base::resource_bind_point::material_static),
+                dynamicStorageSize == 0 ?
+                    std::optional<uniform_buffer::creation_info>() :
+                    create_uniform_creation_info(shaderName, base::resource_bind_point::material_dynamic),
+                staticStorageSize,
+                dynamicStorageSize,
+                m_device.m_resourceIndex};
         }
     } // namespace vulkan
 
