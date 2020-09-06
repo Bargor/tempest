@@ -39,11 +39,6 @@ namespace engine {
                                         const std::string& shadersName,
                                         const vertex_buffer& vertexBuffer);
             void create_technique(std::string&& name);
-            uniform_buffer create_uniform_buffer(const std::string& shaderName,
-                                                 base::resource_bind_point bindPoint,
-                                                 std::uint32_t binding,
-                                                 std::size_t storageSize);
-            texture create_texture(const std::string& textureName);
 
             material create_material(std::string&& materialName,
                                      const std::string& shaderName,

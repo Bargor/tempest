@@ -83,17 +83,6 @@ namespace engine {
                                                               *m_device.m_swapChain);
         }
 
-        uniform_buffer resource_factory::create_uniform_buffer(const std::string& shaderName,
-                                                               base::resource_bind_point bindPoint,
-                                                               std::uint32_t binding,
-                                                               std::size_t storageSize) {
-            return uniform_buffer(create_uniform_creation_info(shaderName, bindPoint), binding, storageSize);
-        }
-
-        texture resource_factory::create_texture(const std::string& textureName) {
-            return texture(create_texture_creation_info(textureName));
-        }
-
         material resource_factory::create_material(std::string&& materialName,
                                                    const std::string& shaderName,
                                                    const std::vector<std::string>& textureNames,
@@ -103,7 +92,7 @@ namespace engine {
             textures.reserve(textureNames.size());
             std::uint32_t binding = staticStorageSize == 0 ? 0 : 1;
             for (const auto& name : textureNames) {
-                textures.emplace_back(create_texture(name));
+                textures.emplace_back(create_texture_creation_info(name));
                 textures.rbegin()->bind_texture(shaderName, base::resource_bind_point::material_static, binding++);
             }
             const auto descriptorSets =
@@ -115,8 +104,12 @@ namespace engine {
             } else {
                 return material(
                     std::move(materialName),
-                    create_uniform_buffer(shaderName, base::resource_bind_point::material_static, 0, staticStorageSize),
-                    create_uniform_buffer(shaderName, base::resource_bind_point::material_dynamic, 0, dynamicStorageSize),
+                    uniform_buffer(create_uniform_creation_info(shaderName, base::resource_bind_point::material_static),
+                                   0,
+                                   staticStorageSize),
+                    uniform_buffer(create_uniform_creation_info(shaderName, base::resource_bind_point::material_dynamic),
+                                   0,
+                                   dynamicStorageSize),
                     std::move(textures),
                     *descriptorSets,
                     m_device.m_resourceIndex);
