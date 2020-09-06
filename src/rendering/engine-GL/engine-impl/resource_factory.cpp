@@ -31,10 +31,6 @@ namespace engine {
             return 1;
         }
 
-        texture resource_factory::create_texture(const std::string& textureName) {
-            return texture(create_texture_creation_info(textureName));
-        }
-
         void resource_factory::create_technique(std::string&& name) {
             m_shaderCompiler->compile_program(name, shaderTypesSet{});
         }
