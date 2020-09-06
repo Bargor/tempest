@@ -7,6 +7,24 @@ namespace tst {
 namespace engine {
     namespace vulkan {
 
+        material::material(std::string&& name, const std::string& shaderName, const creation_info& info)
+            : base::material(std::move(name))
+            , m_textures()
+            , m_staticUniformBuffer(info.staticUniformInfo ?
+                                        uniform_buffer(info.staticUniformInfo.value(), 0, info.staticStorageSize) :
+                                        std::optional<uniform_buffer>())
+            , m_dynamicUniformBuffer(info.dynamicUniformInfo ?
+                                         uniform_buffer(info.dynamicUniformInfo.value(), 0, info.dynamicStorageSize) :
+                                         std::optional<uniform_buffer>())
+            , m_staticDescriptorSets(info.staticDescriptorSets)
+            , m_resourceIndex(info.resourceIndex) {
+            std::uint32_t binding = info.staticStorageSize == 0 ? 0 : 1;
+            for (const auto& textureInfo : info.textureInfos) {
+                m_textures.emplace_back(textureInfo);
+                m_textures.rbegin()->bind_texture(shaderName, base::resource_bind_point::material_static, binding++);
+            }
+        }
+
         material::material(std::string&& name,
                            std::vector<texture>&& textures,
                            const descriptor_set& staticDescriptorSets,

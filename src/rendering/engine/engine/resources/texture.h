@@ -15,7 +15,7 @@ namespace engine {
         public:
             using bind_point = base::resource_bind_point;
 
-            texture(api::texture&& textureImpl);
+            texture(const creation_info& info);
             ~texture();
 
             texture(texture&& other) noexcept;

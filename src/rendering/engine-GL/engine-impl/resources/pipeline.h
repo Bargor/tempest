@@ -9,6 +9,7 @@ namespace engine {
     namespace opengl {
         class pipeline {
         public:
+            using pipeline_hash = std::size_t;
 
         private:
         };

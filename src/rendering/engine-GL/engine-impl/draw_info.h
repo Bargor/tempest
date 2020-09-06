@@ -15,7 +15,7 @@ namespace engine {
         public:
             draw_info(const vertex_buffer& vertices,
                       const index_buffer* indices,
-                      const pipeline& pipeline,
+                      pipeline::pipeline_hash pipeline,
                       const material& material,
                       const std::vector<const uniform_buffer*>& uniforms);
 
@@ -24,7 +24,7 @@ namespace engine {
         public:
             const vertex_buffer& vertices;
             const index_buffer* indices;
-            const pipeline& pipelineState;
+            pipeline::pipeline_hash pipelineHash;
             const material& meshMaterial;
             const std::vector<const uniform_buffer*>& uniforms;
         };

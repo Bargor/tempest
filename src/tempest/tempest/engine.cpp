@@ -85,7 +85,7 @@ namespace application {
         const auto frameStart = m_timeSource.now();
         if (!m_windowMinimized) {
             const auto newSceneState = scene::update_scene(*m_scene, m_lastFrameDuration);
-            const auto drawInfo = scene::prepare_draw_info(m_scene->get_camera("main"), newSceneState);
+            auto drawInfo = scene::prepare_draw_info(m_scene->get_camera("main"), newSceneState);
             m_renderingDevice->draw_frame(drawInfo.begin(), drawInfo.end());
             m_mainWindow.end_frame();
             m_lastSecondFrames++;

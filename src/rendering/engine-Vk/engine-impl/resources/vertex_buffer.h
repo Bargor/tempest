@@ -15,7 +15,7 @@ namespace engine {
             using super = buffer;
         public:
 
-            vertex_buffer(const buffer_construction_info& info,
+            vertex_buffer(const buffer::creation_info& info,
                           const vertex_format& format,
                           std::vector<vertex>&& vertices);
             ~vertex_buffer();

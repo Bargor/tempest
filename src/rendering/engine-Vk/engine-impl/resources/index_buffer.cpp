@@ -10,7 +10,7 @@ namespace engine {
     namespace vulkan {
 
         template<>
-        index_buffer::index_buffer(const buffer_construction_info& info, std::vector<std::uint16_t>&& indices)
+        index_buffer::index_buffer(const buffer::creation_info& info, std::vector<std::uint16_t>&& indices)
             : buffer(info,
                      indices.size() * sizeof(std::uint16_t),
                      vk::BufferUsageFlagBits::eIndexBuffer | vk::BufferUsageFlagBits::eTransferDst,
@@ -21,7 +21,7 @@ namespace engine {
         }
 
         template<>
-        index_buffer::index_buffer(const buffer_construction_info& info, std::vector<std::uint32_t>&& indices)
+        index_buffer::index_buffer(const buffer::creation_info& info, std::vector<std::uint32_t>&& indices)
             : buffer(info,
                      indices.size() * sizeof(std::uint32_t),
                      vk::BufferUsageFlagBits::eIndexBuffer | vk::BufferUsageFlagBits::eTransferDst,
@@ -35,7 +35,7 @@ namespace engine {
             : buffer(std::move(other)), m_format(other.m_format), m_indices(std::move(other.m_indices)) {
         }
 
-        void index_buffer::copy_to_gpu(const buffer_construction_info& info) {
+        void index_buffer::copy_to_gpu(const buffer::creation_info& info) {
             buffer stagingBuffer(info,
                                  m_memSize,
                                  vk::BufferUsageFlagBits::eTransferSrc,

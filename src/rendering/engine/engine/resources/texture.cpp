@@ -6,7 +6,7 @@
 namespace tst {
 namespace engine {
     namespace resources {
-        texture::texture(api::texture&& textureImpl) : api::texture(std::move(textureImpl)) {
+        texture::texture(const creation_info& info) : api::texture(info) {
         }
 
         texture::~texture() {
@@ -18,6 +18,6 @@ namespace engine {
         void texture::bind_texture(const std::string& shaderName, bind_point set, std::uint32_t binding) {
             super::bind_texture(shaderName, set, binding);
         }
-    }
-}
-}
+    } // namespace resources
+} // namespace engine
+} // namespace tst

@@ -16,6 +16,19 @@ namespace engine {
             using super = base::material;
 
         public:
+            struct creation_info {
+                std::vector<texture::creation_info> textureInfos;
+                const descriptor_set& staticDescriptorSets;
+                std::optional<uniform_buffer::creation_info> staticUniformInfo;
+                std::optional<uniform_buffer::creation_info> dynamicUniformInfo;
+                std::uint32_t staticStorageSize;
+                std::uint32_t dynamicStorageSize;
+                const std::uint32_t& resourceIndex;
+            };
+
+        public:
+            material(std::string&& name, const std::string& shaderName, const creation_info& info);
+
             material(std::string&& name,
                      std::vector<texture>&& textures,
                      const descriptor_set& staticDescriptorSets,

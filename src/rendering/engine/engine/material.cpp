@@ -8,7 +8,8 @@
 namespace tst {
 namespace engine {
 
-    material::material(api::material&& materialImpl) : api::material(std::move(materialImpl)) {
+    material::material(std::string&& name, const std::string& shaderName, const creation_info& info)
+        : api::material(std::move(name), shaderName, info) {
     }
 
     material::material(material&& other) noexcept : api::material(std::move(other)) {

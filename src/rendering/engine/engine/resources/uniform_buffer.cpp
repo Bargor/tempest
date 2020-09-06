@@ -7,7 +7,8 @@ namespace tst {
 namespace engine {
     namespace resources {
 
-        uniform_buffer::uniform_buffer(api::uniform_buffer&& bufferImpl) : api::uniform_buffer(std::move(bufferImpl)) {
+        uniform_buffer::uniform_buffer(const creation_info& info, std::uint32_t binding, std::size_t storageSize)
+            : api::uniform_buffer(info, binding, storageSize) {
         }
 
         uniform_buffer::uniform_buffer(uniform_buffer&& other) noexcept : api::uniform_buffer(std::move(other)) {
