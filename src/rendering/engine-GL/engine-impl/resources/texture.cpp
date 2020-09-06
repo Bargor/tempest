@@ -7,8 +7,9 @@ namespace tst {
 namespace engine {
     namespace opengl {
 
-        texture::texture(const application::image_data&) {
+        texture::texture(const creation_info&) {
         }
+
         texture ::~texture() {
         }
 

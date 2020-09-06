@@ -2,6 +2,7 @@
 // Author: Karol Kontny
 #pragma once
 
+#include "buffer.h"
 #include "settings.h"
 
 #include <application/image_data.h>
@@ -19,16 +20,18 @@ namespace engine {
 
         class texture {
         public:
-            texture(vk::Device logicalDevice,
-                    vk::Queue queueHandle,
-                    vk::CommandPool cmdPool,
-                    const resource_cache& resourceCache,
-                    vk::BufferUsageFlags flags,
-                    const vk::PhysicalDeviceMemoryProperties& memoryProperties,
-                    vk::MemoryPropertyFlags memoryFlags,
-                    const application::image_data& imageData,
-                    const std::uint32_t& resourceIndex,
-                    vk::Sampler = nullptr);
+            struct creation_info {
+                buffer::creation_info bufferCreationInfo;
+                const resource_cache& resourceCache;
+                vk::BufferUsageFlags flags;
+                vk::MemoryPropertyFlags memoryFlags;
+                application::image_data imageData;
+                const std::uint32_t& resourceIndex;
+                vk::Sampler sampler = nullptr;
+            };
+
+        public:
+            texture(const creation_info& info);
             ~texture();
 
             texture(texture&& other) noexcept;

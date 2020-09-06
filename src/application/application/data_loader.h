@@ -3,6 +3,7 @@
 #pragma once
 
 #include "image_data.h"
+#include "obj_data.h"
 
 #include <filesystem>
 #include <optional>
@@ -23,7 +24,7 @@ namespace application {
     public:
         virtual std::string load_text_file(const std::filesystem::path& path) const;
         virtual std::vector<char> load_shader_bytecode(const std::filesystem::path& path) const;
-        virtual void load_obj_model(const std::string_view& name) const;
+        virtual obj_data load_obj_model(const std::filesystem::path& path) const;
         virtual rapidjson::Document load_json(const std::filesystem::path& path) const;
         virtual image_data load_image(const std::filesystem::path& path) const;
         virtual std::optional<std::filesystem::path> find_file(const std::string_view name) const;

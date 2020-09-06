@@ -2,6 +2,7 @@
 // Author: Karol Kontny
 #pragma once
 
+#include "resources/pipeline.h"
 #include "resources/uniform_buffer.h"
 
 #include <engine-impl/api.h>
@@ -12,16 +13,13 @@ namespace engine {
 
     class mesh;
     class material;
-    namespace resources {
-        class pipeline;
-    }
 
     class draw_info final : public api::draw_info {
         using super = api::draw_info;
 
     public:
         draw_info(const mesh& mesh,
-                  const resources::pipeline& pipelineState,
+                  pipeline_hash pipelineHash,
                   const material& material,
                   const std::vector<const resources::uniform_buffer*>& uniforms);
 

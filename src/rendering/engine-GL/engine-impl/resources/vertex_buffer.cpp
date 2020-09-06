@@ -7,7 +7,7 @@ namespace tst {
 namespace engine {
     namespace opengl {
 
-        vertex_buffer::vertex_buffer(const vertex_format& format, std::vector<vertex>&& vertices)
+        vertex_buffer::vertex_buffer(const creation_info&, const vertex_format& format, std::vector<vertex>&& vertices)
             : buffer(vertices.size() * sizeof(vertex), vertices.data(), GL_STATIC_DRAW)
             , m_format(format)
             , m_vertices(std::move(vertices)) {

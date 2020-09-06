@@ -4,7 +4,6 @@
 #include "texture.h"
 
 #include "../resource_cache.h"
-#include "buffer.h"
 #include "image.h"
 
 namespace tst {
@@ -32,51 +31,47 @@ namespace engine {
             return device.createSampler(samplerInfo);
         }
 
-        texture::texture(vk::Device logicalDevice,
-                         vk::Queue queueHandle,
-                         vk::CommandPool cmdPool,
-                         const resource_cache& resourceCache,
-                         vk::BufferUsageFlags flags,
-                         const vk::PhysicalDeviceMemoryProperties& memoryProperties,
-                         vk::MemoryPropertyFlags memoryFlags,
-                         const application::image_data& imageData,
-                         const std::uint32_t& resourceIndex,
-                         vk::Sampler sampler)
-            : m_logicalDevice(logicalDevice)
-            , m_resourceCache(resourceCache)
-            , m_sampler(sampler ? sampler : create_default_sampler(m_logicalDevice))
-            , m_resourceIndex(resourceIndex) {
-            buffer stagingBuffer(
-                logicalDevice, queueHandle, cmdPool, imageData.memorySize, flags, memoryProperties, memoryFlags);
-            stagingBuffer.copy_data(imageData.data.get(), imageData.memorySize);
+        texture::texture(const creation_info& info)
+            : m_logicalDevice(info.bufferCreationInfo.logicalDevice)
+            , m_resourceCache(info.resourceCache)
+            , m_sampler(info.sampler ? info.sampler : create_default_sampler(m_logicalDevice))
+            , m_resourceIndex(info.resourceIndex)
+            , m_descriptorSets(nullptr) {
+            buffer stagingBuffer(info.bufferCreationInfo, info.imageData.memorySize, info.flags, info.memoryFlags);
+            stagingBuffer.copy_data(info.imageData.data.get(), info.imageData.memorySize);
 
             std::tie(m_textureImage, m_textureMemory) =
-                create_image(logicalDevice,
-                             {imageData.imageSize.width, imageData.imageSize.height},
+                create_image(m_logicalDevice,
+                             {info.imageData.imageSize.width, info.imageData.imageSize.height},
                              vk::Format::eR8G8B8A8Srgb,
                              vk::ImageTiling::eOptimal,
                              vk::ImageUsageFlagBits::eTransferDst | vk::ImageUsageFlagBits::eSampled,
-                             memoryProperties,
+                             info.bufferCreationInfo.memoryProperties,
                              vk::MemoryPropertyFlagBits::eDeviceLocal);
 
-            transition_image_layout(logicalDevice,
-                                    queueHandle,
-                                    cmdPool,
+            transition_image_layout(m_logicalDevice,
+                                    info.bufferCreationInfo.queueHandle,
+                                    info.bufferCreationInfo.cmdPool,
                                     m_textureImage,
                                     vk::Format::eR8G8B8A8Srgb,
                                     vk::ImageLayout::eUndefined,
                                     vk::ImageLayout::eTransferDstOptimal);
-            copy_buffer_to_image(logicalDevice, cmdPool, queueHandle, stagingBuffer, m_textureImage, imageData.imageSize);
-            transition_image_layout(logicalDevice,
-                                    queueHandle,
-                                    cmdPool,
+            copy_buffer_to_image(m_logicalDevice,
+                                 info.bufferCreationInfo.cmdPool,
+                                 info.bufferCreationInfo.queueHandle,
+                                 stagingBuffer,
+                                 m_textureImage,
+                                 info.imageData.imageSize);
+            transition_image_layout(m_logicalDevice,
+                                    info.bufferCreationInfo.queueHandle,
+                                    info.bufferCreationInfo.cmdPool,
                                     m_textureImage,
                                     vk::Format::eR8G8B8A8Srgb,
                                     vk::ImageLayout::eTransferDstOptimal,
                                     vk::ImageLayout::eShaderReadOnlyOptimal);
 
             m_textureView = create_image_view(
-                logicalDevice, m_textureImage, vk::Format::eR8G8B8A8Srgb, vk::ImageAspectFlagBits::eColor);
+                m_logicalDevice, m_textureImage, vk::Format::eR8G8B8A8Srgb, vk::ImageAspectFlagBits::eColor);
         }
 
         texture::~texture() {
@@ -90,6 +85,7 @@ namespace engine {
                                    base::resource_bind_point bindPoint,
                                    std::uint32_t binding) {
             m_descriptorSets = m_resourceCache.find_descriptor_sets(shaderName, bindPoint);
+            assert(m_descriptorSets);
 
             for (const auto set : *m_descriptorSets) {
                 vk::DescriptorImageInfo imageInfo(m_sampler, m_textureView, vk::ImageLayout::eShaderReadOnlyOptimal);

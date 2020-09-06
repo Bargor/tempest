@@ -3,13 +3,9 @@
 #pragma once
 
 #include "api.h"
-#include "resources/index_buffer.h"
 #include "resources/material.h"
-#include "resources/pipeline.h"
 #include "resources/texture.h"
 #include "resources/uniform_buffer.h"
-#include "resources/vertex_buffer.h"
-#include "resources/vertex_format.h"
 
 namespace tst {
 
@@ -25,6 +21,9 @@ namespace engine {
         class physical_device;
         class shader_compiler;
         class swap_chain;
+        class vertex_buffer;
+        class pipeline;
+        struct shader_set;
 
         class resource_factory {
         public:
@@ -35,28 +34,23 @@ namespace engine {
             resource_factory(resource_factory&& factory) noexcept;
 
         public: // public resource factory interface
-            template<typename IndexType>
-            index_buffer create_index_buffer(std::vector<IndexType>&& indices);
-            const pipeline& create_pipeline(const std::string& techniqueName,
-                                            std::string_view pipelineName,
-                                            const std::string& shadersName,
-                                            const vertex_buffer& vertexBuffer);
+            std::size_t create_pipeline(const std::string& techniqueName,
+                                        std::string_view pipelineName,
+                                        const std::string& shadersName,
+                                        const vertex_buffer& vertexBuffer);
             void create_technique(std::string&& name);
-            vertex_buffer create_vertex_buffer(const vertex_format& format, std::vector<vertex>&& vertices);
-            uniform_buffer create_uniform_buffer(const std::string& shaderName,
-                                                 base::resource_bind_point bindPoint,
-                                                 std::uint32_t binding,
-                                                 std::size_t storageSize);
-            texture create_texture(const std::string& textureName);
-
-            material create_material(std::string&& materialName,
-                                     const std::string& shaderName,
-                                     const std::vector<std::string>& textureNames,
-                                     std::uint32_t staticStorageSize,
-                                     std::uint32_t dynamicStorageSize);
 
         public: // vulkan internal
             const shader_set* load_shaders(const std::string& shadersName);
+
+            buffer::creation_info create_buffer_creation_info() const noexcept;
+            uniform_buffer::creation_info create_uniform_creation_info(const std::string& shaderName,
+                                                                       base::resource_bind_point bindPoint) const noexcept;
+            texture::creation_info create_texture_creation_info(const std::string& textureName) const;
+            material::creation_info create_material_creation_info(const std::string& shaderName,
+                                                                  const std::vector<std::string>& textureNames,
+                                                                  std::uint32_t staticStorageSize,
+                                                                  std::uint32_t dynamicStorageSize) const;
 
         private:
             const device& m_device;

@@ -5,6 +5,8 @@
 #include "api.h"
 #include "engine_frontend.h"
 #include "physical_device.h"
+#include "resource_cache.h"
+#include "resource_factory.h"
 #include "resources/index_buffer.h"
 #include "resources/pipeline.h"
 #include "resources/rendering_technique.h"
@@ -12,7 +14,6 @@
 #include "resources/shader.h"
 #include "resources/uniform_buffer.h"
 #include "resources/vertex_buffer.h"
-#include "resource_factory.h"
 
 #include <GLFW/glfw3.h>
 #include <common/rectangle.h>
@@ -32,7 +33,6 @@ namespace engine {
     namespace vulkan {
 
         class gpu_info;
-        class resource_cache;
         class swap_chain;
 
         class device {
@@ -56,7 +56,6 @@ namespace engine {
             ~device();
 
         public: // public engine interface
-
             resource_factory create_resource_factory(const application::data_loader& dataLoader) const;
 
             gpu_info& get_GPU_info() const noexcept;
@@ -117,7 +116,6 @@ namespace engine {
             if (std::distance(first, last) == 0) {
                 return false;
             }
-
             startFrame();
 
             const auto drawInfos = sort_draw_infos(first, last);
@@ -132,6 +130,9 @@ namespace engine {
 
         template<typename Iter>
         std::vector<draw_info> device::sort_draw_infos(Iter first, Iter last) const {
+            std::for_each(first, last, [&](draw_info& drawInfo) {
+                drawInfo.pipelineState = m_resourceCache->find_pipeline(drawInfo.pipelineHash);
+            });
             return std::vector<draw_info>(first, last);
         }
 

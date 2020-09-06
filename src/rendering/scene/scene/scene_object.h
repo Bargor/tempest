@@ -23,7 +23,7 @@ namespace scene {
         struct state {
             const engine::model& model;
             const engine::resources::uniform_buffer& uniform;
-            const engine::resources::pipeline& pipeline;
+            engine::pipeline_hash pipeline;
             const scene_object& object;
         };
 
@@ -31,7 +31,7 @@ namespace scene {
         scene_object(std::string objectName,
                      engine::model&& model,
                      engine::resources::uniform_buffer&& uniformBuffer,
-                     const engine::resources::pipeline& pipeline) noexcept;
+                     engine::pipeline_hash pipeline) noexcept;
         scene_object(const scene_object&) = delete;
         scene_object(scene_object&& object) noexcept;
 
@@ -42,7 +42,7 @@ namespace scene {
         std::string m_name;
         engine::model m_model;
         engine::resources::uniform_buffer m_uniforms;
-        const engine::resources::pipeline& m_pipeline;
+        engine::pipeline_hash m_pipeline;
 
         state m_objectState;
 

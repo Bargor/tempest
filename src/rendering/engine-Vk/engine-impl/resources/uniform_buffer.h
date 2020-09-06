@@ -18,14 +18,15 @@ namespace engine {
             using super = buffer;
 
         public:
-            uniform_buffer(vk::Device logicalDevice,
-                           vk::Queue m_queueHandle,
-                           vk::CommandPool cmdPool,
-                           const descriptor_set& descriptorSets,
-                           std::uint32_t binding,
-                           vk::PhysicalDeviceMemoryProperties memoryProperties,
-                           const std::uint32_t& resourceIndex,
-                           std::size_t storageSize);
+            struct creation_info {
+                const buffer::creation_info bufferCreationInfo;
+                const descriptor_set& descriptorSets;
+                const std::uint32_t& resourceIndex;
+            };
+
+        public:
+            uniform_buffer(const creation_info& info, std::uint32_t binding, std::size_t storageSize);
+
             uniform_buffer(uniform_buffer&& other) noexcept;
             uniform_buffer(const uniform_buffer& other) = delete;
 

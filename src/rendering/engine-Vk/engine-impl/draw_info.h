@@ -2,7 +2,7 @@
 // Author: Karol Kontny
 #pragma once
 
-#include "resources/index_buffer.h"
+#include "resources/pipeline.h"
 
 #include <vulkan/vulkan.hpp>
 
@@ -10,8 +10,8 @@ namespace tst {
 namespace engine {
     namespace vulkan {
 
-        class pipeline;
         class material;
+        class index_buffer;
         class vertex_buffer;
         class uniform_buffer;
 
@@ -19,7 +19,7 @@ namespace engine {
         public:
             draw_info(const vertex_buffer& vertices,
                       const index_buffer* indices,
-                      const pipeline& pipeline,
+                      pipeline::pipeline_hash pipeline,
                       const material& material,
                       const std::vector<const uniform_buffer*>& uniforms);
 
@@ -31,9 +31,10 @@ namespace engine {
         public:
             const vertex_buffer& vertices;
             const index_buffer* indices;
-            const pipeline& pipelineState;
+            const pipeline::pipeline_hash pipelineHash;
             const material& meshMaterial;
             std::vector<vk::DescriptorSet> descriptorSets;
+            const pipeline* pipelineState;
         };
     } // namespace vulkan
 } // namespace engine

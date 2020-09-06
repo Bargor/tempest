@@ -63,11 +63,13 @@ namespace scene {
             }
         };
 
-        auto resize_callback = [&](const application::app_event::arguments& args) {
+        auto resize_callback = [&, fov, aspect](const application::app_event::arguments& args) {
             assert(std::holds_alternative<application::app_event::framebuffer>(args));
             const auto size = std::get<application::app_event::framebuffer>(args).size;
-            m_perspective =
-                glm::perspective(glm::radians(fov), static_cast<float>(size.width) / size.height, 0.01f, 10.0f);
+            if (size.height > 0) {
+                m_perspective = glm::perspective(glm::radians(fov), aspect, 0.01f, 100.0f);
+                m_perspective[1][1] *= -1;
+            }
         };
 
         auto mouse_callback = [&](const application::app_event::arguments& args) {

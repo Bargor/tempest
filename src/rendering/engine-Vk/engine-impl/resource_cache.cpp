@@ -23,8 +23,11 @@ namespace engine {
             return hash;
         }
 
-        void resource_cache::add_rendering_technique(rendering_technique&& technique) {
-            m_techniques.emplace_back(std::move(technique));
+        void resource_cache::add_rendering_technique(std::string&& techniqueName,
+                                                     base::technique_settings&& settings,
+                                                     vk::Device device,
+                                                     const swap_chain& swapChain) {
+            m_techniques.emplace_back(std::move(techniqueName), std::move(settings), device, swapChain);
         }
 
         void resource_cache::add_shaders(std::string name, shader_set&& shaders) {
@@ -46,8 +49,9 @@ namespace engine {
         }
 
         vk::DescriptorPool resource_cache::create_descriptor_pool(std::uint32_t) {
-            vk::DescriptorPoolSize uniformPoolSize(vk::DescriptorType::eUniformBuffer, settings::m_inFlightFrames* 10);
-            vk::DescriptorPoolSize samplerPoolSize(vk::DescriptorType::eCombinedImageSampler, settings::m_inFlightFrames * 3);
+            vk::DescriptorPoolSize uniformPoolSize(vk::DescriptorType::eUniformBuffer, settings::m_inFlightFrames * 10);
+            vk::DescriptorPoolSize samplerPoolSize(vk::DescriptorType::eCombinedImageSampler,
+                                                   settings::m_inFlightFrames * 3);
 
             vk::DescriptorPoolCreateInfo poolCreateInfo(
                 vk::DescriptorPoolCreateFlags(),

@@ -9,14 +9,18 @@ namespace engine {
     namespace vulkan {
 
         class buffer {
+        public:
+            struct creation_info {
+                vk::Device logicalDevice;
+                vk::Queue queueHandle;
+                vk::CommandPool cmdPool;
+                vk::PhysicalDeviceMemoryProperties memoryProperties;
+            };
 
         public:
-            buffer(vk::Device logicalDevice,
-                   vk::Queue queueHandle,
-                   vk::CommandPool cmdPool,
+            buffer(const creation_info& info,
                    std::size_t size,
                    vk::BufferUsageFlags flags,
-                   const vk::PhysicalDeviceMemoryProperties& memoryProperties,
                    vk::MemoryPropertyFlags memoryFlags);
             ~buffer();
 
