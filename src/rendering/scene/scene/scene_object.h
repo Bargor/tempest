@@ -11,20 +11,24 @@
 namespace tst {
 namespace scene {
 
-    struct uniform_buffer_object {
-        glm::mat4 model;
-        glm::mat4 view;
-        glm::mat4 proj;
-        glm::mat4 asd;
+    class camera;
+
+    struct uniform_buffer_object : engine::resources::uniform_storage {
+        glm::mat4 MVP;
     };
+
+    static_assert(sizeof(uniform_buffer_object) == 256);
 
     class scene_object {
     public:
-        struct state {
+        struct static_data {
             const engine::model& model;
             const engine::resources::uniform_buffer& uniform;
             engine::pipeline_hash pipeline;
-            const scene_object& object;
+            scene_object& object;
+        };
+        struct render_data {
+            glm::mat4 model;
         };
 
     public:
@@ -35,8 +39,9 @@ namespace scene {
         scene_object(const scene_object&) = delete;
         scene_object(scene_object&& object) noexcept;
 
-        state& get_object_state() const;
-        state update_object(std::chrono::duration<std::uint64_t, std::micro> elapsedTime);
+        static_data& get_static_data();
+        void update_object(std::chrono::duration<std::uint64_t, std::micro> elapsedTime);
+        render_data prepare_render_data(const camera& camera);
 
     private:
         std::string m_name;
@@ -44,7 +49,9 @@ namespace scene {
         engine::resources::uniform_buffer m_uniforms;
         engine::pipeline_hash m_pipeline;
 
-        state m_objectState;
+        static_data m_objectStaticData;
+        render_data m_dynamicData;
+        render_data m_prevDynamicData;
 
         float m_time;
     };

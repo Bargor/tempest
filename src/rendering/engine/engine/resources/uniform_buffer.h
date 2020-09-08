@@ -5,9 +5,31 @@
 #include <engine-impl/api.h>
 #include <engine-impl/resources/uniform_buffer.h>
 
+#ifndef __clang__
+#include <concepts>
+#else
+namespace std {
+template<class Derived, class Base>
+concept derived_from =
+    std::is_base_of_v<Base, Derived>&& std::is_convertible_v<const volatile Derived*, const volatile Base*>;
+}
+#endif
+
+#if TST_COMPILER & TST_COMPILER_VC
+#pragma warning(push)
+#pragma warning(disable : 4324)
+#endif
+
 namespace tst {
 namespace engine {
     namespace resources {
+
+        struct alignas(256) uniform_storage {
+            uniform_storage() = default;
+        };
+
+        template<typename T>
+        concept UniformStorageType = std::derived_from<T, uniform_storage>;
 
         class uniform_buffer : private api::uniform_buffer {
             using super = api::uniform_buffer;
@@ -24,14 +46,14 @@ namespace engine {
                 return *this;
             }
 
-            template<typename StorageType>
-            void update_buffer(const StorageType& data);
+            template<UniformStorageType T>
+            void update_buffer(const T& data);
 
         private:
         };
 
-        template<typename StorageType>
-        void uniform_buffer::update_buffer(const StorageType& data) {
+        template<UniformStorageType T>
+        void uniform_buffer::update_buffer(const T& data) {
             super::update_buffer(&data, sizeof(data));
         }
 
@@ -41,3 +63,7 @@ namespace engine {
     } // namespace resources
 } // namespace engine
 } // namespace tst
+
+#if TST_COMPILER & TST_COMPILER_VC
+#pragma warning(pop)
+#endif

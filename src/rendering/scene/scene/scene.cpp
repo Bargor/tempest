@@ -8,28 +8,30 @@
 
 namespace tst {
 namespace scene {
-    std::vector<scene_object::state> update_scene(scene& scene,
-                                                  std::chrono::duration<std::uint64_t, std::micro> elapsedTime) {
-        std::vector<scene_object::state> newSceneState;
+    std::vector<scene_object::static_data*> update_scene(scene& scene,
+                                                        std::chrono::duration<std::uint64_t, std::micro> elapsedTime) {
+        std::vector<scene_object::static_data*> newSceneState;
         for (auto& camera : scene.m_cameras) {
             camera.update(elapsedTime);
         }
         for (auto& object : scene.m_objects) {
-            newSceneState.emplace_back(object.update_object(elapsedTime));
+            object.update_object(elapsedTime);
+            newSceneState.emplace_back(&object.get_static_data());
         }
         return newSceneState;
     }
 
     std::vector<engine::draw_info> prepare_draw_info(const camera& camera,
-                                                     const std::vector<scene_object::state>& sceneState) {
+                                                     const std::vector<scene_object::static_data*>& sceneState) {
         std::vector<engine::draw_info> drawInfos;
         drawInfos.reserve(sceneState.size());
 
         for (auto& state : sceneState) {
-            engine::draw_info info(state.model.get_mesh(0),
-                                   state.pipeline,
-                                   state.model.get_material(0),
-                                   {&state.uniform, &camera.get_uniforms()});
+            state->object.prepare_render_data(camera);
+            engine::draw_info info(state->model.get_mesh(0),
+                                   state->pipeline,
+                                   state->model.get_material(0),
+                                   {&state->uniform, &camera.get_uniforms()});
             drawInfos.emplace_back(std::move(info));
         }
 

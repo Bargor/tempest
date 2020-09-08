@@ -34,11 +34,12 @@ namespace scene {
         };
 
     public:
-        struct uniforms {
+        struct uniforms : engine::resources::uniform_storage {
             glm::mat4 view;
             glm::mat4 perspective;
             glm::mat4 viewPerspective;
-            glm::mat4 position;
+            glm::mat4 orientation;
+            glm::vec4 position;
         };
 
     public:
@@ -59,6 +60,10 @@ namespace scene {
 
         void update(std::chrono::duration<std::uint64_t, std::micro> elapsedTime);
 
+        const glm::mat4& getViewMatrix() const noexcept;
+        const glm::mat4& getPerspectiveMatrix() const noexcept;
+        glm::mat4 getViewPerspectiveMatrix() const noexcept;
+
     private:
         glm::vec4 caclulate_position(float elapsedTime) const;
         glm::vec3 calculate_direction(glm::quat pitch, glm::quat yaw) const;
@@ -72,6 +77,7 @@ namespace scene {
         glm::vec4 m_position;
         glm::vec3 m_direction;
         glm::quat m_orientation;
+        glm::mat4 m_view;
         glm::mat4 m_perspective;
         float m_moveSensitivity;
         float m_rotateSensitivity;
@@ -84,6 +90,18 @@ namespace scene {
 
     TST_INLINE const engine::resources::uniform_buffer& camera::get_uniforms() const {
         return m_buffer;
+    }
+
+    TST_INLINE const glm::mat4& camera::getViewMatrix() const noexcept {
+        return m_view;
+    }
+    
+    TST_INLINE const glm::mat4& camera::getPerspectiveMatrix() const noexcept {
+        return m_perspective;
+    }
+
+    TST_INLINE glm::mat4 camera::getViewPerspectiveMatrix() const noexcept {
+        return m_perspective * m_view;
     }
 } // namespace scene
 } // namespace tst

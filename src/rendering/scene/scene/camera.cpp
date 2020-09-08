@@ -25,6 +25,7 @@ namespace scene {
         , m_position(glm::vec4(position, 0.0f))
         , m_direction(glm::normalize(lookAt - m_position.xyz()))
         , m_orientation(glm::quatLookAt(m_direction, up))
+        , m_view(glm::translate(glm::toMat4(m_orientation), -m_position.xyz()))
         , m_perspective(glm::perspective(glm::radians(fov), aspect, 0.01f, 100.0f))
         , m_moveSensitivity(3.0f)
         , m_rotateSensitivity(0.5f)
@@ -102,6 +103,7 @@ namespace scene {
         , m_position(other.m_position)
         , m_direction(other.m_direction)
         , m_orientation(other.m_orientation)
+        , m_view(other.m_view)
         , m_perspective(other.m_perspective)
         , m_moveSensitivity(other.m_moveSensitivity)
         , m_rotateSensitivity(other.m_rotateSensitivity)
@@ -121,10 +123,10 @@ namespace scene {
         }
         m_position = caclulate_position(time);
 
-        const auto orientationMartix = glm::translate(glm::toMat4(m_orientation), -m_position.xyz());
+        m_view = glm::translate(glm::toMat4(m_orientation), -m_position.xyz());
 
         m_buffer.update_buffer<uniforms>(
-            {orientationMartix, m_perspective, m_perspective * orientationMartix, glm::mat4(1.0f)});
+            uniforms{{} ,m_view, m_perspective, m_perspective * m_view, glm::inverse(m_view), -m_position});
     }
 
     glm::vec4 camera::caclulate_position(float elapsedTime) const {
