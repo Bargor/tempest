@@ -1,3 +1,7 @@
+// This file is part of Tempest-engine project
+// Author: Karol Kontny
+#pragma once
+
 #ifndef __clang__
 #include <concepts>
 #else
