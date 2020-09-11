@@ -5,23 +5,15 @@
 #include "buffer.h"
 #include "settings.h"
 
+#include <engine-base/uniform_storage.h>
 #include <glm.h>
 #include <vector>
-
-#if TST_COMPILER & TST_COMPILER_VC
-#pragma warning(push)
-#pragma warning(disable : 4324)
-#endif
 
 namespace tst {
 namespace engine {
     namespace vulkan {
 
         using descriptor_set = std::array<vk::DescriptorSet, settings::m_inFlightFrames>;
-
-        struct alignas(256) uniform_storage {
-            uniform_storage() = default;
-        };
 
         class uniform_buffer : public buffer {
             using super = buffer;
@@ -60,7 +52,3 @@ namespace engine {
     } // namespace vulkan
 } // namespace engine
 } // namespace tst
-
-#if TST_COMPILER & TST_COMPILER_VC
-#pragma warning(pop)
-#endif

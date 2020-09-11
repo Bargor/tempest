@@ -27,8 +27,8 @@ namespace engine {
             : m_device(device)
             , m_descriptorPools({create_descriptor_pool(400)})
             , m_globalLayout(create_global_layout(device))
-            , m_globalDynamicSet(create_descriptor_set(m_globalLayout))
-            , m_globalStaticSet(create_descriptor_set(m_globalLayout)) {
+            , m_globalStaticSet(create_descriptor_set(m_globalLayout))
+            , m_globalDynamicSet(create_descriptor_set(m_globalLayout)) {
         }
 
         resource_cache::~resource_cache() {

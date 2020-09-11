@@ -12,6 +12,7 @@ set(ENGINE_BASE_HDRS
 	engine-base/shader.h
 	engine-base/settings_parser.h
 	engine-base/technique_parser.h
+    engine-base/uniform_storage.h
 	engine-base/vertex_format.h
 )
 
