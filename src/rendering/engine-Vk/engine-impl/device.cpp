@@ -23,7 +23,7 @@ namespace tst {
 namespace engine {
     namespace vulkan {
 
-        struct global_static_uniforms : uniform_storage {
+        struct global_static_uniforms : base::uniform_storage {
             core::extent<std::uint32_t> extent;
         };
 
