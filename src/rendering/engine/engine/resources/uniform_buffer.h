@@ -11,7 +11,7 @@ namespace tst {
 namespace engine {
     namespace resources {
 
-        using uniform_storage = api::uniform_storage;
+        using uniform_storage = base::uniform_storage;
 
         template<typename T>
         concept UniformStorageType = std::derived_from<T, uniform_storage>;

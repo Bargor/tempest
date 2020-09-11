@@ -8,12 +8,14 @@
 #endif
 
 namespace tst {
-    namespace engine {
+namespace engine {
+    namespace base {
 
         struct alignas(256) uniform_storage {
             uniform_storage() = default;
         };
-    }
+    } // namespace base
+} // namespace engine
 } // namespace tst
 
 #if TST_COMPILER & TST_COMPILER_VC
