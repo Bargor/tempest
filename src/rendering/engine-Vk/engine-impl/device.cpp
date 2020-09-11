@@ -23,6 +23,10 @@ namespace tst {
 namespace engine {
     namespace vulkan {
 
+        struct global_static_uniforms : uniform_storage {
+            core::extent<std::uint32_t> extent;
+        };
+
         vk::SurfaceKHR create_window_surface(GLFWwindow* window) {
             VkSurfaceKHR surface;
             if (vk::Result(glfwCreateWindowSurface(
@@ -161,7 +165,24 @@ namespace engine {
                   {frame_resources(m_logicalDevice), frame_resources(m_logicalDevice), frame_resources(m_logicalDevice)})
             , m_engineFrontend(std::make_unique<engine_frontend>(*this))
             , m_framebufferResizeInfo({false, {0, 0}})
-            , m_resourceIndex(0) {
+            , m_resourceIndex(0)
+            , m_globalStaticUniforms(
+                  uniform_buffer::creation_info{buffer::creation_info{m_logicalDevice,
+                                                                      m_transferQueueHandle,
+                                                                      m_commandPools[0],
+                                                                      m_physicalDevice->get_memory_properties()},
+                                                m_resourceCache->get_global_static_set(),
+                                                m_resourceIndex},
+                  0,
+                  sizeof(global_static_uniforms))
+            , m_globalDynamicUniforms(uniform_buffer::creation_info{{m_logicalDevice,
+                                                                     m_transferQueueHandle,
+                                                                     m_commandPools[0],
+                                                                     m_physicalDevice->get_memory_properties()},
+                                                                    m_resourceCache->get_global_dynamic_set(),
+                                                                    m_resourceIndex},
+                                      0,
+                                      sizeof(global_static_uniforms)) {
             auto framebufferResizeCallback = [&](const application::app_event::arguments& args) {
                 assert(std::holds_alternative<application::app_event::framebuffer>(args));
                 m_framebufferResizeInfo = {true, std::get<application::app_event::framebuffer>(args).size};
@@ -187,6 +208,8 @@ namespace engine {
             m_resourceCache->destroy();
             m_swapChain.reset();
             instance::get_instance().m_instance.destroySurfaceKHR(m_windowSurface);
+            m_globalDynamicUniforms.~uniform_buffer();
+            m_globalStaticUniforms.~uniform_buffer();
             m_logicalDevice.destroy();
         }
 
@@ -266,6 +289,7 @@ namespace engine {
             m_framebufferResizeInfo.shouldResize = false;
             m_mainWindow.set_size(m_framebufferResizeInfo.size);
             recreate_swap_chain(m_framebufferResizeInfo.size);
+            update_engine_buffers(m_framebufferResizeInfo.size);
         }
 
         void device::recreate_swap_chain(const core::extent<std::uint32_t>& extent) {
@@ -295,6 +319,11 @@ namespace engine {
 
             m_resourceCache->rebuild_techniques(*m_swapChain.get());
             m_resourceCache->rebuild_pipelines();
+        }
+
+        void device::update_engine_buffers(const core::extent<std::uint32_t>& extent) {
+            global_static_uniforms uniforms{{}, extent};
+            m_globalStaticUniforms.update_buffer(uniforms);
         }
 
     } // namespace vulkan

@@ -7,18 +7,11 @@
 
 #include <concepts.h>
 
-#if TST_COMPILER & TST_COMPILER_VC
-#pragma warning(push)
-#pragma warning(disable : 4324)
-#endif
-
 namespace tst {
 namespace engine {
     namespace resources {
 
-        struct alignas(256) uniform_storage {
-            uniform_storage() = default;
-        };
+        using uniform_storage = api::uniform_storage;
 
         template<typename T>
         concept UniformStorageType = std::derived_from<T, uniform_storage>;
@@ -55,7 +48,3 @@ namespace engine {
     } // namespace resources
 } // namespace engine
 } // namespace tst
-
-#if TST_COMPILER & TST_COMPILER_VC
-#pragma warning(pop)
-#endif
