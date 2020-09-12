@@ -31,7 +31,7 @@ namespace scene {
             engine::draw_info info(state->model.get_mesh(0),
                                    state->pipeline,
                                    state->model.get_material(0),
-                                   {&state->uniform, &camera.get_uniforms()});
+                                   {&camera.get_uniforms(), &state->uniform});
             drawInfos.emplace_back(std::move(info));
         }
 
@@ -58,7 +58,7 @@ namespace scene {
                            const float fov,
                            const float aspectRatio) {
         auto buffer =
-            m_resourceFactory.create_uniform_buffer<camera::uniforms>("test", engine::bind_point::global_static, 2);
+            m_resourceFactory.create_uniform_buffer<camera::uniforms>("test", engine::bind_point::frame_static, 0);
         m_cameras.emplace_back(
             std::move(cameraName), m_eventProcessor, std::move(buffer), position, lookAt, up, fov, aspectRatio);
     }

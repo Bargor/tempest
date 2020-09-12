@@ -18,6 +18,7 @@ namespace engine {
                              const std::vector<const uniform_buffer*>& uniforms)
             : vertices(vertices), indices(indices), pipelineHash(pipeline), meshMaterial(material) {
             descriptorSets.push_back(uniforms[0]->get_descriptor_set());
+            descriptorSets.push_back(uniforms[1]->get_descriptor_set());
         }
 
         draw_info::draw_info(draw_info&& other) noexcept

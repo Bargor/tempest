@@ -38,7 +38,7 @@ namespace engine {
             const std::vector<vk::DescriptorSetLayout>* find_descriptor_layouts(const std::string& shadersName) const noexcept;
             const descriptor_set* find_descriptor_sets(const std::string& shadersName,
                                                        base::resource_bind_point bindPoint) const;
-
+            vk::DescriptorSetLayout get_global_layout() const noexcept;
             const descriptor_set& get_global_static_set() const noexcept;
             const descriptor_set& get_global_dynamic_set() const noexcept;
 
@@ -62,6 +62,10 @@ namespace engine {
             descriptor_set m_globalStaticSet;
             descriptor_set m_globalDynamicSet;
         };
+
+        TST_INLINE vk::DescriptorSetLayout resource_cache::get_global_layout() const noexcept {
+            return m_globalLayout;
+        }
 
         TST_INLINE const descriptor_set& resource_cache::get_global_static_set() const noexcept {
             return m_globalStaticSet;

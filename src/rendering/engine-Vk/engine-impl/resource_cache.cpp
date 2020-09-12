@@ -122,7 +122,8 @@ namespace engine {
         const descriptor_set* resource_cache::find_descriptor_sets(const std::string& shadersName,
                                                                    base::resource_bind_point bindPoint) const {
             const auto descriptors = m_descriptorSets.find(shadersName);
-            return &descriptors->second[static_cast<std::uint32_t>(bindPoint)];
+            return &descriptors->second[static_cast<std::uint32_t>(bindPoint) -
+                                        static_cast<std::uint32_t>(base::resource_bind_point::frame_static)];
         }
 
         void resource_cache::clear() {

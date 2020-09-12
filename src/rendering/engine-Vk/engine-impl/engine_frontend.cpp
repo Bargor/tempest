@@ -72,13 +72,25 @@ namespace engine {
                 std::vector<vk::DeviceSize> offsets = {0};
                 commandBuffer.bindVertexBuffers(0, vertexBuffers, offsets);
                 commandBuffer.bindIndexBuffer(drawInfo.indices->get_handle(), 0, drawInfo.indices->get_index_type());
-                commandBuffer.bindDescriptorSets(
-                    vk::PipelineBindPoint::eGraphics, drawInfo.pipelineState->get_layout(), 0, drawInfo.descriptorSets, {});
+                commandBuffer.bindDescriptorSets(vk::PipelineBindPoint::eGraphics,
+                                                 drawInfo.pipelineState->get_layout(),
+                                                 2,
+                                                 1,
+                                                 &drawInfo.descriptorSets[0],
+                                                 0,
+                                                 nullptr);
                 commandBuffer.bindDescriptorSets(vk::PipelineBindPoint::eGraphics,
                                                  drawInfo.pipelineState->get_layout(),
                                                  4,
                                                  drawInfo.meshMaterial.get_static_descriptor_set(),
                                                  {});
+                commandBuffer.bindDescriptorSets(vk::PipelineBindPoint::eGraphics,
+                                                 drawInfo.pipelineState->get_layout(),
+                                                 6,
+                                                 1,
+                                                 &drawInfo.descriptorSets[1],
+                                                 0,
+                                                 nullptr);
                 commandBuffer.drawIndexed(drawInfo.indices->get_index_count(), 1, 0, 0, 0);
             }
             commandBuffer.endRenderPass();
