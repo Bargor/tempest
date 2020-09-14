@@ -47,7 +47,8 @@ namespace scene {
     scene_object::render_data scene_object::prepare_render_data(const camera& camera) {
         m_dynamicData = render_data{glm::mat4(1.0f)};
 
-        uniform_buffer_object ubo{{}, camera.getPerspectiveMatrix() * camera.getViewMatrix() * m_dynamicData.model };
+        uniform_buffer_object ubo{
+            {}, camera.get_view().get_perspective() * camera.get_view().get_view() * m_dynamicData.model};
 
         m_uniforms.update_buffer(ubo);
 

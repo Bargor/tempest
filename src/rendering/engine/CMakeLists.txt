@@ -16,6 +16,7 @@ set(ENGINE_HDRS
 	engine/resources/vertex_buffer.h
 	engine/resources/vertex_format.h
 	engine/settings.h
+    engine/view.h
 )
 
 set(ENGINE_SRCS 
@@ -33,6 +34,7 @@ set(ENGINE_SRCS
 	engine/resources/vertex_buffer.cpp
 	engine/resources/vertex_format.cpp
 	engine/settings.cpp
+    engine/view.cpp
 )
 
 include(${PROJECT_SOURCE_DIR}/cmake/TstAddLibrary.cmake)

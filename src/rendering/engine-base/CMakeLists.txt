@@ -14,6 +14,7 @@ set(ENGINE_BASE_HDRS
 	engine-base/technique_parser.h
     engine-base/uniform_storage.h
 	engine-base/vertex_format.h
+    engine-base/view.h
 )
 
 set(ENGINE_BASE_SRCS
@@ -26,6 +27,7 @@ set(ENGINE_BASE_SRCS
 	engine-base/settings_parser.cpp
 	engine-base/technique_parser.cpp
 	engine-base/vertex_format.cpp
+    engine-base/view.cpp
 )
 
 tst_add_library(engine-base "${ENGINE_BASE_HDRS}" "${ENGINE_BASE_SRCS}")

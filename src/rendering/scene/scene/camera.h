@@ -4,6 +4,7 @@
 
 #include <chrono>
 #include <engine/resources/uniform_buffer.h>
+#include <engine/view.h>
 #include <glm.h>
 #include <string>
 
@@ -49,8 +50,8 @@ namespace scene {
                const glm::vec3& position,
                const glm::vec3& lookAt,
                const glm::vec3& up,
-               const float fov,
-               const float aspect);
+               float fov,
+               float aspect);
 
         camera(const camera&) = delete;
         camera(camera&& camera) noexcept;
@@ -60,13 +61,10 @@ namespace scene {
 
         void update(std::chrono::duration<std::uint64_t, std::micro> elapsedTime);
 
-        const glm::mat4& getViewMatrix() const noexcept;
-        const glm::mat4& getPerspectiveMatrix() const noexcept;
-        glm::mat4 getViewPerspectiveMatrix() const noexcept;
+        const engine::view& get_view() const noexcept;
 
     private:
-        glm::vec4 caclulate_position(float elapsedTime) const;
-        glm::vec3 calculate_direction(glm::quat pitch, glm::quat yaw) const;
+        glm::vec4 caclulate_position_delta(float elapsedTime) const;
         glm::quat calculate_pitch(float elapsedTime) const;
         glm::quat calculate_yaw(float elapsedTime) const;
 
@@ -74,11 +72,7 @@ namespace scene {
         std::string m_name;
         application::event_processor<application::app_event>& m_eventProcessor;
         engine::resources::uniform_buffer m_buffer;
-        glm::vec4 m_position;
-        glm::vec3 m_direction;
-        glm::quat m_orientation;
-        glm::mat4 m_view;
-        glm::mat4 m_perspective;
+        engine::view m_view;
         float m_moveSensitivity;
         float m_rotateSensitivity;
         input_delta m_input;
@@ -92,16 +86,8 @@ namespace scene {
         return m_buffer;
     }
 
-    TST_INLINE const glm::mat4& camera::getViewMatrix() const noexcept {
+    TST_INLINE const engine::view& camera::get_view() const noexcept {
         return m_view;
-    }
-    
-    TST_INLINE const glm::mat4& camera::getPerspectiveMatrix() const noexcept {
-        return m_perspective;
-    }
-
-    TST_INLINE glm::mat4 camera::getViewPerspectiveMatrix() const noexcept {
-        return m_perspective * m_view;
     }
 } // namespace scene
 } // namespace tst

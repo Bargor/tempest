@@ -3,6 +3,7 @@
 #pragma once
 
 #include "resources/pipeline.h"
+#include "engine-base/view.h"
 
 #include <vulkan/vulkan.hpp>
 

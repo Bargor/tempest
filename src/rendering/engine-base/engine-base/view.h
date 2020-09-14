@@ -1,0 +1,109 @@
+// This file is part of Tempest-engine project
+// Author: Karol Kontny
+#pragma once
+
+#include <glm.h>
+
+namespace tst {
+namespace engine {
+    namespace base {
+
+        class view {
+        public:
+            view(const glm::vec3& position, const glm::vec3& lookAt, const glm::vec3& up, float fov, float aspect) noexcept;
+
+        public:
+            void set_perspective(float fov, float aspect) noexcept;
+            void set_perspective(const glm::mat4& newMatrix) noexcept;
+
+            void set_position(glm::vec3 newPos) noexcept;
+
+            void move(glm::vec3 delta) noexcept;
+            void rotate(glm::quat yaw, glm::quat pitch) noexcept;
+            void rotate_move(glm::quat yaw, glm::quat pitch, glm::vec3 delta) noexcept;
+
+            glm::vec3 right() const noexcept;
+            glm::vec3 direction() const noexcept;
+
+            glm::vec4 get_position() const noexcept;
+            const glm::mat4& get_view() const noexcept;
+            const glm::mat4& get_perspective() const noexcept;
+            const glm::mat4& get_orientation() const noexcept;
+
+        private:
+            void update_view() noexcept;
+
+        private:
+            glm::vec4 m_position;
+            glm::vec3 m_direction;
+            glm::quat m_orientation; // have to fix this
+            glm::mat4 m_view;        // world to camera local matrix
+            glm::mat4 m_orientationMatrix;
+            glm::mat4 m_perspective; // camera local to projection matrix;
+        };
+
+        TST_INLINE void view::set_perspective(float fov, float aspect) noexcept {
+            m_perspective = glm::perspective(glm::radians(fov), aspect, 0.01f, 100.0f);
+            m_perspective[1][1] *= -1;
+        }
+
+        TST_INLINE void view::set_perspective(const glm::mat4& newMatrix) noexcept {
+            m_perspective = newMatrix;
+        }
+
+        TST_INLINE void view::set_position(glm::vec3 newPos) noexcept {
+            m_position = glm::vec4(newPos, 0.0f);
+            update_view();
+        }
+
+        TST_INLINE void view::rotate(glm::quat yaw, glm::quat pitch) noexcept {
+            m_orientation = pitch * m_orientation * yaw;
+            const auto mat = glm::toMat3(m_orientation);
+            m_direction = glm::normalize(-glm::vec3(mat[0][2], mat[1][2], mat[2][2]));
+
+            update_view();
+            // glm::normalize(glm::rotate(glm::normalize(glm::inverse(pitch * yaw)), m_direction));
+        }
+
+        TST_INLINE void view::move(glm::vec3 delta) noexcept {
+            m_position += glm::vec4(delta, 0.0f);
+
+            update_view();
+        }
+
+        TST_INLINE void view::rotate_move(glm::quat yaw, glm::quat pitch, glm::vec3 delta) noexcept {
+            m_position += glm::vec4(delta, 0.0f);
+            m_orientation = pitch * m_orientation * yaw;
+            const auto mat = glm::toMat3(m_orientation);
+            m_direction = glm::normalize(-glm::vec3(mat[0][2], mat[1][2], mat[2][2]));
+
+            update_view();
+        }
+
+        TST_INLINE glm::vec3 view::right() const noexcept {
+            return glm::normalize(glm::cross(m_direction, glm::vec3(0.0f, 1.0f, 0.0f)));
+        }
+
+        TST_INLINE glm::vec3 view::direction() const noexcept {
+            return m_direction;
+        }
+
+        TST_INLINE glm::vec4 view::get_position() const noexcept {
+            return m_position;
+        }
+
+        TST_INLINE const glm::mat4& view::get_view() const noexcept {
+            return m_view;
+        }
+
+        TST_INLINE const glm::mat4& view::get_perspective() const noexcept {
+            return m_perspective;
+        }
+
+        TST_INLINE const glm::mat4& view::get_orientation() const noexcept {
+            return m_orientationMatrix;
+        }
+
+    } // namespace base
+} // namespace engine
+} // namespace tst
