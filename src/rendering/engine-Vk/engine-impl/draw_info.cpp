@@ -16,7 +16,7 @@ namespace engine {
                              pipeline::pipeline_hash pipeline,
                              const material& material,
                              const std::vector<const uniform_buffer*>& uniforms)
-            : vertices(vertices), indices(indices), pipelineHash(pipeline), meshMaterial(material) {
+            : vertices(vertices), indices(indices), pipelineHash(pipeline), meshMaterial(material), pipelineState(nullptr) {
             descriptorSets.push_back(uniforms[0]->get_descriptor_set());
             descriptorSets.push_back(uniforms[1]->get_descriptor_set());
         }

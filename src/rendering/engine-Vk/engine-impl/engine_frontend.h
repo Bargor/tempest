@@ -39,6 +39,11 @@ namespace engine {
             vk::CommandBuffer generate_command_buffer(std::vector<draw_info>::const_iterator begin,
                                                       std::vector<draw_info>::const_iterator end);
 
+            void bind_descriptor_sets(vk::CommandBuffer commandBuffer, const draw_info& drawInfo) const;
+
+            void draw(vk::CommandBuffer commandBuffer, const draw_info& drawInfo) const;
+            void drawIndexed(vk::CommandBuffer commandBuffer, const draw_info& drawInfo) const;
+
         private:
             device& m_device;
 

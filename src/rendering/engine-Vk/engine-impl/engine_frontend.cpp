@@ -67,36 +67,62 @@ namespace engine {
             for (; begin != end; begin++) {
                 const auto drawInfo = *begin;
                 drawInfo.pipelineState->bind_command_buffer(commandBuffer, vk::PipelineBindPoint::eGraphics);
-
-                std::vector<vk::Buffer> vertexBuffers = {drawInfo.vertices.get_handle()};
-                std::vector<vk::DeviceSize> offsets = {0};
-                commandBuffer.bindVertexBuffers(0, vertexBuffers, offsets);
-                commandBuffer.bindIndexBuffer(drawInfo.indices->get_handle(), 0, drawInfo.indices->get_index_type());
-                commandBuffer.bindDescriptorSets(vk::PipelineBindPoint::eGraphics,
-                                                 drawInfo.pipelineState->get_layout(),
-                                                 2,
-                                                 1,
-                                                 &drawInfo.descriptorSets[0],
-                                                 0,
-                                                 nullptr);
-                commandBuffer.bindDescriptorSets(vk::PipelineBindPoint::eGraphics,
-                                                 drawInfo.pipelineState->get_layout(),
-                                                 4,
-                                                 drawInfo.meshMaterial.get_static_descriptor_set(),
-                                                 {});
-                commandBuffer.bindDescriptorSets(vk::PipelineBindPoint::eGraphics,
-                                                 drawInfo.pipelineState->get_layout(),
-                                                 6,
-                                                 1,
-                                                 &drawInfo.descriptorSets[1],
-                                                 0,
-                                                 nullptr);
-                commandBuffer.drawIndexed(drawInfo.indices->get_index_count(), 1, 0, 0, 0);
+                bind_descriptor_sets(commandBuffer, drawInfo);
+                if (drawInfo.indices) {
+                    drawIndexed(commandBuffer, drawInfo);
+                } else {
+                    draw(commandBuffer, drawInfo);
+                }
             }
             commandBuffer.endRenderPass();
             commandBuffer.end();
 
             return commandBuffer;
+        }
+
+        void engine_frontend::bind_descriptor_sets(vk::CommandBuffer commandBuffer, const draw_info& drawInfo) const {
+            commandBuffer.bindDescriptorSets(vk::PipelineBindPoint::eGraphics,
+                                             drawInfo.pipelineState->get_layout(),
+                                             0,
+                                             1,
+                                             &m_device.m_resourceCache->get_global_static_set()[m_device.m_resourceIndex],
+                                             0,
+                                             nullptr);
+            commandBuffer.bindDescriptorSets(vk::PipelineBindPoint::eGraphics,
+                                             drawInfo.pipelineState->get_layout(),
+                                             2,
+                                             1,
+                                             &drawInfo.descriptorSets[0],
+                                             0,
+                                             nullptr);
+            commandBuffer.bindDescriptorSets(vk::PipelineBindPoint::eGraphics,
+                                             drawInfo.pipelineState->get_layout(),
+                                             4,
+                                             drawInfo.meshMaterial.get_static_descriptor_set(),
+                                             {});
+            commandBuffer.bindDescriptorSets(vk::PipelineBindPoint::eGraphics,
+                                             drawInfo.pipelineState->get_layout(),
+                                             6,
+                                             1,
+                                             &drawInfo.descriptorSets[1],
+                                             0,
+                                             nullptr);
+        }
+
+        void engine_frontend::draw(vk::CommandBuffer commandBuffer, const draw_info& drawInfo) const {
+            std::vector<vk::Buffer> vertexBuffers = {drawInfo.vertices.get_handle()};
+            std::vector<vk::DeviceSize> offsets = {0};
+            commandBuffer.bindVertexBuffers(0, vertexBuffers, offsets);
+            commandBuffer.draw(drawInfo.vertices.get_vertex_count(), 1, 0, 0);
+        }
+
+        void engine_frontend::drawIndexed(vk::CommandBuffer commandBuffer, const draw_info& drawInfo) const {
+            std::vector<vk::Buffer> vertexBuffers = {drawInfo.vertices.get_handle()};
+            std::vector<vk::DeviceSize> offsets = {0};
+            commandBuffer.bindVertexBuffers(0, vertexBuffers, offsets);
+            commandBuffer.bindIndexBuffer(drawInfo.indices->get_handle(), 0, drawInfo.indices->get_index_type());
+
+            commandBuffer.drawIndexed(drawInfo.indices->get_index_count(), 1, 0, 0, 0);
         }
 
     } // namespace vulkan

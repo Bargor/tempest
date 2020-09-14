@@ -9,7 +9,7 @@
 namespace tst {
 namespace scene {
     std::vector<scene_object::static_data*> update_scene(scene& scene,
-                                                        std::chrono::duration<std::uint64_t, std::micro> elapsedTime) {
+                                                         std::chrono::duration<std::uint64_t, std::micro> elapsedTime) {
         std::vector<scene_object::static_data*> newSceneState;
         for (auto& camera : scene.m_cameras) {
             camera.update(elapsedTime);

@@ -362,9 +362,9 @@ namespace engine {
             return colorBlending;
         }
 
-        vk::Pipeline compile_pipeline(const vk::Device logicalDevice,
-                                      const vk::PipelineLayout pipelineLayout,
-                                      const vk::RenderPass renderPass,
+        vk::Pipeline compile_pipeline(vk::Device logicalDevice,
+                                      vk::PipelineLayout pipelineLayout,
+                                      vk::RenderPass renderPass,
                                       const base::viewport_settings& viewportSettings,
                                       const core::rectangle<std::int32_t, std::uint32_t> scissorSettings,
                                       const base::depth_settings& depthSettings,
@@ -472,7 +472,8 @@ namespace engine {
             , m_shaders(pipeline.m_shaders)
             , m_vertexFormat(pipeline.m_vertexFormat)
             , m_logicalDevice(pipeline.m_logicalDevice)
-            , m_layouts(pipeline.m_layouts) {
+            , m_layouts(pipeline.m_layouts)
+            , m_globalLayout(pipeline.m_globalLayout) {
             pipeline.m_pipeline = vk::Pipeline();
             pipeline.m_pipeline = vk::Pipeline();
             pipeline.m_pipelineLayout = vk::PipelineLayout();

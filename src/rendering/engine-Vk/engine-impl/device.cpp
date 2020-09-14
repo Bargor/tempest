@@ -166,15 +166,14 @@ namespace engine {
             , m_engineFrontend(std::make_unique<engine_frontend>(*this))
             , m_framebufferResizeInfo({false, {0, 0}})
             , m_resourceIndex(0)
-            , m_globalStaticUniforms(
-                  uniform_buffer::creation_info{buffer::creation_info{m_logicalDevice,
-                                                                      m_transferQueueHandle,
-                                                                      m_commandPools[0],
-                                                                      m_physicalDevice->get_memory_properties()},
-                                                m_resourceCache->get_global_static_set(),
-                                                m_resourceIndex},
-                  0,
-                  sizeof(global_static_uniforms))
+            , m_globalStaticUniforms(uniform_buffer::creation_info{{m_logicalDevice,
+                                                                    m_transferQueueHandle,
+                                                                    m_commandPools[0],
+                                                                    m_physicalDevice->get_memory_properties()},
+                                                                   m_resourceCache->get_global_static_set(),
+                                                                   m_resourceIndex},
+                                     0,
+                                     sizeof(global_static_uniforms))
             , m_globalDynamicUniforms(uniform_buffer::creation_info{{m_logicalDevice,
                                                                      m_transferQueueHandle,
                                                                      m_commandPools[0],
