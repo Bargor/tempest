@@ -43,15 +43,16 @@ namespace engine {
             uniforms get_uniforms() const noexcept;
 
         private:
-            void update_view() noexcept;
+            void update_view() const noexcept;
 
         private:
             glm::vec4 m_position;
             glm::vec3 m_direction;
             glm::quat m_orientation; // have to fix this
-            glm::mat4 m_view;        // world to camera local matrix
-            glm::mat4 m_orientationMatrix;
+            glm::mat4 mutable m_view; // world to camera local matrix
+            glm::mat4 mutable m_orientationMatrix;
             glm::mat4 m_perspective; // camera local to projection matrix;
+            bool mutable m_viewMatrixDirty;
         };
 
         TST_INLINE void view::set_perspective(float fov, float aspect) noexcept {
@@ -65,22 +66,20 @@ namespace engine {
 
         TST_INLINE void view::set_position(glm::vec3 newPos) noexcept {
             m_position = glm::vec4(newPos, 0.0f);
-            update_view();
+            m_viewMatrixDirty = true;
         }
 
         TST_INLINE void view::rotate(glm::quat yaw, glm::quat pitch) noexcept {
             m_orientation = pitch * m_orientation * yaw;
             const auto mat = glm::toMat3(m_orientation);
             m_direction = glm::normalize(-glm::vec3(mat[0][2], mat[1][2], mat[2][2]));
-
-            update_view();
+            m_viewMatrixDirty = true;
             // glm::normalize(glm::rotate(glm::normalize(glm::inverse(pitch * yaw)), m_direction));
         }
 
         TST_INLINE void view::move(glm::vec3 delta) noexcept {
             m_position += glm::vec4(delta, 0.0f);
-
-            update_view();
+            m_viewMatrixDirty = true;
         }
 
         TST_INLINE void view::rotate_move(glm::quat yaw, glm::quat pitch, glm::vec3 delta) noexcept {
@@ -88,8 +87,7 @@ namespace engine {
             m_orientation = pitch * m_orientation * yaw;
             const auto mat = glm::toMat3(m_orientation);
             m_direction = glm::normalize(-glm::vec3(mat[0][2], mat[1][2], mat[2][2]));
-
-            update_view();
+            m_viewMatrixDirty = true;
         }
 
         TST_INLINE glm::vec3 view::right() const noexcept {
@@ -105,6 +103,9 @@ namespace engine {
         }
 
         TST_INLINE const glm::mat4& view::get_view() const noexcept {
+            if (m_viewMatrixDirty) {
+                update_view();
+            }
             return m_view;
         }
 
@@ -113,6 +114,9 @@ namespace engine {
         }
 
         TST_INLINE const glm::mat4& view::get_orientation() const noexcept {
+            if (m_viewMatrixDirty) {
+                update_view();
+            }
             return m_orientationMatrix;
         }
 
