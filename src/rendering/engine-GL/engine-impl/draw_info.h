@@ -2,20 +2,24 @@
 // Author: Karol Kontny
 #pragma once
 
-#include "resources/index_buffer.h"
+#include "engine-base/view.h"
 #include "resources/pipeline.h"
-#include "resources/uniform_buffer.h"
-#include "resources/vertex_buffer.h"
-#include "resources/material.h"
 
 namespace tst {
 namespace engine {
     namespace opengl {
+
+        class material;
+        class index_buffer;
+        class vertex_buffer;
+        class uniform_buffer;
+
         class draw_info {
         public:
             draw_info(const vertex_buffer& vertices,
                       const index_buffer* indices,
                       pipeline::pipeline_hash pipeline,
+                      const base::view& view,
                       const material& material,
                       const std::vector<const uniform_buffer*>& uniforms);
 
@@ -25,6 +29,7 @@ namespace engine {
             const vertex_buffer& vertices;
             const index_buffer* indices;
             pipeline::pipeline_hash pipelineHash;
+            const base::view viewData;
             const material& meshMaterial;
             const std::vector<const uniform_buffer*>& uniforms;
         };
