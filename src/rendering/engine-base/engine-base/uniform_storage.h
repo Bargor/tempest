@@ -2,6 +2,8 @@
 // Author: Karol Kontny
 #pragma once
 
+#include "platform.h"
+
 #if TST_COMPILER & TST_COMPILER_VC
 #pragma warning(push)
 #pragma warning(disable : 4324)

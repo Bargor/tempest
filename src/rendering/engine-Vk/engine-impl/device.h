@@ -109,6 +109,8 @@ namespace engine {
 
             uniform_buffer m_globalStaticUniforms;
             uniform_buffer m_globalDynamicUniforms;
+            uniform_buffer m_viewStaticUniforms;
+            uniform_buffer m_viewDynamicUniforms;
         };
 
         template<typename Iter>
@@ -119,6 +121,8 @@ namespace engine {
             startFrame();
 
             const auto drawInfos = sort_draw_infos(first, last);
+
+            m_viewStaticUniforms.update_buffer(drawInfos.begin()->viewData.get_uniforms());
 
             const auto commandBuffers = m_engineFrontend->prepare_draw(drawInfos);
 

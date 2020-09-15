@@ -2,6 +2,7 @@
 // Author: Karol Kontny
 #pragma once
 
+#include <engine-base/uniform_storage.h>
 #include <glm.h>
 
 namespace tst {
@@ -9,6 +10,15 @@ namespace engine {
     namespace base {
 
         class view {
+        public:
+            struct uniforms : uniform_storage {
+                glm::mat4 view;
+                glm::mat4 perspective;
+                glm::mat4 viewPerspective;
+                glm::mat4 orientation;
+                glm::vec4 position;
+            };
+
         public:
             view(const glm::vec3& position, const glm::vec3& lookAt, const glm::vec3& up, float fov, float aspect) noexcept;
 
@@ -29,6 +39,8 @@ namespace engine {
             const glm::mat4& get_view() const noexcept;
             const glm::mat4& get_perspective() const noexcept;
             const glm::mat4& get_orientation() const noexcept;
+
+            uniforms get_uniforms() const noexcept;
 
         private:
             void update_view() noexcept;
@@ -102,6 +114,10 @@ namespace engine {
 
         TST_INLINE const glm::mat4& view::get_orientation() const noexcept {
             return m_orientationMatrix;
+        }
+
+        TST_INLINE view::uniforms view::get_uniforms() const noexcept {
+            return uniforms{{}, m_view, m_perspective, m_perspective * m_view, m_orientationMatrix, m_position};
         }
 
     } // namespace base

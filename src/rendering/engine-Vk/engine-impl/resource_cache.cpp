@@ -28,7 +28,9 @@ namespace engine {
             , m_descriptorPools({create_descriptor_pool(400)})
             , m_globalLayout(create_global_layout(device))
             , m_globalStaticSet(create_descriptor_set(m_globalLayout))
-            , m_globalDynamicSet(create_descriptor_set(m_globalLayout)) {
+            , m_globalDynamicSet(create_descriptor_set(m_globalLayout))
+            , m_viewStaticSet(create_descriptor_set(m_globalLayout))
+            , m_viewDynamicSet(create_descriptor_set(m_globalLayout)) {
         }
 
         resource_cache::~resource_cache() {
@@ -123,7 +125,7 @@ namespace engine {
                                                                    base::resource_bind_point bindPoint) const {
             const auto descriptors = m_descriptorSets.find(shadersName);
             return &descriptors->second[static_cast<std::uint32_t>(bindPoint) -
-                                        static_cast<std::uint32_t>(base::resource_bind_point::frame_static)];
+                                        static_cast<std::uint32_t>(base::resource_bind_point::material_static)];
         }
 
         void resource_cache::clear() {

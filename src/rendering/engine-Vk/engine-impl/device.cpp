@@ -15,6 +15,7 @@
 #include <application/data_loader.h>
 #include <application/event_processor.h>
 #include <application/main_window.h>
+#include <engine-base/view.h>
 #include <fmt/printf.h>
 #include <set>
 #include <util/variant.h>
@@ -181,7 +182,23 @@ namespace engine {
                                                                     m_resourceCache->get_global_dynamic_set(),
                                                                     m_resourceIndex},
                                       0,
-                                      sizeof(global_static_uniforms)) {
+                                      sizeof(global_static_uniforms))
+            , m_viewStaticUniforms(uniform_buffer::creation_info{{m_logicalDevice,
+                                                                  m_transferQueueHandle,
+                                                                  m_commandPools[0],
+                                                                  m_physicalDevice->get_memory_properties()},
+                                                                 m_resourceCache->get_view_static_set(),
+                                                                 m_resourceIndex},
+                                   0,
+                                   sizeof(base::view::uniforms))
+            , m_viewDynamicUniforms(uniform_buffer::creation_info{{m_logicalDevice,
+                                                                   m_transferQueueHandle,
+                                                                   m_commandPools[0],
+                                                                   m_physicalDevice->get_memory_properties()},
+                                                                  m_resourceCache->get_view_dynamic_set(),
+                                                                  m_resourceIndex},
+                                    0,
+                                    sizeof(base::view::uniforms)) {
             auto framebufferResizeCallback = [&](const application::app_event::arguments& args) {
                 assert(std::holds_alternative<application::app_event::framebuffer>(args));
                 m_framebufferResizeInfo = {true, std::get<application::app_event::framebuffer>(args).size};
@@ -209,6 +226,8 @@ namespace engine {
             instance::get_instance().m_instance.destroySurfaceKHR(m_windowSurface);
             m_globalDynamicUniforms.~uniform_buffer();
             m_globalStaticUniforms.~uniform_buffer();
+            m_viewStaticUniforms.~uniform_buffer();
+            m_viewDynamicUniforms .~uniform_buffer();
             m_logicalDevice.destroy();
         }
 

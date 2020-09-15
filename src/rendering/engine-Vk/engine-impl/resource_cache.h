@@ -41,6 +41,8 @@ namespace engine {
             vk::DescriptorSetLayout get_global_layout() const noexcept;
             const descriptor_set& get_global_static_set() const noexcept;
             const descriptor_set& get_global_dynamic_set() const noexcept;
+            const descriptor_set& get_view_static_set() const noexcept;
+            const descriptor_set& get_view_dynamic_set() const noexcept;
 
             void clear();
             void destroy();
@@ -61,6 +63,8 @@ namespace engine {
             vk::DescriptorSetLayout m_globalLayout;
             descriptor_set m_globalStaticSet;
             descriptor_set m_globalDynamicSet;
+            descriptor_set m_viewStaticSet;
+            descriptor_set m_viewDynamicSet;
         };
 
         TST_INLINE vk::DescriptorSetLayout resource_cache::get_global_layout() const noexcept {
@@ -73,6 +77,14 @@ namespace engine {
 
         TST_INLINE const descriptor_set& resource_cache::get_global_dynamic_set() const noexcept {
             return m_globalDynamicSet;
+        }
+
+        TST_INLINE const descriptor_set& resource_cache::get_view_static_set() const noexcept {
+            return m_viewStaticSet;
+        }
+
+        TST_INLINE const descriptor_set& resource_cache::get_view_dynamic_set() const noexcept {
+            return m_viewDynamicSet;
         }
 
     } // namespace vulkan

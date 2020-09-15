@@ -252,7 +252,7 @@ namespace engine {
         vk::PipelineLayout create_pipeline_layout(vk::Device logicalDevice,
                                                   std::vector<vk::DescriptorSetLayout> layouts,
                                                   vk::DescriptorSetLayout globalLayout) {
-            layouts.insert(layouts.begin(), 2, globalLayout);
+            layouts.insert(layouts.begin(), 4, globalLayout);
             vk::PipelineLayoutCreateInfo pipelineLayoutInfo(
                 vk::PipelineLayoutCreateFlags(), static_cast<std::uint32_t>(layouts.size()), layouts.data(), 0, nullptr);
             return logicalDevice.createPipelineLayout(pipelineLayoutInfo);

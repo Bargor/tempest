@@ -81,20 +81,13 @@ namespace engine {
         }
 
         void engine_frontend::bind_descriptor_sets(vk::CommandBuffer commandBuffer, const draw_info& drawInfo) const {
-            commandBuffer.bindDescriptorSets(vk::PipelineBindPoint::eGraphics,
-                                             drawInfo.pipelineState->get_layout(),
-                                             0,
-                                             1,
-                                             &m_device.m_resourceCache->get_global_static_set()[m_device.m_resourceIndex],
-                                             0,
-                                             nullptr);
-            commandBuffer.bindDescriptorSets(vk::PipelineBindPoint::eGraphics,
-                                             drawInfo.pipelineState->get_layout(),
-                                             2,
-                                             1,
-                                             &drawInfo.descriptorSets[0],
-                                             0,
-                                             nullptr);
+            const auto viewStaticSet = m_device.m_viewStaticUniforms.get_descriptor_set();
+            const auto globalStaticSet = m_device.m_globalStaticUniforms.get_descriptor_set();
+
+            commandBuffer.bindDescriptorSets(
+                vk::PipelineBindPoint::eGraphics, drawInfo.pipelineState->get_layout(), 0, 1, &globalStaticSet, 0, nullptr);
+            commandBuffer.bindDescriptorSets(
+                vk::PipelineBindPoint::eGraphics, drawInfo.pipelineState->get_layout(), 2, 1, &viewStaticSet, 0, nullptr);
             commandBuffer.bindDescriptorSets(vk::PipelineBindPoint::eGraphics,
                                              drawInfo.pipelineState->get_layout(),
                                              4,
@@ -104,7 +97,7 @@ namespace engine {
                                              drawInfo.pipelineState->get_layout(),
                                              6,
                                              1,
-                                             &drawInfo.descriptorSets[1],
+                                             &drawInfo.descriptorSets[0],
                                              0,
                                              nullptr);
         }

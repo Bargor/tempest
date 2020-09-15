@@ -4,7 +4,7 @@
 
 #include <chrono>
 #include <engine/resources/uniform_buffer.h>
-#include <engine/view.h>
+#include <engine/resources/view.h>
 #include <glm.h>
 #include <string>
 
@@ -35,18 +35,8 @@ namespace scene {
         };
 
     public:
-        struct uniforms : engine::resources::uniform_storage {
-            glm::mat4 view;
-            glm::mat4 perspective;
-            glm::mat4 viewPerspective;
-            glm::mat4 orientation;
-            glm::vec4 position;
-        };
-
-    public:
         camera(std::string cameraName,
                application::event_processor<application::app_event>& eventProcessor,
-               engine::resources::uniform_buffer&& buffer,
                const glm::vec3& position,
                const glm::vec3& lookAt,
                const glm::vec3& up,
@@ -57,7 +47,6 @@ namespace scene {
         camera(camera&& camera) noexcept;
 
         std::string_view get_name() const noexcept;
-        const engine::resources::uniform_buffer& get_uniforms() const;
 
         void update(std::chrono::duration<std::uint64_t, std::micro> elapsedTime);
 
@@ -71,7 +60,6 @@ namespace scene {
     private:
         std::string m_name;
         application::event_processor<application::app_event>& m_eventProcessor;
-        engine::resources::uniform_buffer m_buffer;
         engine::view m_view;
         float m_moveSensitivity;
         float m_rotateSensitivity;
@@ -80,10 +68,6 @@ namespace scene {
 
     TST_INLINE std::string_view camera::get_name() const noexcept {
         return m_name;
-    }
-
-    TST_INLINE const engine::resources::uniform_buffer& camera::get_uniforms() const {
-        return m_buffer;
     }
 
     TST_INLINE const engine::view& camera::get_view() const noexcept {

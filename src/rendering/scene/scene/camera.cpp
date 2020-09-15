@@ -13,7 +13,6 @@ namespace scene {
 
     camera::camera(std::string cameraName,
                    application::event_processor<application::app_event>& eventProcessor,
-                   engine::resources::uniform_buffer&& buffer,
                    const glm::vec3& position,
                    const glm::vec3& lookAt,
                    const glm::vec3& up,
@@ -21,7 +20,6 @@ namespace scene {
                    float aspect)
         : m_name(std::move(cameraName))
         , m_eventProcessor(eventProcessor)
-        , m_buffer(std::move(buffer))
         , m_view(position, lookAt, up, fov, aspect)
         , m_moveSensitivity(3.0f)
         , m_rotateSensitivity(0.5f)
@@ -93,7 +91,6 @@ namespace scene {
     camera::camera(camera&& other) noexcept
         : m_name(std::move(other.m_name))
         , m_eventProcessor(other.m_eventProcessor)
-        , m_buffer(std::move(other.m_buffer))
         , m_view(other.m_view)
         , m_moveSensitivity(other.m_moveSensitivity)
         , m_rotateSensitivity(other.m_rotateSensitivity)
@@ -111,13 +108,6 @@ namespace scene {
         } else {
             m_view.move(caclulate_position_delta(time));
         }
-
-        m_buffer.update_buffer<uniforms>(uniforms{{},
-                                                  m_view.get_view(),
-                                                  m_view.get_perspective(),
-                                                  m_view.get_perspective() * m_view.get_view(),
-                                                  m_view.get_orientation(),
-                                                  m_view.get_position()});
     }
 
     glm::vec4 camera::caclulate_position_delta(float elapsedTime) const {
