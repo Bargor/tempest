@@ -3,6 +3,7 @@
 #pragma once
 
 #include "resources/pipeline.h"
+#include "engine-base/view.h"
 
 #include <vulkan/vulkan.hpp>
 
@@ -20,6 +21,7 @@ namespace engine {
             draw_info(const vertex_buffer& vertices,
                       const index_buffer* indices,
                       pipeline::pipeline_hash pipeline,
+                      const base::view& view,
                       const material& material,
                       const std::vector<const uniform_buffer*>& uniforms);
 
@@ -32,6 +34,7 @@ namespace engine {
             const vertex_buffer& vertices;
             const index_buffer* indices;
             const pipeline::pipeline_hash pipelineHash;
+            const base::view viewData;
             const material& meshMaterial;
             std::vector<vk::DescriptorSet> descriptorSets;
             const pipeline* pipelineState;

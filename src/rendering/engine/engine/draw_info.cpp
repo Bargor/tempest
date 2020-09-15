@@ -13,11 +13,13 @@ namespace tst {
 namespace engine {
     draw_info::draw_info(const mesh& mesh,
                          pipeline_hash pipeline,
+                         const view& view,
                          const material& material,
                          const std::vector<const resources::uniform_buffer*>& uniforms)
         : api::draw_info(mesh.get_vertices().to_super(),
                          &mesh.get_indices()->to_super(),
                          pipeline,
+                         view,
                          material.to_super(),
                          core::vector_cast<const api::uniform_buffer*>(uniforms)) {
     }

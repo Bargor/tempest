@@ -9,8 +9,28 @@ namespace tst {
 namespace engine {
     namespace vulkan {
 
-        resource_cache::resource_cache(const vk::Device device) : m_device(device) {
-            create_descriptor_pool(400);
+        namespace {
+            vk::DescriptorSetLayout create_global_layout(vk::Device device) {
+                std::vector<vk::DescriptorSetLayoutBinding> bindings;
+
+                bindings.emplace_back(0, vk::DescriptorType::eUniformBuffer, 1, vk::ShaderStageFlagBits::eAll, nullptr);
+
+                vk::DescriptorSetLayoutCreateInfo setLayoutInfo(
+                    vk::DescriptorSetLayoutCreateFlags(), static_cast<std::uint32_t>(bindings.size()), bindings.data());
+
+                return device.createDescriptorSetLayout(setLayoutInfo, nullptr);
+            }
+
+        } // namespace
+
+        resource_cache::resource_cache(const vk::Device device)
+            : m_device(device)
+            , m_descriptorPools({create_descriptor_pool(400)})
+            , m_globalLayout(create_global_layout(device))
+            , m_globalStaticSet(create_descriptor_set(m_globalLayout))
+            , m_globalDynamicSet(create_descriptor_set(m_globalLayout))
+            , m_viewStaticSet(create_descriptor_set(m_globalLayout))
+            , m_viewDynamicSet(create_descriptor_set(m_globalLayout)) {
         }
 
         resource_cache::~resource_cache() {
@@ -32,17 +52,7 @@ namespace engine {
 
         void resource_cache::add_shaders(std::string name, shader_set&& shaders) {
             for (const auto layout : shaders.layouts) {
-                std::vector<vk::DescriptorSetLayout> layouts(settings::m_inFlightFrames, layout);
-                const vk::DescriptorSetAllocateInfo allocInfo(
-                    m_descriptorPools[0], settings::m_inFlightFrames, layouts.data());
-
-                const auto sets = m_device.allocateDescriptorSets(allocInfo);
-
-                descriptor_set descSets;
-
-                std::copy_n(sets.begin(), settings::m_inFlightFrames, descSets.begin());
-
-                m_descriptorSets[name].push_back(descSets);
+                m_descriptorSets[name].push_back(create_descriptor_set(layout));
             }
 
             m_shaders.insert({std::move(name), std::move(shaders)});
@@ -59,9 +69,19 @@ namespace engine {
                 2,
                 std::array<vk::DescriptorPoolSize, 2>{uniformPoolSize, samplerPoolSize}.data());
 
-            m_descriptorPools.emplace_back(m_device.createDescriptorPool(poolCreateInfo));
+            return m_device.createDescriptorPool(poolCreateInfo);
+        }
 
-            return m_descriptorPools.back();
+        descriptor_set resource_cache::create_descriptor_set(vk::DescriptorSetLayout layout) {
+            std::vector<vk::DescriptorSetLayout> layouts(settings::m_inFlightFrames, layout);
+            const vk::DescriptorSetAllocateInfo allocInfo(
+                m_descriptorPools[0], settings::m_inFlightFrames, layouts.data());
+
+            const auto sets = m_device.allocateDescriptorSets(allocInfo);
+
+            descriptor_set descSets;
+            std::copy_n(sets.begin(), settings::m_inFlightFrames, descSets.begin());
+            return descSets;
         }
 
         const pipeline* resource_cache::find_pipeline(std::size_t pipelineHash) const {
@@ -104,7 +124,8 @@ namespace engine {
         const descriptor_set* resource_cache::find_descriptor_sets(const std::string& shadersName,
                                                                    base::resource_bind_point bindPoint) const {
             const auto descriptors = m_descriptorSets.find(shadersName);
-            return &descriptors->second[static_cast<std::uint32_t>(bindPoint)];
+            return &descriptors->second[static_cast<std::uint32_t>(bindPoint) -
+                                        static_cast<std::uint32_t>(base::resource_bind_point::material_static)];
         }
 
         void resource_cache::clear() {
@@ -124,6 +145,10 @@ namespace engine {
                 m_device.destroyDescriptorPool(descriptorPool);
             }
             m_descriptorPools.clear();
+            if (m_globalLayout) {
+                m_device.destroyDescriptorSetLayout(m_globalLayout);
+                m_globalLayout = nullptr;
+            }
         }
 
         void resource_cache::rebuild_techniques(const swap_chain& newSwapChain) {

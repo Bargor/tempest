@@ -3,6 +3,7 @@
 
 set(CORE_HDRS
     assert.h
+    concepts.h
 	core.h
 	glm.h
 	platform.h

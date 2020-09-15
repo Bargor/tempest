@@ -5,6 +5,7 @@
 #include "buffer.h"
 #include "settings.h"
 
+#include <engine-base/uniform_storage.h>
 #include <glm.h>
 #include <vector>
 
@@ -32,6 +33,8 @@ namespace engine {
 
             ~uniform_buffer() = default;
 
+            template<typename T>
+            void update_buffer(const T& data);
             void update_buffer(const void* data, const std::size_t dataSize);
             vk::DescriptorSet get_descriptor_set() const noexcept;
 
@@ -40,6 +43,11 @@ namespace engine {
             const std::array<vk::DescriptorSet, settings::m_inFlightFrames>& m_descriptorSets;
             std::uint32_t m_binding;
         };
+
+        template<typename T>
+        void uniform_buffer::update_buffer(const T& data) {
+            update_buffer(&data, sizeof(data));
+        }
 
     } // namespace vulkan
 } // namespace engine

@@ -4,6 +4,7 @@
 
 #include <chrono>
 #include <engine/resources/uniform_buffer.h>
+#include <engine/resources/view.h>
 #include <glm.h>
 #include <string>
 
@@ -34,45 +35,32 @@ namespace scene {
         };
 
     public:
-        struct uniforms {
-            glm::mat4 view;
-            glm::mat4 perspective;
-            glm::mat4 viewPerspective;
-            glm::mat4 position;
-        };
-
-    public:
         camera(std::string cameraName,
                application::event_processor<application::app_event>& eventProcessor,
-               engine::resources::uniform_buffer&& buffer,
                const glm::vec3& position,
                const glm::vec3& lookAt,
                const glm::vec3& up,
-               const float fov,
-               const float aspect);
+               float fov,
+               float aspect);
 
         camera(const camera&) = delete;
         camera(camera&& camera) noexcept;
 
         std::string_view get_name() const noexcept;
-        const engine::resources::uniform_buffer& get_uniforms() const;
 
         void update(std::chrono::duration<std::uint64_t, std::micro> elapsedTime);
 
+        const engine::view& get_view() const noexcept;
+
     private:
-        glm::vec4 caclulate_position(float elapsedTime) const;
-        glm::vec3 calculate_direction(glm::quat pitch, glm::quat yaw) const;
+        glm::vec4 caclulate_position_delta(float elapsedTime) const;
         glm::quat calculate_pitch(float elapsedTime) const;
         glm::quat calculate_yaw(float elapsedTime) const;
 
     private:
         std::string m_name;
         application::event_processor<application::app_event>& m_eventProcessor;
-        engine::resources::uniform_buffer m_buffer;
-        glm::vec4 m_position;
-        glm::vec3 m_direction;
-        glm::quat m_orientation;
-        glm::mat4 m_perspective;
+        engine::view m_view;
         float m_moveSensitivity;
         float m_rotateSensitivity;
         input_delta m_input;
@@ -82,8 +70,8 @@ namespace scene {
         return m_name;
     }
 
-    TST_INLINE const engine::resources::uniform_buffer& camera::get_uniforms() const {
-        return m_buffer;
+    TST_INLINE const engine::view& camera::get_view() const noexcept {
+        return m_view;
     }
 } // namespace scene
 } // namespace tst

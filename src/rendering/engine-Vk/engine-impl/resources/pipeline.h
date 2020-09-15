@@ -25,13 +25,14 @@ namespace engine {
             using pipeline_hash = std::size_t;
 
         public:
-            pipeline(const vk::Device logicalDevice,
+            pipeline(vk::Device logicalDevice,
                      const settings& engineSettings,
                      base::draw_settings&& drawSettings,
                      const vertex_format& format,
                      const shader_set& shaders,
                      const rendering_technique& technique,
-                     std::vector<vk::DescriptorSetLayout>&& layouts,
+                     const std::vector<vk::DescriptorSetLayout>& layouts,
+                     vk::DescriptorSetLayout globalLayout,
                      vk::Extent2D extent);
             pipeline(const pipeline&) = delete;
             pipeline(pipeline&& pipeline) noexcept;
@@ -57,8 +58,9 @@ namespace engine {
             const rendering_technique& m_technique;
             const shader_set& m_shaders;
             const vertex_format m_vertexFormat;
-            const vk::Device m_logicalDevice;
+            vk::Device m_logicalDevice;
             std::vector<vk::DescriptorSetLayout> m_layouts;
+            vk::DescriptorSetLayout m_globalLayout;
         };
 
     } // namespace vulkan

@@ -61,8 +61,8 @@ namespace engine {
             const auto& jsonModel = m_dataLoader.load_json(jsonDescriptorFile.value());
 
             for (std::int32_t idx = 0; idx < static_cast<std::int32_t>(shader_type::enum_size); ++idx) {
-                const auto shaderFileName(std::filesystem::path("shaders") / name / "." /
-                                          get_shader_format(static_cast<shader_type>(idx)));
+                const auto shaderFileName(std::filesystem::path("shaders") / (name + "." +
+                                          get_shader_format(static_cast<shader_type>(idx))));
                 const auto bytecodeFileName(name + "." + get_shader_format(static_cast<shader_type>(idx)) +
                                             m_shaderExtension);
 

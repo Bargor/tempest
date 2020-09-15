@@ -249,8 +249,10 @@ namespace engine {
             return state;
         }
 
-        vk::PipelineLayout create_pipeline_layout(const vk::Device logicalDevice,
-                                                  const std::vector<vk::DescriptorSetLayout>& layouts) {
+        vk::PipelineLayout create_pipeline_layout(vk::Device logicalDevice,
+                                                  std::vector<vk::DescriptorSetLayout> layouts,
+                                                  vk::DescriptorSetLayout globalLayout) {
+            layouts.insert(layouts.begin(), 4, globalLayout);
             vk::PipelineLayoutCreateInfo pipelineLayoutInfo(
                 vk::PipelineLayoutCreateFlags(), static_cast<std::uint32_t>(layouts.size()), layouts.data(), 0, nullptr);
             return logicalDevice.createPipelineLayout(pipelineLayoutInfo);
@@ -360,9 +362,9 @@ namespace engine {
             return colorBlending;
         }
 
-        vk::Pipeline compile_pipeline(const vk::Device logicalDevice,
-                                      const vk::PipelineLayout pipelineLayout,
-                                      const vk::RenderPass renderPass,
+        vk::Pipeline compile_pipeline(vk::Device logicalDevice,
+                                      vk::PipelineLayout pipelineLayout,
+                                      vk::RenderPass renderPass,
                                       const base::viewport_settings& viewportSettings,
                                       const core::rectangle<std::int32_t, std::uint32_t> scissorSettings,
                                       const base::depth_settings& depthSettings,
@@ -394,9 +396,10 @@ namespace engine {
             const auto blendingInfo = create_color_blending_info(globalBlendingSettings, colorBlendAttachment);
 
             std::vector<vk::PipelineShaderStageCreateInfo> shaderInfos;
-            std::transform(shaders.shaders.cbegin(), shaders.shaders.cend(), std::back_inserter(shaderInfos), [](const shader& shader) {
-                return shader.get_pipeline_info();
-            });
+            std::transform(shaders.shaders.cbegin(),
+                           shaders.shaders.cend(),
+                           std::back_inserter(shaderInfos),
+                           [](const shader& shader) { return shader.get_pipeline_info(); });
 
             vk::GraphicsPipelineCreateInfo pipelineInfo(vk::PipelineCreateFlags(),
                                                         static_cast<std::uint32_t>(shaderInfos.size()),
@@ -418,13 +421,14 @@ namespace engine {
             return logicalDevice.createGraphicsPipeline(vk::PipelineCache(), pipelineInfo).value;
         }
 
-        pipeline::pipeline(const vk::Device logicalDevice,
+        pipeline::pipeline(vk::Device logicalDevice,
                            const settings& engineSettings,
                            base::draw_settings&& drawSettings,
                            const vertex_format& format,
                            const shader_set& shaders,
                            const rendering_technique& technique,
-                           std::vector<vk::DescriptorSetLayout>&& layouts,
+                           const std::vector<vk::DescriptorSetLayout>& layouts,
+                           vk::DescriptorSetLayout globalLayout,
                            vk::Extent2D extent)
             : m_viewportSettingsCallback(drawSettings.viewportCallback)
             , m_scissorCallback(drawSettings.scissorCallback)
@@ -436,7 +440,7 @@ namespace engine {
                                  engineSettings.m_multisampling,
                                  drawSettings.framebufferColorBlending,
                                  drawSettings.globalColorBlending)
-            , m_pipelineLayout(create_pipeline_layout(logicalDevice, layouts))
+            , m_pipelineLayout(create_pipeline_layout(logicalDevice, layouts, globalLayout))
             , m_pipeline(compile_pipeline(logicalDevice,
                                           m_pipelineLayout,
                                           technique.m_renderPass,
@@ -454,7 +458,8 @@ namespace engine {
             , m_shaders(shaders)
             , m_vertexFormat(format)
             , m_logicalDevice(logicalDevice)
-            , m_layouts(std::move(layouts)) {
+            , m_layouts(layouts)
+            , m_globalLayout(globalLayout) {
         }
 
         pipeline::pipeline(pipeline&& pipeline) noexcept
@@ -467,7 +472,8 @@ namespace engine {
             , m_shaders(pipeline.m_shaders)
             , m_vertexFormat(pipeline.m_vertexFormat)
             , m_logicalDevice(pipeline.m_logicalDevice)
-            , m_layouts(std::move(pipeline.m_layouts)) {
+            , m_layouts(pipeline.m_layouts)
+            , m_globalLayout(pipeline.m_globalLayout) {
             pipeline.m_pipeline = vk::Pipeline();
             pipeline.m_pipeline = vk::Pipeline();
             pipeline.m_pipelineLayout = vk::PipelineLayout();
@@ -492,7 +498,7 @@ namespace engine {
         void pipeline::recreate() {
             destroy();
             const auto newExtent = m_technique.get_extent();
-            m_pipelineLayout = create_pipeline_layout(m_logicalDevice, m_layouts);
+            m_pipelineLayout = create_pipeline_layout(m_logicalDevice, m_layouts, m_globalLayout);
             m_pipelineSettings.m_viewport = m_viewportSettingsCallback({newExtent.width, newExtent.height});
             m_pipelineSettings.m_scissor = m_scissorCallback({newExtent.width, newExtent.height});
 

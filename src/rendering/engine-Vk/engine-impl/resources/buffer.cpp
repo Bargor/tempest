@@ -34,6 +34,7 @@ namespace engine {
             if (m_buffer) {
                 m_logicalDevice.destroyBuffer(m_buffer);
                 m_logicalDevice.freeMemory(m_bufferMemory);
+                m_buffer = nullptr;
             }
         }
 

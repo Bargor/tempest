@@ -7,13 +7,9 @@
 #include "physical_device.h"
 #include "resource_cache.h"
 #include "resource_factory.h"
-#include "resources/index_buffer.h"
 #include "resources/pipeline.h"
-#include "resources/rendering_technique.h"
 #include "resources/settings.h"
-#include "resources/shader.h"
 #include "resources/uniform_buffer.h"
-#include "resources/vertex_buffer.h"
 
 #include <GLFW/glfw3.h>
 #include <common/rectangle.h>
@@ -78,6 +74,7 @@ namespace engine {
         private:
             void update_framebuffer();
             void recreate_swap_chain(const core::extent<std::uint32_t>& extent);
+            void update_engine_buffers(const core::extent<std::uint32_t>& extent);
 
             template<typename Iter>
             std::vector<draw_info> sort_draw_infos(Iter first, Iter last) const;
@@ -109,6 +106,11 @@ namespace engine {
 
             framebuffer_resize m_framebufferResizeInfo;
             std::uint32_t m_resourceIndex;
+
+            uniform_buffer m_globalStaticUniforms;
+            uniform_buffer m_globalDynamicUniforms;
+            uniform_buffer m_viewStaticUniforms;
+            uniform_buffer m_viewDynamicUniforms;
         };
 
         template<typename Iter>
@@ -119,6 +121,8 @@ namespace engine {
             startFrame();
 
             const auto drawInfos = sort_draw_infos(first, last);
+
+            m_viewStaticUniforms.update_buffer(drawInfos.begin()->viewData.get_uniforms());
 
             const auto commandBuffers = m_engineFrontend->prepare_draw(drawInfos);
 
