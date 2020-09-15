@@ -46,7 +46,7 @@ namespace scene {
         : m_sceneName(std::move(sceneName))
         , m_eventProcessor(eventProcessor)
         , m_resourceFactory(resourceFactory)
-        , m_objectController(std::make_unique<object_controller>(dataLoader, resourceFactory)) {
+        , m_objectController(std::make_unique<object_controller>(dataLoader, m_resourceFactory)) {
     }
 
     scene::~scene() {
