@@ -65,9 +65,9 @@ namespace engine {
         public: // public Vulkan interface
             vk::CommandPool create_command_pool();
 
-            bool startFrame();
+            bool start_frame();
             bool draw(const std::vector<vk::CommandBuffer>& commandBuffers);
-            bool endFrame();
+            bool end_frame();
 
             std::uint32_t get_resource_index() const noexcept;
 
@@ -118,7 +118,7 @@ namespace engine {
             if (std::distance(first, last) == 0) {
                 return false;
             }
-            startFrame();
+            start_frame();
 
             const auto drawInfos = sort_draw_infos(first, last);
 
@@ -127,7 +127,7 @@ namespace engine {
             const auto commandBuffers = m_engineFrontend->prepare_draw(drawInfos);
 
             draw(commandBuffers);
-            endFrame();
+            end_frame();
 
             return true;
         }

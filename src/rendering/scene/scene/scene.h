@@ -43,7 +43,7 @@ namespace scene {
               const application::data_loader& dataLoader,
               application::event_processor<application::app_event>& eventProcessor,
               engine::resource_factory& resourceFactory);
-        ~scene();
+        ~scene() = default;
 
         void add_camera(std::string cameraName,
                         const glm::vec3& position,

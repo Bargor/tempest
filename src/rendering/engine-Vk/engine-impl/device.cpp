@@ -250,7 +250,7 @@ namespace engine {
             m_logicalDevice.waitIdle();
         }
 
-        bool device::startFrame() {
+        bool device::start_frame() {
             m_resourceIndex = m_frameCounter % settings::m_inFlightFrames;
 
             m_logicalDevice.waitForFences(
@@ -288,7 +288,7 @@ namespace engine {
             return true;
         }
 
-        bool device::endFrame() {
+        bool device::end_frame() {
             std::uint32_t currentFrame = get_resource_index();
             ++m_frameCounter;
 
