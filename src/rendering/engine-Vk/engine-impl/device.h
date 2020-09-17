@@ -15,6 +15,7 @@
 #include <common/rectangle.h>
 #include <vector>
 #include <vulkan/vulkan.hpp>
+#include <algorithm/algorithm.h>
 
 namespace tst {
 namespace application {
@@ -134,8 +135,31 @@ namespace engine {
 
         template<typename Iter>
         std::vector<draw_info> device::sort_draw_infos(Iter first, Iter last) const {
+            const auto compute_mask = [](const draw_info& first, draw_info& second) {
+                std::uint16_t mask = 0;
+                if (first.pipelineHash == second.pipelineHash) {
+                    mask |= static_cast<std::uint16_t>(draw_info::bind_flag_bits::pipeline);
+                }
+                if (first.viewData == second.viewData) {
+                    mask |= static_cast<std::uint16_t>(draw_info::bind_flag_bits::view_static);
+                    mask |= static_cast<std::uint16_t>(draw_info::bind_flag_bits::view_dynamic);
+                }
+                if (&first.meshMaterial == &second.meshMaterial) {
+                    mask |= static_cast<std::uint16_t>(draw_info::bind_flag_bits::material_static);
+                    mask |= static_cast<std::uint16_t>(draw_info::bind_flag_bits::material_dynamic);
+                }
+                if (&first.descriptorSets == &second.descriptorSets) {
+                    mask |= static_cast<std::uint16_t>(draw_info::bind_flag_bits::object_static);
+                    mask |= static_cast<std::uint16_t>(draw_info::bind_flag_bits::object_dynamic);
+                }
+                return mask;
+            };
+
             std::for_each(first, last, [&](draw_info& drawInfo) {
                 drawInfo.pipelineState = m_resourceCache->find_pipeline(drawInfo.pipelineHash);
+            });
+            tst::for_each_adjacent(first + 1, last, [&](const draw_info& first, draw_info& second) {
+                second.rebindMask = compute_mask(first, second);
             });
             return std::vector<draw_info>(first, last);
         }

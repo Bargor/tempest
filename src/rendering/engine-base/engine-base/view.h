@@ -23,6 +23,9 @@ namespace engine {
             view(const glm::vec3& position, const glm::vec3& lookAt, const glm::vec3& up, float fov, float aspect) noexcept;
 
         public:
+            bool operator==(const view& other) const noexcept;
+
+        public:
             void set_perspective(float fov, float aspect) noexcept;
             void set_perspective(const glm::mat4& newMatrix) noexcept;
 
@@ -48,12 +51,20 @@ namespace engine {
         private:
             glm::vec4 m_position;
             glm::vec3 m_direction;
-            glm::quat m_orientation; // have to fix this
+            glm::quat m_orientation;  // have to fix this
             glm::mat4 mutable m_view; // world to camera local matrix
             glm::mat4 mutable m_orientationMatrix;
             glm::mat4 m_perspective; // camera local to projection matrix;
             bool mutable m_viewMatrixDirty;
         };
+
+        TST_INLINE bool view::operator==(const view& other) const noexcept {
+            if (m_position == other.m_position && m_orientation == other.m_orientation &&
+                m_perspective == other.m_perspective) {
+                return true;
+            }
+            return false;
+        }
 
         TST_INLINE void view::set_perspective(float fov, float aspect) noexcept {
             m_perspective = glm::perspective(glm::radians(fov), aspect, 0.01f, 100.0f);
