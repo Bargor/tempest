@@ -3,6 +3,7 @@
 
 set(TEST_SRCS 
     test_runner.cpp
+    algorithm/algorithm_test.cpp
 	container/queue_test.cpp
 	memory/frame_allocator_test.cpp
 	numeric/random_test.cpp
