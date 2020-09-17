@@ -483,7 +483,7 @@ namespace engine {
             destroy();
         }
 
-        void pipeline::bind_command_buffer(vk::CommandBuffer buffer, vk::PipelineBindPoint bindPoint) const {
+        void pipeline::bind_pipeline(vk::CommandBuffer buffer, vk::PipelineBindPoint bindPoint) const {
             buffer.bindPipeline(bindPoint, m_pipeline);
         }
 

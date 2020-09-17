@@ -49,9 +49,6 @@ namespace scene {
         , m_objectController(std::make_unique<object_controller>(dataLoader, m_resourceFactory)) {
     }
 
-    scene::~scene() {
-    }
-
     void scene::add_camera(std::string cameraName,
                            const glm::vec3& position,
                            const glm::vec3& lookAt,

@@ -57,6 +57,7 @@ namespace engine {
             if (m_bufferCache[idx].size() == 0) {
                 m_bufferCache[idx].emplace_back(m_device.m_logicalDevice.allocateCommandBuffers(bufferAllocateInfo)[0]);
             }
+            // TODO: above should be moved to function
 
             const auto commandBuffer = m_bufferCache[m_device.get_resource_index()][0];
 
@@ -64,10 +65,20 @@ namespace engine {
             commandBuffer.begin(commandBufferInfo);
             begin->pipelineState->get_technique().generate_render_pass_info(commandBuffer, vk::SubpassContents::eInline);
 
-            for (; begin != end; begin++) {
+            const auto globalStaticSet = m_device.m_globalStaticUniforms.get_descriptor_set();
+            commandBuffer.bindDescriptorSets(
+                vk::PipelineBindPoint::eGraphics, begin->pipelineState->get_layout(), 0, 1, &globalStaticSet, 0, nullptr);
+
+            for (; begin != end; ++begin) {
                 const auto drawInfo = *begin;
-                drawInfo.pipelineState->bind_command_buffer(commandBuffer, vk::PipelineBindPoint::eGraphics);
-                bind_descriptor_sets(commandBuffer, drawInfo);
+                // TODO proper flags class
+                if (drawInfo.rebindMask & static_cast<std::uint16_t>(draw_info::bind_flag_bits::pipeline)) {
+                    drawInfo.pipelineState->bind_pipeline(commandBuffer, vk::PipelineBindPoint::eGraphics);
+                }
+                if (drawInfo.rebindMask & static_cast<std::uint16_t>(draw_info::bind_flag_bits::descriptor_sets)) {
+                    bind_descriptor_sets(commandBuffer, drawInfo);
+                }
+
                 if (drawInfo.indices) {
                     drawIndexed(commandBuffer, drawInfo);
                 } else {
@@ -82,24 +93,26 @@ namespace engine {
 
         void engine_frontend::bind_descriptor_sets(vk::CommandBuffer commandBuffer, const draw_info& drawInfo) const {
             const auto viewStaticSet = m_device.m_viewStaticUniforms.get_descriptor_set();
-            const auto globalStaticSet = m_device.m_globalStaticUniforms.get_descriptor_set();
-
-            commandBuffer.bindDescriptorSets(
-                vk::PipelineBindPoint::eGraphics, drawInfo.pipelineState->get_layout(), 0, 1, &globalStaticSet, 0, nullptr);
-            commandBuffer.bindDescriptorSets(
-                vk::PipelineBindPoint::eGraphics, drawInfo.pipelineState->get_layout(), 2, 1, &viewStaticSet, 0, nullptr);
-            commandBuffer.bindDescriptorSets(vk::PipelineBindPoint::eGraphics,
-                                             drawInfo.pipelineState->get_layout(),
-                                             4,
-                                             drawInfo.meshMaterial.get_static_descriptor_set(),
-                                             {});
-            commandBuffer.bindDescriptorSets(vk::PipelineBindPoint::eGraphics,
-                                             drawInfo.pipelineState->get_layout(),
-                                             6,
-                                             1,
-                                             &drawInfo.descriptorSets[0],
-                                             0,
-                                             nullptr);
+            if (drawInfo.rebindMask & static_cast<std::uint16_t>(draw_info::bind_flag_bits::view_static)) {
+                commandBuffer.bindDescriptorSets(
+                    vk::PipelineBindPoint::eGraphics, drawInfo.pipelineState->get_layout(), 2, 1, &viewStaticSet, 0, nullptr);
+            }
+            if (drawInfo.rebindMask & static_cast<std::uint16_t>(draw_info::bind_flag_bits::material_static)) {
+                commandBuffer.bindDescriptorSets(vk::PipelineBindPoint::eGraphics,
+                                                 drawInfo.pipelineState->get_layout(),
+                                                 4,
+                                                 drawInfo.meshMaterial.get_static_descriptor_set(),
+                                                 {});
+            }
+            if (drawInfo.rebindMask & static_cast<std::uint16_t>(draw_info::bind_flag_bits::object_static)) {
+                commandBuffer.bindDescriptorSets(vk::PipelineBindPoint::eGraphics,
+                                                 drawInfo.pipelineState->get_layout(),
+                                                 6,
+                                                 1,
+                                                 &drawInfo.descriptorSets[0],
+                                                 0,
+                                                 nullptr);
+            }
         }
 
         void engine_frontend::draw(vk::CommandBuffer commandBuffer, const draw_info& drawInfo) const {
