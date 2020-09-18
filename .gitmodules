@@ -22,3 +22,6 @@
 [submodule "libs/stb"]
 	path = libs/stb
 	url = https://github.com/Bargor/stb
+[submodule "libs/glew"]
+	path = libs/glew
+	url = https://github.com/nigels-com/glew
