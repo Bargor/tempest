@@ -26,7 +26,7 @@ constexpr bool includes(InputIt1 first1, InputIt1 last1, InputIt2 first2, InputI
 
 template<typename InputIt, typename Pred>
 constexpr Pred for_each_adjacent(InputIt first, InputIt last, Pred pred) { // perform function for each consecutive
-                                                                            // pair of elements [_First, _Last)
+                                                                           // pair of elements [_First, _Last)
     if (std::distance(first, last) < 2) return pred;
     auto second = std::next(first);
     for (; second != last; ++first, ++second) {
@@ -35,4 +35,4 @@ constexpr Pred for_each_adjacent(InputIt first, InputIt last, Pred pred) { // pe
 
     return pred;
 }
-}
+} // namespace tst
