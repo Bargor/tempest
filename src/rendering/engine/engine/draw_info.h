@@ -4,6 +4,7 @@
 
 #include "resources/pipeline.h"
 #include "resources/uniform_buffer.h"
+#include "resources/view.h"
 
 #include <engine-impl/api.h>
 #include <engine-impl/draw_info.h>
@@ -20,6 +21,7 @@ namespace engine {
     public:
         draw_info(const mesh& mesh,
                   pipeline_hash pipelineHash,
+                  const view& view,
                   const material& material,
                   const std::vector<const resources::uniform_buffer*>& uniforms);
 

@@ -28,22 +28,22 @@ namespace scene {
     class scene;
     class object_controller;
 
-    std::vector<scene_object::state> update_scene(scene& scene,
-                                                  std::chrono::duration<std::uint64_t, std::micro> elapsedTime);
+    std::vector<scene_object::static_data*> update_scene(scene& scene,
+                                                        std::chrono::duration<std::uint64_t, std::micro> elapsedTime);
 
     std::vector<engine::draw_info> prepare_draw_info(const camera& camera,
-                                                     const std::vector<scene_object::state>& sceneState);
+                                                     const std::vector<scene_object::static_data*>& sceneState);
 
     class scene {
-        friend std::vector<scene_object::state> update_scene(scene& scene,
-                                                             std::chrono::duration<std::uint64_t, std::micro> elapsedTime);
+        friend std::vector<scene_object::static_data*>
+        update_scene(scene& scene, std::chrono::duration<std::uint64_t, std::micro> elapsedTime);
 
     public:
         scene(std::string&& sceneName,
               const application::data_loader& dataLoader,
               application::event_processor<application::app_event>& eventProcessor,
               engine::resource_factory& resourceFactory);
-        ~scene();
+        ~scene() = default;
 
         void add_camera(std::string cameraName,
                         const glm::vec3& position,

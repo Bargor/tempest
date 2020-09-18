@@ -13,23 +13,17 @@ namespace scene {
 
     camera::camera(std::string cameraName,
                    application::event_processor<application::app_event>& eventProcessor,
-                   engine::resources::uniform_buffer&& buffer,
                    const glm::vec3& position,
                    const glm::vec3& lookAt,
                    const glm::vec3& up,
-                   const float fov,
-                   const float aspect)
+                   float fov,
+                   float aspect)
         : m_name(std::move(cameraName))
         , m_eventProcessor(eventProcessor)
-        , m_buffer(std::move(buffer))
-        , m_position(glm::vec4(position, 0.0f))
-        , m_direction(glm::normalize(lookAt - m_position.xyz()))
-        , m_orientation(glm::quatLookAt(m_direction, up))
-        , m_perspective(glm::perspective(glm::radians(fov), aspect, 0.01f, 100.0f))
+        , m_view(position, lookAt, up, fov, aspect)
         , m_moveSensitivity(3.0f)
         , m_rotateSensitivity(0.5f)
         , m_input() {
-        m_perspective[1][1] *= -1;
         auto key_callback = [this](const application::app_event::arguments& args) {
             assert(std::holds_alternative<application::app_event::keyboard>(args));
             application::app_event::keyboard key_action = std::get<application::app_event::keyboard>(args);
@@ -67,8 +61,7 @@ namespace scene {
             assert(std::holds_alternative<application::app_event::framebuffer>(args));
             const auto size = std::get<application::app_event::framebuffer>(args).size;
             if (size.height > 0) {
-                m_perspective = glm::perspective(glm::radians(fov), aspect, 0.01f, 100.0f);
-                m_perspective[1][1] *= -1;
+                m_view.set_perspective(fov, aspect);
             }
         };
 
@@ -98,11 +91,7 @@ namespace scene {
     camera::camera(camera&& other) noexcept
         : m_name(std::move(other.m_name))
         , m_eventProcessor(other.m_eventProcessor)
-        , m_buffer(std::move(other.m_buffer))
-        , m_position(other.m_position)
-        , m_direction(other.m_direction)
-        , m_orientation(other.m_orientation)
-        , m_perspective(other.m_perspective)
+        , m_view(other.m_view)
         , m_moveSensitivity(other.m_moveSensitivity)
         , m_rotateSensitivity(other.m_rotateSensitivity)
         , m_input(other.m_input) {
@@ -115,26 +104,20 @@ namespace scene {
             m_input.newMousePos = false;
             const auto yawDelta = calculate_yaw(time);
             const auto pitchDelta = calculate_pitch(time);
-            m_orientation = pitchDelta * m_orientation * yawDelta;
-            const auto mat = glm::toMat3(m_orientation);
-            m_direction = glm::normalize(-glm::vec3(mat[0][2], mat[1][2], mat[2][2]));
+            m_view.rotate_move(yawDelta, pitchDelta, caclulate_position_delta(time));
+        } else {
+            m_view.move(caclulate_position_delta(time));
         }
-        m_position = caclulate_position(time);
-
-        const auto orientationMartix = glm::translate(glm::toMat4(m_orientation), -m_position.xyz());
-
-        m_buffer.update_buffer<uniforms>(
-            {orientationMartix, m_perspective, m_perspective * orientationMartix, glm::mat4(1.0f)});
     }
 
-    glm::vec4 camera::caclulate_position(float elapsedTime) const {
+    glm::vec4 camera::caclulate_position_delta(float elapsedTime) const {
         glm::vec3 moveDir(0.0f, 0.0f, 0.0f);
-        glm::vec3 right = glm::normalize(glm::cross(m_direction, glm::vec3(0.0f, 1.0f, 0.0f)));
+        glm::vec3 right = m_view.right();
         if (m_input.keyboardInput.moveForward) {
-            moveDir += m_direction;
+            moveDir += m_view.direction();
         }
         if (m_input.keyboardInput.moveBackward) {
-            moveDir -= m_direction;
+            moveDir -= m_view.direction();
         }
         if (m_input.keyboardInput.moveLeft) {
             moveDir -= right;
@@ -143,9 +126,7 @@ namespace scene {
             moveDir += right;
         }
 
-        const auto deltaPos = glm::vec4(moveDir * elapsedTime * m_moveSensitivity, 0.0f);
-
-        return m_position + deltaPos;
+        return glm::vec4(moveDir * elapsedTime * m_moveSensitivity, 0.0f);
     }
 
     glm::quat camera::calculate_pitch(float elapsedTime) const {
@@ -156,10 +137,6 @@ namespace scene {
     glm::quat camera::calculate_yaw(float elapsedTime) const {
         const float yawAngle = static_cast<float>(m_input.mouseInput.xPos) * elapsedTime * m_rotateSensitivity;
         return glm::angleAxis(yawAngle, glm::vec3(0.0f, 1.0f, 0.0f));
-    }
-
-    glm::vec3 camera::calculate_direction(glm::quat pitch, glm::quat yaw) const {
-        return glm::normalize(glm::rotate(glm::normalize(glm::inverse(pitch * yaw)), m_direction));
     }
 
 } // namespace scene

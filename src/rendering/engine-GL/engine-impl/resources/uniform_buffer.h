@@ -4,6 +4,7 @@
 
 #include "buffer.h"
 
+#include <engine-base/uniform_storage.h>
 #include <glm.h>
 
 namespace tst {

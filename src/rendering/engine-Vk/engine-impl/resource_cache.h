@@ -38,6 +38,11 @@ namespace engine {
             const std::vector<vk::DescriptorSetLayout>* find_descriptor_layouts(const std::string& shadersName) const noexcept;
             const descriptor_set* find_descriptor_sets(const std::string& shadersName,
                                                        base::resource_bind_point bindPoint) const;
+            vk::DescriptorSetLayout get_global_layout() const noexcept;
+            const descriptor_set& get_global_static_set() const noexcept;
+            const descriptor_set& get_global_dynamic_set() const noexcept;
+            const descriptor_set& get_view_static_set() const noexcept;
+            const descriptor_set& get_view_dynamic_set() const noexcept;
 
             void clear();
             void destroy();
@@ -46,6 +51,7 @@ namespace engine {
 
         private:
             vk::DescriptorPool create_descriptor_pool(std::uint32_t);
+            descriptor_set create_descriptor_set(vk::DescriptorSetLayout layout);
 
         private:
             vk::Device m_device;
@@ -54,7 +60,32 @@ namespace engine {
             std::vector<rendering_technique> m_techniques;
             std::unordered_map<std::string, shader_set> m_shaders;
             std::unordered_map<std::string, std::vector<descriptor_set>> m_descriptorSets;
+            vk::DescriptorSetLayout m_globalLayout;
+            descriptor_set m_globalStaticSet;
+            descriptor_set m_globalDynamicSet;
+            descriptor_set m_viewStaticSet;
+            descriptor_set m_viewDynamicSet;
         };
+
+        TST_INLINE vk::DescriptorSetLayout resource_cache::get_global_layout() const noexcept {
+            return m_globalLayout;
+        }
+
+        TST_INLINE const descriptor_set& resource_cache::get_global_static_set() const noexcept {
+            return m_globalStaticSet;
+        }
+
+        TST_INLINE const descriptor_set& resource_cache::get_global_dynamic_set() const noexcept {
+            return m_globalDynamicSet;
+        }
+
+        TST_INLINE const descriptor_set& resource_cache::get_view_static_set() const noexcept {
+            return m_viewStaticSet;
+        }
+
+        TST_INLINE const descriptor_set& resource_cache::get_view_dynamic_set() const noexcept {
+            return m_viewDynamicSet;
+        }
 
     } // namespace vulkan
 } // namespace engine

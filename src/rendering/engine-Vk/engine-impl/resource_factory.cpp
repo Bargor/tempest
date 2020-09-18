@@ -55,8 +55,7 @@ namespace engine {
             }
 
             if (shaders && technique) {
-                std::vector<vk::DescriptorSetLayout> layouts =
-                    *m_device.m_resourceCache->find_descriptor_layouts(shadersName);
+                const auto layouts = m_device.m_resourceCache->find_descriptor_layouts(shadersName);
 
                 pipeline pipeline(m_device.m_logicalDevice,
                                   m_device.m_engineSettings,
@@ -64,7 +63,8 @@ namespace engine {
                                   vertexBuffer.get_vertex_format(),
                                   *shaders,
                                   *technique,
-                                  std::move(layouts),
+                                  *layouts,
+                                  m_device.m_resourceCache->get_global_layout(),
                                   technique->get_extent());
 
                 return m_device.m_resourceCache->add_pipeline(std::move(pipeline));

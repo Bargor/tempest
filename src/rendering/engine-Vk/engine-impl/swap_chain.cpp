@@ -3,7 +3,6 @@
 
 #include "swap_chain.h"
 
-#include "device.h"
 #include "physical_device.h"
 #include "queue_indices.h"
 #include "resources/image.h"
@@ -11,7 +10,6 @@
 #include "vulkan_exception.h"
 
 #include <algorithm>
-#include <application/event_processor.h>
 
 namespace tst {
 namespace engine {

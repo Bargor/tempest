@@ -2,39 +2,26 @@
     "sets":
     [
         {
+            "frag":
+            [
+                {
+                    "type": 1,
+                    "binding": 0
+                }
+            ]
+        },
+        {
+        },
+        {
             "vert":
             [
                 {
                     "type": 6,
                     "binding": 0
-                },
-                {
-                    "type": 6,
-                    "binding": 2
-                }
-            ],
-            "frag":
-            [
-                {
-                    "type": 1,
-                    "binding": 1
                 }
             ]
         },
         {
-        },
-        {
-        },
-        {
-        },
-        {
-            "frag":
-            [
-                {
-                    "type": 1,
-                    "binding": 0
-                }
-            ]
         }
     ]
 }

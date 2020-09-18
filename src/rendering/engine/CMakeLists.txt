@@ -15,6 +15,7 @@ set(ENGINE_HDRS
 	engine/resources/uniform_buffer.h
 	engine/resources/vertex_buffer.h
 	engine/resources/vertex_format.h
+    engine/resources/view.h
 	engine/settings.h
 )
 
@@ -32,6 +33,7 @@ set(ENGINE_SRCS
 	engine/resources/uniform_buffer.cpp
 	engine/resources/vertex_buffer.cpp
 	engine/resources/vertex_format.cpp
+    engine/resources/view.cpp
 	engine/settings.cpp
 )
 

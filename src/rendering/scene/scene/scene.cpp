@@ -8,28 +8,31 @@
 
 namespace tst {
 namespace scene {
-    std::vector<scene_object::state> update_scene(scene& scene,
-                                                  std::chrono::duration<std::uint64_t, std::micro> elapsedTime) {
-        std::vector<scene_object::state> newSceneState;
+    std::vector<scene_object::static_data*> update_scene(scene& scene,
+                                                         std::chrono::duration<std::uint64_t, std::micro> elapsedTime) {
+        std::vector<scene_object::static_data*> newSceneState;
         for (auto& camera : scene.m_cameras) {
             camera.update(elapsedTime);
         }
         for (auto& object : scene.m_objects) {
-            newSceneState.emplace_back(object.update_object(elapsedTime));
+            object.update_object(elapsedTime);
+            newSceneState.emplace_back(&object.get_static_data());
         }
         return newSceneState;
     }
 
     std::vector<engine::draw_info> prepare_draw_info(const camera& camera,
-                                                     const std::vector<scene_object::state>& sceneState) {
+                                                     const std::vector<scene_object::static_data*>& sceneState) {
         std::vector<engine::draw_info> drawInfos;
         drawInfos.reserve(sceneState.size());
 
         for (auto& state : sceneState) {
-            engine::draw_info info(state.model.get_mesh(0),
-                                   state.pipeline,
-                                   state.model.get_material(0),
-                                   {&state.uniform, &camera.get_uniforms()});
+            state->object.prepare_render_data(camera);
+            engine::draw_info info(state->model.get_mesh(0),
+                                   state->pipeline,
+                                   camera.get_view(),
+                                   state->model.get_material(0),
+                                   {&state->uniform});
             drawInfos.emplace_back(std::move(info));
         }
 
@@ -43,10 +46,7 @@ namespace scene {
         : m_sceneName(std::move(sceneName))
         , m_eventProcessor(eventProcessor)
         , m_resourceFactory(resourceFactory)
-        , m_objectController(std::make_unique<object_controller>(dataLoader, resourceFactory)) {
-    }
-
-    scene::~scene() {
+        , m_objectController(std::make_unique<object_controller>(dataLoader, m_resourceFactory)) {
     }
 
     void scene::add_camera(std::string cameraName,
@@ -55,10 +55,8 @@ namespace scene {
                            const glm::vec3& up,
                            const float fov,
                            const float aspectRatio) {
-        auto buffer =
-            m_resourceFactory.create_uniform_buffer<camera::uniforms>("test", engine::bind_point::global_static, 2);
         m_cameras.emplace_back(
-            std::move(cameraName), m_eventProcessor, std::move(buffer), position, lookAt, up, fov, aspectRatio);
+            std::move(cameraName), m_eventProcessor, position, lookAt, up, fov, aspectRatio);
     }
 
     void scene::add_object(std::string_view objectName, std::string_view path) {

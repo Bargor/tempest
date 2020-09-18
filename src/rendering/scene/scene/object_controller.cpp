@@ -29,7 +29,7 @@ namespace scene {
         model.add_material(m_resourceFactory.create_material<materials::test_material>("test", "test", {"texture.jpg"}));
 
         auto uniformBuffer =
-            m_resourceFactory.create_uniform_buffer<uniform_buffer_object>("test", engine::bind_point::global_static, 0);
+            m_resourceFactory.create_uniform_buffer<uniform_buffer_object>("test", engine::bind_point::object_static, 0);
 
         return scene_object(std::string(objectName), std::move(model), std::move(uniformBuffer), pipelineHash);
     }

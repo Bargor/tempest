@@ -5,9 +5,16 @@
 #include <engine-impl/api.h>
 #include <engine-impl/resources/uniform_buffer.h>
 
+#include <concepts.h>
+
 namespace tst {
 namespace engine {
     namespace resources {
+
+        using uniform_storage = base::uniform_storage;
+
+        template<typename T>
+        concept UniformStorageType = std::derived_from<T, uniform_storage>;
 
         class uniform_buffer : private api::uniform_buffer {
             using super = api::uniform_buffer;
@@ -24,14 +31,14 @@ namespace engine {
                 return *this;
             }
 
-            template<typename StorageType>
-            void update_buffer(const StorageType& data);
+            template<UniformStorageType T>
+            void update_buffer(const T& data);
 
         private:
         };
 
-        template<typename StorageType>
-        void uniform_buffer::update_buffer(const StorageType& data) {
+        template<UniformStorageType T>
+        void uniform_buffer::update_buffer(const T& data) {
             super::update_buffer(&data, sizeof(data));
         }
 
