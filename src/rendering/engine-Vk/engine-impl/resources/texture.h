@@ -8,7 +8,6 @@
 #include <application/image_data.h>
 #include <cstddef>
 #include <engine-base/resource_bind_point.h>
-#include <vulkan/vulkan.hpp>
 
 namespace tst {
 namespace engine {

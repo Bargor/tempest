@@ -4,7 +4,6 @@
 #include "swap_chain.h"
 
 #include "physical_device.h"
-#include "queue_indices.h"
 #include "resources/image.h"
 #include "resources/util.h"
 #include "vulkan_exception.h"

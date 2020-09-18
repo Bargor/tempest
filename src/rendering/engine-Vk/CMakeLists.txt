@@ -27,6 +27,7 @@ set(ENGINE_HDRS
 	engine-impl/resources/util.h
 	engine-impl/settings_parser.h
 	engine-impl/shader_compiler.h
+    engine-impl/surface_support.h
 	engine-impl/swap_chain.h
 	engine-impl/vulkan_exception.h
 )

@@ -2,8 +2,8 @@
 // Author: Karol Kontny
 #pragma once
 
-#include "physical_device.h"
 #include "resources/settings.h"
+#include "surface_support.h"
 
 namespace tst {
 
