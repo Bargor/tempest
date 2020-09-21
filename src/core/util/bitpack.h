@@ -1,10 +1,9 @@
 // This file is part of Tempest-core project
 // Author: Karol Kontny
+#pragma once
 
 #include <type_traits>
 #include <cstdint>
-
-#pragma once
 
 namespace tst {
 namespace core {

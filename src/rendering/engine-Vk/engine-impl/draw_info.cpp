@@ -23,7 +23,7 @@ namespace engine {
             , viewData(view)
             , meshMaterial(material)
             , pipelineState(nullptr)
-            , rebindMask(static_cast<std::uint16_t>(bind_flag_bits::all)) {
+            , descriptorBindFlags(base::bind_flag_bits::eAll) {
             descriptorSets.push_back(uniforms[0]->get_descriptor_set());
         }
 
@@ -35,7 +35,7 @@ namespace engine {
             , meshMaterial(other.meshMaterial)
             , descriptorSets(std::move(other.descriptorSets))
             , pipelineState(other.pipelineState)
-            , rebindMask(other.rebindMask) {
+            , descriptorBindFlags(other.descriptorBindFlags) {
         }
     } // namespace vulkan
 } // namespace engine

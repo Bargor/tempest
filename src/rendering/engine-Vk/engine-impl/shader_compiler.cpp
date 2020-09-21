@@ -3,7 +3,6 @@
 
 #include "shader_compiler.h"
 
-#include "device.h"
 #include "resource_cache.h"
 
 #include <application/data_loader.h>
