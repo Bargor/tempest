@@ -23,7 +23,7 @@ namespace engine {
             , viewData(view)
             , meshMaterial(material)
             , pipelineState(nullptr)
-            , descriptorBindFlags(bind_flag_bits::eAll) {
+            , descriptorBindFlags(base::bind_flag_bits::eAll) {
             descriptorSets.push_back(uniforms[0]->get_descriptor_set());
         }
 

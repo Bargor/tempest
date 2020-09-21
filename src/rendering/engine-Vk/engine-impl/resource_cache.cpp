@@ -3,8 +3,6 @@
 
 #include "resource_cache.h"
 
-#include "swap_chain.h"
-
 namespace tst {
 namespace engine {
     namespace vulkan {

@@ -5,6 +5,11 @@
 namespace tst {
 namespace core {
 
+    template<typename FlagBitsType>
+    struct flag_traits {
+        enum { eAll_flags = 0 };
+    };
+
     template<typename BitType>
     class flags {
     public:
@@ -43,10 +48,10 @@ namespace core {
         }
 
         constexpr flags<BitType> operator~() const noexcept {
-            return flags<BitType>(m_mask ^ FlagTraits<BitType>::allFlags);
+            return flags<BitType>(m_mask ^ flag_traits<BitType>::eAll_flags);
         }
 
-        constexpr flags<BitType>& operator=(flags<BitType>  rhs) noexcept {
+        constexpr flags<BitType>& operator=(flags<BitType> rhs) noexcept {
             m_mask = rhs.m_mask;
             return *this;
         }

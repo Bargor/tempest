@@ -136,21 +136,21 @@ namespace engine {
         template<typename Iter>
         std::vector<draw_info> device::sort_draw_infos(Iter first, Iter last) const {
             const auto compute_mask = [](const draw_info& first, draw_info& second) {
-                draw_info::descritptor_set_bind_flags mask;
+                base::descritptor_bind_flags mask;
                 if (first.pipelineHash == second.pipelineHash) {
-                    mask |= draw_info::bind_flag_bits::ePipeline;
+                    mask |= base::bind_flag_bits::ePipeline;
                 }
                 if (first.viewData == second.viewData) {
-                    mask |= draw_info::bind_flag_bits::eView_static;
-                    mask |= draw_info::bind_flag_bits::eView_dynamic;
+                    mask |= base::bind_flag_bits::eView_static;
+                    mask |= base::bind_flag_bits::eView_dynamic;
                 }
                 if (&first.meshMaterial == &second.meshMaterial) {
-                    mask |= draw_info::bind_flag_bits::eMaterial_static;
-                    mask |= draw_info::bind_flag_bits::eMaterial_dynamic;
+                    mask |= base::bind_flag_bits::eMaterial_static;
+                    mask |= base::bind_flag_bits::eMaterial_dynamic;
                 }
                 if (&first.descriptorSets == &second.descriptorSets) {
-                    mask |= draw_info::bind_flag_bits::eObject_static;
-                    mask |= draw_info::bind_flag_bits::eObject_dynamic;
+                    mask |= base::bind_flag_bits::eObject_static;
+                    mask |= base::bind_flag_bits::eObject_dynamic;
                 }
                 return mask;
             };
