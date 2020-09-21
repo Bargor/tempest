@@ -19,6 +19,7 @@ set(CORE_HDRS
 	thread/main_thread.h
 	util/bitpack.h
     util/cast.h
+    util/flags.h
 	util/hash.h
 	util/variant.h
 )
