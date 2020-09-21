@@ -136,21 +136,21 @@ namespace engine {
         template<typename Iter>
         std::vector<draw_info> device::sort_draw_infos(Iter first, Iter last) const {
             const auto compute_mask = [](const draw_info& first, draw_info& second) {
-                std::uint16_t mask = 0;
+                draw_info::descritptor_set_bind_flags mask;
                 if (first.pipelineHash == second.pipelineHash) {
-                    mask |= static_cast<std::uint16_t>(draw_info::bind_flag_bits::pipeline);
+                    mask |= draw_info::bind_flag_bits::ePipeline;
                 }
                 if (first.viewData == second.viewData) {
-                    mask |= static_cast<std::uint16_t>(draw_info::bind_flag_bits::view_static);
-                    mask |= static_cast<std::uint16_t>(draw_info::bind_flag_bits::view_dynamic);
+                    mask |= draw_info::bind_flag_bits::eView_static;
+                    mask |= draw_info::bind_flag_bits::eView_dynamic;
                 }
                 if (&first.meshMaterial == &second.meshMaterial) {
-                    mask |= static_cast<std::uint16_t>(draw_info::bind_flag_bits::material_static);
-                    mask |= static_cast<std::uint16_t>(draw_info::bind_flag_bits::material_dynamic);
+                    mask |= draw_info::bind_flag_bits::eMaterial_static;
+                    mask |= draw_info::bind_flag_bits::eMaterial_dynamic;
                 }
                 if (&first.descriptorSets == &second.descriptorSets) {
-                    mask |= static_cast<std::uint16_t>(draw_info::bind_flag_bits::object_static);
-                    mask |= static_cast<std::uint16_t>(draw_info::bind_flag_bits::object_dynamic);
+                    mask |= draw_info::bind_flag_bits::eObject_static;
+                    mask |= draw_info::bind_flag_bits::eObject_dynamic;
                 }
                 return mask;
             };
@@ -159,7 +159,7 @@ namespace engine {
                 drawInfo.pipelineState = m_resourceCache->find_pipeline(drawInfo.pipelineHash);
             });
             tst::for_each_adjacent(first + 1, last, [&](const draw_info& first, draw_info& second) {
-                second.rebindMask = compute_mask(first, second);
+                second.descriptorBindFlags = compute_mask(first, second);
             });
             return std::vector<draw_info>(first, last);
         }
