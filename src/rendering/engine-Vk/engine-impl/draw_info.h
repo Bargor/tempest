@@ -2,9 +2,11 @@
 // Author: Karol Kontny
 #pragma once
 
-#include "engine-base/view.h"
 #include "resources/pipeline.h"
 
+#include <engine-base/resource_bind_point.h>
+#include <engine-base/view.h>
+#include <util/flags.h>
 #include <vulkan/vulkan.hpp>
 
 namespace tst {
@@ -17,19 +19,6 @@ namespace engine {
         class uniform_buffer;
 
         struct draw_info {
-            enum class bind_flag_bits : std::uint16_t {
-                pipeline = 0x0001,
-                global_dynamic = 0x0002,
-                view_static = 0x0004,
-                view_dynamic = 0x0008,
-                material_static = 0x0010,
-                material_dynamic = 0x0020,
-                object_static = 0x0040,
-                object_dynamic = 0x0080,
-                descriptor_sets = 0x00FE,
-                all = 0xFFFF
-            };
-
         public:
             draw_info(const vertex_buffer& vertices,
                       const index_buffer* indices,
@@ -51,7 +40,7 @@ namespace engine {
             const material& meshMaterial;
             std::vector<vk::DescriptorSet> descriptorSets;
             const pipeline* pipelineState;
-            std::uint16_t rebindMask;
+            base::descritptor_bind_flags descriptorBindFlags;
         };
     } // namespace vulkan
 } // namespace engine

@@ -125,7 +125,7 @@ namespace engine {
             auto extensions = get_required_extensions();
 
             vk::ApplicationInfo appInfo(
-                "Tempest", VK_MAKE_VERSION(1, 0, 0), "Tempest", VK_MAKE_VERSION(1, 0, 0), VK_API_VERSION_1_2);
+                "Tempest", VK_MAKE_VERSION(0, 0, 7), "Tempest", VK_MAKE_VERSION(0, 0, 7), VK_API_VERSION_1_2);
 
             vk::InstanceCreateInfo createInfo(vk::InstanceCreateFlags(),
                                               &appInfo,

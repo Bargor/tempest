@@ -2,6 +2,7 @@
 // Author: Karol Kontny
 #pragma once
 #include "queue_indices.h"
+#include "surface_support.h"
 
 #include <core.h>
 
@@ -10,12 +11,6 @@ namespace engine {
     namespace vulkan {
 
         class gpu_info;
-
-        struct surface_support_info {
-            vk::SurfaceCapabilitiesKHR capabilities;
-            std::vector<vk::SurfaceFormatKHR> formats;
-            std::vector<vk::PresentModeKHR> presentModes;
-        };
 
         class physical_device {
         public:

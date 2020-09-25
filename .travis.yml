@@ -243,10 +243,12 @@ before_install:
 script:
 - gcc -v && g++ -v && cmake --version
 - clang --version
-- cd libs/glew/build
-- cmake ../build/cmake/.
-- sudo make -j2 && sudo make install
-- cd ../../../
+- if [ "${ENGINE}" == "GL" ]; then
+    cd libs/glew/build;
+    cmake ../build/cmake/.;
+    sudo make -j2 && sudo make install;
+    cd ../../../;
+  fi
 - mkdir build
 - cd build
 - cmake .. -DCMAKE_BUILD_TYPE=${BUILD_TYPE} -DCMAKE_CXX_FLAGS="${EXTRA_FLAGS}" -DTEMPEST_BUILD_ALL=ON -DENGINE="${ENGINE}"
