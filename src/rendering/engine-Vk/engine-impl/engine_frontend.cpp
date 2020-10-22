@@ -73,7 +73,6 @@ namespace engine {
 
             for (; begin != end; ++begin) {
                 const auto drawInfo = *begin;
-                // TODO proper flags class
                 if (drawInfo.descriptorBindFlags & base::bind_flag_bits::ePipeline) {
                     drawInfo.pipelineState->bind_pipeline(commandBuffer, vk::PipelineBindPoint::eGraphics);
                 }
