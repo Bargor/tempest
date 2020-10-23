@@ -1,6 +1,8 @@
 # This file is part of Tempest project
 # Author: Karol Kontny
 
+include(${PROJECT_SOURCE_DIR}/cmake/AddImGuiLibrary.cmake)
+
 set(ENGINE_HDRS
     engine-impl/api.h
 	engine-impl/device.h
@@ -60,6 +62,8 @@ set(ENGINE_SRCS
 	engine-impl/swap_chain.cpp
 )
 
+add_imgui()
+
 tst_add_library(engine-impl "${ENGINE_HDRS}" "${ENGINE_SRCS}")
 
 target_include_directories(engine-impl PUBLIC ${Vulkan_INCLUDE_DIRS})
@@ -72,6 +76,7 @@ target_link_libraries(engine-impl PUBLIC
 	PRIVATE
 	tinyobjloader
 	fmt::fmt
+    tst::imgui
 )
 
 #Compiler specific options
