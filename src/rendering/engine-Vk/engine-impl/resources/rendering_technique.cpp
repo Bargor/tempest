@@ -164,11 +164,14 @@ namespace engine {
                                                          vk::RenderPass renderPass,
                                                          const std::vector<vk::ImageView>& imageViews,
                                                          vk::ImageView depthImageView,
-                                                         vk::Extent2D extent) {
+                                                         vk::Extent2D extent,
+                                                         bool useDepth) {
             std::vector<vk::Framebuffer> framebuffers(imageViews.size());
 
             for (std::uint32_t i = 0; i < imageViews.size(); i++) {
-                const std::array<vk::ImageView, 2> attachments = {imageViews[i], depthImageView};
+                const std::vector<vk::ImageView> attachments = useDepth ?
+                    std::vector<vk::ImageView>{imageViews[i], depthImageView} :
+                    std::vector<vk::ImageView>{imageViews[i]};
 
                 const vk::FramebufferCreateInfo createInfo(vk::FramebufferCreateFlags(),
                                                            renderPass,
@@ -198,7 +201,8 @@ namespace engine {
                                                  m_renderPass,
                                                  m_swapChain.get().get_image_views(),
                                                  m_swapChain.get().get_depth_image_view(),
-                                                 m_swapChain.get().get_extent())) {
+                                                 m_swapChain.get().get_extent(),
+                                                 m_settings.m_useDepth)) {
         }
 
         rendering_technique::rendering_technique(rendering_technique&& technique) noexcept
@@ -226,7 +230,8 @@ namespace engine {
                                                  m_renderPass,
                                                  m_swapChain.get().get_image_views(),
                                                  m_swapChain.get().get_depth_image_view(),
-                                                 m_swapChain.get().get_extent());
+                                                 m_swapChain.get().get_extent(),
+                                                 m_settings.m_useDepth);
             m_extent = m_swapChain.get().get_extent();
         }
 

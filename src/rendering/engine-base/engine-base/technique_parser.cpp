@@ -24,7 +24,8 @@ namespace engine {
                                       image_layout::present,
                                       {0.0f, 0.0f, 0.0f, 1.0f}}},
                 {subpass_settings{subpass_settings::bind_point::graphics, {0}, std::nullopt}},
-                {dependency{0, 1, 1024, 1024, 0, 384}}};
+                {dependency{0, 1, 1024, 1024, 0, 384}},
+                false};
         }
 
         std::vector<framebuffer_settings> parse_framebuffers(const rapidjson::Value& framebuffersSettings) {
@@ -126,7 +127,11 @@ namespace engine {
             const auto framebuffers = parse_framebuffers(jsonModel["framebuffers"]);
             const auto subpasses = parse_subpasses(jsonModel["subpasses"]);
             const auto dependencies = parse_dependencies(jsonModel["dependencies"]);
-            return technique_settings{framebuffers, subpasses, dependencies};
+            bool useDepth =
+                std::any_of(framebuffers.begin(), framebuffers.end(), [](const framebuffer_settings& settings) {
+                    return settings.type == framebuffer_settings::attachment_type::depth;
+                });
+            return technique_settings{framebuffers, subpasses, dependencies, useDepth};
         }
 
     } // namespace base
