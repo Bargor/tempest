@@ -4,6 +4,7 @@
 set(DEVICE_HDRS
     device/keyboard.h
 	device/monitor.h
+    device/mouse.h
 )
 
 set(DEVICE_SRCS 

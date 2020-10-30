@@ -51,6 +51,16 @@ namespace application {
             fmt::printf("FPS: %d\n", m_lastSecondFrames);
             m_lastSecondFrames = 0;
         };
+        auto mouse_callback = [&](const app_event::arguments& args) {
+            assert(std::holds_alternative<application::app_event::mouse_button>(args));
+            if (std::get<application::app_event::mouse_button>(args).button == device::mouse_buttons::button_right) {
+                if (m_mainWindow.get_cursor_mode() == main_window::cursor_mode::hidden) {
+                    m_mainWindow.set_cursor_mode(main_window::cursor_mode::normal);
+                } else {
+                    m_mainWindow.set_cursor_mode(main_window::cursor_mode::hidden);
+                }
+            };
+        };
         m_eventProcessor.subscribe(
             core::variant_index<app_event::arguments, app_event::closed>(), this, std::move(close_callback));
         m_eventProcessor.subscribe(
@@ -59,6 +69,8 @@ namespace application {
                                    this,
                                    std::move(time_callback),
                                    std::chrono::seconds(1));
+        m_eventProcessor.subscribe(
+            core::variant_index<app_event::arguments, app_event::mouse_button>(), this, std::move(mouse_callback));
         m_scene->add_object("test", "D:/Projekty/models/sibenik/sibenik.obj");
         m_scene->add_camera("main",
                             glm::vec3(0.0f, 0.0f, 5.0f),
