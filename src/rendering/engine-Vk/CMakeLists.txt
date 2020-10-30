@@ -4,17 +4,9 @@
 include(${PROJECT_SOURCE_DIR}/cmake/AddImGuiLibrary.cmake)
 
 set(ENGINE_HDRS
-    engine-impl/api.h
-	engine-impl/device.h
-	engine-impl/draw_info.h
-	engine-impl/engine_frontend.h
-	engine-impl/gpu_info.h
-	engine-impl/instance.h
-	engine-impl/queue_indices.h
-	engine-impl/physical_device.h
-	engine-impl/resource_cache.h
-	engine-impl/resource_factory.h
-	engine-impl/resources/buffer.h
+    engine-impl/gui/imgui_impl_glfw.h
+    engine-impl/gui/imgui_impl_vulkan.h
+    engine-impl/resources/buffer.h
 	engine-impl/resources/image.h
 	engine-impl/resources/index_buffer.h
     engine-impl/resources/material.h
@@ -27,6 +19,16 @@ set(ENGINE_HDRS
 	engine-impl/resources/vertex_buffer.h
 	engine-impl/resources/vertex_format.h
 	engine-impl/resources/util.h
+    engine-impl/api.h
+	engine-impl/device.h
+	engine-impl/draw_info.h
+	engine-impl/engine_frontend.h
+	engine-impl/gpu_info.h
+	engine-impl/instance.h
+	engine-impl/queue_indices.h
+	engine-impl/physical_device.h
+	engine-impl/resource_cache.h
+	engine-impl/resource_factory.h
 	engine-impl/settings_parser.h
 	engine-impl/shader_compiler.h
     engine-impl/surface_support.h
@@ -35,16 +37,9 @@ set(ENGINE_HDRS
 )
 
 set(ENGINE_SRCS 
-	engine-impl/device.cpp
-	engine-impl/engine_frontend.cpp
-	engine-impl/draw_info.cpp
-	engine-impl/gpu_info.cpp
-	engine-impl/instance.cpp
-	engine-impl/queue_indices.cpp
-	engine-impl/physical_device.cpp
-	engine-impl/resource_cache.cpp
-	engine-impl/resource_factory.cpp
-	engine-impl/resources/buffer.cpp
+    engine-impl/gui/imgui_impl_glfw.cpp
+    engine-impl/gui/imgui_impl_vulkan.cpp
+    engine-impl/resources/buffer.cpp
 	engine-impl/resources/image.cpp
 	engine-impl/resources/index_buffer.cpp
     engine-impl/resources/material.cpp
@@ -57,6 +52,15 @@ set(ENGINE_SRCS
 	engine-impl/resources/vertex_buffer.cpp
 	engine-impl/resources/vertex_format.cpp
 	engine-impl/resources/util.cpp
+	engine-impl/device.cpp
+	engine-impl/engine_frontend.cpp
+	engine-impl/draw_info.cpp
+	engine-impl/gpu_info.cpp
+	engine-impl/instance.cpp
+	engine-impl/queue_indices.cpp
+	engine-impl/physical_device.cpp
+	engine-impl/resource_cache.cpp
+	engine-impl/resource_factory.cpp
 	engine-impl/settings_parser.cpp
 	engine-impl/shader_compiler.cpp
 	engine-impl/swap_chain.cpp
@@ -72,11 +76,11 @@ target_link_libraries(engine-impl PUBLIC
 	tst::application
 	tst::engine-base
 	glfw
+    tst::imgui
 	${Vulkan_LIBRARIES}
 	PRIVATE
 	tinyobjloader
 	fmt::fmt
-    tst::imgui
 )
 
 #Compiler specific options

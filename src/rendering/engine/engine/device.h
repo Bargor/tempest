@@ -27,12 +27,15 @@ namespace engine {
     public:
         device(application::main_window& mainWindow,
                application::event_processor<application::app_event>& eventProcessor,
+               const application::data_loader& dataLoader,
                settings&& settings);
         ~device();
 
     public:
         void start();
         void stop();
+
+        void start_frame();
 
         template<typename Iter>
         bool draw_frame(Iter first, Iter last);
@@ -52,6 +55,10 @@ namespace engine {
 
     TST_INLINE void device::stop() {
         super::stop();
+    }
+
+    TST_INLINE void device::start_frame() {
+        super::start_frame();
     }
 
     template<typename Iter>

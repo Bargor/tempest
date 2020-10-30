@@ -14,6 +14,7 @@
 #include <scene/scene.h>
 #include <scene/object_controller.h>
 #include <util/variant.h>
+#include <imgui/imgui.h>
 
 #include <fmt/printf.h>
 // clang-format on
@@ -32,7 +33,7 @@ namespace application {
         , m_mainWindow(mainWindow)
         , m_dataLoader(dataLoader)
         , m_renderingDevice(std::make_unique<engine::device>(
-              m_mainWindow, m_eventProcessor, engine::parse_engine_settings(dataLoader)))
+              m_mainWindow, m_eventProcessor, dataLoader, engine::parse_engine_settings(dataLoader)))
         , m_resourceFactory(std::make_unique<engine::resource_factory>(*m_renderingDevice, m_dataLoader))
         , m_scene(std::make_unique<scene::scene>("world", dataLoader, eventProcessor, *m_resourceFactory))
         , m_frameCounter(0)
@@ -84,6 +85,9 @@ namespace application {
         m_eventProcessor.process_events();
         const auto frameStart = m_timeSource.now();
         if (!m_windowMinimized) {
+            m_renderingDevice->start_frame();
+
+            ImGui::ShowDemoWindow();
             const auto newSceneState = scene::update_scene(*m_scene, m_lastFrameDuration);
             auto drawInfo = scene::prepare_draw_info(m_scene->get_camera("main"), newSceneState);
             m_renderingDevice->draw_frame(drawInfo.begin(), drawInfo.end());

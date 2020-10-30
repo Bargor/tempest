@@ -23,7 +23,7 @@ namespace engine {
 
         resource_cache::resource_cache(const vk::Device device)
             : m_device(device)
-            , m_descriptorPools({create_descriptor_pool(400)})
+            , m_descriptorPools({create_descriptor_pool(30, 25, 5), create_descriptor_pool(100, 100, 100)})
             , m_globalLayout(create_global_layout(device))
             , m_globalStaticSet(create_descriptor_set(m_globalLayout))
             , m_globalDynamicSet(create_descriptor_set(m_globalLayout))
@@ -56,14 +56,15 @@ namespace engine {
             m_shaders.insert({std::move(name), std::move(shaders)});
         }
 
-        vk::DescriptorPool resource_cache::create_descriptor_pool(std::uint32_t) {
-            vk::DescriptorPoolSize uniformPoolSize(vk::DescriptorType::eUniformBuffer, settings::m_inFlightFrames * 10);
-            vk::DescriptorPoolSize samplerPoolSize(vk::DescriptorType::eCombinedImageSampler,
-                                                   settings::m_inFlightFrames * 3);
+        vk::DescriptorPool resource_cache::create_descriptor_pool(std::uint32_t maxSets,
+                                                                  std::uint32_t uniformDescriptorCount,
+                                                                  std::uint32_t samplerDescriptorCount) {
+            vk::DescriptorPoolSize uniformPoolSize(vk::DescriptorType::eUniformBuffer, uniformDescriptorCount);
+            vk::DescriptorPoolSize samplerPoolSize(vk::DescriptorType::eCombinedImageSampler, samplerDescriptorCount);
 
             vk::DescriptorPoolCreateInfo poolCreateInfo(
                 vk::DescriptorPoolCreateFlags(),
-                settings::m_inFlightFrames * 3 * 5,
+                maxSets,
                 2,
                 std::array<vk::DescriptorPoolSize, 2>{uniformPoolSize, samplerPoolSize}.data());
 
