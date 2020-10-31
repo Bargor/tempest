@@ -4,8 +4,11 @@
 #include "device.h"
 
 #include "gpu_info.h"
+#include "gui/imgui_impl_glfw.h"
+#include "gui/imgui_impl_vulkan.h"
 #include "instance.h"
 #include "resource_cache.h"
+#include "resources/util.h"
 #include "swap_chain.h"
 #include "vulkan_exception.h"
 
@@ -15,8 +18,10 @@
 #include <application/data_loader.h>
 #include <application/event_processor.h>
 #include <application/main_window.h>
+#include <engine-base/technique_parser.h>
 #include <engine-base/view.h>
 #include <fmt/printf.h>
+#include <imgui/imgui.h>
 #include <set>
 #include <util/variant.h>
 
@@ -138,6 +143,7 @@ namespace engine {
 
         device::device(application::main_window& mainWindow,
                        application::event_processor<application::app_event>& eventProcessor,
+                       const application::data_loader& dataLoader,
                        settings&& engineSettings)
             : m_frameCounter(0)
             , m_mainWindow(mainWindow)
@@ -199,6 +205,8 @@ namespace engine {
                                                                   m_resourceIndex},
                                     0,
                                     sizeof(base::view::uniforms)) {
+            init_gui(dataLoader);
+
             auto framebufferResizeCallback = [&](const application::app_event::arguments& args) {
                 assert(std::holds_alternative<application::app_event::framebuffer>(args));
                 m_framebufferResizeInfo = {true, std::get<application::app_event::framebuffer>(args).size};
@@ -227,12 +235,47 @@ namespace engine {
             m_globalDynamicUniforms.~uniform_buffer();
             m_globalStaticUniforms.~uniform_buffer();
             m_viewStaticUniforms.~uniform_buffer();
-            m_viewDynamicUniforms .~uniform_buffer();
+            m_viewDynamicUniforms.~uniform_buffer();
+
+            ImGui_ImplVulkan_Shutdown();
+            ImGui_ImplGlfw_Shutdown();
+            ImGui::DestroyContext();
+
             m_logicalDevice.destroy();
         }
 
         resource_factory device::create_resource_factory(const application::data_loader& dataLoader) const {
             return resource_factory(*this, dataLoader);
+        }
+
+        void device::init_gui(const application::data_loader& dataLoader) {
+            IMGUI_CHECKVERSION();
+            ImGui::CreateContext();
+            ImGuiIO& io = ImGui::GetIO();
+            (void)io;
+
+            m_resourceCache->add_rendering_technique(
+                std::move("gui"), base::parse_technique_settings(dataLoader, "gui"), m_logicalDevice, *m_swapChain);
+
+            ImGui_ImplGlfw_InitForVulkan(m_mainWindow.get_handle(), true);
+            ImGui_ImplVulkan_InitInfo init_info = {};
+            init_info.Instance = instance::get_instance().get_instance_handle();
+            init_info.PhysicalDevice = m_physicalDevice->m_physicalDevice;
+            init_info.Device = m_logicalDevice;
+            init_info.QueueFamily = m_physicalDevice->m_queueIndices.graphicsIndex.value();
+            init_info.Queue = m_graphicsQueueHandle;
+            init_info.PipelineCache = VK_NULL_HANDLE;
+            init_info.DescriptorPool = m_resourceCache->get_gui_descritptor_pool();
+            init_info.Allocator = nullptr;
+            init_info.MinImageCount = settings::m_inFlightFrames;
+            init_info.ImageCount = settings::m_inFlightFrames;
+            init_info.CheckVkResultFn = nullptr;
+            ImGui_ImplVulkan_Init(&init_info, m_resourceCache->find_technique("gui")->get_pass());
+
+            auto command_buffer = create_one_time_buffer(m_logicalDevice, m_commandPools[0]);
+            ImGui_ImplVulkan_CreateFontsTexture(command_buffer);
+            submit_one_time_buffer(m_logicalDevice, m_commandPools[0], m_graphicsQueueHandle, command_buffer);
+            ImGui_ImplVulkan_DestroyFontUploadObjects();
         }
 
         vk::CommandPool device::create_command_pool() {
@@ -264,6 +307,11 @@ namespace engine {
             } else if (acquireResult == swap_chain::result::fail) {
                 return false;
             }
+
+            ImGui_ImplVulkan_NewFrame();
+            ImGui_ImplGlfw_NewFrame();
+            ImGui::NewFrame();
+
             return true;
         }
 

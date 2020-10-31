@@ -36,6 +36,7 @@ namespace engine {
         public:
             device(application::main_window& mainWindow,
                    application::event_processor<application::app_event>& eventProcessor,
+                   const application::data_loader& dataLoader,
                    settings&& engineSettings);
             device(const device& device) = delete;
             ~device();
@@ -48,6 +49,8 @@ namespace engine {
 
             template<typename Iter>
             bool draw_frame(Iter first, Iter last);
+
+            bool start_frame();
 
             void start();
             void stop();

@@ -60,6 +60,7 @@ namespace engine {
             std::vector<framebuffer_settings> m_framebuffers;
             std::vector<subpass_settings> m_subpasses;
             std::vector<dependency> m_depencencies;
+            bool m_useDepth;
         };
 
         class rendering_technique {

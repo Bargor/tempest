@@ -103,7 +103,10 @@ namespace application {
 
     void input_processor::mouse_button_callback(GLFWwindow*, std::int32_t button, std::int32_t action, std::int32_t mods) {
         assert(std::this_thread::get_id() == core::main_thread::get_id());
-        m_eventProcessor.create_event(app_event{this, app_event::mouse_button{button, action, mods}});
+        m_eventProcessor.create_event(app_event{this,
+                                                app_event::mouse_button{static_cast<device::mouse_buttons>(button),
+                                                                        static_cast<device::mouse_action>(action),
+                                                                        mods}});
     }
 
     void input_processor::mouse_scroll_callback(GLFWwindow*, double xoffset, double yoffset) {

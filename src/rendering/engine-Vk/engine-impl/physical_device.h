@@ -13,6 +13,7 @@ namespace engine {
         class gpu_info;
 
         class physical_device {
+            friend class device;
         public:
             physical_device(vk::PhysicalDevice device, ptr<gpu_info> info, queue_family_indices& indices);
 

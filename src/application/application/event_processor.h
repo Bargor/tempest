@@ -34,10 +34,11 @@ namespace application {
         void create_event(Event&& event) noexcept;
 
         void subscribe(const event_id type,
-                       objectId id,
+                       const objectId id,
                        std::function<void(const typename Event::arguments&)>&& callback,
                        std::chrono::duration<std::uint64_t, std::micro> updateFrequency =
                            std::chrono::microseconds::zero()) noexcept;
+        void unsubscribe(const event_id type, const objectId id);
         void process_events();
 
     private:
@@ -76,11 +77,23 @@ namespace application {
 
     template<typename Event>
     void event_processor<Event>::subscribe(const event_id type,
-                                           objectId id,
+                                           const objectId id,
                                            std::function<void(const typename Event::arguments&)>&& callback,
                                            std::chrono::duration<std::uint64_t, std::micro> updateFrequency) noexcept {
         subscriber subscriber{id, updateFrequency, m_timeSource.now(), std::move(callback)};
         m_listeners[type].emplace_back(subscriber);
+    }
+
+    template<typename Event>
+    void event_processor<Event>::unsubscribe(const event_id type, const objectId id) {
+        // TODO: replace with erase if
+        m_listeners[type].erase(std::remove_if(m_listeners[type].begin(),
+                                               m_listeners[type].end(),
+                                               [id](const subscriber& subsciber) {
+                                                   if (subsciber.id == id) return true;
+                                                   return false;
+                                               }),
+                                m_listeners[type].end());
     }
 
     template<typename Event>

@@ -33,6 +33,9 @@ namespace engine {
 
             vk::Extent2D get_extent() const noexcept;
 
+            //TODO: remove this (and refactor)
+            vk::RenderPass get_pass() const noexcept;
+
         private:
             void destroy();
 
@@ -46,6 +49,10 @@ namespace engine {
 
         TST_INLINE vk::Extent2D rendering_technique::get_extent() const noexcept {
             return m_extent;
+        }
+
+        TST_INLINE vk::RenderPass rendering_technique::get_pass() const noexcept {
+            return m_renderPass;
         }
 
         TST_INLINE bool operator==(const rendering_technique& lhs, const rendering_technique& rhs) noexcept {

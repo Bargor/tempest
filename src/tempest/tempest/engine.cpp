@@ -14,6 +14,7 @@
 #include <scene/scene.h>
 #include <scene/object_controller.h>
 #include <util/variant.h>
+#include <imgui/imgui.h>
 
 #include <fmt/printf.h>
 // clang-format on
@@ -32,7 +33,7 @@ namespace application {
         , m_mainWindow(mainWindow)
         , m_dataLoader(dataLoader)
         , m_renderingDevice(std::make_unique<engine::device>(
-              m_mainWindow, m_eventProcessor, engine::parse_engine_settings(dataLoader)))
+              m_mainWindow, m_eventProcessor, dataLoader, engine::parse_engine_settings(dataLoader)))
         , m_resourceFactory(std::make_unique<engine::resource_factory>(*m_renderingDevice, m_dataLoader))
         , m_scene(std::make_unique<scene::scene>("world", dataLoader, eventProcessor, *m_resourceFactory))
         , m_frameCounter(0)
@@ -50,6 +51,18 @@ namespace application {
             fmt::printf("FPS: %d\n", m_lastSecondFrames);
             m_lastSecondFrames = 0;
         };
+        auto mouse_callback = [&](const app_event::arguments& args) {
+            assert(std::holds_alternative<application::app_event::mouse_button>(args));
+            const auto click = std::get<application::app_event::mouse_button>(args);
+            if (click.button == device::mouse_buttons::button_right && click.action == device::mouse_action::press) {
+                if (m_mainWindow.get_cursor_mode() == main_window::cursor_mode::disabled) {
+                    m_mainWindow.set_cursor_mode(main_window::cursor_mode::normal);
+
+                } else {
+                    m_mainWindow.set_cursor_mode(main_window::cursor_mode::disabled);
+                }
+            };
+        };
         m_eventProcessor.subscribe(
             core::variant_index<app_event::arguments, app_event::closed>(), this, std::move(close_callback));
         m_eventProcessor.subscribe(
@@ -58,6 +71,8 @@ namespace application {
                                    this,
                                    std::move(time_callback),
                                    std::chrono::seconds(1));
+        m_eventProcessor.subscribe(
+            core::variant_index<app_event::arguments, app_event::mouse_button>(), this, std::move(mouse_callback));
         m_scene->add_object("test", "D:/Projekty/models/sibenik/sibenik.obj");
         m_scene->add_camera("main",
                             glm::vec3(0.0f, 0.0f, 5.0f),
@@ -84,6 +99,9 @@ namespace application {
         m_eventProcessor.process_events();
         const auto frameStart = m_timeSource.now();
         if (!m_windowMinimized) {
+            m_renderingDevice->start_frame();
+
+            ImGui::ShowDemoWindow();
             const auto newSceneState = scene::update_scene(*m_scene, m_lastFrameDuration);
             auto drawInfo = scene::prepare_draw_info(m_scene->get_camera("main"), newSceneState);
             m_renderingDevice->draw_frame(drawInfo.begin(), drawInfo.end());

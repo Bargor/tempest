@@ -7,9 +7,9 @@
 #include "window.h"
 
 #include <chrono>
-#include <variant>
-
 #include <device/keyboard.h>
+#include <device/mouse.h>
+#include <variant>
 
 namespace tst {
 namespace application {
@@ -21,8 +21,8 @@ namespace application {
         };
 
         struct mouse_button {
-            std::int32_t button;
-            std::int32_t action;
+            device::mouse_buttons button;
+            device::mouse_action action;
             std::int32_t mods;
         };
 
@@ -60,8 +60,12 @@ namespace application {
             std::chrono::microseconds time;
         };
 
+        struct cursor {
+            window::cursor_mode cursor;
+        };
+
         using arguments =
-            std::variant<mouse_pos, mouse_button, scroll, keyboard, focus, iconify, closed, visible, time, framebuffer>;
+            std::variant<mouse_pos, mouse_button, cursor, scroll, keyboard, focus, iconify, closed, visible, time, framebuffer>;
 
         objectId id;
         arguments args;

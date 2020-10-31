@@ -141,8 +141,9 @@ namespace application {
 
     void glfw_window::set_cursor_mode(cursor_mode mode) noexcept {
         assert(m_windowHandle);
-        glfwSetInputMode(m_windowHandle, GLFW_CURSOR, translate_cursor_mode(mode));
         m_cursor = mode;
+        glfwSetInputMode(m_windowHandle, GLFW_CURSOR, translate_cursor_mode(mode));
+        m_eventProcessor.create_event(app_event{this, app_event::cursor{m_cursor}});
     }
 
     void glfw_window::focus_internal(bool broadcast) noexcept {

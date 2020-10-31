@@ -57,6 +57,9 @@ namespace scene {
         glm::quat calculate_pitch(float elapsedTime) const;
         glm::quat calculate_yaw(float elapsedTime) const;
 
+        void subscribe();
+        void unsubscribe();
+
     private:
         std::string m_name;
         application::event_processor<application::app_event>& m_eventProcessor;
