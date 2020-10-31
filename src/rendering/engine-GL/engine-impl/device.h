@@ -50,6 +50,8 @@ namespace engine {
             template<typename Iter>
             bool draw_frame(Iter first, Iter last);
 
+            bool start_frame();
+
             void start();
             void stop();
 

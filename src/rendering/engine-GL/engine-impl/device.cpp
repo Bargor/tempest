@@ -23,6 +23,10 @@ namespace engine {
         device::~device() {
         }
 
+        bool device::start_frame() {
+            return true;
+        }
+
         void device::start() {
         }
 
