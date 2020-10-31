@@ -5,6 +5,7 @@
 
 #include "device.h"
 #include "draw_info.h"
+#include "gui/imgui_impl_vulkan.h"
 #include "resources/index_buffer.h"
 #include "resources/pipeline.h"
 #include "resources/rendering_technique.h"
@@ -13,6 +14,7 @@
 #include "resources/vertex_buffer.h"
 
 #include <engine-base/resource_bind_point.h>
+#include <imgui/imgui.h>
 
 namespace tst {
 namespace engine {
@@ -22,7 +24,8 @@ namespace engine {
         engine_frontend::engine_frontend(device& device)
             : m_device(device)
             , m_commandPools(
-                  {m_device.create_command_pool(), m_device.create_command_pool(), m_device.create_command_pool()}) {
+                  {m_device.create_command_pool(), m_device.create_command_pool(), m_device.create_command_pool()})
+            , m_usedBuffers(0) {
         }
 
         engine_frontend::~engine_frontend() {
@@ -33,6 +36,10 @@ namespace engine {
         }
 
         std::vector<vk::CommandBuffer> engine_frontend::prepare_draw(const std::vector<draw_info>& drawInfos) {
+            const auto idx = m_device.get_resource_index();
+            m_device.m_logicalDevice.resetCommandPool(m_commandPools[idx], vk::CommandPoolResetFlags());
+            m_usedBuffers = 0;
+
             std::vector<vk::CommandBuffer> buffers;
 
             auto rangeBegin = drawInfos.begin();
@@ -49,19 +56,36 @@ namespace engine {
             return buffers;
         }
 
+        std::vector<vk::CommandBuffer> engine_frontend::prepare_gui_draw(const rendering_technique& guiPass) {
+            const auto commandBuffer = get_command_buffer();
+            vk::CommandBufferBeginInfo commandBufferInfo(vk::CommandBufferUsageFlagBits::eOneTimeSubmit, nullptr);
+            commandBuffer.begin(commandBufferInfo);
+            guiPass.generate_render_pass_info(commandBuffer, vk::SubpassContents::eInline);
+
+            ImGui::Render();
+            ImDrawData* draw_data = ImGui::GetDrawData();
+            ImGui_ImplVulkan_RenderDrawData(draw_data, commandBuffer);
+
+            commandBuffer.endRenderPass();
+            commandBuffer.end();
+
+            return {commandBuffer};
+        }
+
+        vk::CommandBuffer engine_frontend::get_command_buffer() {
+            const auto idx = m_device.get_resource_index();
+
+            if (m_usedBuffers < m_bufferCache[idx].size()) {
+                return m_bufferCache[idx][m_usedBuffers++];
+            }
+            m_usedBuffers++;
+            vk::CommandBufferAllocateInfo bufferAllocateInfo(m_commandPools[idx], vk::CommandBufferLevel::ePrimary, 1);
+            return m_bufferCache[idx].emplace_back(m_device.m_logicalDevice.allocateCommandBuffers(bufferAllocateInfo)[0]);
+        }
+
         vk::CommandBuffer engine_frontend::generate_command_buffer(std::vector<draw_info>::const_iterator begin,
                                                                    std::vector<draw_info>::const_iterator end) {
-            const auto idx = m_device.get_resource_index();
-            vk::CommandBufferAllocateInfo bufferAllocateInfo(m_commandPools[idx], vk::CommandBufferLevel::ePrimary, 1);
-
-            m_device.m_logicalDevice.resetCommandPool(m_commandPools[idx], vk::CommandPoolResetFlags());
-
-            if (m_bufferCache[idx].size() == 0) {
-                m_bufferCache[idx].emplace_back(m_device.m_logicalDevice.allocateCommandBuffers(bufferAllocateInfo)[0]);
-            }
-            // TODO: above should be moved to function
-
-            const auto commandBuffer = m_bufferCache[m_device.get_resource_index()][0];
+            const auto commandBuffer = get_command_buffer();
 
             vk::CommandBufferBeginInfo commandBufferInfo(vk::CommandBufferUsageFlagBits::eSimultaneousUse, nullptr);
             commandBuffer.begin(commandBufferInfo);
@@ -73,7 +97,6 @@ namespace engine {
 
             for (; begin != end; ++begin) {
                 const auto drawInfo = *begin;
-                // TODO proper flags class
                 if (drawInfo.descriptorBindFlags & base::bind_flag_bits::ePipeline) {
                     drawInfo.pipelineState->bind_pipeline(commandBuffer, vk::PipelineBindPoint::eGraphics);
                 }

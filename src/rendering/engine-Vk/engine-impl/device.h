@@ -48,6 +48,7 @@ namespace engine {
         public:
             device(application::main_window& mainWindow,
                    application::event_processor<application::app_event>& eventProcessor,
+                   const application::data_loader& dataLoader,
                    settings&& engineSettings);
             device(const device& device) = delete;
             ~device();
@@ -63,16 +64,18 @@ namespace engine {
             void start();
             void stop();
 
+            bool start_frame();
+
         public: // public Vulkan interface
             vk::CommandPool create_command_pool();
 
-            bool start_frame();
             bool draw(const std::vector<vk::CommandBuffer>& commandBuffers);
             bool end_frame();
 
             std::uint32_t get_resource_index() const noexcept;
 
         private:
+            void init_gui(const application::data_loader& dataLoader);
             void update_framebuffer();
             void recreate_swap_chain(const core::extent<std::uint32_t>& extent);
             void update_engine_buffers(const core::extent<std::uint32_t>& extent);
@@ -119,13 +122,16 @@ namespace engine {
             if (std::distance(first, last) == 0) {
                 return false;
             }
-            start_frame();
 
             const auto drawInfos = sort_draw_infos(first, last);
 
             m_viewStaticUniforms.update_buffer(drawInfos.begin()->viewData.get_uniforms());
 
-            const auto commandBuffers = m_engineFrontend->prepare_draw(drawInfos);
+            auto commandBuffers = m_engineFrontend->prepare_draw(drawInfos);
+
+            const auto guiCommandBuffers = m_engineFrontend->prepare_gui_draw(*m_resourceCache->find_technique("gui"));
+
+            commandBuffers.insert(commandBuffers.end(), guiCommandBuffers.begin(), guiCommandBuffers.end());
 
             draw(commandBuffers);
             end_frame();

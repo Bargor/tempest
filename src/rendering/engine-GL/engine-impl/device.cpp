@@ -15,11 +15,16 @@ namespace engine {
 
         device::device(application::main_window&,
                        application::event_processor<application::app_event>&,
+                       const application::data_loader&,
                        settings&&)
             : m_gpuInfo(std::make_unique<gpu_info>()) {
         }
 
         device::~device() {
+        }
+
+        bool device::start_frame() {
+            return true;
         }
 
         void device::start() {

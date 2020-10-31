@@ -44,13 +44,17 @@ namespace engine {
             const descriptor_set& get_view_static_set() const noexcept;
             const descriptor_set& get_view_dynamic_set() const noexcept;
 
+            vk::DescriptorPool get_gui_descritptor_pool() const;
+
             void clear();
             void destroy();
             void rebuild_techniques(const swap_chain& newSwapChain);
             void rebuild_pipelines();
 
         private:
-            vk::DescriptorPool create_descriptor_pool(std::uint32_t);
+            vk::DescriptorPool create_descriptor_pool(std::uint32_t maxSets,
+                                                      std::uint32_t uniformDescriptorCount,
+                                                      std::uint32_t samplerDescriptorCount);
             descriptor_set create_descriptor_set(vk::DescriptorSetLayout layout);
 
         private:
@@ -85,6 +89,10 @@ namespace engine {
 
         TST_INLINE const descriptor_set& resource_cache::get_view_dynamic_set() const noexcept {
             return m_viewDynamicSet;
+        }
+
+        TST_INLINE vk::DescriptorPool resource_cache::get_gui_descritptor_pool() const {
+            return m_descriptorPools[1];
         }
 
     } // namespace vulkan

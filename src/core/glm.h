@@ -2,7 +2,7 @@
 #define GLM_FORCE_SSE41
 #define GLM_FORCE_SWIZZLE
 #define GLM_FORCE_SILENT_WARNINGS
-#define GLM_FORCE_CXX17
+#define GLM_FORCE_CXX2A
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>

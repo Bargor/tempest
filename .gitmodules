@@ -25,3 +25,6 @@
 [submodule "libs/glew"]
 	path = libs/glew
 	url = https://github.com/Bargor/glew
+[submodule "libs/imgui"]
+	path = libs/imgui
+	url = https://github.com/ocornut/imgui.git

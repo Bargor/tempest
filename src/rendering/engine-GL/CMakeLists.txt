@@ -1,6 +1,8 @@
 # This file is part of Tempest project
 # Author: Karol Kontny
 
+include(${PROJECT_SOURCE_DIR}/cmake/AddImGuiLibrary.cmake)
+
 set(ENGINE_HDRS
     engine-impl/api.h
 	engine-impl/command_list.h
@@ -45,6 +47,8 @@ set(ENGINE_SRCS
 	engine-impl/shader_compiler.cpp
 )
 
+add_imgui()
+
 add_definitions (-DGLEW_NO_GLU)
 
 include(${PROJECT_SOURCE_DIR}/cmake/TstAddLibrary.cmake)
@@ -56,7 +60,15 @@ tst_add_library(engine-impl "${ENGINE_HDRS}" "${ENGINE_SRCS}")
 
 target_include_directories(engine-impl PUBLIC ${GLEW_INCLUDE_DIRS})
 
-target_link_libraries(engine-impl PUBLIC tst::application tst::engine-base glfw PRIVATE ${GLEW_LIBRARIES})
+target_link_libraries(engine-impl PUBLIC
+    tst::application
+    tst::engine-base
+    glfw
+    tst::imgui
+    PRIVATE
+    ${GLEW_LIBRARIES}
+)
+
 if(WIN32)
     target_link_libraries(engine-impl PRIVATE opengl32)
 endif(WIN32)
