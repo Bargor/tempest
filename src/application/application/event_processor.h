@@ -86,14 +86,10 @@ namespace application {
 
     template<typename Event>
     void event_processor<Event>::unsubscribe(const event_id type, const objectId id) {
-        // TODO: replace with erase if
-        m_listeners[type].erase(std::remove_if(m_listeners[type].begin(),
-                                               m_listeners[type].end(),
-                                               [id](const subscriber& subsciber) {
-                                                   if (subsciber.id == id) return true;
-                                                   return false;
-                                               }),
-                                m_listeners[type].end());
+        std::erase_if(m_listeners[type], [id](const subscriber& subsciber) {
+            if (subsciber.id == id) return true;
+            return false;
+        });
     }
 
     template<typename Event>
