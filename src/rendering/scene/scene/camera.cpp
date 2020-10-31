@@ -51,6 +51,8 @@ namespace scene {
             core::variant_index<application::app_event::arguments, application::app_event::cursor>(),
             this,
             std::move(cursor_callback));
+
+         subscribe();
     }
 
     camera::camera(camera&& other) noexcept
