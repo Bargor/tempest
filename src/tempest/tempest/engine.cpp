@@ -53,11 +53,13 @@ namespace application {
         };
         auto mouse_callback = [&](const app_event::arguments& args) {
             assert(std::holds_alternative<application::app_event::mouse_button>(args));
-            if (std::get<application::app_event::mouse_button>(args).button == device::mouse_buttons::button_right) {
-                if (m_mainWindow.get_cursor_mode() == main_window::cursor_mode::hidden) {
+            const auto click = std::get<application::app_event::mouse_button>(args);
+            if (click.button == device::mouse_buttons::button_right && click.action == device::mouse_action::press) {
+                if (m_mainWindow.get_cursor_mode() == main_window::cursor_mode::disabled) {
                     m_mainWindow.set_cursor_mode(main_window::cursor_mode::normal);
+
                 } else {
-                    m_mainWindow.set_cursor_mode(main_window::cursor_mode::hidden);
+                    m_mainWindow.set_cursor_mode(main_window::cursor_mode::disabled);
                 }
             };
         };

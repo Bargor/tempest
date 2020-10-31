@@ -60,8 +60,12 @@ namespace application {
             std::chrono::microseconds time;
         };
 
+        struct cursor {
+            window::cursor_mode cursor;
+        };
+
         using arguments =
-            std::variant<mouse_pos, mouse_button, scroll, keyboard, focus, iconify, closed, visible, time, framebuffer>;
+            std::variant<mouse_pos, mouse_button, cursor, scroll, keyboard, focus, iconify, closed, visible, time, framebuffer>;
 
         objectId id;
         arguments args;
