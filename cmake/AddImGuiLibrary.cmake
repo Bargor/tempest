@@ -31,6 +31,7 @@ function(add_imgui)
     target_sources(imgui PUBLIC ${IMGUI_HDRS} PRIVATE ${IMGUI_SRCS})
     
     target_include_directories(imgui PUBLIC "${PROJECT_SOURCE_DIR}/libs/")
+    target_include_directories(imgui PUBLIC "${PROJECT_SOURCE_DIR}/libs/imgui-filebrowser")
 
     target_compile_options(imgui PUBLIC "$<$<CONFIG:DEBUG>:${DEBUG_COMPILE_OPTIONS}>")
     target_compile_options(imgui PUBLIC "$<$<CONFIG:RELEASE>:${RELEASE_COMPILE_OPTIONS}>")

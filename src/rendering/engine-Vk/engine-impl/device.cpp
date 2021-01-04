@@ -21,7 +21,6 @@
 #include <engine-base/technique_parser.h>
 #include <engine-base/view.h>
 #include <fmt/printf.h>
-#include <imgui/imgui.h>
 #include <set>
 #include <util/variant.h>
 

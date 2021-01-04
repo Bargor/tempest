@@ -4,6 +4,8 @@
 #include "engine.h"
 
 // clang-format off
+#include <imgui/imgui.h>
+#include <imfilebrowser.h>
 #include <engine/device.h>
 #include <application/app_event.h>
 #include <application/event_processor.h>
@@ -14,7 +16,6 @@
 #include <scene/scene.h>
 #include <scene/object_controller.h>
 #include <util/variant.h>
-#include <imgui/imgui.h>
 
 #include <fmt/printf.h>
 // clang-format on
@@ -87,21 +88,34 @@ namespace application {
 
     void simulation_engine::run() {
         m_renderingDevice->start();
+        ImGui::FileBrowser fileDialog;
         while (!m_shouldClose) {
-            main_loop();
+            main_loop(fileDialog);
             m_frameCounter++;
         }
         m_renderingDevice->stop();
     }
 
-    void simulation_engine::main_loop() {
+    void simulation_engine::main_loop(ImGui::FileBrowser& fileDialog) {
         m_inputProcessor.process_events();
         m_eventProcessor.process_events();
         const auto frameStart = m_timeSource.now();
+
         if (!m_windowMinimized) {
             m_renderingDevice->start_frame();
 
-            ImGui::ShowDemoWindow();
+            if (ImGui::Begin("dummy window")) {
+                // open file dialog when user clicks this button
+                if (ImGui::Button("Open file dialog")) fileDialog.Open();
+            }
+            ImGui::End();
+            fileDialog.Display();
+
+            if (fileDialog.HasSelected()) {
+                fmt::printf("Selected filename %s\n", fileDialog.GetSelected().string());
+                fileDialog.ClearSelected();
+            }
+
             const auto newSceneState = scene::update_scene(*m_scene, m_lastFrameDuration);
             auto drawInfo = scene::prepare_draw_info(m_scene->get_camera("main"), newSceneState);
             m_renderingDevice->draw_frame(drawInfo.begin(), drawInfo.end());
