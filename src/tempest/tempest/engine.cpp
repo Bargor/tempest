@@ -74,13 +74,13 @@ namespace application {
                                    std::chrono::seconds(1));
         m_eventProcessor.subscribe(
             core::variant_index<app_event::arguments, app_event::mouse_button>(), this, std::move(mouse_callback));
-        m_scene->add_object("test", "D:/Projekty/models/sibenik/sibenik.obj");
         m_scene->add_camera("main",
                             glm::vec3(0.0f, 0.0f, 5.0f),
                             glm::vec3(0.0f, 0.0f, 0.0f),
                             glm::vec3(0.0f, 1.0f, 0.0f),
                             60.0f,
-                            m_mainWindow.get_aspect());
+                            m_mainWindow.get_aspect(),
+                            m_mainWindow.get_cursor_mode() == window::cursor_mode::disabled);
     }
 
     simulation_engine::~simulation_engine() {
@@ -89,6 +89,7 @@ namespace application {
     void simulation_engine::run() {
         m_renderingDevice->start();
         ImGui::FileBrowser fileDialog;
+        fileDialog.SetTypeFilters({".obj"});
         while (!m_shouldClose) {
             main_loop(fileDialog);
             m_frameCounter++;
@@ -105,14 +106,14 @@ namespace application {
             m_renderingDevice->start_frame();
 
             if (ImGui::Begin("dummy window")) {
-                // open file dialog when user clicks this button
                 if (ImGui::Button("Open file dialog")) fileDialog.Open();
             }
             ImGui::End();
             fileDialog.Display();
 
             if (fileDialog.HasSelected()) {
-                fmt::printf("Selected filename %s\n", fileDialog.GetSelected().string());
+                m_scene->remove_all();
+                m_scene->add_object(fileDialog.GetSelected().string(), fileDialog.GetSelected().string());
                 fileDialog.ClearSelected();
             }
 

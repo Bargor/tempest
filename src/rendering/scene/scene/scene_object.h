@@ -22,10 +22,11 @@ namespace scene {
     class scene_object {
     public:
         struct static_data {
-            const engine::model& model;
-            const engine::resources::uniform_buffer& uniform;
+            engine::model& model;
+            engine::resources::uniform_buffer& uniform;
             engine::pipeline_hash pipeline;
             scene_object& object;
+
         };
         struct render_data {
             glm::mat4 model;
@@ -43,6 +44,8 @@ namespace scene {
         void update_object(std::chrono::duration<std::uint64_t, std::micro> elapsedTime);
         render_data prepare_render_data(const camera& camera);
 
+        std::string_view get_name() const;
+
     private:
         std::string m_name;
         engine::model m_model;
@@ -55,6 +58,10 @@ namespace scene {
 
         float m_time;
     };
+
+    TST_INLINE std::string_view scene_object::get_name() const {
+        return m_name;
+    }
 
 } // namespace scene
 } // namespace tst

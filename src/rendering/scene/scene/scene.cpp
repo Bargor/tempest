@@ -54,13 +54,29 @@ namespace scene {
                            const glm::vec3& lookAt,
                            const glm::vec3& up,
                            const float fov,
-                           const float aspectRatio) {
+                           const float aspectRatio,
+                           bool startSubscribed) {
         m_cameras.emplace_back(
-            std::move(cameraName), m_eventProcessor, position, lookAt, up, fov, aspectRatio);
+            std::move(cameraName), m_eventProcessor, position, lookAt, up, fov, aspectRatio, startSubscribed);
     }
 
     void scene::add_object(std::string_view objectName, std::string_view path) {
         m_objects.emplace_back(m_objectController->load_object(objectName, path));
+    }
+
+    /*bool scene::remove_object(std::string_view objectName) {
+        const auto it = std::find_if(m_objects.begin(), m_objects.end(), [&objectName](const scene_object& object) {
+            return object.get_name() == objectName;
+        });
+        if (it == m_objects.end()) {
+            return false;
+        }
+        m_objects.erase(it);
+        return true;
+    }*/
+
+    void scene::remove_all() {
+        m_objects.clear();
     }
 
     camera& scene::get_camera(std::string_view cameraName) {

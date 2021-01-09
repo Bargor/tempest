@@ -1,0 +1,33 @@
+{
+    "framebuffers": [
+		{
+            "id": 0,
+            "type": 0,
+            "samples": 1,
+            "load_op": 1,
+            "store_op": 0,
+            "stencil_load_op": 2,
+            "stencil_store_op": 1,
+            "initial_layout": 0,
+            "final_layout": 4,
+            "clear_value": [0, 0, 0, 1]
+		}
+    ],
+    "subpasses": [
+        {
+            "bind_point": 0,
+            "color_attachments": [0],
+            "depth_attachment": null
+        }
+    ],
+    "dependencies": [
+        {
+            "src_subpass": -1,
+            "dst_subpass": 0,
+            "src_stage_mask": 1024,
+            "dst_stage_mask": 1024,
+            "src_access_mask": 0,
+            "dst_access_mask": 256
+        }
+    ]
+}
