@@ -5,6 +5,10 @@
 #include <core.h>
 #include <time/timer.h>
 
+namespace ImGui {
+class FileBrowser;
+}
+
 namespace tst {
 
 namespace engine {
@@ -15,7 +19,7 @@ namespace engine {
 namespace scene {
     class scene;
     class object_controller;
-}
+} // namespace scene
 
 namespace application {
 
@@ -29,7 +33,6 @@ namespace application {
     struct app_event;
 
     class simulation_engine {
-
     public:
         simulation_engine(time_source& timeSource,
                           event_processor<app_event>& eventProcessor,
@@ -41,7 +44,7 @@ namespace application {
         void run();
 
     private:
-        void main_loop();
+        void main_loop(ImGui::FileBrowser& fileDialog);
 
     private:
         time_source& m_timeSource;

@@ -21,7 +21,6 @@
 #include <engine-base/technique_parser.h>
 #include <engine-base/view.h>
 #include <fmt/printf.h>
-#include <imgui/imgui.h>
 #include <set>
 #include <util/variant.h>
 
@@ -256,6 +255,8 @@ namespace engine {
 
             m_resourceCache->add_rendering_technique(
                 std::move("gui"), base::parse_technique_settings(dataLoader, "gui"), m_logicalDevice, *m_swapChain);
+            m_resourceCache->add_rendering_technique(
+                std::move("only_gui"), base::parse_technique_settings(dataLoader, "only_gui"), m_logicalDevice, *m_swapChain);
 
             ImGui_ImplGlfw_InitForVulkan(m_mainWindow.get_handle(), true);
             ImGui_ImplVulkan_InitInfo init_info = {};
@@ -307,6 +308,8 @@ namespace engine {
             } else if (acquireResult == swap_chain::result::fail) {
                 return false;
             }
+
+            m_engineFrontend->start_frame();
 
             ImGui_ImplVulkan_NewFrame();
             ImGui_ImplGlfw_NewFrame();
@@ -390,6 +393,14 @@ namespace engine {
         void device::update_engine_buffers(const core::extent<std::uint32_t>& extent) {
             global_static_uniforms uniforms{{}, extent};
             m_globalStaticUniforms.update_buffer(uniforms);
+        }
+
+        std::vector<vk::CommandBuffer> device::create_gui_command_buffers(std::size_t size) const {
+            if (size > 0) {
+                return m_engineFrontend->prepare_gui_draw(*m_resourceCache->find_technique("gui"));
+            } else {
+                return m_engineFrontend->prepare_gui_draw(*m_resourceCache->find_technique("only_gui"));
+            }
         }
 
     } // namespace vulkan

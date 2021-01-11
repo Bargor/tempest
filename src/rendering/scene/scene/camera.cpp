@@ -17,7 +17,8 @@ namespace scene {
                    const glm::vec3& lookAt,
                    const glm::vec3& up,
                    float fov,
-                   float aspect)
+                   float aspect,
+                   bool startSubscribed)
         : m_name(std::move(cameraName))
         , m_eventProcessor(eventProcessor)
         , m_view(position, lookAt, up, fov, aspect)
@@ -52,7 +53,9 @@ namespace scene {
             this,
             std::move(cursor_callback));
 
-         subscribe();
+        if (startSubscribed) {
+            subscribe();
+        } 
     }
 
     camera::camera(camera&& other) noexcept

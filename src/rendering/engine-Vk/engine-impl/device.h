@@ -12,10 +12,10 @@
 #include "resources/uniform_buffer.h"
 
 #include <GLFW/glfw3.h>
+#include <algorithm/algorithm.h>
 #include <common/rectangle.h>
 #include <vector>
 #include <vulkan/vulkan.hpp>
-#include <algorithm/algorithm.h>
 
 namespace tst {
 namespace application {
@@ -83,6 +83,11 @@ namespace engine {
             template<typename Iter>
             std::vector<draw_info> sort_draw_infos(Iter first, Iter last) const;
 
+            template<typename Iter>
+            std::vector<vk::CommandBuffer> create_command_buffers(Iter first, Iter last);
+
+            std::vector<vk::CommandBuffer> create_gui_command_buffers(std::size_t size) const;
+
         private:
             struct framebuffer_resize {
                 bool shouldResize;
@@ -119,17 +124,9 @@ namespace engine {
 
         template<typename Iter>
         bool device::draw_frame(Iter first, Iter last) {
-            if (std::distance(first, last) == 0) {
-                return false;
-            }
+            auto commandBuffers = create_command_buffers(first, last);
 
-            const auto drawInfos = sort_draw_infos(first, last);
-
-            m_viewStaticUniforms.update_buffer(drawInfos.begin()->viewData.get_uniforms());
-
-            auto commandBuffers = m_engineFrontend->prepare_draw(drawInfos);
-
-            const auto guiCommandBuffers = m_engineFrontend->prepare_gui_draw(*m_resourceCache->find_technique("gui"));
+            const auto guiCommandBuffers = create_gui_command_buffers(commandBuffers.size());
 
             commandBuffers.insert(commandBuffers.end(), guiCommandBuffers.begin(), guiCommandBuffers.end());
 
@@ -168,6 +165,19 @@ namespace engine {
                 second.descriptorBindFlags = compute_mask(first, second);
             });
             return std::vector<draw_info>(first, last);
+        }
+
+        template<typename Iter>
+        std::vector<vk::CommandBuffer> device::create_command_buffers(Iter first, Iter last) {
+            if (std::distance(first, last) == 0) {
+                return std::vector<vk::CommandBuffer>();
+            } else {
+                const auto drawInfos = sort_draw_infos(first, last);
+
+                m_viewStaticUniforms.update_buffer(drawInfos.begin()->viewData.get_uniforms());
+
+                return m_engineFrontend->prepare_draw(drawInfos);
+            }
         }
 
         TST_INLINE gpu_info& device::get_GPU_info() const noexcept {

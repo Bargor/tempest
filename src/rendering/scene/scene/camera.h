@@ -41,7 +41,8 @@ namespace scene {
                const glm::vec3& lookAt,
                const glm::vec3& up,
                float fov,
-               float aspect);
+               float aspect,
+               bool startSubscribed);
 
         camera(const camera&) = delete;
         camera(camera&& camera) noexcept;

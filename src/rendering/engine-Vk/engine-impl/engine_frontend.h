@@ -33,6 +33,7 @@ namespace engine {
             engine_frontend(const engine_frontend& engine) = delete;
             ~engine_frontend();
 
+            void start_frame();
             std::vector<vk::CommandBuffer> prepare_draw(const std::vector<draw_info>& drawInfos);
             std::vector<vk::CommandBuffer> prepare_gui_draw(const rendering_technique& guiPass);
 

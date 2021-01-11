@@ -35,10 +35,13 @@ namespace engine {
             }
         }
 
-        std::vector<vk::CommandBuffer> engine_frontend::prepare_draw(const std::vector<draw_info>& drawInfos) {
+        void engine_frontend::start_frame() {
             const auto idx = m_device.get_resource_index();
             m_device.m_logicalDevice.resetCommandPool(m_commandPools[idx], vk::CommandPoolResetFlags());
             m_usedBuffers = 0;
+        }
+
+        std::vector<vk::CommandBuffer> engine_frontend::prepare_draw(const std::vector<draw_info>& drawInfos) {
 
             std::vector<vk::CommandBuffer> buffers;
 
