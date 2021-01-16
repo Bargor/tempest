@@ -16,7 +16,7 @@
 namespace tst {
 namespace application {
 
-    application::application(const program_params& params, ptr<device::monitor> monitor, std::string&& name)
+    application::application(const program_params& params, ptr<device::monitor>&& monitor, std::string&& name)
         : m_monitor(std::move(monitor))
         , m_timeSource(std::make_unique<time_source>())
         , m_eventProcessor(std::make_unique<event_processor<app_event>>(*m_timeSource.get()))

@@ -15,7 +15,7 @@ namespace device {
 namespace application {
 
     class main_window;
-	template<typename Event>
+    template<typename Event>
     class event_processor;
     class input_processor;
     class simulation_engine;
@@ -25,9 +25,8 @@ namespace application {
     struct program_params;
 
     class application {
-
     public:
-        application(const program_params& params, ptr<device::monitor> monitor, std::string&& name);
+        application(const program_params& params, ptr<device::monitor>&& monitor, std::string&& name);
         ~application();
         void run();
 

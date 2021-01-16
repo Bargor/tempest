@@ -4,4 +4,6 @@
 add_subdirectory(core)
 if (ENGINE STREQUAL "GL")
 	add_subdirectory(engine-GL)
-endif (ENGINE STREQUAL "GL")
+elseif(ENGINE STREQUAL "Vk")
+	add_subdirectory(engine-Vk)
+endif(ENGINE STREQUAL "GL")

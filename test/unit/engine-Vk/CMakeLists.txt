@@ -3,11 +3,10 @@
 
 set(TEST_SRCS
 	test_runner.cpp
-	shader_compiler_test.cpp
-	shader_test.cpp
+    buffer_test.cpp
 )
 
-source_group("engine GL tests" FILES ${TEST_SRCS})
+source_group("Engine VK tests" FILES ${TEST_SRCS})
 
 add_definitions (-DGLEW_NO_GLU)
 
