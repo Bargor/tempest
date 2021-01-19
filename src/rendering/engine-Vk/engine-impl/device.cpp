@@ -13,14 +13,12 @@
 #include "vulkan_exception.h"
 
 #include <GLFW/glfw3.h>
-#include <algorithm/algorithm.h>
 #include <application/app_event.h>
 #include <application/data_loader.h>
 #include <application/event_processor.h>
 #include <application/main_window.h>
 #include <engine-base/technique_parser.h>
 #include <engine-base/view.h>
-#include <fmt/printf.h>
 #include <set>
 #include <util/variant.h>
 
@@ -41,97 +39,11 @@ namespace engine {
             return surface;
         }
 
-        bool check_extensions_support(const vk::PhysicalDevice& handle,
-                                      const std::vector<const char*>& requiredExtenstions) {
-            const auto availableExtensions = handle.enumerateDeviceExtensionProperties();
-
-            return tst::includes(availableExtensions.cbegin(),
-                                 availableExtensions.cend(),
-                                 requiredExtenstions.cbegin(),
-                                 requiredExtenstions.cend(),
-                                 [](const vk::ExtensionProperties availExtension, const char* reqExtension) {
-                                     return std::string_view(availExtension.extensionName) ==
-                                         std::string_view(reqExtension);
-                                 });
-        }
-
-        bool check_features_support(const vk::PhysicalDevice& handle, const vk::PhysicalDeviceFeatures& requiredFeatures) {
-            const auto supportedFeatures = handle.getFeatures();
-            if (supportedFeatures.samplerAnisotropy != requiredFeatures.samplerAnisotropy) {
-                return false;
-            }
-            return true;
-        }
-
-        std::uint32_t rate_device(gpu_info info) {
-            std::uint32_t score = 0;
-
-            switch (info.deviceType) {
-            case gpu_info::device_type::discrete:
-                score += 100;
-                break;
-            case gpu_info::device_type::integrated:
-                score += 10;
-                break;
-            case gpu_info::device_type::cpu:
-                score += 1;
-                break;
-            case gpu_info::device_type::other:
-                break;
-            }
-
-            return score;
-        }
-
         vk::PhysicalDeviceFeatures get_required_features() {
             vk::PhysicalDeviceFeatures requiredFeatures;
             requiredFeatures.samplerAnisotropy = true;
 
             return requiredFeatures;
-        }
-
-        ptr<physical_device> select_physical_device(vk::SurfaceKHR& surface,
-                                                    const std::vector<const char*>& requiredExtensions,
-                                                    const vk::PhysicalDeviceFeatures& requiredFeatures) {
-            const auto& instance = instance::get_instance();
-            std::vector<vk::PhysicalDevice> devices = instance.get_instance_handle().enumeratePhysicalDevices();
-
-            if (devices.size() == 0) {
-                throw vulkan_exception("Failed to find GPUs with Vulkan support!");
-            }
-
-            std::uint32_t maxScore = 0;
-            ptr<physical_device> bestDevice;
-
-            for (const auto& device : devices) {
-                try {
-                    if (!check_extensions_support(device, requiredExtensions)) {
-                        throw vulkan_exception("Device is not supporting required extenstions");
-                    }
-
-                    if (!check_features_support(device, requiredFeatures)) {
-                        throw vulkan_exception("Device is not supporting required features");
-                    }
-
-                    auto indices = compute_queue_indices(surface, device);
-                    ptr<gpu_info> info = std::make_unique<gpu_info>(device);
-
-                    std::uint32_t score = rate_device(device);
-
-                    if (maxScore < score) {
-                        bestDevice = std::make_unique<physical_device>(device, std::move(info), indices);
-                        maxScore = score;
-                    }
-
-                } catch (vulkan_exception& ex) {
-                    fmt::printf("%s\n", ex.what());
-                }
-            }
-            if (maxScore > 0) {
-                return bestDevice;
-            }
-
-            throw vulkan_exception("Failed to find a suitable GPU!");
         }
 
         device::frame_resources::frame_resources(vk::Device device)
@@ -149,8 +61,8 @@ namespace engine {
             , m_eventProcessor(eventProcessor)
             , m_engineSettings(std::move(engineSettings))
             , m_windowSurface(create_window_surface(mainWindow.get_handle()))
-            , m_physicalDevice(
-                  select_physical_device(m_windowSurface, {VK_KHR_SWAPCHAIN_EXTENSION_NAME}, get_required_features()))
+            , m_physicalDevice(physical_device::select_physical_device(
+                  m_windowSurface, {VK_KHR_SWAPCHAIN_EXTENSION_NAME}, get_required_features()))
             , m_logicalDevice(m_physicalDevice->create_logical_device(
                   instance::get_validation_layers(), {VK_KHR_SWAPCHAIN_EXTENSION_NAME}, get_required_features()))
             , m_swapChain(
@@ -255,8 +167,10 @@ namespace engine {
 
             m_resourceCache->add_rendering_technique(
                 std::move("gui"), base::parse_technique_settings(dataLoader, "gui"), m_logicalDevice, *m_swapChain);
-            m_resourceCache->add_rendering_technique(
-                std::move("only_gui"), base::parse_technique_settings(dataLoader, "only_gui"), m_logicalDevice, *m_swapChain);
+            m_resourceCache->add_rendering_technique(std::move("only_gui"),
+                                                     base::parse_technique_settings(dataLoader, "only_gui"),
+                                                     m_logicalDevice,
+                                                     *m_swapChain);
 
             ImGui_ImplGlfw_InitForVulkan(m_mainWindow.get_handle(), true);
             ImGui_ImplVulkan_InitInfo init_info = {};

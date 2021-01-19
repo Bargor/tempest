@@ -15,6 +15,10 @@ namespace engine {
         class physical_device {
             friend class device;
         public:
+            static ptr<physical_device> select_physical_device(vk::SurfaceKHR& surface,
+                                                               const std::vector<const char*>& requiredExtensions,
+                                                               const vk::PhysicalDeviceFeatures& requiredFeatures);
+
             physical_device(vk::PhysicalDevice device, ptr<gpu_info> info, queue_family_indices& indices);
 
             std::uint32_t get_graphics_index() const noexcept;
