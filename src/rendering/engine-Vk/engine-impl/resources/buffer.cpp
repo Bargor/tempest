@@ -49,6 +49,21 @@ namespace engine {
             other.m_bufferMemory = nullptr;
         }
 
+        buffer& buffer::operator=(buffer&& other) {
+            m_queueHandle = other.m_queueHandle;
+            m_cmdPool = other.m_cmdPool;
+            m_memSize = other.m_memSize;
+            if (m_buffer) {
+                m_logicalDevice.destroyBuffer(m_buffer);
+                m_logicalDevice.freeMemory(m_bufferMemory);
+                m_buffer = nullptr;
+            }
+            std::swap(m_buffer, other.m_buffer);
+            m_bufferMemory = other.m_bufferMemory;
+
+            return *this;
+        }
+
         vk::Buffer buffer::get_handle() const {
             return m_buffer;
         }

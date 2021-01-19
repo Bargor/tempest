@@ -27,6 +27,8 @@ namespace engine {
             buffer(buffer&& other) noexcept;
             buffer(const buffer&) = delete;
 
+            buffer& operator=(buffer&& other);
+
             vk::Buffer get_handle() const;
             void copy_data(void* data, std::uint64_t size);
             void copy_buffer(vk::Buffer& dstBuffer, std::uint64_t size) const;

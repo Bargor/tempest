@@ -3,7 +3,10 @@
 
 set(TEST_SRCS
 	test_runner.cpp
+    test_environment.cpp
+    test_environment.h
     buffer_test.cpp
+    physical_device_test.cpp
 )
 
 source_group("Engine VK tests" FILES ${TEST_SRCS})

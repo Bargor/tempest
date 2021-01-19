@@ -1,12 +1,13 @@
-// This file is part of Tempest-engine-Gl project
+// This file is part of Tempest-engine project
 // Author: Karol Kontny
 
-#include <vulkan/vulkan.hpp>
-#include <GLFW/glfw3.h>
+#include "test_environment.h"
+
 #include <array>
 #include <engine-impl/instance.h>
 #include <fmt/printf.h>
 #include <gtest/gtest.h>
+#include <vulkan/vulkan.hpp>
 
 #ifdef NDEBUG
 #define OPENGL_DEBUG GLFW_FALSE
@@ -62,13 +63,13 @@ GLFWwindow* create_context() {
         glfwWindowHint(hints[i].hint, hints[i].value);
     }
 
-    auto window = glfwCreateWindow(500, 500, "Tempest test", nullptr, nullptr);
-    if (!window) {
+    g_glfwWindow = glfwCreateWindow(500, 500, "Tempest test", nullptr, nullptr);
+    if (!g_glfwWindow) {
         fmt::printf("Can't create window");
         std::exit(EXIT_FAILURE);
     }
-    glfwMakeContextCurrent(window);
-    return window;
+    glfwMakeContextCurrent(g_glfwWindow);
+    return g_glfwWindow;
 }
 
 void init_Glfw() {
@@ -84,17 +85,14 @@ void deinit_Glfw() {
 
 VkSurfaceKHR init_Vulkan(GLFWwindow* window) {
     const auto& vulkanInstance = tst::engine::vulkan::instance::get_instance();
-    
     VkSurfaceKHR surface;
     if (vk::Result(glfwCreateWindowSurface(vulkanInstance.get_instance_handle(), window, nullptr, &surface)) !=
         vk::Result::eSuccess) {
         fmt::printf("Can't create window");
         std::exit(EXIT_FAILURE);
     }
-    return surface;
-}
-
-void shutdown_Vulkan() {
+    g_surface = surface;
+    return g_surface;
 }
 
 int main(int argc, char** argv) {
