@@ -35,9 +35,11 @@ namespace engine {
             }
 
             void SetUp() {
+                m_layout = create_layout();
             }
 
             void TearDown() {
+                m_logicalDevice.destroyDescriptorSetLayout(m_layout);
             }
 
             vk::DescriptorPool create_descriptor_pool(std::uint32_t maxSets,
@@ -83,40 +85,42 @@ namespace engine {
             vk::CommandPool m_cmdPool;
             vk::DescriptorPool m_descPool;
             std::uint32_t m_resourceIndex;
+
+            vk::DescriptorSetLayout m_layout;
         };
 
         TEST_F(UniformBufferFixture, UniformBufferConstruction) {
             uniform_buffer({{m_logicalDevice, m_queue, m_cmdPool, m_physicalDevice->get_memory_properties()},
-                            create_descriptor_set(create_layout()),
+                            create_descriptor_set(m_layout),
                             m_resourceIndex},
                            0,
-                           128);
+                           sizeof(base::uniform_storage));
         }
 
         TEST_F(UniformBufferFixture, UniformBufferMoveConstruction) {
             uniform_buffer buffer1({{m_logicalDevice, m_queue, m_cmdPool, m_physicalDevice->get_memory_properties()},
-                                    create_descriptor_set(create_layout()),
+                                    create_descriptor_set(m_layout),
                                     m_resourceIndex},
                                    0,
-                                   128);
+                                   sizeof(base::uniform_storage));
 
             uniform_buffer buffer2 = std::move(buffer1);
         }
 
         TEST_F(UniformBufferFixture, UniformBufferMoveAssigment) {
             uniform_buffer buffer1({{m_logicalDevice, m_queue, m_cmdPool, m_physicalDevice->get_memory_properties()},
-                                    create_descriptor_set(create_layout()),
+                                    create_descriptor_set(m_layout),
                                     m_resourceIndex},
                                    0,
-                                   128);
+                                   sizeof(base::uniform_storage));
 
             const auto handle = buffer1.get_handle();
 
             uniform_buffer buffer2({{m_logicalDevice, m_queue, m_cmdPool, m_physicalDevice->get_memory_properties()},
-                                    create_descriptor_set(create_layout()),
+                                    create_descriptor_set(m_layout),
                                     m_resourceIndex},
                                    0,
-                                   128);
+                                   sizeof(base::uniform_storage));
 
             const auto descriptorSet1 = buffer1.get_descriptor_set();
 

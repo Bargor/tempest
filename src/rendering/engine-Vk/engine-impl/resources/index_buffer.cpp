@@ -35,6 +35,13 @@ namespace engine {
             : buffer(std::move(other)), m_format(other.m_format), m_indices(std::move(other.m_indices)) {
         }
 
+        index_buffer& index_buffer::operator=(index_buffer&& other) {
+            super::operator=(std::move(other));
+            m_format = other.m_format;
+            m_indices = std::move(other.m_indices);
+            return *this;
+        }
+
         void index_buffer::copy_to_gpu(const buffer::creation_info& info) {
             buffer stagingBuffer(info,
                                  m_memSize,

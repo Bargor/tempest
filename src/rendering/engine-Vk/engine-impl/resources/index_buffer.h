@@ -24,6 +24,8 @@ namespace engine {
 
             index_buffer(index_buffer&& other) noexcept;
 
+            index_buffer& operator=(index_buffer&& other);
+
             std::uint32_t get_index_count() const noexcept;
             vk::IndexType get_index_type() const noexcept;
 
