@@ -257,3 +257,6 @@ script:
 - if [ "${BUILD_TYPE}" == "Release" ] && [ "${ENGINE}" == "Vk" ]; then
     ./exe/queue_test;
   fi
+- if [ "${BUILD_TYPE}" == "Debug" ] && [ "${ENGINE}" == "Vk" ]; then
+    ./exe/engine_test;
+  fi

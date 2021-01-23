@@ -9,6 +9,7 @@ set(TEST_SRCS
     index_buffer_test.cpp
     physical_device_test.cpp
     uniform_buffer_test.cpp
+    vertex_buffer_test.cpp
 )
 
 source_group("Engine VK tests" FILES ${TEST_SRCS})

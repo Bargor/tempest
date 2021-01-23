@@ -43,8 +43,6 @@ namespace engine {
             vk::Device m_logicalDevice;
             vk::Queue m_queue;
             vk::CommandPool m_cmdPool;
-            vk::DescriptorPool m_descPool;
-            std::uint32_t m_resourceIndex;
         };
 
         TEST_F(IndexBufferFixture, IndexBuffer16Construction) {
