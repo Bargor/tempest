@@ -23,13 +23,11 @@ namespace engine {
                       instance::get_validation_layers(), {VK_KHR_SWAPCHAIN_EXTENSION_NAME}, get_required_features()))
                 , m_queue(m_logicalDevice.getQueue(m_physicalDevice->get_transfer_index(), 0))
                 , m_cmdPool(m_logicalDevice.createCommandPool(
-                      vk::CommandPoolCreateInfo(vk::CommandPoolCreateFlags(), m_physicalDevice->get_graphics_index())))
-                , m_resourceIndex(0) {
+                      vk::CommandPoolCreateInfo(vk::CommandPoolCreateFlags(), m_physicalDevice->get_graphics_index()))) {
             }
 
             ~IndexBufferFixture() {
                 m_logicalDevice.destroyCommandPool(m_cmdPool);
-                m_logicalDevice.destroyDescriptorPool(m_descPool);
                 m_logicalDevice.destroy();
             }
 

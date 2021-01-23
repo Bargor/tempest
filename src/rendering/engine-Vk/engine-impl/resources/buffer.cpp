@@ -56,10 +56,10 @@ namespace engine {
             if (m_buffer) {
                 m_logicalDevice.destroyBuffer(m_buffer);
                 m_logicalDevice.freeMemory(m_bufferMemory);
-                m_buffer = nullptr;
             }
-            std::swap(m_buffer, other.m_buffer);
+            m_buffer = other.m_buffer;
             m_bufferMemory = other.m_bufferMemory;
+            other.m_buffer = nullptr;
 
             return *this;
         }

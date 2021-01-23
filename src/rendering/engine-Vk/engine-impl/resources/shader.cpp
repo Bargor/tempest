@@ -57,6 +57,20 @@ namespace engine {
             shader.m_shader = vk::ShaderModule();
         }
 
+        shader& shader::operator=(shader&& other) {
+            m_device = other.m_device;
+            m_source = std::move(other.m_source);
+            m_name = std::move(other.m_name);
+            m_type = other.m_type;
+            if (m_shader) {
+                m_device.destroyShaderModule(m_shader);
+            }
+            m_shader = other.m_shader;
+            m_pipelineInfo = other.m_pipelineInfo;
+            other.m_shader = nullptr;
+            return *this;
+        }
+
         shader::~shader() {
             if (m_shader) {
                 m_device.destroyShaderModule(m_shader);

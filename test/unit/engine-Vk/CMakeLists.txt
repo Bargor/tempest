@@ -8,6 +8,7 @@ set(TEST_SRCS
     buffer_test.cpp
     index_buffer_test.cpp
     physical_device_test.cpp
+    shader_test.cpp
     uniform_buffer_test.cpp
     vertex_buffer_test.cpp
 )

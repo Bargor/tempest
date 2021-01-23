@@ -22,6 +22,7 @@ namespace engine {
             shader(vk::Device device, shader_type type, std::vector<char>&& source, const std::string& name);
             shader(const shader&) = delete;
             shader(shader&& shader) noexcept;
+            shader& operator=(shader&& other);
             ~shader();
 
         public:
