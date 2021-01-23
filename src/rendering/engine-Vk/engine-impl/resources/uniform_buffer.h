@@ -31,6 +31,8 @@ namespace engine {
             uniform_buffer(uniform_buffer&& other) noexcept;
             uniform_buffer(const uniform_buffer& other) = delete;
 
+            uniform_buffer& operator=(uniform_buffer&& other);
+
             ~uniform_buffer() = default;
 
             template<typename T>
@@ -39,8 +41,8 @@ namespace engine {
             vk::DescriptorSet get_descriptor_set() const noexcept;
 
         private:
-            const std::uint32_t& m_resourceIndex;
-            const std::array<vk::DescriptorSet, settings::m_inFlightFrames>& m_descriptorSets;
+            std::reference_wrapper<const std::uint32_t> m_resourceIndex;
+            std::reference_wrapper<const descriptor_set> m_descriptorSets;
             std::uint32_t m_binding;
         };
 

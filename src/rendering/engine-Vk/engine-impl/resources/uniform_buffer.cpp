@@ -22,7 +22,7 @@ namespace engine {
                 const vk::DescriptorBufferInfo bufferInfo(m_buffer, i * storageSize, storageSize);
 
                 const vk::WriteDescriptorSet descriptorWrite(
-                    m_descriptorSets[i], binding, 0, 1, vk::DescriptorType::eUniformBuffer, nullptr, &bufferInfo, nullptr);
+                    m_descriptorSets.get()[i], binding, 0, 1, vk::DescriptorType::eUniformBuffer, nullptr, &bufferInfo, nullptr);
 
                 m_logicalDevice.updateDescriptorSets({descriptorWrite}, {});
             }
@@ -35,6 +35,14 @@ namespace engine {
             , m_binding(other.m_binding) {
         }
 
+        uniform_buffer& uniform_buffer::operator=(uniform_buffer&& other) {
+            super::operator=(std::move(other));
+            m_resourceIndex = other.m_resourceIndex;
+            m_descriptorSets = other.m_descriptorSets;
+            m_binding = other.m_binding;
+            return *this;
+        }
+
         void uniform_buffer::update_buffer(const void* data, const std::size_t dataSize) {
             const auto dataPtr = m_logicalDevice.mapMemory(m_bufferMemory, m_resourceIndex * dataSize, dataSize);
             std::memcpy(dataPtr, data, dataSize);
@@ -42,7 +50,7 @@ namespace engine {
         }
 
         vk::DescriptorSet uniform_buffer::get_descriptor_set() const noexcept {
-            return m_descriptorSets[m_resourceIndex];
+            return m_descriptorSets.get()[m_resourceIndex];
         }
 
     } // namespace vulkan

@@ -74,7 +74,7 @@ namespace engine {
             buffer2 = std::move(buffer1);
 
             EXPECT_EQ(handle, buffer2.get_handle());
-            EXPECT_EQ(buffer1.get_handle(), vk::Buffer::Buffer());
+            EXPECT_EQ(buffer1.get_handle(), vk::Buffer());
         }
 
     } // namespace vulkan
