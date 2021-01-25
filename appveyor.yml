@@ -24,9 +24,6 @@ install:
     - IF "%ENGINE%"=="Vk" (curl -L --show-error --output VulkanSDK.exe https://vulkan.lunarg.com/sdk/download/1.2.148.1/windows/VulkanSDK-1.2.148.1-Installer.exe?Human=true)
     - IF "%ENGINE%"=="Vk" (VulkanSDK.exe /S)
     
-cache:
-  - VulkanSDK.exe
-
 before_build:
     - cmd: set VULKAN_SDK=C:\VulkanSDK\1.2.148.1
     - cmd: echo %GENERATOR%
