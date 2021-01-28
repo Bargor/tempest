@@ -18,9 +18,9 @@ namespace engine {
         public:
             UniformBufferFixture()
                 : m_physicalDevice(physical_device::select_physical_device(
-                      g_surface, {VK_KHR_SWAPCHAIN_EXTENSION_NAME}, get_required_features()))
+                      g_surface, {}, get_required_features()))
                 , m_logicalDevice(m_physicalDevice->create_logical_device(
-                      instance::get_validation_layers(), {VK_KHR_SWAPCHAIN_EXTENSION_NAME}, get_required_features()))
+                      instance::get_validation_layers(), {}, get_required_features()))
                 , m_queue(m_logicalDevice.getQueue(m_physicalDevice->get_transfer_index(), 0))
                 , m_cmdPool(m_logicalDevice.createCommandPool(
                       vk::CommandPoolCreateInfo(vk::CommandPoolCreateFlags(), m_physicalDevice->get_graphics_index())))

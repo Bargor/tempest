@@ -2,8 +2,8 @@
 // Author: Karol Kontny
 #pragma once
 
-#include <vulkan/vulkan.hpp>
 #include <vector>
+#include <vulkan/vulkan.hpp>
 
 namespace tst {
 namespace engine {
@@ -12,6 +12,7 @@ namespace engine {
         class instance {
             friend class engine;
             friend class device;
+
         public:
             static const instance& get_instance() noexcept;
             static std::vector<const char*> get_validation_layers() noexcept;
@@ -19,7 +20,7 @@ namespace engine {
         public:
             const vk::Instance& get_instance_handle() const noexcept;
 
-		private:
+        private:
             instance(std::vector<const char*>&& requiredValidationLayers);
             ~instance();
 

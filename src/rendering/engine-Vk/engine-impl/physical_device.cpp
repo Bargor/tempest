@@ -56,7 +56,7 @@ namespace engine {
             return score;
         }
 
-        ptr<physical_device> physical_device::select_physical_device(vk::SurfaceKHR& surface,
+        ptr<physical_device> physical_device::select_physical_device(vk::SurfaceKHR surface,
                                                                      const std::vector<const char*>& requiredExtensions,
                                                                      const vk::PhysicalDeviceFeatures& requiredFeatures) {
             const auto& instance = instance::get_instance();

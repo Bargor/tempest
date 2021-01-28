@@ -15,7 +15,7 @@ namespace engine {
         class physical_device {
             friend class device;
         public:
-            static ptr<physical_device> select_physical_device(vk::SurfaceKHR& surface,
+            static ptr<physical_device> select_physical_device(vk::SurfaceKHR surface,
                                                                const std::vector<const char*>& requiredExtensions,
                                                                const vk::PhysicalDeviceFeatures& requiredFeatures);
 

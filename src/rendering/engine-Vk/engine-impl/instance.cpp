@@ -99,6 +99,7 @@ namespace engine {
         }
 
         std::vector<const char*> get_required_extensions() {
+
             uint32_t glfwExtensionCount = 0;
             const char** glfwExtensions;
             glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
@@ -111,7 +112,7 @@ namespace engine {
             std::vector<const char*> extensions(glfwExtensions, glfwExtensions + glfwExtensionCount);
 
             if (enableValidationLayers) {
-                extensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
+                extensions.emplace_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
             }
 
             return extensions;
@@ -125,7 +126,7 @@ namespace engine {
             auto extensions = get_required_extensions();
 
             vk::ApplicationInfo appInfo(
-                "Tempest", VK_MAKE_VERSION(0, 0, 7), "Tempest", VK_MAKE_VERSION(0, 0, 7), VK_API_VERSION_1_2);
+                "Tempest", VK_MAKE_VERSION(0, 0, 8), "Tempest", VK_MAKE_VERSION(0, 0, 8), VK_API_VERSION_1_2);
 
             vk::InstanceCreateInfo createInfo(vk::InstanceCreateFlags(),
                                               &appInfo,
@@ -147,7 +148,7 @@ namespace engine {
             return instance;
         }
 
-		const vk::Instance& instance::get_instance_handle() const noexcept {
+        const vk::Instance& instance::get_instance_handle() const noexcept {
             return m_instance;
         }
 
@@ -160,7 +161,7 @@ namespace engine {
 
         instance::instance(std::vector<const char*>&& requiredValidationLayers)
             : m_instance(create_instance(requiredValidationLayers))
-			, m_debugMessenger(setup_debug_messenger(m_instance)) {
+            , m_debugMessenger(setup_debug_messenger(m_instance)) {
         }
 
         instance::~instance() {
