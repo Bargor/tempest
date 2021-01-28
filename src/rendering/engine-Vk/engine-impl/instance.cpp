@@ -99,7 +99,6 @@ namespace engine {
         }
 
         std::vector<const char*> get_required_extensions() {
-
             uint32_t glfwExtensionCount = 0;
             const char** glfwExtensions;
             glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
@@ -121,6 +120,11 @@ namespace engine {
         vk::Instance create_instance(std::vector<const char*>& requiredValidationLayers) {
             if (!validation_layers_supported(requiredValidationLayers)) {
                 throw vulkan::vulkan_exception("Validation layers requested, but not available!");
+            }
+
+            const auto supportedExtensions = instance::get_supported_extensions();
+            for (const auto extension : supportedExtensions) {
+                fmt::printf("%s\n", extension);
             }
 
             auto extensions = get_required_extensions();
@@ -159,9 +163,17 @@ namespace engine {
                 return {};
         }
 
+        std::vector<std::string> instance::get_supported_extensions() noexcept {
+            const auto extensions = vk::enumerateInstanceExtensionProperties();
+            std::vector<std::string> results;
+            for (auto& extension : extensions) {
+                results.push_back(extension.extensionName);
+            }
+            return results;
+        }
+
         instance::instance(std::vector<const char*>&& requiredValidationLayers)
-            : m_instance(create_instance(requiredValidationLayers))
-            , m_debugMessenger(setup_debug_messenger(m_instance)) {
+            : m_instance(create_instance(requiredValidationLayers)), m_debugMessenger(setup_debug_messenger(m_instance)) {
         }
 
         instance::~instance() {

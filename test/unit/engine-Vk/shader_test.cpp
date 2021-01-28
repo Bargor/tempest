@@ -15,31 +15,30 @@ namespace tst {
 namespace engine {
     namespace vulkan {
 
-        auto testVertexShaderCorrect = "#version 450\n \
+        const auto testVertexShaderCorrect = "#version 450\n \
                                        void main() \
                                        { \
                                            gl_Position = vec4(0.0, 0.0, 0.0, 0.0); \
                                        }";
 
-        auto testVertexShaderNotCorrect = "#version 450\n \
+        const auto testVertexShaderNotCorrect = "#version 450\n \
                                             void main() \
                                             { \
                                                 gl_Positionasd = vec4(0.0, 0.0, 0.0, 0.0); \
                                             }";
 
-        auto testFragmentShaderCorrect = "#version 450\n \
+        const auto testFragmentShaderCorrect = "#version 450\n \
                                          out vec4 fragColor; \
                                          void main() { fragColor = vec4(1.0, 0.0, 0.0, 1.0); }";
 
-        auto testFragmentShaderNotCorrect = "#version 450\n \
+        const auto testFragmentShaderNotCorrect = "#version 450\n \
                                          out vec3 fragColor; \
                                          void main() { fragColor = vec4(1.0, 0.0, 0.0, 1.0); }";
 
         class ShaderFixture : public ::testing::Test {
         public:
             ShaderFixture()
-                : m_physicalDevice(physical_device::select_physical_device(
-                      g_surface, {}, get_required_features()))
+                : m_physicalDevice(physical_device::select_physical_device(g_surface, {}, get_required_features()))
                 , m_logicalDevice(m_physicalDevice->create_logical_device(
                       instance::get_validation_layers(), {}, get_required_features()))
                 , m_queue(m_logicalDevice.getQueue(m_physicalDevice->get_transfer_index(), 0))
