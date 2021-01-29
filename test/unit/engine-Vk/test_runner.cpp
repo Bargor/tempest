@@ -83,25 +83,12 @@ void deinit_Glfw() {
     glfwTerminate();
 }
 
-VkSurfaceKHR init_Vulkan(GLFWwindow* window) {
-    const auto& vulkanInstance = tst::engine::vulkan::instance::get_instance();
-    VkSurfaceKHR surface;
-    if (vk::Result(glfwCreateWindowSurface(vulkanInstance.get_instance_handle(), window, nullptr, &surface)) !=
-        vk::Result::eSuccess) {
-        fmt::printf("Can't create window");
-        std::exit(EXIT_FAILURE);
-    }
-    g_surface = surface;
-    return g_surface;
-}
-
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);
     init_Glfw();
+    tst::engine::vulkan::instance::enableGlfwExtensions = false;
     auto window = create_context();
-    auto surface = init_Vulkan(window);
     auto res = RUN_ALL_TESTS();
-    tst::engine::vulkan::instance::get_instance().get_instance_handle().destroySurfaceKHR(surface);
     glfwDestroyWindow(window);
     deinit_Glfw();
     return res;

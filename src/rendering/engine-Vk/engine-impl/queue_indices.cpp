@@ -33,14 +33,16 @@ namespace engine {
                     indices.transferIndex = i;
                 }
 
-                auto presentationSupport = physicalDevice.getSurfaceSupportKHR(i, windowSurface);
+                if (windowSurface != vk::SurfaceKHR()) {
+                    auto presentationSupport = physicalDevice.getSurfaceSupportKHR(i, windowSurface);
 
-                if (queueFamily.queueCount > 0 && presentationSupport) {
-                    indices.presentationIndex = i;
+                    if (queueFamily.queueCount > 0 && presentationSupport) {
+                        indices.presentationIndex = i;
+                    }
                 }
                 ++i;
 
-                if (indices.isValid()) return indices;
+                if (indices.isValid(windowSurface != vk::SurfaceKHR())) return indices;
             }
 
             throw vulkan_exception("Device is not supporting required queues");

@@ -38,7 +38,7 @@ namespace engine {
         class ShaderFixture : public ::testing::Test {
         public:
             ShaderFixture()
-                : m_physicalDevice(physical_device::select_physical_device(g_surface, {}, get_required_features()))
+                : m_physicalDevice(physical_device::select_physical_device(nullptr, {}, get_required_features()))
                 , m_logicalDevice(m_physicalDevice->create_logical_device(
                       instance::get_validation_layers(), {}, get_required_features()))
                 , m_queue(m_logicalDevice.getQueue(m_physicalDevice->get_transfer_index(), 0))

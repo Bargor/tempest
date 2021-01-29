@@ -13,7 +13,7 @@ namespace engine {
 
         TEST(PhysicalDevice, PhysicalDeviceConstruction) {
             auto physicalDevice = physical_device::select_physical_device(
-                g_surface, {VK_KHR_SWAPCHAIN_EXTENSION_NAME}, get_required_features());
+                nullptr, {}, get_required_features());
             ASSERT_TRUE(physicalDevice);
         }
 

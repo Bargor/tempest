@@ -120,9 +120,10 @@ namespace engine {
             std::vector<vk::DeviceQueueCreateInfo> queueCreateInfos;
 
             std::set<std::uint32_t> uniqueQueueFamilies = {m_queueIndices.graphicsIndex.value(),
-                                                           m_queueIndices.presentationIndex.value(),
                                                            m_queueIndices.computeIndex.value(),
                                                            m_queueIndices.transferIndex.value()};
+            if (m_queueIndices.presentationIndex.has_value())
+                uniqueQueueFamilies.insert(m_queueIndices.presentationIndex.value());
 
             float queuePriority = 1.0f;
             for (uint32_t queueFamily : uniqueQueueFamilies) {
