@@ -1,0 +1,4 @@
+name: gl-engine-tests
+on: [push]
+jobs:
+  runs-on: ubuntu-latest

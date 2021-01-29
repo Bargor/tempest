@@ -1,0 +1,4 @@
+name: vk-engine-tests
+on: [push]
+jobs:
+  runs-on: ubuntu-latest
