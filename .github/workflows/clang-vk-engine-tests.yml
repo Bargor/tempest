@@ -1,5 +1,14 @@
 name: clang-vk-engine-tests
 on: [push]
 jobs:
-  check-bats-version:
+  build:
     runs-on: ubuntu-latest
+      steps:
+      - name: checkout
+        uses: actions/checkout@v2.0.0
+      - name:   
+        env:
+          CC: gcc-10
+          CXX: g++-10
+          BUILD_TYPE: Debug
+          ENGINE: GL
