@@ -99,7 +99,7 @@ namespace engine {
         }
 
         std::vector<const char*> get_required_extensions() {
-            uint32_t glfwExtensionCount = 0;
+            std::uint32_t glfwExtensionCount = 0;
             const char** glfwExtensions;
             glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
 

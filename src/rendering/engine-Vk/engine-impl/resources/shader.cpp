@@ -35,7 +35,7 @@ namespace engine {
         shader::shader(vk::Device device, shader_type type, std::vector<char>&& source, const std::string& name)
             : m_device(device), m_source(source), m_name(name), m_type(type) {
             vk::ShaderModuleCreateInfo createInfo(
-                vk::ShaderModuleCreateFlags(), source.size(), reinterpret_cast<const uint32_t*>(source.data()));
+                vk::ShaderModuleCreateFlags(), source.size(), reinterpret_cast<const std::uint32_t*>(source.data()));
 
             try {
                 m_shader = device.createShaderModule(createInfo);
