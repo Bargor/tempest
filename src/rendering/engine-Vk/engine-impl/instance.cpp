@@ -99,19 +99,22 @@ namespace engine {
         }
 
         std::vector<const char*> get_required_extensions() {
-            std::uint32_t glfwExtensionCount = 0;
-            const char** glfwExtensions;
-            glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
 
-            if (glfwExtensions == nullptr) {
-                fmt::printf("Can't get required Vulkan extensions!\n");
-                std::exit(EXIT_FAILURE);
-            }
-
-            std::vector<const char*> extensions(glfwExtensions, glfwExtensions + glfwExtensionCount);
-
+            std::vector<const char*> extensions;
             if (enableValidationLayers) {
                 extensions.emplace_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
+            }
+            if (instance::enableGlfwExtensions) {
+                uint32_t glfwExtensionCount = 0;
+                const char** glfwExtensions;
+                glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
+
+                if (glfwExtensions == nullptr) {
+                    fmt::printf("Can't get required Vulkan extensions!\n");
+                    std::exit(EXIT_FAILURE);
+                }
+
+                extensions.insert(extensions.end(), glfwExtensions, glfwExtensions + glfwExtensionCount);
             }
 
             return extensions;
@@ -123,7 +126,7 @@ namespace engine {
             }
 
             const auto supportedExtensions = instance::get_supported_extensions();
-            for (const auto extension : supportedExtensions) {
+            for (const auto& extension : supportedExtensions) {
                 fmt::printf("%s\n", extension);
             }
 
@@ -166,7 +169,7 @@ namespace engine {
         std::vector<std::string> instance::get_supported_extensions() noexcept {
             const auto extensions = vk::enumerateInstanceExtensionProperties();
             std::vector<std::string> results;
-            for (auto& extension : extensions) {
+            for (const auto& extension : extensions) {
                 results.push_back(extension.extensionName);
             }
             return results;

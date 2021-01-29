@@ -17,6 +17,7 @@ namespace engine {
             static const instance& get_instance() noexcept;
             static std::vector<const char*> get_validation_layers() noexcept;
             static std::vector<std::string> get_supported_extensions() noexcept;
+            inline static bool enableGlfwExtensions = true;
 
         public:
             const vk::Instance& get_instance_handle() const noexcept;

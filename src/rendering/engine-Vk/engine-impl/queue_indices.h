@@ -16,8 +16,11 @@ namespace engine {
             std::optional<std::uint32_t> presentationIndex;
             std::optional<std::uint32_t> transferIndex;
 
-            inline bool isValid() {
-                return graphicsIndex && computeIndex && presentationIndex && transferIndex;
+            inline bool isValid(bool presentationEnabled) {
+                if (presentationEnabled)
+                    return graphicsIndex && computeIndex && presentationIndex && transferIndex;
+                else
+                    return graphicsIndex && computeIndex && transferIndex;
             }
         };
 
