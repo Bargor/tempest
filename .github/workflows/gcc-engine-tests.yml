@@ -1,14 +1,13 @@
 name: gcc-engine-tests
 on: [push]
-
-strategy:
-  matrix:
-    build_type: [Debug, Release]
-    engine: [Vk, GL]
-    
+ 
 jobs:
   build:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        build_type: [Debug, Release]
+        engine: [Vk, GL]
     steps:
     - name: checkout
       uses: actions/checkout@v2.0.0
