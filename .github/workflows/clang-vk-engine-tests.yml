@@ -1,0 +1,5 @@
+name: clang-vk-engine-tests
+on: [push]
+jobs:
+  check-bats-version:
+    runs-on: ubuntu-latest
