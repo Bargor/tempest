@@ -38,6 +38,8 @@ matrix:
             - libxinerama-dev
             - libxcursor-dev
             - xorg-dev
+            - mesa-vulkan-drivers 
+            - vulkan-utils
       env:
         - MATRIX_EVAL="CC=gcc-10 && CXX=g++-10" BUILD_TYPE=Release ENGINE=Vk
     # Clang Debug Vk
@@ -81,6 +83,8 @@ matrix:
             - libxinerama-dev
             - libxcursor-dev
             - xorg-dev
+            - mesa-vulkan-drivers 
+            - vulkan-utils
       env:
         - MATRIX_EVAL="CC=clang-10 && CXX=clang++-10" BUILD_TYPE=Release ENGINE=Vk
         - EXTRA_FLAGS="-stdlib=libc++"
