@@ -1,14 +1,24 @@
-name: clang-vk-engine-tests
+name: gcc-engine-tests
 on: [push]
+
+strategy:
+  matrix:
+    build_type: [Debug, Release]
+    engine: [Vk, GL]
+    
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
     - name: checkout
       uses: actions/checkout@v2.0.0
-    - name:   
+    - name: config CMake
       env:
         CC: gcc-10
         CXX: g++-10
         BUILD_TYPE: Debug
         ENGINE: GL
+      run: | 
+        mkdir build
+        cd build
+        cmake .. -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_CXX_FLAGS="${EXTRA_FLAGS}" -DTEMPEST_BUILD_ALL=ON -DENGINE="$ENGINE"

@@ -1,4 +1,4 @@
-name: clang-gl-engine-tests
+name: clang-engine-tests
 on: [push]
 
 strategy:
@@ -13,7 +13,7 @@ jobs:
     - name: checkout
       uses: actions/checkout@v2.0.0
     - name: install vulkan
-      if ${{ matrix.engine == 'Vk' }}
+      if: ${{ matrix.engine == 'Vk' }}
       run: |
         wget -qO - http://packages.lunarg.com/lunarg-signing-key-pub.asc | sudo apt-key add -;
         sudo wget -qO /etc/apt/sources.list.d/lunarg-vulkan-1.2.148-bionic.list http://packages.lunarg.com/vulkan/1.2.148/lunarg-vulkan-1.2.148-bionic.list;
