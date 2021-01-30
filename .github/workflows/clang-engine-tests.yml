@@ -15,7 +15,7 @@ jobs:
       with:
         submodules: recursive
     - name: install
-      run: sudo apt-get install -y libgl1-mesa-dev libxinerama-dev libxcursor-dev xorg-dev
+      run: sudo apt-get install -y libgl1-mesa-dev libxinerama-dev libxcursor-dev xorg-dev clang-10 libc++-10-dev libc++abi-10-dev lld-10 llvm-10 llvm-10-dev llvm-10-runtime
     - name: build GLEW    
       if: ${{ matrix.engine == 'GL'}}
       env:
