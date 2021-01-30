@@ -22,6 +22,8 @@ jobs:
         CC: clang-10
         CXX: clang++-10
       run: |
+        clang -v
+        which clang
         cd libs/glew/build;
         cmake ../build/cmake/.;
         sudo make -j2 && sudo make install;
