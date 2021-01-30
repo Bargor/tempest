@@ -13,15 +13,18 @@ jobs:
       uses: actions/checkout@v1
       with:
         submodules: recursive
+    - name: install
+      run: sudo apt-get install -y libgl1-mesa-dev libxinerama-dev libxcursor-dev xorg-dev
     - name: build GLEW    
       if: ${{ matrix.engine == 'GL'}}
+      env:
+        CC: clang-10
+        CXX: clang++-10
       run: |
         cd libs/glew/build;
         cmake ../build/cmake/.;
         sudo make -j2 && sudo make install;
         cd ../../../;
-    - name: install
-      run: sudo apt-get install -y libgl1-mesa-dev libxinerama-dev libxcursor-dev xorg-dev
     - name: install vulkan
       if: ${{ matrix.engine == 'Vk' }}
       run: |
