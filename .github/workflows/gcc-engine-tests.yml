@@ -49,4 +49,4 @@ jobs:
       run: |
         pwd
         ls
-        ../../exe/core_test
+        ./build/exe/core_test
