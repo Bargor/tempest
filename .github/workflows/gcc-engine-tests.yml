@@ -10,15 +10,15 @@ jobs:
         engine: [Vk, GL]
     steps:
     - name: checkout
-      uses: actions/checkout@v2.0.0
+      uses: actions/checkout@v1
       with:
-        submodules: true
+        submodules: recursive
     - name: config CMake
       env:
         CC: gcc-10
         CXX: g++-10
-        BUILD_TYPE: Debug
-        ENGINE: GL
+        BUILD_TYPE: ${{ matrix.build_type }}
+        ENGINE: ${{ matrix.engine }}
       run: | 
         mkdir build
         cd build
