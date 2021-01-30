@@ -32,7 +32,6 @@ jobs:
         mkdir build
         cd build
         cmake .. -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_CXX_FLAGS="${EXTRA_FLAGS}" -DTEMPEST_BUILD_ALL=ON -DENGINE="$ENGINE"
-    - name: build
-      run: make -j2
+        make -j2
     - name: run tests
       run: ./exe/core_test
