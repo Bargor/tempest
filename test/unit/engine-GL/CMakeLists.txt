@@ -16,18 +16,14 @@ find_package(GLEW REQUIRED)
 
 tst_add_executable(engine_test "" "${TEST_SRCS}")
 
-target_include_directories(engine-impl PUBLIC ${GLEW_INCLUDE_DIRS})
-
 add_test(NAME tst.engine_unit_test COMMAND engine_test)
 
 target_link_libraries(engine_test PRIVATE
     tst::engine-impl
     gmock
     gtest
-    ${GLEW_LIBRARIES}
+    GLEW::GLEW
 )
-
-message(${GLEW_LIBRARIES})
 
 if(WIN32)
     target_link_libraries(engine-impl PRIVATE opengl32)
