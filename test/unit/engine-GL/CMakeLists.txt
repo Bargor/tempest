@@ -25,6 +25,7 @@ target_link_libraries(engine_test PRIVATE
     gmock
     gtest
     glfw
+    ${GLEW_LIBRARIES}
 )
 
 if(WIN32)

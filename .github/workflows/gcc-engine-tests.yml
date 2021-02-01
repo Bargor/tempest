@@ -24,7 +24,8 @@ jobs:
       run: |
         cd libs/glew/build;
         cmake ../build/cmake/.;
-        sudo make -j2 && sudo make install;
+        sudo make -j2
+        sudo make install;
         cd ../../../;
     - name: install vulkan
       if: ${{ matrix.engine == 'Vk' }}

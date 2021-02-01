@@ -22,11 +22,10 @@ jobs:
         CC: clang-10
         CXX: clang++-10
       run: |
-        clang -v
-        which clang
         cd libs/glew/build;
         cmake ../build/cmake/.;
-        sudo make -j2 && sudo make install;
+        sudo make -j2
+        sudo make install;
         cd ../../../;
     - name: install vulkan
       if: ${{ matrix.engine == 'Vk' }}
@@ -43,7 +42,6 @@ jobs:
         ENGINE: ${{ matrix.engine }}
         EXTRA_FLAGS: -stdlib=libc++
       run: | 
-        clang -v
         mkdir build
         cd build
         cmake .. -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_CXX_FLAGS="${EXTRA_FLAGS}" -DTEMPEST_BUILD_ALL=ON -DENGINE="$ENGINE"
