@@ -58,6 +58,8 @@ find_package(GLEW REQUIRED)
 
 tst_add_library(engine-impl "${ENGINE_HDRS}" "${ENGINE_SRCS}")
 
+target_include_directories(engine-impl PUBLIC ${GLEW_INCLUDE_DIRS})
+
 target_link_libraries(engine-impl PUBLIC
     tst::application
     tst::engine-base
@@ -65,6 +67,7 @@ target_link_libraries(engine-impl PUBLIC
     tst::imgui
     PRIVATE
     GLEW::GLEW
+    ${GLEW_LIBRARIES}
 )
 
 if(WIN32)
