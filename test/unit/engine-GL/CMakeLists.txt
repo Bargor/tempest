@@ -16,7 +16,7 @@ find_package(GLEW REQUIRED)
 
 tst_add_executable(engine_test "" "${TEST_SRCS}")
 
-target_include_directories(engine_test-impl PUBLIC ${GLEW_INCLUDE_DIRS})
+target_include_directories(engine_test PUBLIC ${GLEW_INCLUDE_DIRS})
 
 add_test(NAME tst.engine_unit_test COMMAND engine_test)
 
