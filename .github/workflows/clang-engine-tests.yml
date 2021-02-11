@@ -13,7 +13,7 @@ jobs:
         - {build_type: Debug, engine: GL, extra_flags: "-stdlib=libc++"}
         - {build_type: Release, engine: GL, extra_flags: "-stdlib=libc++"}
         - {build_type: Debug, engine: GL, extra_flags: "-stdlib=libc++ -fsanitize=thread -O1"}
-        - {build_type: Debug, engine: GL, extra_flags: "-fsanitize=address -O1 -fno-omit-frame-pointer -fno-optimize-sibling-calls"}
+        - {build_type: Debug, engine: GL, extra_flags: "-stdlib=libc++ -fsanitize=address -O1 -fno-omit-frame-pointer -fno-optimize-sibling-calls"}
         - {build_type: Debug, engine: GL, extra_flags: "-stdlib=libc++ -fsanitize=undefined -fno-omit-frame-pointer"}
     steps:
     - name: checkout
