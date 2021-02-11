@@ -46,7 +46,7 @@ jobs:
         CXX: clang++-10
         BUILD_TYPE: ${{ matrix.build_type }}
         ENGINE: ${{ matrix.engine }}
-        EXTRA_FLAGS: ${{ extra_flags }}
+        EXTRA_FLAGS: ${{ matrix.extra_flags }}
       run: | 
         mkdir build
         cd build
