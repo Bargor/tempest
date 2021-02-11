@@ -35,15 +35,15 @@ namespace engine {
 
     class mock_data_loader : public application::data_loader {
     public:
-        MOCK_CONST_METHOD2(load_shader_source, std::string(const std::string_view& name, const std::string_view& format));
+        MOCK_CONST_METHOD1(load_text_file, std::string(const std::filesystem::path& path));
     };
 
     TEST(ShaderCompiler, CompilingSuccessful) {
         mock_data_loader dataLoader;
 
-        EXPECT_CALL(dataLoader, load_shader_source(std::string_view("test"), std::string_view("vs")))
+        EXPECT_CALL(dataLoader, load_text_file(std::filesystem::path("test.vs")))
             .WillRepeatedly(Return(testVertexShaderCorrect));
-        EXPECT_CALL(dataLoader, load_shader_source(std::string_view("test"), std::string_view("fs")))
+        EXPECT_CALL(dataLoader, load_text_file(std::filesystem::path("test.fs")))
             .WillRepeatedly(Return(testFragmentShaderCorrect));
 
         auto compiler = opengl::shader_compiler(dataLoader);
@@ -57,9 +57,9 @@ namespace engine {
     TEST(ShaderCompiler, CompilingFail) {
         mock_data_loader dataLoader;
 
-        EXPECT_CALL(dataLoader, load_shader_source(std::string_view("test"), std::string_view("vs")))
+        EXPECT_CALL(dataLoader, load_text_file(std::filesystem::path("test.vs")))
             .WillRepeatedly(Return(testVertexShaderCorrect));
-        EXPECT_CALL(dataLoader, load_shader_source(std::string_view("test"), std::string_view("fs")))
+        EXPECT_CALL(dataLoader, load_text_file(std::filesystem::path("test.fs")))
             .WillRepeatedly(Return(testFragmentShaderNotCorrect));
 
         auto compiler = opengl::shader_compiler(dataLoader);
@@ -73,9 +73,9 @@ namespace engine {
     TEST(ShaderCompiler, LinkingFail) {
         mock_data_loader dataLoader;
 
-        EXPECT_CALL(dataLoader, load_shader_source(std::string_view("test"), std::string_view("vs")))
+        EXPECT_CALL(dataLoader, load_text_file(std::filesystem::path("test.vs")))
             .WillRepeatedly(Return(""));
-        EXPECT_CALL(dataLoader, load_shader_source(std::string_view("test"), std::string_view("fs")))
+        EXPECT_CALL(dataLoader, load_text_file(std::filesystem::path("test.fs")))
             .WillRepeatedly(Return(""));
 
         auto compiler = opengl::shader_compiler(dataLoader);

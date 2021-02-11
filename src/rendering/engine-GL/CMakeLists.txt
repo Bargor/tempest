@@ -66,6 +66,7 @@ target_link_libraries(engine-impl PUBLIC
     glfw
     tst::imgui
     PRIVATE
+    GLEW::GLEW
     ${GLEW_LIBRARIES}
 )
 
