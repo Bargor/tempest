@@ -1,0 +1,59 @@
+name: clang-engine-tests
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: false
+      matrix:
+        cfg:
+        - {build_type: Debug, engine: Vk, extra_flags: "-stdlib=libc++"}
+        - {build_type: Release, engine: Vk, extra_flags: "-stdlib=libc++"}
+        - {build_type: Debug, engine: GL, extra_flags: "-stdlib=libc++"}
+        - {build_type: Release, engine: GL, extra_flags: "-stdlib=libc++"}
+        - {build_type: Debug, engine: GL, extra_flags: "-stdlib=libc++ -fsanitize=thread -O1"}
+        - {build_type: Debug, engine: GL, extra_flags: "-stdlib=libc++ -fsanitize=address -O1 -fno-omit-frame-pointer -fno-optimize-sibling-calls"}
+        - {build_type: Debug, engine: GL, extra_flags: "-stdlib=libc++ -fsanitize=undefined -fno-omit-frame-pointer"}
+    steps:
+    - name: checkout
+      uses: actions/checkout@v1
+      with:
+        submodules: recursive
+    - name: install
+      run: sudo apt-get install -y libgl1-mesa-dev libxinerama-dev libxcursor-dev xorg-dev
+    - name: build GLEW    
+      if: ${{ matrix.cfg.engine == 'GL'}}
+      env:
+        CC: clang-10
+        CXX: clang++-10
+      run: |
+        cd libs/glew/build;
+        cmake ../build/cmake/.;
+        sudo make -j2
+        sudo make install;
+        cd ../../../;
+    - name: install vulkan
+      if: ${{ matrix.cfg.engine == 'Vk' }}
+      run: |
+        wget -qO - http://packages.lunarg.com/lunarg-signing-key-pub.asc | sudo apt-key add -;
+        sudo wget -qO /etc/apt/sources.list.d/lunarg-vulkan-1.2.148-bionic.list http://packages.lunarg.com/vulkan/1.2.148/lunarg-vulkan-1.2.148-bionic.list;
+        sudo apt update;
+        sudo apt install lunarg-vulkan-sdk;
+    - name: config CMake
+      env:
+        CC: clang-10
+        CXX: clang++-10
+        BUILD_TYPE: ${{ matrix.cfg.build_type }}
+        ENGINE: ${{ matrix.cfg.engine }}
+        EXTRA_FLAGS: ${{ matrix.cfg.extra_flags }}
+      run: | 
+        mkdir build
+        cd build
+        cmake .. -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_CXX_FLAGS="${EXTRA_FLAGS}" -DTEMPEST_BUILD_ALL=ON -DENGINE="$ENGINE"
+        make -j2
+    - name: run core tests
+      run: ./build/exe/core_test
+    - name: run queue tests
+      if: ${{ matrix.cfg.build_type == 'Release' }}
+      run: ./build/exe/queue_test
