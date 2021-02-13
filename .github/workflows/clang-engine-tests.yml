@@ -57,3 +57,6 @@ jobs:
     - name: run queue tests
       if: ${{ matrix.cfg.build_type == 'Release' }}
       run: ./build/exe/queue_test
+    - name: run engine tests
+      if: ${{ matrix.cfg.engine == 'Vk' }}
+      run: ./build/exe/engine_test
