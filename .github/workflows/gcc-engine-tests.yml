@@ -51,7 +51,7 @@ jobs:
       if: ${{ matrix.build_type == 'Release' }}
       run: ./build/exe/queue_test
     - name: run engine tests
-      if: ${{ matrix.cfg.engine == 'Vk' }}
+      if: ${{ matrix.engine == 'Vk' }}
       run: |
         sudo /usr/bin/Xvfb :0 -screen 0 1280x1024x24 &
         ./build/exe/engine_test  
