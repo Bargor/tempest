@@ -21,6 +21,9 @@ namespace engine {
             ~vertex_buffer();
 
             vertex_buffer(vertex_buffer&& other) noexcept;
+            vertex_buffer(const vertex_buffer& other) = delete;
+
+            vertex_buffer& operator=(vertex_buffer&& other);
 
         public:
             std::uint32_t get_vertex_count() const noexcept;
@@ -28,7 +31,7 @@ namespace engine {
             const vertex_format& get_vertex_format() const noexcept;
 
         private:
-            const vertex_format m_format;
+            vertex_format m_format;
             std::vector<vertex> m_vertices;
         };
 

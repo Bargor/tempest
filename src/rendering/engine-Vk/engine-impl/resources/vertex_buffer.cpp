@@ -34,6 +34,13 @@ namespace engine {
             : buffer(std::move(other)), m_format(other.m_format), m_vertices(std::move(other.m_vertices)) {
         }
 
+        vertex_buffer& vertex_buffer::operator=(vertex_buffer&& other) {
+            super::operator=(std::move(other));
+            m_format = other.m_format;
+            m_vertices = std::move(other.m_vertices);
+            return *this;
+        }
+
     } // namespace vulkan
 } // namespace engine
 } // namespace tst
