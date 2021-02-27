@@ -88,7 +88,7 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
 	add_custom_target(
 		copy_shader_files
 		${CMAKE_COMMAND}
-		-D SOURCE_DIR=${CMAKE_CURRENT_SOURCE_DIR}
+		-D SOURCE_DIR=${CMAKE_CURRENT_SOURCE_DIR}/engine-impl/shaders/
 		-D DESTINATION_DIR=${RUNTIME_OUTPUT_PATH}/$<CONFIG>/shaders/
 		-P ${PROJECT_SOURCE_DIR}/cmake/CopyShaders.cmake
 		COMMENT "Copying shader files for target: test" VERBATIM
@@ -105,7 +105,7 @@ else()
 	add_custom_target(
 		copy_shader_files
 		${CMAKE_COMMAND}
-		-D SOURCE_DIR=${CMAKE_CURRENT_SOURCE_DIR}
+		-D SOURCE_DIR=${CMAKE_CURRENT_SOURCE_DIR}/engine-impl/shaders/
 		-D DESTINATION_DIR=${RUNTIME_OUTPUT_PATH}/shaders/
 		-P ${PROJECT_SOURCE_DIR}/cmake/CopyShaders.cmake
 		COMMENT "Copying shader files for target: test" VERBATIM

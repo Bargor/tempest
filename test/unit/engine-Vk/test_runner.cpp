@@ -84,6 +84,7 @@ void deinit_Glfw() {
 }
 
 int main(int argc, char** argv) {
+    g_executionDirectory = std::filesystem::path(argv[0]).parent_path().append("");
     ::testing::InitGoogleTest(&argc, argv);
     init_Glfw();
     tst::engine::vulkan::instance::enableGlfwExtensions = false;

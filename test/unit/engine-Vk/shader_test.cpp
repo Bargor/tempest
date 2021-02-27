@@ -3,6 +3,7 @@
 
 #include "test_environment.h"
 
+#include <application/data_loader.h>
 #include <engine-impl/device.h>
 #include <engine-impl/gpu_info.h>
 #include <engine-impl/instance.h>
@@ -11,29 +12,11 @@
 #include <engine-impl/vulkan_exception.h>
 #include <gtest/gtest.h>
 
+using namespace std::literals;
+
 namespace tst {
 namespace engine {
     namespace vulkan {
-
-        const auto testVertexShaderCorrect = "#version 450\n \
-                                       void main() \
-                                       { \
-                                           gl_Position = vec4(0.0, 0.0, 0.0, 0.0); \
-                                       }";
-
-        const auto testVertexShaderNotCorrect = "#version 450\n \
-                                            void main() \
-                                            { \
-                                                gl_Positionasd = vec4(0.0, 0.0, 0.0, 0.0); \
-                                            }";
-
-        const auto testFragmentShaderCorrect = "#version 450\n \
-                                         out vec4 fragColor; \
-                                         void main() { fragColor = vec4(1.0, 0.0, 0.0, 1.0); }";
-
-        const auto testFragmentShaderNotCorrect = "#version 450\n \
-                                         out vec3 fragColor; \
-                                         void main() { fragColor = vec4(1.0, 0.0, 0.0, 1.0); }";
 
         class ShaderFixture : public ::testing::Test {
         public:
@@ -43,7 +26,8 @@ namespace engine {
                       instance::get_validation_layers(), {}, get_required_features()))
                 , m_queue(m_logicalDevice.getQueue(m_physicalDevice->get_transfer_index(), 0))
                 , m_cmdPool(m_logicalDevice.createCommandPool(
-                      vk::CommandPoolCreateInfo(vk::CommandPoolCreateFlags(), m_physicalDevice->get_graphics_index()))) {
+                      vk::CommandPoolCreateInfo(vk::CommandPoolCreateFlags(), m_physicalDevice->get_graphics_index())))
+                , m_dataLoader({g_executionDirectory}) {
             }
 
             ~ShaderFixture() {
@@ -61,15 +45,14 @@ namespace engine {
             vk::Device m_logicalDevice;
             vk::Queue m_queue;
             vk::CommandPool m_cmdPool;
+            application::data_loader m_dataLoader;
         };
 
         TEST_F(ShaderFixture, ShaderConstruction) {
             try {
-                shader shader(m_logicalDevice,
-                              shader_type::vertex,
-                              std::vector<char>(testVertexShaderCorrect,
-                                                std::next(testVertexShaderCorrect, std::strlen(testVertexShaderCorrect))),
-                              "test_shader");
+                const auto path = m_dataLoader.find_file("test_shaders\\testVertexShaderCorrect.spv"sv);
+                shader shader(
+                    m_logicalDevice, shader_type::vertex, m_dataLoader.load_shader_bytecode(path.value()), "test_shader");
             } catch (vulkan_exception&) {
                 FAIL();
             }
@@ -77,11 +60,9 @@ namespace engine {
 
         TEST_F(ShaderFixture, ShaderMoveConstruction) {
             try {
-                shader s(m_logicalDevice,
-                         shader_type::vertex,
-                         std::vector<char>(testVertexShaderCorrect,
-                                           std::next(testVertexShaderCorrect, std::strlen(testVertexShaderCorrect))),
-                         "test_shader");
+                const auto path = m_dataLoader.find_file("test_shaders\\testVertexShaderCorrect.spv"sv);
+                shader s(
+                    m_logicalDevice, shader_type::vertex, m_dataLoader.load_shader_bytecode(path.value()), "test_shader");
                 shader s2(std::move(s));
                 EXPECT_EQ(s2.get_stage(), shader_type::vertex);
             } catch (vulkan_exception&) {
@@ -91,15 +72,12 @@ namespace engine {
 
         TEST_F(ShaderFixture, ShaderMoveAssigment) {
             try {
-                shader s(m_logicalDevice,
-                         shader_type::vertex,
-                         std::vector<char>(testVertexShaderCorrect,
-                                           std::next(testVertexShaderCorrect, std::strlen(testVertexShaderCorrect))),
-                         "test_shader");
+                const auto path = m_dataLoader.find_file("test_shaders\\testVertexShaderCorrect.spv"sv);
+                shader s(
+                    m_logicalDevice, shader_type::vertex, m_dataLoader.load_shader_bytecode(path.value()), "test_shader");
                 shader s2(m_logicalDevice,
                           shader_type::fragment,
-                          std::vector<char>(testVertexShaderCorrect,
-                                            std::next(testVertexShaderCorrect, std::strlen(testVertexShaderCorrect))),
+                          m_dataLoader.load_shader_bytecode(path.value()),
                           "test_shader_2");
                 s = std::move(s2);
                 EXPECT_EQ(s.get_stage(), shader_type::fragment);
@@ -108,51 +86,22 @@ namespace engine {
             }
         }
 
-        TEST_F(ShaderFixture, VertexShaderCompilationSuccess) {
+        TEST_F(ShaderFixture, VertexShaderCreationSuccess) {
             try {
-                shader shader(m_logicalDevice,
-                              shader_type::vertex,
-                              std::vector<char>(testVertexShaderCorrect,
-                                                std::next(testVertexShaderCorrect, std::strlen(testVertexShaderCorrect))),
-                              "test_shader");
-            } catch (vulkan_exception&) {
-                FAIL();
-            }
-        }
-
-        TEST_F(ShaderFixture, VertexShaderCompilationFail) {
-            try {
+                const auto path = m_dataLoader.find_file("test_shaders\\testVertexShaderCorrect.spv"sv);
                 shader shader(
-                    m_logicalDevice,
-                    shader_type::vertex,
-                    std::vector<char>(testVertexShaderNotCorrect,
-                                      std::next(testVertexShaderNotCorrect, std::strlen(testVertexShaderNotCorrect))),
-                    "test_shader");
+                    m_logicalDevice, shader_type::vertex, m_dataLoader.load_shader_bytecode(path.value()), "test_shader");
             } catch (vulkan_exception&) {
                 FAIL();
             }
         }
 
-        TEST_F(ShaderFixture, FragmentShaderCompilationSuccess) {
+        TEST_F(ShaderFixture, FragmentShaderCreationSuccess) {
             try {
-                shader shader(
-                    m_logicalDevice,
-                    shader_type::fragment,
-                    std::vector<char>(testFragmentShaderCorrect,
-                                      std::next(testFragmentShaderCorrect, std::strlen(testFragmentShaderCorrect))),
-                    "test_shader");
-            } catch (vulkan_exception&) {
-                FAIL();
-            }
-        }
-
-        TEST_F(ShaderFixture, FragmentShaderCompilationFail) {
-            try {
+                const auto path = m_dataLoader.find_file("test_shaders\\testFragmentShaderCorrect.spv"sv);
                 shader shader(m_logicalDevice,
                               shader_type::fragment,
-                              std::vector<char>(
-                                  testFragmentShaderNotCorrect,
-                                  std::next(testFragmentShaderNotCorrect, std::strlen(testFragmentShaderNotCorrect))),
+                              m_dataLoader.load_shader_bytecode(path.value()),
                               "test_shader");
             } catch (vulkan_exception&) {
                 FAIL();
