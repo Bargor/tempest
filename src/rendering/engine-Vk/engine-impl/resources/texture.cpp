@@ -84,7 +84,7 @@ namespace engine {
         void texture::bind_texture(const std::string& shaderName,
                                    base::resource_bind_point bindPoint,
                                    std::uint32_t binding) {
-            m_descriptorSets = m_resourceCache.find_descriptor_sets(shaderName, bindPoint);
+            m_descriptorSets = m_resourceCache.get().find_descriptor_sets(shaderName, bindPoint);
             assert(m_descriptorSets);
 
             for (const auto set : *m_descriptorSets) {
@@ -111,6 +111,18 @@ namespace engine {
             other.m_textureView = nullptr;
             other.m_sampler = nullptr;
             other.m_descriptorSets = nullptr;
+        }
+
+        texture& texture::operator=(texture&& other) {
+            m_logicalDevice = other.m_logicalDevice;
+            m_resourceCache = other.m_resourceCache;
+            std::swap(m_textureView, other.m_textureView);
+            std::swap(m_textureImage, other.m_textureImage);
+            std::swap(m_textureMemory, other.m_textureMemory);
+            std::swap(m_sampler, other.m_sampler);
+            m_resourceIndex = other.m_resourceIndex;
+            m_descriptorSets = other.m_descriptorSets;
+            return *this;
         }
 
     } // namespace vulkan

@@ -35,17 +35,19 @@ namespace engine {
 
             texture(texture&& other) noexcept;
 
+            texture& operator=(texture&& other);
+
         public:
             void bind_texture(const std::string& shaderName, base::resource_bind_point bindPoint, std::uint32_t binding);
 
         private:
             vk::Device m_logicalDevice;
-            const resource_cache& m_resourceCache;
+            std::reference_wrapper<const resource_cache> m_resourceCache;
             vk::Image m_textureImage;
             vk::DeviceMemory m_textureMemory;
             vk::ImageView m_textureView;
             vk::Sampler m_sampler;
-            const std::uint32_t& m_resourceIndex;
+            std::reference_wrapper<const std::uint32_t> m_resourceIndex;
             const descriptor_set* m_descriptorSets;
         };
 
