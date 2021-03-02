@@ -102,7 +102,7 @@ namespace engine {
                                          ptr<unsigned char, void (*)(void*)>(&imageData[0], [](void*) { return; })},
                  m_resourceIndex});
 
-           texture1 = std::move(texture1);
+           texture2 = std::move(texture1);
         }
     } // namespace vulkan
 } // namespace engine
