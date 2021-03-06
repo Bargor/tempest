@@ -20,7 +20,7 @@ namespace engine {
 
         bool compile_shader(std::string_view shaderBytecodeFile, std::string_view shaderSourceFile) {
             std::string command = fmt::sprintf("glslangValidator -V -o %s %s", shaderBytecodeFile, shaderSourceFile);
-            return std::system(command.c_str());
+            return !std::system(command.c_str());
         }
 
         std::vector<vk::DescriptorSetLayoutBinding> parse_descriptor_layouts_binding(const rapidjson::Value& set) {
