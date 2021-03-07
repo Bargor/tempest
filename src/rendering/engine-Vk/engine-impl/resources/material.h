@@ -42,6 +42,8 @@ namespace engine {
 
             material(material&& other) noexcept;
 
+            material& operator=(material&& other);
+
         public:
             vk::DescriptorSet get_static_descriptor_set() const noexcept;
 
@@ -49,12 +51,12 @@ namespace engine {
             std::vector<texture> m_textures;
             std::optional<uniform_buffer> m_staticUniformBuffer;
             std::optional<uniform_buffer> m_dynamicUniformBuffer;
-            const std::array<vk::DescriptorSet, settings::m_inFlightFrames>& m_staticDescriptorSets;
-            const std::uint32_t& m_resourceIndex;
+            std::reference_wrapper<const descriptor_set> m_staticDescriptorSets;
+            std::reference_wrapper<const std::uint32_t> m_resourceIndex;
         };
 
         TST_INLINE vk::DescriptorSet material::get_static_descriptor_set() const noexcept {
-            return m_staticDescriptorSets[m_resourceIndex];
+            return m_staticDescriptorSets.get()[m_resourceIndex];
         }
 
     } // namespace vulkan

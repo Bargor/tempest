@@ -60,6 +60,17 @@ namespace engine {
             , m_resourceIndex(other.m_resourceIndex) {
         }
 
+        material& material::operator=(material&& other) {
+            super::operator=(std::move(other));
+            m_textures = std::move(other.m_textures);
+            m_staticUniformBuffer = std::move(other.m_staticUniformBuffer);
+            m_dynamicUniformBuffer = std::move(other.m_dynamicUniformBuffer);
+            m_staticDescriptorSets = other.m_staticDescriptorSets;
+            m_resourceIndex = other.m_resourceIndex;
+
+            return *this;
+        }
+
     } // namespace vulkan
 } // namespace engine
 } // namespace tst

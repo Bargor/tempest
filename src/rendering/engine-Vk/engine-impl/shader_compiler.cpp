@@ -101,6 +101,7 @@ namespace engine {
                     if (!compile_shader(bytecodeFileName, shaderSourceFile.value().string())) {
                         return std::nullopt;
                     }
+                    return m_dataLoader.load_shader_bytecode(bytecodeFileName);
                 }
             } else {
                 if (!shaderBytecodeFile) { // none of the files exist

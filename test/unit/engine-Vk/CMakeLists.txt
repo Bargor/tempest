@@ -7,6 +7,7 @@ set(TEST_SRCS
     test_environment.h
     buffer_test.cpp
     index_buffer_test.cpp
+    material_test.cpp
     physical_device_test.cpp
     shader_compiler_test.cpp
     shader_test.cpp
