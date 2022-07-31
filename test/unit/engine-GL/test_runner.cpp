@@ -1,11 +1,11 @@
 // This file is part of Tempest-engine-Gl project
 // Author: Karol Kontny
 
-#include <gtest/gtest.h>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <array>
 #include <fmt/printf.h>
+#include <gtest/gtest.h>
 
 #ifdef NDEBUG
 #define OPENGL_DEBUG GLFW_FALSE
@@ -55,7 +55,6 @@ std::array<window_hint, 31> setup_context(const std::int32_t refreshRate) {
 }
 
 GLFWwindow* create_context() {
-
     auto hints = setup_context(60);
 
     for (std::uint32_t i = 0; i < hints.size(); i++) {
@@ -86,7 +85,8 @@ void init_OpenGL() {
     glewExperimental = GL_TRUE;
     GLenum err = glewInit();
     if (err != GLEW_OK) {
-        fmt::printf("Can't initialize OpenGL, error %s\n", glewGetErrorString(err));
+        fmt::printf("Can't initialize OpenGL, error %s\n",
+                    std::string_view(reinterpret_cast<const char*>(glewGetErrorString(err))));
         std::exit(EXIT_FAILURE);
     }
 }

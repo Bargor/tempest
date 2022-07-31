@@ -6,8 +6,6 @@
 #include <queue>
 #include <thread>
 
-BENCHMARK_MAIN();
-
 namespace tst {
 namespace core {
 
