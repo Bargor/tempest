@@ -18,7 +18,7 @@ namespace engine {
             glewExperimental = GL_TRUE;
             GLenum err = glewInit();
             if (err != GLEW_OK) {
-                fmt::printf("Can't initialize OpenGL, error %s\n", glewGetErrorString(err));
+                fmt::printf("Can't initialize OpenGL, error %s\n", std::string_view(glewGetErrorString(err)));
                 std::exit(EXIT_FAILURE);
             }
         }
