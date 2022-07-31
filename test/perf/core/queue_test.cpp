@@ -10,10 +10,10 @@ BENCHMARK_MAIN();
 
 namespace tst {
 namespace core {
-	
-	struct s512 {
-		std::int64_t arr[8];
-	};
+
+    struct s512 {
+        std::int64_t arr[8];
+    };
 
     constexpr std::size_t size = 1023;
 
@@ -22,7 +22,7 @@ namespace core {
         std::int32_t count = 0;
 
         for (auto _ : state) {
-            if (state.thread_index == 0) {
+            if (state.thread_index() == 0) {
                 while (count < state.range(0)) {
                     auto res = queue.try_push(count);
                     if (res) ++count;
@@ -48,7 +48,7 @@ namespace core {
         std::int32_t pop_count = 0;
 
         for (auto _ : state) {
-            if (state.thread_index == 0) {
+            if (state.thread_index() == 0) {
                 while (push_count < state.range(0)) {
                     spin.lock();
                     queue.push(push_count);
@@ -75,14 +75,14 @@ namespace core {
 
     BENCHMARK(BM_spinlock_queue_int)->RangeMultiplier(2)->Range(size, 8 << 18)->Threads(2);
     BENCHMARK(BM_spsc_queue_int)->RangeMultiplier(2)->Range(size, 8 << 18)->Threads(2);
-	
+
     static void BM_spsc_queue_s512(benchmark::State& state) {
         static spsc_queue<s512, size> queue;
         std::int32_t count = 0;
-		s512 item = {{0,1,2,3,4,5,6,7}};
+        s512 item = {{0, 1, 2, 3, 4, 5, 6, 7}};
 
         for (auto _ : state) {
-            if (state.thread_index == 0) {
+            if (state.thread_index() == 0) {
                 while (count < state.range(0)) {
                     auto res = queue.try_push(item);
                     if (res) ++count;
@@ -104,13 +104,13 @@ namespace core {
     spinlock spin_s512;
 
     static void BM_spinlock_queue_s512(benchmark::State& state) {
-		s512 item = {{0,1,2,3,4,5,6,7}};
+        s512 item = {{0, 1, 2, 3, 4, 5, 6, 7}};
 
         std::int32_t push_count = 0;
         std::int32_t pop_count = 0;
 
         for (auto _ : state) {
-            if (state.thread_index == 0) {
+            if (state.thread_index() == 0) {
                 while (push_count < state.range(0)) {
                     spin_s512.lock();
                     queue_s512.push(item);
@@ -126,7 +126,7 @@ namespace core {
                         ++pop_count;
                     }
                     if (push_count == state.range(0) && queue_s512.empty() && pop_count < state.range(0)) {
-                        printf ("%d %d\n", push_count, pop_count);
+                        printf("%d %d\n", push_count, pop_count);
                     }
                 }
             }
@@ -134,8 +134,8 @@ namespace core {
 
         state.SetBytesProcessed(int64_t(state.iterations()) * int64_t(state.range(0)));
     }
-	
-	BENCHMARK(BM_spinlock_queue_s512)->RangeMultiplier(2)->Range(size, 8 << 18)->Threads(2);
+
+    BENCHMARK(BM_spinlock_queue_s512)->RangeMultiplier(2)->Range(size, 8 << 18)->Threads(2);
     BENCHMARK(BM_spsc_queue_s512)->RangeMultiplier(2)->Range(size, 8 << 18)->Threads(2);
 
     static void BM_spinlock_queue_push(benchmark::State& state) {
@@ -173,14 +173,14 @@ namespace core {
 
     BENCHMARK(BM_spinlock_queue_push)->RangeMultiplier(2)->Range(size, 1 << 16);
     BENCHMARK(BM_spsc_queue_push)->RangeMultiplier(2)->Range(size, 1 << 16);
-	
-	static void BM_spinlock_queue_pop(benchmark::State& state) {
+
+    static void BM_spinlock_queue_pop(benchmark::State& state) {
         std::queue<std::int32_t> queue;
         spinlock spin;
 
         std::int32_t count = 0;
-		
-		while (count < state.range(0)) {
+
+        while (count < state.range(0)) {
             queue.push(count);
             ++count;
         }
@@ -201,8 +201,8 @@ namespace core {
         spsc_queue<std::int32_t, 1 << 16> queue;
 
         std::int32_t count = 0;
-		
-		while (count < state.range(0)) {
+
+        while (count < state.range(0)) {
             auto res = queue.try_push(count);
             if (res) ++count;
         }
