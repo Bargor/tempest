@@ -21,6 +21,7 @@ function(add_imgui)
         ${PROJECT_SOURCE_DIR}/libs/imgui/imgui.cpp
         ${PROJECT_SOURCE_DIR}/libs/imgui/imgui_demo.cpp
         ${PROJECT_SOURCE_DIR}/libs/imgui/imgui_draw.cpp
+        ${PROJECT_SOURCE_DIR}/libs/imgui/imgui_tables.cpp
         ${PROJECT_SOURCE_DIR}/libs/imgui/imgui_widgets.cpp
     )
     

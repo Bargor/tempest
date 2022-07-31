@@ -26,7 +26,7 @@ namespace engine {
             fmt::printf("validation layer: %s, messageType: %d, severity: %d\n",
                         pCallbackData->pMessage,
                         messageType,
-                        messageSeverity);
+                        static_cast<int>(messageSeverity));
 
             return false;
         }
@@ -147,7 +147,7 @@ namespace engine {
             return instance;
         }
 
-		const vk::Instance& instance::get_instance_handle() const noexcept {
+        const vk::Instance& instance::get_instance_handle() const noexcept {
             return m_instance;
         }
 
@@ -159,8 +159,7 @@ namespace engine {
         }
 
         instance::instance(std::vector<const char*>&& requiredValidationLayers)
-            : m_instance(create_instance(requiredValidationLayers))
-			, m_debugMessenger(setup_debug_messenger(m_instance)) {
+            : m_instance(create_instance(requiredValidationLayers)), m_debugMessenger(setup_debug_messenger(m_instance)) {
         }
 
         instance::~instance() {

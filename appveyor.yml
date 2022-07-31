@@ -3,6 +3,14 @@ version: 0.0.1.{build}
  
 environment:
   matrix:
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2022
+      GENERATOR: "Visual Studio 17 2022"
+      ARCH: "-Ax64"
+      ENGINE: "Vk"
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2022
+      GENERATOR: "Visual Studio 17 2022"
+      ARCH: "-Ax64"
+      ENGINE: "GL"
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
       GENERATOR: "Visual Studio 16 2019"
       ARCH: "-Ax64"
