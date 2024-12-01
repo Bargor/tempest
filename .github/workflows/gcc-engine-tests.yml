@@ -3,7 +3,7 @@ on: [push]
  
 jobs:
   build:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     strategy:
       fail-fast: false
       matrix:
@@ -19,8 +19,8 @@ jobs:
     - name: build GLEW
       if: ${{ matrix.engine == 'GL'}}
       env:
-        CC: gcc-10
-        CXX: gcc++-10
+        CC: gcc-14
+        CXX: gcc++-14
       run: |
         cd libs/glew/build;
         cmake ../build/cmake/.;
@@ -31,13 +31,13 @@ jobs:
       if: ${{ matrix.engine == 'Vk' }}
       run: |
         wget -qO - http://packages.lunarg.com/lunarg-signing-key-pub.asc | sudo apt-key add -;
-        sudo wget -qO /etc/apt/sources.list.d/lunarg-vulkan-1.2.148-bionic.list http://packages.lunarg.com/vulkan/1.2.148/lunarg-vulkan-1.2.148-bionic.list;
+        sudo wget -qO /etc/apt/sources.list.d/lunarg-vulkan-1.3.296-bionic.list http://packages.lunarg.com/vulkan/1.3.296/lunarg-vulkan-1.3.296-bionic.list;
         sudo apt update;
         sudo apt install lunarg-vulkan-sdk;
     - name: config CMake
       env:
-        CC: gcc-10
-        CXX: g++-10
+        CC: gcc-14
+        CXX: g++-14
         BUILD_TYPE: ${{ matrix.build_type }}
         ENGINE: ${{ matrix.engine }}
       run: | 
