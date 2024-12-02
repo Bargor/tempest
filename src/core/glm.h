@@ -1,9 +1,10 @@
 #define GLM_FORCE_DEFAULT_ALIGNED_GENTYPES
-#define GLM_FORCE_SSE41
+#define GLM_FORCE_AVX2
 #define GLM_FORCE_SWIZZLE
 #define GLM_FORCE_SILENT_WARNINGS
 #define GLM_FORCE_CXX2A
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
+#define GLM_ENABLE_EXPERIMENTAL
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/quaternion.hpp>
