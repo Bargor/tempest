@@ -3,7 +3,7 @@ on: [push]
 
 jobs:
   build:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
       matrix:
@@ -21,12 +21,12 @@ jobs:
       with:
         submodules: recursive
     - name: install
-      run: sudo apt-get install -y libgl1-mesa-dev libxinerama-dev libxcursor-dev xorg-dev
+      run: sudo apt-get install -y libgl1-mesa-dev libxinerama-dev libxcursor-dev xorg-dev libc++-18-dev libc++abi-18-dev libwayland-bin libwayland-dev libxkbcommon-dev
     - name: build GLEW    
       if: ${{ matrix.cfg.engine == 'GL'}}
       env:
-        CC: clang-19
-        CXX: clang++-10
+        CC: clang-18
+        CXX: clang++-18
       run: |
         cd libs/glew/build;
         cmake ../build/cmake/.;
@@ -37,13 +37,13 @@ jobs:
       if: ${{ matrix.cfg.engine == 'Vk' }}
       run: |
         wget -qO - http://packages.lunarg.com/lunarg-signing-key-pub.asc | sudo apt-key add -;
-        sudo wget -qO /etc/apt/sources.list.d/lunarg-vulkan-1.3.296-bionic.list http://packages.lunarg.com/vulkan/1.3.296/lunarg-vulkan-1.3.296-bionic.list;
+        sudo wget -qO /etc/apt/sources.list.d/lunarg-vulkan-1.3.296-noble.list http://packages.lunarg.com/vulkan/1.3.296/lunarg-vulkan-1.3.296-noble.list;
         sudo apt update;
-        sudo apt install lunarg-vulkan-sdk;
+        sudo apt install vulkan-sdk;
     - name: config CMake
       env:
-        CC: clang-19
-        CXX: clang++-19
+        CC: clang-18
+        CXX: clang++-18
         BUILD_TYPE: ${{ matrix.cfg.build_type }}
         ENGINE: ${{ matrix.cfg.engine }}
         EXTRA_FLAGS: ${{ matrix.cfg.extra_flags }}

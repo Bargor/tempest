@@ -298,8 +298,10 @@ namespace engine {
         bool device::start_frame() {
             m_resourceIndex = m_frameCounter % settings::m_inFlightFrames;
 
-            m_logicalDevice.waitForFences(
+            const auto result = m_logicalDevice.waitForFences(
                 1, &m_frameResources[m_resourceIndex].inFlightFences, true, std::numeric_limits<uint64_t>::max());
+
+            assert(result == vk::Result::eSuccess);
 
             auto acquireResult =
                 m_swapChain->acquire_next_image(m_logicalDevice, m_frameResources[m_resourceIndex].imageAvailable);
@@ -320,8 +322,10 @@ namespace engine {
         }
 
         bool device::draw(const std::vector<vk::CommandBuffer>& commandBuffers) {
-            std::uint32_t currentFrame = get_resource_index();
-            m_logicalDevice.resetFences(1, &m_frameResources[currentFrame].inFlightFences);
+            const std::uint32_t currentFrame = get_resource_index();
+            const auto result = m_logicalDevice.resetFences(1, &m_frameResources[currentFrame].inFlightFences);
+
+            assert(result == vk::Result::eSuccess);
 
             vk::Semaphore waitSemaphores[] = {m_frameResources[currentFrame].imageAvailable};
             vk::Semaphore signalSemaphores[] = {m_frameResources[currentFrame].renderFinished};
@@ -335,9 +339,9 @@ namespace engine {
                                       1,
                                       signalSemaphores);
 
-            m_graphicsQueueHandle.submit(1, &submitInfo, m_frameResources[currentFrame].inFlightFences);
+            const auto drawResult = m_graphicsQueueHandle.submit(1, &submitInfo, m_frameResources[currentFrame].inFlightFences);
 
-            return true;
+            return drawResult == vk::Result::eSuccess;
         }
 
         bool device::end_frame() {

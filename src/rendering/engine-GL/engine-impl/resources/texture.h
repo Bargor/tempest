@@ -2,6 +2,8 @@
 // Author: Karol Kontny
 #pragma once
 
+#include <string>
+
 #include <application/image_data.h>
 #include <engine-base/resource_bind_point.h>
 

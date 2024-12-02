@@ -3,7 +3,7 @@ on: [push]
  
 jobs:
   build:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
       matrix:
@@ -15,12 +15,12 @@ jobs:
       with:
         submodules: recursive
     - name: install
-      run: sudo apt-get install -y libgl1-mesa-dev libxinerama-dev libxcursor-dev xorg-dev
+      run: sudo apt-get install -y libgl1-mesa-dev libxinerama-dev libxcursor-dev xorg-dev libxkbcommon-dev libwayland-bin libwayland-dev
     - name: build GLEW
       if: ${{ matrix.engine == 'GL'}}
       env:
         CC: gcc-14
-        CXX: gcc++-14
+        CXX: g++-14
       run: |
         cd libs/glew/build;
         cmake ../build/cmake/.;
@@ -31,9 +31,9 @@ jobs:
       if: ${{ matrix.engine == 'Vk' }}
       run: |
         wget -qO - http://packages.lunarg.com/lunarg-signing-key-pub.asc | sudo apt-key add -;
-        sudo wget -qO /etc/apt/sources.list.d/lunarg-vulkan-1.3.296-bionic.list http://packages.lunarg.com/vulkan/1.3.296/lunarg-vulkan-1.3.296-bionic.list;
+        sudo wget -qO /etc/apt/sources.list.d/lunarg-vulkan-1.3.296-noble.list http://packages.lunarg.com/vulkan/1.3.296/lunarg-vulkan-1.3.296-noble.list;
         sudo apt update;
-        sudo apt install lunarg-vulkan-sdk;
+        sudo apt install vulkan-sdk;
     - name: config CMake
       env:
         CC: gcc-14

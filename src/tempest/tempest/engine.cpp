@@ -4,7 +4,8 @@
 #include "engine.h"
 
 // clang-format off
-#include <imgui/imgui.h>
+#include "imgui.h"
+
 #include <imfilebrowser.h>
 #include <engine/device.h>
 #include <application/app_event.h>
