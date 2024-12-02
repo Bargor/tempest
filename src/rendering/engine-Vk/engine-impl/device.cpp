@@ -254,9 +254,9 @@ namespace engine {
             (void)io;
 
             m_resourceCache->add_rendering_technique(
-                std::move("gui"), base::parse_technique_settings(dataLoader, "gui"), m_logicalDevice, *m_swapChain);
+                "gui", base::parse_technique_settings(dataLoader, "gui"), m_logicalDevice, *m_swapChain);
             m_resourceCache->add_rendering_technique(
-                std::move("only_gui"), base::parse_technique_settings(dataLoader, "only_gui"), m_logicalDevice, *m_swapChain);
+                "only_gui", base::parse_technique_settings(dataLoader, "only_gui"), m_logicalDevice, *m_swapChain);
 
             ImGui_ImplGlfw_InitForVulkan(m_mainWindow.get_handle(), true);
             ImGui_ImplVulkan_InitInfo init_info = {};
@@ -267,16 +267,17 @@ namespace engine {
             init_info.Queue = m_graphicsQueueHandle;
             init_info.PipelineCache = VK_NULL_HANDLE;
             init_info.DescriptorPool = m_resourceCache->get_gui_descritptor_pool();
+            init_info.RenderPass = m_resourceCache->find_technique("gui")->get_pass();
+            init_info.Subpass = 0;
             init_info.Allocator = nullptr;
             init_info.MinImageCount = settings::m_inFlightFrames;
             init_info.ImageCount = settings::m_inFlightFrames;
             init_info.CheckVkResultFn = nullptr;
-            ImGui_ImplVulkan_Init(&init_info, m_resourceCache->find_technique("gui")->get_pass());
+            ImGui_ImplVulkan_Init(&init_info);
 
             auto command_buffer = create_one_time_buffer(m_logicalDevice, m_commandPools[0]);
-            ImGui_ImplVulkan_CreateFontsTexture(command_buffer);
+            ImGui_ImplVulkan_CreateFontsTexture();
             submit_one_time_buffer(m_logicalDevice, m_commandPools[0], m_graphicsQueueHandle, command_buffer);
-            ImGui_ImplVulkan_DestroyFontUploadObjects();
         }
 
         vk::CommandPool device::create_command_pool() {

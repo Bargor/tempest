@@ -14,7 +14,7 @@
 #include "resources/vertex_buffer.h"
 
 #include <engine-base/resource_bind_point.h>
-#include <imgui/imgui.h>
+#include "imgui.h"
 
 namespace tst {
 namespace engine {
