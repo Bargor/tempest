@@ -2,6 +2,7 @@
 // Author: Karol Kontny
 #pragma once
 
+#include <cstdint>
 #include <string>
 
 namespace tst {

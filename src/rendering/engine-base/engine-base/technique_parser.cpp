@@ -6,6 +6,8 @@
 #include <application/data_loader.h>
 #include <rapidjson/document.h>
 
+#include <algorithm>
+
 namespace tst {
 
 namespace engine {

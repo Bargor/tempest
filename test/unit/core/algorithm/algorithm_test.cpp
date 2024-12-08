@@ -41,12 +41,12 @@ TEST(includes, not_includes) {
 
 TEST(for_each_adjacent, range_empty) {
     std::vector<int> v1{};
-    tst::for_each_adjacent(v1.begin(), v1.end(), [](const int rhs, int lhs) { lhs += rhs; });
+    tst::for_each_adjacent(v1.begin(), v1.end(), [](const int rhs, int& lhs) { lhs += rhs; });
 }
 
 TEST(for_each_adjacent, range_one_element) {
     std::vector<int> v1{0};
-    tst::for_each_adjacent(v1.begin(), v1.end(), [](const int rhs, int lhs) { lhs += rhs; });
+    tst::for_each_adjacent(v1.begin(), v1.end(), [](const int rhs, int& lhs) { lhs += rhs; });
     EXPECT_EQ(v1[0], 0);
 }
 

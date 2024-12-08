@@ -298,12 +298,12 @@ namespace engine {
         bool device::start_frame() {
             m_resourceIndex = m_frameCounter % settings::m_inFlightFrames;
 
-            const auto result = m_logicalDevice.waitForFences(
+            [[maybe_unused]] const auto result = m_logicalDevice.waitForFences(
                 1, &m_frameResources[m_resourceIndex].inFlightFences, true, std::numeric_limits<uint64_t>::max());
 
             assert(result == vk::Result::eSuccess);
 
-            auto acquireResult =
+            const auto acquireResult =
                 m_swapChain->acquire_next_image(m_logicalDevice, m_frameResources[m_resourceIndex].imageAvailable);
             if (acquireResult == swap_chain::result::resize) {
                 update_framebuffer();
@@ -323,7 +323,7 @@ namespace engine {
 
         bool device::draw(const std::vector<vk::CommandBuffer>& commandBuffers) {
             const std::uint32_t currentFrame = get_resource_index();
-            const auto result = m_logicalDevice.resetFences(1, &m_frameResources[currentFrame].inFlightFences);
+            [[maybe_unused]] const auto result = m_logicalDevice.resetFences(1, &m_frameResources[currentFrame].inFlightFences);
 
             assert(result == vk::Result::eSuccess);
 
