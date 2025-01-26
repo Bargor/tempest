@@ -43,7 +43,7 @@ jobs:
       run: | 
         mkdir build
         cd build
-        cmake .. -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_CXX_FLAGS="${EXTRA_FLAGS}" -DTEMPEST_BUILD_ALL=ON -DENGINE="$ENGINE"
+        cmake .. -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_CXX_FLAGS="${EXTRA_FLAGS}" -DTEMPEST_BUILD_ALL=ON -DENGINE="$ENGINE" -D CMAKE_FIND_DEBUG_MODE=ON
         make -j2
     - name: run core tests
       run: ./build/exe/core_test
