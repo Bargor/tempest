@@ -5,6 +5,7 @@
 #include <engine-base/material.h>
 
 #include <vector>
+#include <cstdint>
 
 namespace tst {
 namespace engine {

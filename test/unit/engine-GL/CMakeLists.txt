@@ -11,7 +11,9 @@ source_group("engine GL tests" FILES ${TEST_SRCS})
 
 add_definitions (-DGLEW_NO_GLU)
 
-list(APPEND CMAKE_PREFIX_PATH "${PROJECT_SOURCE_DIR}/libs/glew/")
+if (WIN32)
+    list(APPEND CMAKE_PREFIX_PATH "${PROJECT_SOURCE_DIR}/libs/glew/")
+endif()
 find_package(GLEW REQUIRED)
 
 tst_add_executable(engine_test "" "${TEST_SRCS}")
