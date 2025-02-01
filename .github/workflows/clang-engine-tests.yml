@@ -21,7 +21,9 @@ jobs:
       with:
         submodules: recursive
     - name: install
-      run: sudo apt-get install -y libgl1-mesa-dev libxinerama-dev libxcursor-dev xorg-dev libc++-18-dev libc++abi-18-dev libwayland-bin libwayland-dev libxkbcommon-dev
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y libgl1-mesa-dev libxinerama-dev libxcursor-dev xorg-dev libc++-18-dev libc++abi-18-dev libwayland-bin libwayland-dev libxkbcommon-dev
     - name: build GLEW    
       if: ${{ matrix.cfg.engine == 'GL'}}
       env:
